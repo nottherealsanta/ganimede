@@ -1,2 +1,9 @@
-# macos
+/node_modules/
+/public/build/
+
 .DS_Store
+
+# python
+api/__pycache__
+.ipynb_checkpoints
+.pyc

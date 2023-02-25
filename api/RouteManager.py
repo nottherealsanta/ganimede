@@ -15,13 +15,25 @@ class RouteManager:
 
     def default_route(self):
         async def index(request):
-            return FileResponse(f"{self.ui_dir}/index.html")
+            return FileResponse(f"{self.ui_dir}/public/index.html")
 
-        async def main_ts(request: Request):
-            return FileResponse(f"{self.ui_dir}/src/main.ts")
+        async def global_css(request: Request):
+            return FileResponse(f"{self.ui_dir}/public/global.css")
+
+        async def bundle_js(request: Request):
+            return FileResponse(f"{self.ui_dir}/public/build/bundle.js")
+
+        async def bundle_css(request: Request):
+            return FileResponse(f"{self.ui_dir}/public/build/bundle.css")
+
+        async def favicon(request: Request):
+            return FileResponse(f"{self.ui_dir}/public/favicon.ico")
 
         self.routes.append(Route("/", index))
-        self.routes.append(Route("/src/main.ts", main_ts))
+        self.routes.append(Route("/global.css", global_css))
+        self.routes.append(Route("/build/bundle.js", bundle_js))
+        self.routes.append(Route("/build/bundle.css", bundle_css))
+        self.routes.append(Route("/favicon.ico", favicon))
 
     def add_route(self, path, func):
         self.routes.append(Route(path, func))
