@@ -1,6 +1,2 @@
-# mac
+# macos
 .DS_Store
-
-# python
-*.pyc
-api/__pycache__
