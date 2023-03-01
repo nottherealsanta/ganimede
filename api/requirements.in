@@ -4,3 +4,4 @@ pandas==1.5.3
 black==23.1.0
 ipykernel==6.20.2
 uvicorn==0.20.0
+rich==13.2.0

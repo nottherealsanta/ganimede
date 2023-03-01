@@ -9,7 +9,9 @@ body {
 	color: #333;
 	margin: 0;
 	box-sizing: border-box;
-	/* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif; */
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	font-size: 12px;
+
 }
 
 a {
@@ -118,4 +120,12 @@ button:focus {
 
 .cursor {
 	position: relative;
+}
+
+.monaco-editor {
+	padding-top: 3px;
+}
+
+.monaco-editor textarea {
+	visibility: hidden;
 }

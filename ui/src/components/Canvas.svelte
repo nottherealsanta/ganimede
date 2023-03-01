@@ -1,9 +1,8 @@
 <script>
-    import { writable } from "svelte/store";
     import Notebook from "./Notebook.svelte";
+    import { zoom } from "../stores/zoom";
 
     // zoom
-    export const zoom = writable(1);
     window.addEventListener(
         "wheel",
         function (e) {
@@ -11,14 +10,22 @@
                 e.preventDefault();
                 $zoom -= e.deltaY / 250;
                 if ($zoom < 0.1) $zoom = 0.1;
-                this.document.body.style.zoom = $zoom;
+                // this.document.body.style.zoom = $zoom;
             }
         },
         { passive: false }
     );
 </script>
 
-<div class="canvas" style="height: 10000px; width: 10000px">
+<div
+    class="canvas"
+    style="
+        height: 10000px; 
+        width: 10000px; 
+        transform: scale({$zoom}); 
+        transform-origin: 0 0;
+    "
+>
     <Notebook />
 </div>
 

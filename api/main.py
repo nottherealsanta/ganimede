@@ -7,6 +7,8 @@ import uvicorn
 
 from managers.RouteManager import RouteManager
 from managers.ConfigManager import ConfigHandler
+from managers.KernelManager import KernelManger
+from managers.NotebookManager import NotebookManager
 
 loop = asyncio.get_event_loop()
 app = Starlette(debug=True)
@@ -18,6 +20,20 @@ async def on_startup():
 
     config_handler = ConfigHandler()
     route_manager.add_route("/config", config_handler.get, ["GET"], "config")
+
+    kernel_manager = KernelManger()
+
+    notebook_manager = NotebookManager(kernel_manager)
+    route_manager.add_route(
+        "/notebook", notebook_manager.get_notebook, ["GET"], "notebook"
+    )
+    # route for running with cell id
+    route_manager.add_route(
+        "/notebook/run/{cell_id}",
+        notebook_manager.run_cell,
+        ["GET", "POST"],
+        "notebook_run_cell",
+    )
 
 
 if __name__ == "__main__":

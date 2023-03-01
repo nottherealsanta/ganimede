@@ -27,7 +27,6 @@
     $: height = Math.ceil(n_lines * 19);
     $: width = Math.ceil(max_columns * 8) + 50;
     $: width = Math.min(width, max_width);
-    $: console.log("max_columns", max_columns, "width", width);
 
     function get_max_columns() {
         let max = 0;
@@ -52,12 +51,13 @@
             overviewRulerBorder: false,
             overviewRulerLanes: 0,
             renderLineHighlight: "none",
-            lineNumbers: config.monaco.lineNumbers,
+            // lineNumbers: config.monaco.lineNumbers,
+            lineNumbers: "on",
             fontSize: config.monaco.fontSize,
             glyphMargin: false,
-            lineNumbersMinChars: 2,
+            lineNumbersMinChars: 1,
             lineDecorationsWidth: 0,
-            folding: true,
+            folding: false,
             automaticLayout: true, // updates height when `value` changes
             wordWrap: "on",
             wrappingColumn: 80,
@@ -101,17 +101,18 @@
         width: 100%;
         float: top;
         position: relative;
+        border: solid 1px rgba(215, 215, 215, 0.08);
         border-radius: 5px;
         background-color: transparent;
         min-height: 25px;
         min-width: 300px;
+        padding-bottom: 3px;
+        box-shadow: -1px 0px 2px 1px rgba(0, 0, 0, 0.048);
     }
 
     .codeeditor {
         width: 100%;
         height: 100%;
         cursor: default;
-        /* align-self: flex-start; */
-        /* position: relative; */
     }
 </style>
