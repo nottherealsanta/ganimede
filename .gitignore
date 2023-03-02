@@ -5,6 +5,7 @@
 
 # python
 api/__pycache__
+api/.venv
 .ipynb_checkpoints
 .pyc
 
