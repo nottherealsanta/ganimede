@@ -2,7 +2,12 @@
     import { onMount } from "svelte";
     import { notebook, id_map } from "../stores/notebook";
     export let cell_id;
+    $: cell = $notebook["cells"][$id_map[cell_id]];
 
+    // height and width
+    let height = 0;
+    let width = 0;
+    $: cell.metadata.gm.height = height;
     $: cell.metadata.gm.width = width;
 
     // draggability
