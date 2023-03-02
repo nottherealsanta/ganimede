@@ -91,8 +91,10 @@ class NotebookManager:
 
     async def run_cell(self, request: Request) -> JSONResponse:
         cell_id = request.path_params["cell_id"]
+        code = (await request.json())["code"]
+        print(f"code: {code}")
+
         cell_index = self.id_map[cell_id]
         cell = self.notebook["cells"][cell_index]
-        await self.kernel_manager.execute("".join(cell["source"]))
 
-        return JSONResponse({"status": "ok"})
+        return await self.kernel_manager.execute(code)

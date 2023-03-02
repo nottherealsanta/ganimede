@@ -34,7 +34,7 @@
         position: relative;
         background-color: rgb(255, 255, 255);
         background-image: radial-gradient(
-            circle at 12.5px 12.5px,
+            circle at 0px 0px,
             rgb(126, 123, 119) 000 1px,
             transparent 0
         );
@@ -46,7 +46,7 @@
         .canvas {
             background-color: rgb(39, 40, 43);
             background-image: radial-gradient(
-                circle at 12.5px 12.5px,
+                circle at 0px 0px,
                 rgb(129, 132, 136) 1px,
                 transparent 0%
             );

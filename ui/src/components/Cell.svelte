@@ -2,7 +2,8 @@
     import { onMount } from "svelte";
     import { notebook, id_map } from "../stores/notebook";
     export let cell_id;
-    $: cell = $notebook["cells"][$id_map[cell_id]];
+
+    $: cell.metadata.gm.width = width;
 
     // draggability
     let top = 0;
@@ -13,6 +14,7 @@
     });
     $: cell.metadata.gm.top = top;
     $: cell.metadata.gm.left = left;
+
     let moving = false;
     let clicked_x = 0;
     let clicked_y = 0;
@@ -29,6 +31,9 @@
     };
     let mouseUp = function () {
         moving = false;
+        // snap to grid 25
+        top = Math.round(top / 25) * 25;
+        left = Math.round(left / 25) * 25;
     };
     import { zoom } from "../stores/zoom";
     let mouseMove = function (event) {
@@ -41,6 +46,7 @@
     // run cell
     async function run() {
         console.log("run");
+        console.log(cell);
         // route "/notebook/run/{cell_id}",
         const response = await fetch(`/notebook/run/${cell_id}`, {
             method: "POST",
@@ -48,7 +54,7 @@
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                code: code,
+                code: cell.source.join("\n"),
             }),
         });
         const data = await response.json();
@@ -57,8 +63,6 @@
 
     // CodeEditor
     import CodeEditor from "./cell_components/CodeEditor.svelte";
-
-    $: code = cell.source.join("");
 
     // Outputs
     import Outputs from "./cell_components/Outputs.svelte";
@@ -72,14 +76,16 @@
     class="cell"
     id="cell"
     on:mousedown={mouseDown}
+    bind:clientHeight={height}
+    bind:clientWidth={width}
 >
     <div class="sidebar" id="sidebar">
         <div class="run-button" on:click={run} on:keydown={run}>
             <!-- svg for play button -->
             <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="25"
-                height="25"
+                width="20"
+                height="20"
                 viewBox="0 0 55 55"
                 fill="none"
                 stroke="currentColor"
@@ -94,8 +100,7 @@
         </div>
     </div>
     <div class="not-sidebar" id="not-sidebar">
-        <CodeEditor bind:code />
-        <!-- <div class="outputs" /> -->
+        <CodeEditor {cell_id} />
         <Outputs />
     </div>
     <div class="resize-bar" />
@@ -135,18 +140,24 @@
         height: 25px;
         background-color: rgba(255, 255, 255, 0);
         border-radius: 5px;
-        float: top;
         cursor: default;
+        display: flex;
+        align-items: center;
     }
     .run-button:hover {
         background-color: rgba(0, 0, 0, 0.1);
     }
+    .run-button:active {
+        background-color: rgba(0, 0, 0, 0.2);
+    }
     .run-button-svg {
         color: #000000;
+        margin: 0 auto;
+        display: block;
     }
 
     .not-sidebar {
-        width: 100%;
+        width: auto;
         height: 100%;
         float: right;
         display: flex;
@@ -174,7 +185,7 @@
     /* dark mode */
     @media (prefers-color-scheme: dark) {
         .cell {
-            background-color: #1e1e1e;
+            background-color: #242424;
             border: solid 1px #2a2a2a;
             box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px,
                 rgba(17, 17, 26, 0.05) 0px 8px 32px;

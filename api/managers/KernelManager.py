@@ -18,7 +18,7 @@ class KernelManger:
 
     def __del__(self) -> None:
         print("shutting down kernel")
-        # self.kernel_manager.shutdown_kernel()
+        self.kernel_manager.shutdown_kernel()
         if self.kernel_client:
             self.kernel_client.stop_channels()
             self.kernel_client.close()
@@ -33,12 +33,13 @@ class KernelManger:
         try:
             await self.kernel_manager.start_kernel()
             self.kernel_client = self.kernel_manager.client()
-            await self.kernel_client.start_channels()
+            self.kernel_client.start_channels()
         except Exception as e:
             logging.error(e)
             self.kernel_client = None
 
         logging.debug("Kernel started")
+        logging.debug(f"Kernel client: {self.kernel_client}")
 
     async def flush_io_pub(self):
         while True:
@@ -55,8 +56,8 @@ class KernelManger:
 
         if self.kernel_client is None:
             logging.debug("Kernel not started")
-            # await self.start_kernel()
-            # return
+            await self.start_kernel()
+            print(f"Kernel client: {self.kernel_client}")
 
         await self.flush_io_pub()
 
@@ -64,24 +65,32 @@ class KernelManger:
             code = "".join(code)
             self.kernel_client.execute(code)
             client_execute_reply = await self.kernel_client.get_shell_msg()
-            logging.debug(f"client_execute_reply: {client_execute_reply}")
+            # logging.debug(f"client_execute_reply: {client_execute_reply}")
+            return JSONResponse({"status": "ok"})
 
         async def get_output() -> None:
-            while True:
+            print("Getting output")
+            done = False
+            while not done:
                 try:
-                    msg = await self.kernel_client.get_iopub_msg(timeout=0.1)
-                    logging.debug(f"msg: {msg}")
-                    output_queue.put_nowait(msg)
+                    msg = await self.kernel_client.get_iopub_msg(timeout=1)
+                    print(f"msg_type: {msg['msg_type']}")
+                    print(f"content: {msg['content']}")
+
+                    # if idle, we're done
+                    if msg["msg_type"] == "status":
+                        if msg["content"]["execution_state"] == "idle":
+                            done = True
+                    # output_queue.put_nowait(msg)
                 except queue.Empty:
-                    logging.debug("No more messages")
-                    break
+                    pass
 
         loop = asyncio.get_event_loop()
 
         execute_task = loop.create_task(execute_code(code))
         output_task = loop.create_task(get_output())
 
-        await asyncio.wait([execute_task, output_task])
+        await asyncio.gather(execute_task, output_task)
 
         logging.debug("Execution finished")
-        return JSONResponse({"status": "ok"})
+        return execute_task.result()

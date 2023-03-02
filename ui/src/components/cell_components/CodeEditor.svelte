@@ -9,13 +9,25 @@
 
 <script lang="ts">
     import { config } from "../../stores/config";
+    import { notebook, id_map } from "../../stores/notebook";
 
-    export let code = "";
-    export let language = "python";
-    export let focus = false;
-    export let height = 0;
-    export let width = 0;
-    export let max_width = 616;
+    export let cell_id;
+
+    $: cell = $notebook["cells"][$id_map[cell_id]];
+
+    let code;
+    onMount(() => {
+        code = cell.source.join("");
+    });
+    $: if (code) {
+        cell.source = code.split("\n");
+    }
+
+    let language = "python";
+    let focus = false;
+    let height = 0;
+    let width = 0;
+    let max_width = 616;
 
     import { onMount } from "svelte";
     let monaco;
@@ -97,11 +109,9 @@
     .cell-input {
         display: flex;
         overflow: hidden;
-        height: 100%;
-        width: 100%;
         float: top;
         position: relative;
-        border: solid 1px rgba(215, 215, 215, 0.08);
+        border: solid 1px rgba(0, 0, 0, 0.08);
         border-radius: 5px;
         background-color: transparent;
         min-height: 25px;
@@ -113,6 +123,6 @@
     .codeeditor {
         width: 100%;
         height: 100%;
-        cursor: default;
+        cursor: text;
     }
 </style>
