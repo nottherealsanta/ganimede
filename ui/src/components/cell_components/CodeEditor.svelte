@@ -56,7 +56,7 @@
         editor = monaco.editor.create(container, {
             value: code,
             language: language,
-            theme: "vs",
+            theme: "vs-dark",
             minimap: {
                 enabled: false,
             },

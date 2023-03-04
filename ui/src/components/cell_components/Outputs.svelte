@@ -1,8 +1,24 @@
 <script lang="ts">
+    export let cell_id;
+    import { notebook, id_map } from "../../stores/notebook";
+    // $: cell = $notebook["cells"][$id_map[cell_id]];
+    // let outputs = [];
+    // $: if (cell) {
+    //     outputs = cell.outputs;
+    //     console.log(outputs);
+    // }
+    $: outputs = $notebook["cells"][$id_map[cell_id]].outputs;
+
+    $: text = outputs[0].text;
 </script>
 
 <div class="outputs">
-    <div class="output">Hello There!</div>
+    {#each outputs as output}
+        <div class="output">
+            <!-- {JSON.stringify(output["text"])} -->
+            {text}
+        </div>
+    {/each}
 </div>
 
 <style>

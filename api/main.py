@@ -31,8 +31,15 @@ async def on_startup():
     route_manager.add_route(
         "/notebook/run/{cell_id}",
         notebook_manager.run_cell,
-        ["GET", "POST"],
+        ["POST"],
         "notebook_run_cell",
+    )
+    # route for retriving output with cell id
+    route_manager.add_route(
+        "/notebook/output/{cell_id}",
+        notebook_manager.get_output,
+        ["GET"],
+        "notebook_get_output",
     )
 
 

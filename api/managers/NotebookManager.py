@@ -2,11 +2,63 @@ import logging
 from os import getcwd, urandom
 from base64 import urlsafe_b64encode
 import json
+import asyncio
+from random import randint
 from pathlib import Path
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 logging.basicConfig(level=logging.DEBUG)
+
+
+class Cell:
+    def __init__(self, cell_dict: dict):
+        self.cell_type = cell_dict["cell_type"]
+        self.source = cell_dict["source"]
+        self.outputs = cell_dict["outputs"]
+
+        if "execution_count" in cell_dict:
+            self.execution_count = cell_dict["execution_count"]
+        else:
+            self.execution_count = None
+
+        if "id" in cell_dict:
+            self.id = cell_dict["id"]
+        else:
+            self.id = self._generate_id()
+
+        self.metadata = cell_dict["metadata"]
+        self._add_metadata()
+
+    def _generate_id(self, id_length: int = 8) -> str:
+        n_bytes = max(id_length * 3 // 4, 1)
+        return urlsafe_b64encode(urandom(n_bytes)).decode("ascii").rstrip("=")
+
+    def _add_metadata(self):
+        if "gm" not in self.metadata:
+            self.metadata["gm"] = {
+                "top": 0,
+                "left": 0,
+                "height": 0,
+                "width": 0,
+                "previous": [],
+                "next": [],
+            }
+
+    def to_dict(self) -> dict:
+        return {
+            "cell_type": self.cell_type,
+            "metadata": self.metadata,
+            "source": self.source,
+            "outputs": self.outputs,
+            "execution_count": self.execution_count,
+            "id": self.id,
+        }
+
+    # def run(self, code: str, kernel=None):
+    #     self.source = code
+
+    #     self.output = kernel.execute(code)
 
 
 class NotebookManager:
@@ -30,71 +82,79 @@ class NotebookManager:
 
         self.notebook = load_notebook()
 
+        self.cells = []
+        self.init_cells()
+
+        self.id_map = {}
+
         self.add_metadata()
 
         self.save_notebook()
 
+        self.output_queue: asyncio.Queue = asyncio.Queue()
+
     async def get_notebook(self, request: Request) -> JSONResponse:
         return JSONResponse(self.notebook)
 
+    def init_cells(self):
+        for cell in self.notebook["cells"]:
+            self.cells.append(Cell(cell))
+        # next and previous
+        if (
+            "gm" not in self.notebook["metadata"]
+        ):  # if notebook is not already graphified
+            for i in range(len(self.cells)):
+                current_cell = self.cells[i]
+                previous_cell = self.cells[i - 1] if i > 0 else None
+
+                if previous_cell is not None:
+                    current_cell.metadata["gm"]["previous"] = [previous_cell.id]
+                    previous_cell.metadata["gm"]["next"] = [current_cell.id]
+
     def add_metadata(self):
-        def create_random_cell_id(id_length: int = 8) -> str:
-            n_bytes = max(id_length * 3 // 4, 1)
-            return urlsafe_b64encode(urandom(n_bytes)).decode("ascii").rstrip("=")
-
-        self.id_map = {}
-        for i in range(len(self.notebook["cells"])):
-            cell = self.notebook["cells"][i]
-
-            if "id" not in cell:
-                cell["id"] = create_random_cell_id()
-            self.id_map[cell["id"]] = i
+        for i in range(len(self.cells)):
+            self.id_map[self.cells[i].id] = i
 
         if "gm" not in self.notebook["metadata"]:
-            _dict = {}
-            _dict["canvas"] = {
-                "scroll": {
-                    "x": 0,
-                    "y": 0,
+            self.notebook["metadata"]["gm"] = {
+                "canvas": {
+                    "scroll": {
+                        "x": 0,
+                        "y": 0,
+                    },
+                    "zoom": 1,
                 },
-                "zoom": 1,
+                "id_map": self.id_map,
             }
-            _dict["id_map"] = self.id_map
-            self.notebook["metadata"]["gm"] = _dict
-
-        # cell metadata
-        for i in range(len(self.notebook["cells"])):
-            current_cell = self.notebook["cells"][i]
-            previous_cell = self.notebook["cells"][i - 1] if i > 0 else None
-
-            if "gm" not in current_cell["metadata"]:
-                # cell location TODO: change this
-                current_cell["metadata"]["gm"] = {
-                    "top": 100,
-                    "left": 0,
-                    "height": 0,
-                    "width": 0,
-                }
-
-            if "previous" not in current_cell["metadata"]["gm"]:
-                current_cell["metadata"]["gm"]["previous"] = []
-            if "next" not in current_cell["metadata"]["gm"]:
-                current_cell["metadata"]["gm"]["next"] = []
-
-            if previous_cell is not None:
-                current_cell["metadata"]["gm"]["previous"] = [previous_cell["id"]]
-                previous_cell["metadata"]["gm"]["next"] = [current_cell["id"]]
 
     def save_notebook(self):
+        self.notebook["cells"] = [cell.to_dict() for cell in self.cells]
+
         with open(self.notebook_path, "w") as f:
-            json.dump(self.notebook, f, indent=4)
+            json.dump(self.notebook, f, indent=2)
 
     async def run_cell(self, request: Request) -> JSONResponse:
         cell_id = request.path_params["cell_id"]
         code = (await request.json())["code"]
         print(f"code: {code}")
 
-        cell_index = self.id_map[cell_id]
-        cell = self.notebook["cells"][cell_index]
+        # self.kernel_manager.execute(code=code, output_queue=self.output_queue)
 
-        return await self.kernel_manager.execute(code)
+        # execute_task = self.kernel_manager.execute(
+        #     code=code, output_queue=self.output_queue
+        # )
+        # await execute_task
+
+        loop = asyncio.get_event_loop()
+
+        execute_task = loop.create_task(
+            self.kernel_manager.execute(code=code, output_queue=self.output_queue)
+        )
+
+        print(f"+output_queue size: {self.output_queue.qsize()}")
+        return JSONResponse({"status": "ok"})
+
+    async def get_output(self, request: Request) -> JSONResponse:
+        x = await self.output_queue.get()
+        print(f"-output_queue size: {self.output_queue.qsize()}")
+        return JSONResponse(x)

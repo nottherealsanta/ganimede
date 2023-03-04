@@ -50,7 +50,7 @@ class KernelManger:
                 break
 
     async def execute(
-        self, code: str, output_queue: queue.Queue = None
+        self, code: str, output_queue: asyncio.Queue = None
     ) -> JSONResponse:
         logging.debug(f"Executing: {code}")
 
@@ -69,19 +69,28 @@ class KernelManger:
             return JSONResponse({"status": "ok"})
 
         async def get_output() -> None:
-            print("Getting output")
             done = False
             while not done:
                 try:
                     msg = await self.kernel_client.get_iopub_msg(timeout=1)
-                    print(f"msg_type: {msg['msg_type']}")
-                    print(f"content: {msg['content']}")
 
                     # if idle, we're done
                     if msg["msg_type"] == "status":
                         if msg["content"]["execution_state"] == "idle":
                             done = True
-                    # output_queue.put_nowait(msg)
+                    output = {
+                        "output_type": msg["msg_type"],
+                    }
+                    if "text" in msg["content"]:
+                        output["text"] = [msg["content"]["text"]]
+                    if "name" in msg["content"]:
+                        output["name"] = msg["content"]["name"]
+                    if "execution_state" in msg["content"]:
+                        output["execution_state"] = msg["content"]["execution_state"]
+
+                    print(f"output: {output}")
+                    output_queue.put_nowait(output)
+                    print(f"output_queue size: {output_queue.qsize()}")
                 except queue.Empty:
                     pass
 

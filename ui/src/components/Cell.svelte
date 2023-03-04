@@ -52,8 +52,7 @@
     async function run() {
         console.log("run");
         console.log(cell);
-        // route "/notebook/run/{cell_id}",
-        const response = await fetch(`/notebook/run/${cell_id}`, {
+        const post_response = await fetch(`/notebook/run/${cell_id}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -62,8 +61,29 @@
                 code: cell.source.join("\n"),
             }),
         });
-        const data = await response.json();
-        console.log(data);
+        // await post_response;
+        let done = true;
+        while (done) {
+            const get_response = await fetch(`/notebook/output/${cell_id}`, {
+                method: "GET",
+            });
+            const data = await get_response.json();
+            if (data.execution_state === "idle") {
+                done = false;
+            }
+            if (data.output_type === "stream") {
+                $notebook["cells"][$id_map[cell_id]]["outputs"][0].text =
+                    data.text;
+            }
+            console.log(data);
+        }
+        console.log("done");
+    }
+
+    let run_promise;
+
+    async function run_click() {
+        run_promise = run();
     }
 
     // CodeEditor
@@ -85,28 +105,44 @@
     bind:clientWidth={width}
 >
     <div class="sidebar" id="sidebar">
-        <div class="run-button" on:click={run} on:keydown={run}>
-            <!-- svg for play button -->
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 55 55"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="3"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="run-button-svg"
-            >
-                <!-- <polygon points="17 12 17 38 38 25 17 12" /> -->
-                <polygon points="19 12 19 43 43 27.5 19 12" />
-            </svg>
+        <div class="run-button" on:click={run_click} on:keydown={run_click}>
+            {#await run_promise}
+                <!-- animate svg loading circle -->
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 55 55"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="run-button-svg"
+                >
+                    <circle cx="27.5" cy="27.5" r="25" />
+                </svg>
+            {:then d}
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 55 55"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="run-button-svg"
+                >
+                    <polygon points="19 12 19 43 43 27.5 19 12" />
+                </svg>
+            {/await}
         </div>
     </div>
     <div class="not-sidebar" id="not-sidebar">
         <CodeEditor {cell_id} />
-        <Outputs />
+        <Outputs {cell_id} />
     </div>
     <div class="resize-bar" />
 </div>
@@ -118,9 +154,9 @@
         top: 100px;
         left: 100px;
 
-        background-color: #f5f5f5;
-        box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px,
-            rgba(17, 17, 26, 0.05) 0px 8px 32px;
+        background-color: #f7f7f7;
+        box-shadow: rgba(17, 17, 26, 0.1) 0px 3px 12px,
+            rgba(17, 17, 26, 0.05) 0px 6px 24px;
         border: solid 1px #d7d7d7;
         border-radius: 10px;
         position: absolute;
