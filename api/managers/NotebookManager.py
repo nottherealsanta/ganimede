@@ -69,7 +69,7 @@ class NotebookManager:
     ):
         self.kernel_manager = kernel_manager
         self.notebook_path = notebook_path
-        print(notebook_path)
+        logging.debug(notebook_path)
 
         # Load notebook
         def load_notebook():
@@ -91,7 +91,7 @@ class NotebookManager:
 
         self.save_notebook()
 
-        self.output_queue: asyncio.Queue = asyncio.Queue()
+        self.msg_queue: asyncio.Queue = asyncio.Queue()
 
     async def get_notebook(self, request: Request) -> JSONResponse:
         return JSONResponse(self.notebook)
@@ -136,25 +136,31 @@ class NotebookManager:
     async def run_cell(self, request: Request) -> JSONResponse:
         cell_id = request.path_params["cell_id"]
         code = (await request.json())["code"]
-        print(f"code: {code}")
-
-        # self.kernel_manager.execute(code=code, output_queue=self.output_queue)
-
-        # execute_task = self.kernel_manager.execute(
-        #     code=code, output_queue=self.output_queue
-        # )
-        # await execute_task
+        logging.debug(f"code: {code}")
 
         loop = asyncio.get_event_loop()
 
         execute_task = loop.create_task(
-            self.kernel_manager.execute(code=code, output_queue=self.output_queue)
+            self.kernel_manager.execute(code=code, msg_queue=self.msg_queue)
         )
 
-        print(f"+output_queue size: {self.output_queue.qsize()}")
         return JSONResponse({"status": "ok"})
 
+    def _parse_output(self, msg):
+        output = {
+            "output_type": msg["msg_type"],
+        }
+        if "text" in msg["content"]:
+            output["text"] = [msg["content"]["text"]]
+        if "name" in msg["content"]:
+            output["name"] = msg["content"]["name"]
+        if "execution_state" in msg["content"]:
+            output["execution_state"] = msg["content"]["execution_state"]
+
+        return output
+
     async def get_output(self, request: Request) -> JSONResponse:
-        x = await self.output_queue.get()
-        print(f"-output_queue size: {self.output_queue.qsize()}")
-        return JSONResponse(x)
+        msg = await self.msg_queue.get()
+        msg = self._parse_output(msg)
+        logging.debug(f"-output_queue size: {self.msg_queue.qsize()}")
+        return JSONResponse(msg)

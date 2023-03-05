@@ -34,6 +34,7 @@ class KernelManger:
             await self.kernel_manager.start_kernel()
             self.kernel_client = self.kernel_manager.client()
             self.kernel_client.start_channels()
+            # TODO: check if kernel is ready
         except Exception as e:
             logging.error(e)
             self.kernel_client = None
@@ -49,15 +50,13 @@ class KernelManger:
                 logging.debug("No more messages")
                 break
 
-    async def execute(
-        self, code: str, output_queue: asyncio.Queue = None
-    ) -> JSONResponse:
+    async def execute(self, code: str, msg_queue: asyncio.Queue = None) -> JSONResponse:
         logging.debug(f"Executing: {code}")
 
         if self.kernel_client is None:
             logging.debug("Kernel not started")
             await self.start_kernel()
-            print(f"Kernel client: {self.kernel_client}")
+            logging.debug(f"Kernel client: {self.kernel_client}")
 
         await self.flush_io_pub()
 
@@ -74,23 +73,11 @@ class KernelManger:
                 try:
                     msg = await self.kernel_client.get_iopub_msg(timeout=1)
 
-                    # if idle, we're done
                     if msg["msg_type"] == "status":
                         if msg["content"]["execution_state"] == "idle":
                             done = True
-                    output = {
-                        "output_type": msg["msg_type"],
-                    }
-                    if "text" in msg["content"]:
-                        output["text"] = [msg["content"]["text"]]
-                    if "name" in msg["content"]:
-                        output["name"] = msg["content"]["name"]
-                    if "execution_state" in msg["content"]:
-                        output["execution_state"] = msg["content"]["execution_state"]
-
-                    print(f"output: {output}")
-                    output_queue.put_nowait(output)
-                    print(f"output_queue size: {output_queue.qsize()}")
+                    msg_queue.put_nowait(msg)
+                    logging.debug(f"+msg_queue size: {msg_queue.qsize()}")
                 except queue.Empty:
                     pass
 

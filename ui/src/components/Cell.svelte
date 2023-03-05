@@ -1,8 +1,8 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { notebook, id_map } from "../stores/notebook";
+    import { id_map, cells } from "../stores/notebook";
     export let cell_id;
-    $: cell = $notebook["cells"][$id_map[cell_id]];
+    $: cell = $cells[$id_map[cell_id]];
 
     // height and width
     let height = 0;
@@ -16,6 +16,8 @@
     onMount(() => {
         top = cell.metadata.gm.top;
         left = cell.metadata.gm.left;
+        // // top to parent top + height
+        // top = $notebook["cells"][$id_map[cell_id]];
     });
     $: cell.metadata.gm.top = top;
     $: cell.metadata.gm.left = left;
@@ -68,12 +70,12 @@
                 method: "GET",
             });
             const data = await get_response.json();
+            console.log(data);
             if (data.execution_state === "idle") {
                 done = false;
             }
             if (data.output_type === "stream") {
-                $notebook["cells"][$id_map[cell_id]]["outputs"][0].text =
-                    data.text;
+                $cells[$id_map[cell_id]]["outputs"][0].text = data.text;
             }
             console.log(data);
         }
