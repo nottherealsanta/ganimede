@@ -16,11 +16,11 @@
     onMount(() => {
         top = cell.metadata.gm.top;
         left = cell.metadata.gm.left;
-        // // top to parent top + height
-        // top = $notebook["cells"][$id_map[cell_id]];
     });
-    $: cell.metadata.gm.top = top;
-    $: cell.metadata.gm.left = left;
+    // $: cell.metadata.gm.top = top;
+    // $: cell.metadata.gm.left = left;
+    $: top = cell.metadata.gm.top;
+    $: left = cell.metadata.gm.left;
 
     let moving = false;
     let clicked_x = 0;
@@ -39,53 +39,66 @@
     let mouseUp = function () {
         moving = false;
         // snap to grid 25
-        top = Math.round(top / 25) * 25;
-        left = Math.round(left / 25) * 25;
+        // top = Math.round(top / 25) * 25;
+        // left = Math.round(left / 25) * 25;
     };
     import { zoom } from "../stores/zoom";
     let mouseMove = function (event) {
         if (moving) {
-            top = (event.pageY - clicked_y) / $zoom;
-            left = (event.pageX - clicked_x) / $zoom;
+            // top = (event.pageY - clicked_y) / $zoom;
+            // left = (event.pageX - clicked_x) / $zoom;
+            cell.metadata.gm.top = (event.pageY - clicked_y) / $zoom;
+            cell.metadata.gm.left = (event.pageX - clicked_x) / $zoom;
         }
     };
 
     // run cell
-    async function run() {
-        console.log("run");
-        console.log(cell);
-        const post_response = await fetch(`/notebook/run/${cell_id}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                code: cell.source.join("\n"),
-            }),
-        });
-        // await post_response;
-        let done = true;
-        while (done) {
-            const get_response = await fetch(`/notebook/output/${cell_id}`, {
-                method: "GET",
-            });
-            const data = await get_response.json();
-            console.log(data);
-            if (data.execution_state === "idle") {
-                done = false;
-            }
-            if (data.output_type === "stream") {
-                $cells[$id_map[cell_id]]["outputs"][0].text = data.text;
-            }
-            console.log(data);
-        }
-        console.log("done");
-    }
-
     let run_promise;
-
-    async function run_click() {
-        run_promise = run();
+    let done = true;
+    async function run() {
+        console.log("---runing : " + cell_id);
+        done = false;
+        $cells[$id_map[cell_id]]["outputs"] = [];
+        console.log(done);
+        async function running_promise() {
+            console.log("runing : " + cell_id);
+            const post_response = await fetch(`/notebook/run/${cell_id}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    code: cell.source.join("\n"),
+                }),
+            });
+            let done = true;
+            while (done) {
+                const get_response = await fetch(
+                    `/notebook/output/${cell_id}`,
+                    {
+                        method: "GET",
+                    }
+                );
+                const data = await get_response.json();
+                if (data.execution_state === "idle") {
+                    done = false;
+                }
+                if (
+                    data.output_type === "stream" ||
+                    data.output_type === "display_data"
+                ) {
+                    $cells[$id_map[cell_id]]["outputs"] = [
+                        ...$cells[$id_map[cell_id]]["outputs"],
+                        data,
+                    ];
+                }
+                console.log(data);
+            }
+            console.log("cell ran ");
+        }
+        run_promise = await running_promise();
+        done = true;
+        console.log(done);
     }
 
     // CodeEditor
@@ -107,9 +120,8 @@
     bind:clientWidth={width}
 >
     <div class="sidebar" id="sidebar">
-        <div class="run-button" on:click={run_click} on:keydown={run_click}>
-            {#await run_promise}
-                <!-- animate svg loading circle -->
+        <div class="run-button" on:click={run} on:keydown={run}>
+            {#if !done}
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"
@@ -124,7 +136,7 @@
                 >
                     <circle cx="27.5" cy="27.5" r="25" />
                 </svg>
-            {:then d}
+            {:else}
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"
@@ -139,7 +151,7 @@
                 >
                     <polygon points="19 12 19 43 43 27.5 19 12" />
                 </svg>
-            {/await}
+            {/if}
         </div>
     </div>
     <div class="not-sidebar" id="not-sidebar">
@@ -169,6 +181,12 @@
 
         min-width: 300px;
         min-height: 25px;
+    }
+    .cell:hover {
+        border: solid 1px #c7c7c7;
+    }
+    .cell:active {
+        border: solid 1px #b7b7b7;
     }
     .sidebar {
         width: 25px;
@@ -232,6 +250,13 @@
             border: solid 1px #2a2a2a;
             box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px,
                 rgba(17, 17, 26, 0.05) 0px 8px 32px;
+        }
+        .cell:hover {
+            border: solid 1px #3a3a3a;
+        }
+        .cell:active {
+            border: solid 1px #4a4a4a;
+            z-index: 1;
         }
 
         .run-button-svg {
