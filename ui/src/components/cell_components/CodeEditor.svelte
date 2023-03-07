@@ -50,21 +50,30 @@
         }
         return max;
     }
+
+    // dark mode
+    let theme = "vs";
+    if (
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+    ) {
+        theme = "vs-dark";
+    }
+
     let destroyed;
     onMount(() => {
         monaco = _monaco;
         editor = monaco.editor.create(container, {
             value: code,
             language: language,
-            theme: "vs",
+            theme: theme,
             minimap: {
                 enabled: false,
             },
             overviewRulerBorder: false,
             overviewRulerLanes: 0,
             renderLineHighlight: "none",
-            // lineNumbers: config.monaco.lineNumbers,
-            lineNumbers: "on",
+            lineNumbers: config.monaco.lineNumbers,
             fontSize: config.monaco.fontSize,
             glyphMargin: false,
             lineNumbersMinChars: 1,
