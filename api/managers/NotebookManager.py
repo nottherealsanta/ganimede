@@ -150,8 +150,14 @@ class NotebookManager:
         output = {
             "output_type": msg["msg_type"],
         }
+
+        # TODO: handle other output types
         if "text" in msg["content"]:
             output["text"] = [msg["content"]["text"]]
+        if "data" in msg["content"]:
+            output["data"] = msg["content"]["data"]
+        if "metadata" in msg["content"]:
+            output["metadata"] = msg["content"]["metadata"]
         if "name" in msg["content"]:
             output["name"] = msg["content"]["name"]
         if "execution_state" in msg["content"]:
@@ -162,5 +168,6 @@ class NotebookManager:
     async def get_output(self, request: Request) -> JSONResponse:
         msg = await self.msg_queue.get()
         msg = self._parse_output(msg)
+        logging.debug(f"msg: {msg}")
         logging.debug(f"-output_queue size: {self.msg_queue.qsize()}")
         return JSONResponse(msg)
