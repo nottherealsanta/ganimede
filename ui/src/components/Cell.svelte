@@ -187,6 +187,7 @@
     }
     .cell:active {
         border: solid 1px #b7b7b7;
+        cursor: grabbing;
     }
     .sidebar {
         width: 25px;

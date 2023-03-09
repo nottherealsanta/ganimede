@@ -10,7 +10,6 @@
             if (cell_index - 1 >= 0) {
                 // Get the ids of all previous cells
                 let previous_ids = $cells[cell_index].metadata.gm.previous;
-                console.log(previous_ids);
                 // Get the actual cells from the ids
                 let previous_cells = previous_ids.map(
                     (id) => $cells[$id_map[id]]
@@ -27,7 +26,6 @@
                 let previous_bottoms = previous_tops.map(
                     (top, i) => top + previous_heights[i]
                 );
-                console.log(previous_bottoms);
                 // Get the maximum bottom position of all previous cells
                 let max_bottom = Math.max(...previous_bottoms);
                 // Set the top position of the current cell to be 10 pixels
@@ -39,8 +37,6 @@
             }
             // Set the left position of the current cell to 100
             $cells[cell_index].metadata.gm.left = 100;
-            console.log($cells[cell_index].metadata.gm);
-            console.log($notebook["cells"][cell_index].metadata.gm);
         }
     }
 
@@ -60,6 +56,5 @@
 <style>
     .notebook {
         display: flex;
-        align-items: flex-start;
     }
 </style>

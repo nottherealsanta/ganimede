@@ -20,6 +20,7 @@
         code = cell.source.join("");
     });
     $: if (code) {
+        // $notebook["cells"][$id_map[cell_id]].source = code.split("\n");
         cell.source = code.split("\n");
     }
 

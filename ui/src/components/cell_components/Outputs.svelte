@@ -1,29 +1,46 @@
 <script lang="ts">
     export let cell_id;
     import { notebook, id_map } from "../../stores/notebook";
+    $: cell_type = $notebook["cells"][$id_map[cell_id]].cell_type;
+
+    // code outputs
     $: outputs = $notebook["cells"][$id_map[cell_id]].outputs;
+
+    // markdown
+    import { marked } from "marked";
+    $: if (cell_type === "markdown") {
+        let source = $notebook["cells"][$id_map[cell_id]].source.join(" ");
+        // console.log(source);
+        outputs = marked(source);
+        // console.log(outputs);
+    }
 </script>
 
 <div class="outputs">
-    {#each outputs as output}
-        <div class="output">
-            <!-- TODO: each output types as components -->
-            {#if output["output_type"] === "stream"}
-                {output["text"]}
-            {/if}
-            {#if output["output_type"] === "execute_result"}
-                {output["data"]["text/plain"]}
-            {/if}
-            {#if output["output_type"] === "display_data"}
-                {output["data"]["text/markdown"]}
-            {/if}
-            {#if output["output_type"] === "error"}
-                {output["ename"]}
-                {output["evalue"]}
-                {output["traceback"]}
-            {/if}
-        </div>
-    {/each}
+    {#if cell_type === "code" && outputs}
+        {#each outputs as output}
+            <div class="output">
+                <!-- TODO: each output types as components -->
+                {#if output["output_type"] === "stream"}
+                    {output["text"].join(" ")}
+                {/if}
+                {#if output["output_type"] === "execute_result"}
+                    {output["data"]["text/plain"]}
+                {/if}
+                {#if output["output_type"] === "display_data"}
+                    {output["data"]["text/markdown"]}
+                {/if}
+                {#if output["output_type"] === "error"}
+                    {output["ename"]}
+                    {output["evalue"]}
+                    {output["traceback"]}
+                {/if}
+            </div>
+        {/each}
+    {:else if cell_type === "markdown"}
+        <!-- html of outputs -->
+        {@html outputs}
+    {/if}
 </div>
 
 <style>
@@ -42,8 +59,11 @@
         max-height: 200px;
         overflow-y: auto;
 
-        max-width: 500px;
+        max-width: 616px;
         overflow-x: auto;
+    }
+    .outputs::-webkit-scrollbar {
+        width: 5px;
     }
 
     .output {
@@ -53,8 +73,9 @@
         padding: 3px 4px 3px 4px;
         margin: 1px 0px 1px 0px;
         border-radius: 5px;
-        /* white-space: pre; */
+        white-space: pre-line;
         overflow: hidden;
+        font-size: 12px;
     }
     .output:hover {
         background-color: rgba(0, 0, 0, 0.08);

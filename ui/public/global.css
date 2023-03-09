@@ -126,6 +126,8 @@ button:focus {
 
 .monaco-editor .lines-content.monaco-editor-background {
 	margin-left: 8px;
+	margin-top: 0px;
+	margin-bottom: 0px;
 }
 
 .monaco-editor textarea {

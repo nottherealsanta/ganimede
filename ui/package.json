@@ -20,6 +20,8 @@
     "svelte": "^3.55.0"
   },
   "dependencies": {
+    "@types/marked": "^4.0.8",
+    "marked": "^4.2.12",
     "monaco-editor": "^0.34.1",
     "sirv-cli": "^2.0.0"
   }

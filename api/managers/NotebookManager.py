@@ -15,7 +15,7 @@ class Cell:
     def __init__(self, cell_dict: dict):
         self.cell_type = cell_dict["cell_type"]
         self.source = cell_dict["source"]
-        self.outputs = cell_dict["outputs"]
+        # self.outputs = cell_dict["outputs"]
 
         if "execution_count" in cell_dict:
             self.execution_count = cell_dict["execution_count"]
@@ -26,6 +26,9 @@ class Cell:
             self.id = cell_dict["id"]
         else:
             self.id = self._generate_id()
+
+        if "outputs" in cell_dict:
+            self.outputs = cell_dict["outputs"]
 
         self.metadata = cell_dict["metadata"]
         self._add_metadata()
@@ -46,14 +49,16 @@ class Cell:
             }
 
     def to_dict(self) -> dict:
-        return {
+        _dict = {
             "cell_type": self.cell_type,
             "metadata": self.metadata,
             "source": self.source,
-            "outputs": self.outputs,
             "execution_count": self.execution_count,
             "id": self.id,
         }
+        if hasattr(self, "outputs"):
+            _dict["outputs"] = self.outputs
+        return _dict
 
     # def run(self, code: str, kernel=None):
     #     self.source = code
@@ -65,7 +70,7 @@ class NotebookManager:
     def __init__(
         self,
         kernel_manager,
-        notebook_path: str = Path(f"{getcwd()}/tests/test0.ipynb"),
+        notebook_path: str = Path(f"{getcwd()}/tests/test1.ipynb"),
     ):
         self.kernel_manager = kernel_manager
         self.notebook_path = notebook_path
