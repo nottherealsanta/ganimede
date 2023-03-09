@@ -12,27 +12,25 @@ class RouteManager:
         self.ui_dir = f"{getcwd()}/../ui"
 
     def default_route(self):
-        # Define handlers for the default routes
-        async def index(self, request: Request) -> FileResponse:
+        async def index(request):
             return FileResponse(f"{self.ui_dir}/public/index.html")
 
-        async def global_css(request: Request) -> FileResponse:
+        async def global_css(request: Request):
             return FileResponse(f"{self.ui_dir}/public/global.css")
 
-        async def bundle_js(request: Request) -> FileResponse:
+        async def bundle_js(request: Request):
             return FileResponse(f"{self.ui_dir}/public/build/bundle.js")
 
-        async def bundle_js_map(request: Request) -> FileResponse:
+        async def bundle_js_map(request: Request):
             return FileResponse(f"{self.ui_dir}/public/build/bundle.js.map")
 
-        async def bundle_css(request: Request) -> FileResponse:
+        async def bundle_css(request: Request):
             return FileResponse(f"{self.ui_dir}/public/build/bundle.css")
 
-        async def favicon(request: Request) -> FileResponse:
+        async def favicon(request: Request):
             print("favicon")
             return FileResponse(f"{self.ui_dir}/public/favicon.png")
 
-        # Register the routes with the app
         self.app.add_route("/", index, methods=["GET"], name="index")
         self.app.add_route(
             "/global.css", global_css, methods=["GET"], name="global_css"
