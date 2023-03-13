@@ -1,5 +1,6 @@
 <script lang="ts">
-    import Cell from "./Cell.svelte";
+    import CodeCell from "./CodeCell.svelte";
+    import MarkdownCell from "./MarkdownCell.svelte";
 
     import { notebook, cells, id_map } from "../stores/notebook";
 
@@ -48,7 +49,13 @@
 <div class="notebook">
     {#await notebook.get() then}
         {#each $notebook["cells"] as cell}
-            <Cell cell_id={cell.id} />
+            <!-- <CodeCell cell_id={cell.id} /> -->
+            {#if cell.cell_type === "code"}
+                <CodeCell cell_id={cell.id} />
+            {/if}
+            {#if cell.cell_type === "markdown"}
+                <MarkdownCell cell_id={cell.id} />
+            {/if}
         {/each}
     {/await}
 </div>

@@ -17,8 +17,6 @@
         top = cell.metadata.gm.top;
         left = cell.metadata.gm.left;
     });
-    // $: cell.metadata.gm.top = top;
-    // $: cell.metadata.gm.left = left;
     $: top = cell.metadata.gm.top;
     $: left = cell.metadata.gm.left;
 
@@ -26,27 +24,28 @@
     let clicked_x = 0;
     let clicked_y = 0;
     let mouseDown = function (event) {
-        if (
-            event.target.id === "cell" ||
-            event.target.id === "sidebar" ||
-            event.target.id === "not-sidebar"
-        ) {
-            moving = true;
-            clicked_x = event.offsetX;
-            clicked_y = event.offsetY;
+        // if left click
+        if (event.button === 0) {
+            if (
+                event.target.id === "cell" ||
+                event.target.id === "sidebar" ||
+                event.target.id === "not-sidebar"
+            ) {
+                moving = true;
+                clicked_x = event.offsetX;
+                clicked_y = event.offsetY;
+            }
         }
     };
     let mouseUp = function () {
         moving = false;
-        // snap to grid 25
-        // top = Math.round(top / 25) * 25;
-        // left = Math.round(left / 25) * 25;
+        // snap to grid
+        top = Math.round(top / 12.5) * 12.5;
+        left = Math.round(left / 12.5) * 12.5;
     };
     import { zoom } from "../stores/zoom";
     let mouseMove = function (event) {
         if (moving) {
-            // top = (event.pageY - clicked_y) / $zoom;
-            // left = (event.pageX - clicked_x) / $zoom;
             cell.metadata.gm.top = (event.pageY - clicked_y) / $zoom;
             cell.metadata.gm.left = (event.pageX - clicked_x) / $zoom;
         }
@@ -56,10 +55,8 @@
     let run_promise;
     let done = true;
     async function run() {
-        console.log("---runing : " + cell_id);
         done = false;
         $cells[$id_map[cell_id]]["outputs"] = [];
-        console.log(done);
         async function running_promise() {
             console.log("runing : " + cell_id);
             const post_response = await fetch(`/notebook/run/${cell_id}`, {
@@ -92,17 +89,16 @@
                         data,
                     ];
                 }
-                console.log(data);
+                // console.log(data);
             }
-            console.log("cell ran ");
         }
         run_promise = await running_promise();
         done = true;
-        console.log(done);
     }
 
     // CodeEditor
     import CodeEditor from "./cell_components/CodeEditor.svelte";
+    let focus;
 
     // Outputs
     import Outputs from "./cell_components/Outputs.svelte";
@@ -112,6 +108,7 @@
     style="
     top: {top}px; 
     left: {left}px;
+    border: {focus ? 'solid 1px rgb(1,1,1, 0.5)' : 'solid 1px rgb(1,1,1, 0.1)'};
     "
     class="cell"
     id="cell"
@@ -155,7 +152,7 @@
         </div>
     </div>
     <div class="not-sidebar" id="not-sidebar">
-        <CodeEditor {cell_id} />
+        <CodeEditor {cell_id} bind:focus />
         <Outputs {cell_id} />
     </div>
     <div class="resize-bar" />
@@ -168,11 +165,11 @@
         top: 100px;
         left: 100px;
 
-        background-color: #f7f7f7;
+        background-color: #ffffff;
         box-shadow: rgba(17, 17, 26, 0.1) 0px 3px 12px,
             rgba(17, 17, 26, 0.05) 0px 6px 24px;
-        border: solid 1px #d7d7d7;
-        border-radius: 10px;
+        border: solid 1px #3583dc;
+        border-radius: 8px;
         position: absolute;
         display: flex;
         padding: 5px 0px 5px 2px;

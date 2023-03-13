@@ -9,10 +9,8 @@
     // markdown
     import { marked } from "marked";
     $: if (cell_type === "markdown") {
-        let source = $notebook["cells"][$id_map[cell_id]].source.join(" ");
-        // console.log(source);
-        outputs = marked(source);
-        // console.log(outputs);
+        let source = $notebook["cells"][$id_map[cell_id]].source;
+        outputs = marked(source.join("\n"));
     }
 </script>
 
@@ -38,7 +36,6 @@
             </div>
         {/each}
     {:else if cell_type === "markdown"}
-        <!-- html of outputs -->
         {@html outputs}
     {/if}
 </div>
@@ -49,7 +46,7 @@
         height: fit-content;
         background-color: transparent;
         border: solid 1px rgba(0, 0, 0, 0.065);
-        border-radius: 5px;
+        border-radius: 4px;
         float: bottom;
         margin-top: 1px;
         padding: 2px 3px 2px 4px;

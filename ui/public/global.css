@@ -14,6 +14,12 @@ body {
 
 }
 
+@media (prefers-color-scheme: dark) {
+	body {
+		color: #fff;
+	}
+}
+
 a {
 	color: rgb(0, 100, 200);
 	text-decoration: none;
@@ -132,4 +138,18 @@ button:focus {
 
 .monaco-editor textarea {
 	opacity: 0.0;
+}
+
+/* headings */
+
+@media (prefers-color-scheme: dark) {
+
+	.milkdown .editor .h1,
+	.milkdown .editor .h2,
+	.milkdown .editor .h3,
+	.milkdown .editor .h4,
+	.milkdown .editor .h5,
+	.milkdown .editor .h6 {
+		color: #fff;
+	}
 }

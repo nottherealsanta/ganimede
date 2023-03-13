@@ -15,17 +15,15 @@
 
     $: cell = $notebook["cells"][$id_map[cell_id]];
 
-    let code;
-    onMount(() => {
-        code = cell.source.join("");
-    });
-    $: if (code) {
-        // $notebook["cells"][$id_map[cell_id]].source = code.split("\n");
-        cell.source = code.split("\n");
+    let language = "";
+    $: if (cell) {
+        if (cell.cell_type === "markdown") {
+            language = "markdown";
+        } else {
+            language = "python";
+        }
     }
-
-    let language = "python";
-    let focus = false;
+    export let focus = false;
     let height = 0;
     let width = 0;
     let max_width = 616;
@@ -65,7 +63,7 @@
     onMount(() => {
         monaco = _monaco;
         editor = monaco.editor.create(container, {
-            value: code,
+            value: $notebook["cells"][$id_map[cell_id]].source.join(" "),
             language: language,
             theme: theme,
             minimap: {
@@ -90,6 +88,7 @@
             },
             scrollBeyondLastLine: false,
         });
+
         editor.onDidFocusEditorText(() => {
             focus = true;
         });
@@ -100,8 +99,11 @@
         editor.onDidChangeModelContent((e) => {
             max_columns = get_max_columns();
             n_lines = editor._modelData.viewModel.getLineCount();
-            code = editor.getValue();
+            $notebook["cells"][$id_map[cell_id]].source = editor
+                .getValue()
+                .split("\n");
         });
+
         n_lines = editor.getModel().getLineCount();
         max_columns = get_max_columns();
 
@@ -122,12 +124,12 @@
         float: top;
         position: relative;
         border: solid 1px rgba(0, 0, 0, 0.08);
-        border-radius: 5px;
+        border-radius: 4px;
         background-color: transparent;
         min-height: 25px;
         min-width: 300px;
         padding-bottom: 3px;
-        box-shadow: -1px 0px 2px 1px rgba(0, 0, 0, 0.048);
+        /* box-shadow: -1px 0px 2px 1px rgba(0, 0, 0, 0.048); */
     }
 
     .codeeditor {
