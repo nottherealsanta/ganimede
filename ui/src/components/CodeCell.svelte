@@ -172,9 +172,9 @@
         border-radius: 8px;
         position: absolute;
         display: flex;
-        padding: 5px 0px 5px 2px;
+        padding: 3px 0px 3px 0px;
 
-        cursor: grab;
+        /* cursor: grab; */
 
         min-width: 300px;
         min-height: 25px;

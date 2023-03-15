@@ -46,6 +46,8 @@ class Cell:
                 "width": 0,
                 "previous": [],
                 "next": [],
+                "parent": None,
+                "children": [],
             }
 
     def to_dict(self) -> dict:
@@ -104,10 +106,10 @@ class NotebookManager:
     def init_cells(self):
         for cell in self.notebook["cells"]:
             self.cells.append(Cell(cell))
-        # next and previous
         if (
             "gm" not in self.notebook["metadata"]
         ):  # if notebook is not already graphified
+            # next and previous
             for i in range(len(self.cells)):
                 current_cell = self.cells[i]
                 previous_cell = self.cells[i - 1] if i > 0 else None
@@ -115,6 +117,21 @@ class NotebookManager:
                 if previous_cell is not None:
                     current_cell.metadata["gm"]["previous"] = [previous_cell.id]
                     previous_cell.metadata["gm"]["next"] = [current_cell.id]
+            # parent and children
+            for i in range(len(self.cells)):
+                current_cell = self.cells[i]
+                parent = None
+                for j in range(i - 1, -1, -1):
+                    if self.cells[j].cell_type == "markdown":
+                        if any(
+                            line.startswith("#")
+                            for line in self.cells[j].source
+                        ):
+                            parent = self.cells[j]
+                            break
+                if parent is not None:
+                    current_cell.metadata["gm"]["parent"] = parent.id
+                    parent.metadata["gm"]["children"].append(current_cell.id)
 
     def add_metadata(self):
         for i in range(len(self.cells)):

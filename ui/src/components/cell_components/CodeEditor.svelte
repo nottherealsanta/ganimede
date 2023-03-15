@@ -123,7 +123,7 @@
         overflow: hidden;
         float: top;
         position: relative;
-        border: solid 1px rgba(0, 0, 0, 0.08);
+        /* border: solid 1px rgba(0, 0, 0, 0.08); */
         border-radius: 4px;
         background-color: transparent;
         min-height: 25px;

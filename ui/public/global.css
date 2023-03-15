@@ -142,14 +142,25 @@ button:focus {
 
 /* headings */
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	color: black;
+	margin-block-start: 5px;
+	margin-block-end: 5px
+}
+
 @media (prefers-color-scheme: dark) {
 
-	.milkdown .editor .h1,
-	.milkdown .editor .h2,
-	.milkdown .editor .h3,
-	.milkdown .editor .h4,
-	.milkdown .editor .h5,
-	.milkdown .editor .h6 {
-		color: #fff;
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		color: white;
 	}
 }

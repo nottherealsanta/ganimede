@@ -1,4 +1,5 @@
 <script lang="ts">
+    import CodeCell from "./CodeCell.svelte";
     import { onMount } from "svelte";
     import { id_map, cells } from "../stores/notebook";
     export let cell_id;
@@ -7,8 +8,12 @@
     // height and width
     let height = 0;
     let width = 0;
-    $: cell.metadata.gm.height = height;
-    $: cell.metadata.gm.width = width;
+    // $: cell.metadata.gm.height = height;
+    // $: cell.metadata.gm.width = width;
+    $: if (cell) {
+        cell.metadata.gm.height = height;
+        cell.metadata.gm.width = width;
+    }
 
     // draggability
     let top = 0;
@@ -72,17 +77,24 @@
     "
     class="cell"
     id="cell"
-    on:mousedown={mouseDown}
-    bind:clientHeight={height}
-    bind:clientWidth={width}
+    on:mousedown|self={mouseDown}
 >
     <div class="sidebar" id="sidebar">
         <div class="collapse-button" />
     </div>
     <div class="not-sidebar" id="not-sidebar">
-        <div use:editor class="editor" />
+        <div use:editor class="md-editor" />
     </div>
-    <div class="resize-bar" />
+</div>
+<div class="children" style="top: {top + 25}px; left: {left}px;">
+    {#each cell.metadata.gm.children as child_id}
+        {#if $cells[$id_map[child_id]].cell_type === "code"}
+            <CodeCell cell_id={child_id} />
+        {/if}
+        {#if $cells[$id_map[child_id]].cell_type === "markdown"}
+            <svelte:self cell_id={child_id} />
+        {/if}
+    {/each}
 </div>
 
 <svelte:window on:mouseup={mouseUp} on:mousemove={mouseMove} />
@@ -96,12 +108,15 @@
         box-shadow: rgba(17, 17, 26, 0.1) 0px 3px 12px,
             rgba(17, 17, 26, 0.05) 0px 6px 24px;
         border: solid 1px rgb(170, 170, 170);
-        border-radius: 8px;
+        border-radius: 6px;
         position: absolute;
         display: flex;
         padding: 5px 0px 5px 2px;
 
         cursor: grab;
+
+        width: fit-content;
+        height: fit-content;
 
         min-width: 300px;
         min-height: 25px;
@@ -132,26 +147,28 @@
 
         align-items: middle;
     }
-    .resize-bar {
-        width: 5px;
-        height: 90%;
-        background-color: rgba(215, 215, 215, 0);
-        border-radius: 5px;
-        float: bottom;
-        transition: 0.3s;
-        align-self: center;
+
+    .md-editor {
+        height: fit-content;
+        width: fit-content;
+        min-width: 200px;
+        margin: 5px 0px 5px 0px;
     }
 
-    .resize-bar:hover {
-        width: 5px;
-        background-color: rgba(138, 138, 138, 0.455);
-        cursor: ew-resize;
+    .children {
+        width: 100px;
+        height: max-content;
+        display: flex;
+        flex-direction: column;
+        margin-left: 0px;
+        background-color: aliceblue;
+        position: absolute;
     }
 
     /* dark mode */
     @media (prefers-color-scheme: dark) {
         .cell {
-            background-color: #242424;
+            background-color: rgba(30, 30, 30, 0.726);
             border: solid 1px #2a2a2a;
             box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px,
                 rgba(17, 17, 26, 0.05) 0px 8px 32px;

@@ -49,14 +49,14 @@
 <div class="notebook">
     {#await notebook.get() then}
         {#each $notebook["cells"] as cell}
-            <!-- <CodeCell cell_id={cell.id} /> -->
-            {#if cell.cell_type === "code"}
+            {#if cell.cell_type === "code" && cell.metadata.gm.parent === null}
                 <CodeCell cell_id={cell.id} />
             {/if}
-            {#if cell.cell_type === "markdown"}
+            {#if cell.cell_type === "markdown" && cell.metadata.gm.parent === null}
                 <MarkdownCell cell_id={cell.id} />
             {/if}
         {/each}
+        <!-- traverse graph, use parent and child and markdown cells has slots -->
     {/await}
 </div>
 
