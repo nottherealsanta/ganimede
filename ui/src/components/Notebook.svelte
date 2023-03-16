@@ -1,9 +1,9 @@
 <script lang="ts">
     import CodeCell from "./CodeCell.svelte";
     import MarkdownCell from "./MarkdownCell.svelte";
+    import Edges from "./utility_components/Edges.svelte";
 
     import { notebook, cells, id_map } from "../stores/notebook";
-
     function set_locs() {
         // Iterate through each cell
         for (let cell_index = 0; cell_index < $cells.length; cell_index++) {
@@ -48,6 +48,7 @@
 
 <div class="notebook">
     {#await notebook.get() then}
+        <!-- nodes -->
         {#each $notebook["cells"] as cell}
             {#if cell.cell_type === "code" && cell.metadata.gm.parent === null}
                 <CodeCell cell_id={cell.id} />
@@ -56,7 +57,12 @@
                 <MarkdownCell cell_id={cell.id} />
             {/if}
         {/each}
-        <!-- traverse graph, use parent and child and markdown cells has slots -->
+        <!-- edges -->
+        {#each $notebook["cells"] as cell}
+            {#each cell.metadata.gm.next as next_id}
+                <Edges current_cell_id={cell.id} {next_id} />
+            {/each}
+        {/each}
     {/await}
 </div>
 

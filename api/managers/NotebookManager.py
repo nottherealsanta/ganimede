@@ -14,8 +14,11 @@ logging.basicConfig(level=logging.DEBUG)
 class Cell:
     def __init__(self, cell_dict: dict):
         self.cell_type = cell_dict["cell_type"]
-        self.source = cell_dict["source"]
-        # self.outputs = cell_dict["outputs"]
+
+        if "source" in cell_dict:
+            self.source = cell_dict["source"]
+        else:
+            self.source = ""
 
         if "execution_count" in cell_dict:
             self.execution_count = cell_dict["execution_count"]
@@ -29,8 +32,21 @@ class Cell:
 
         if "outputs" in cell_dict:
             self.outputs = cell_dict["outputs"]
-
-        self.metadata = cell_dict["metadata"]
+        if "metadata" in cell_dict:
+            self.metadata = cell_dict["metadata"]
+        else:
+            self.metadata = {
+                "gm" : {
+                    "top": 0,
+                    "left": 0,
+                    "height": 0,
+                    "width": 0,
+                    "previous": [],
+                    "next": [],
+                    "parent": None,
+                    "children": [],
+                }
+            }
         self._add_metadata()
 
     def _generate_id(self, id_length: int = 8) -> str:
@@ -72,7 +88,7 @@ class NotebookManager:
     def __init__(
         self,
         kernel_manager,
-        notebook_path: str = Path(f"{getcwd()}/tests/test1.ipynb"),
+        notebook_path: str = Path(f"{getcwd()}/tests/test0.ipynb"),
     ):
         self.kernel_manager = kernel_manager
         self.notebook_path = notebook_path
@@ -101,6 +117,7 @@ class NotebookManager:
         self.msg_queue: asyncio.Queue = asyncio.Queue()
 
     async def get_notebook(self, request: Request) -> JSONResponse:
+        await self.kernel_manager.start_kernel()
         return JSONResponse(self.notebook)
 
     def init_cells(self):
@@ -151,11 +168,15 @@ class NotebookManager:
 
     def save_notebook(self):
         self.notebook["cells"] = [cell.to_dict() for cell in self.cells]
+        self.notebook["metadata"]["gm"]["id_map"] = self.id_map
 
         with open(self.notebook_path, "w") as f:
             json.dump(self.notebook, f, indent=2)
 
     async def run_cell(self, request: Request) -> JSONResponse:
+
+        self.msg_queue = asyncio.Queue()
+
         cell_id = request.path_params["cell_id"]
         code = (await request.json())["code"]
         logging.debug(f"code: {code}")
@@ -193,3 +214,26 @@ class NotebookManager:
         logging.debug(f"msg: {msg}")
         logging.debug(f"-output_queue size: {self.msg_queue.qsize()}")
         return JSONResponse(msg)
+
+    async def new_cell(self, request: Request) -> JSONResponse:
+        print("request.path_params", request)
+        # cell_type = request.path_params["cell_type"]
+        # previous_cell_id = request.path_params["previous_cell_id"]
+        request_json = await request.json()
+        cell_type = request_json["cell_type"]
+        previous_cell_id = request_json["previous_cell_id"]
+        new_cell = Cell(
+            {
+                "cell_type": cell_type,
+            }
+        )
+        self.cells.insert(self.id_map[previous_cell_id] + 1, new_cell)
+        self.id_map[new_cell.id] = len(self.cells)  -1
+
+        response = {
+            "new_cell": new_cell.to_dict(),
+            "id_map": self.id_map,
+        }
+
+
+        return JSONResponse(response)

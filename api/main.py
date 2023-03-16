@@ -42,6 +42,10 @@ async def on_startup():
         "notebook_get_output",
     )
 
+    # new cell route
+    route_manager.add_route(
+        "/notebook/new_cell", notebook_manager.new_cell, ["POST"], "notebook_new_cell", )
+
 
 if __name__ == "__main__":
     print("Starting up")

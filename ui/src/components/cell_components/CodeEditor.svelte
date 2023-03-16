@@ -38,6 +38,10 @@
     $: height = Math.ceil(n_lines * 19);
     $: width = Math.ceil(max_columns * 8) + 50;
     $: width = Math.min(width, max_width);
+    let value = " ";
+    $: if ($notebook["cells"][$id_map[cell_id]].source !== "") {
+        value = $notebook["cells"][$id_map[cell_id]].source.join(" ");
+    }
 
     function get_max_columns() {
         let max = 0;
@@ -63,7 +67,7 @@
     onMount(() => {
         monaco = _monaco;
         editor = monaco.editor.create(container, {
-            value: $notebook["cells"][$id_map[cell_id]].source.join(" "),
+            value: value,
             language: language,
             theme: theme,
             minimap: {
@@ -136,5 +140,6 @@
         width: 100%;
         height: 100%;
         cursor: text;
+        margin: 3px 0px 3px 0px;
     }
 </style>

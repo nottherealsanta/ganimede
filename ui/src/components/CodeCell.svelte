@@ -42,20 +42,31 @@
         // snap to grid
         top = Math.round(top / 12.5) * 12.5;
         left = Math.round(left / 12.5) * 12.5;
+
+        $cells[$id_map[cell_id]] = cell;
     };
     import { zoom } from "../stores/zoom";
     let mouseMove = function (event) {
         if (moving) {
             cell.metadata.gm.top = (event.pageY - clicked_y) / $zoom;
             cell.metadata.gm.left = (event.pageX - clicked_x) / $zoom;
+            $cells[$id_map[cell_id]] = cell;
         }
     };
 
-    // run cell
+    // prime button
+    const CellStates = {
+        Idle: "idle",
+        Queued: "queued",
+        Running: "running",
+        Done: "done",
+    };
+    let cell_state = CellStates.Idle;
     let run_promise;
-    let done = true;
-    async function run() {
-        done = false;
+    // let done = true;
+    async function primary_button_click() {
+        // done = false;
+        cell_state = CellStates.Queued;
         $cells[$id_map[cell_id]]["outputs"] = [];
         async function running_promise() {
             console.log("runing : " + cell_id);
@@ -68,8 +79,9 @@
                     code: cell.source.join("\n"),
                 }),
             });
-            let done = true;
-            while (done) {
+            const data = await post_response.json();
+            cell_state = CellStates.Running;
+            while (cell_state === CellStates.Running) {
                 const get_response = await fetch(
                     `/notebook/output/${cell_id}`,
                     {
@@ -78,7 +90,7 @@
                 );
                 const data = await get_response.json();
                 if (data.execution_state === "idle") {
-                    done = false;
+                    cell_state = CellStates.Done;
                 }
                 if (
                     data.output_type === "stream" ||
@@ -89,11 +101,10 @@
                         data,
                     ];
                 }
-                // console.log(data);
             }
         }
         run_promise = await running_promise();
-        done = true;
+        $cells[$id_map[cell_id]] = cell;
     }
 
     // CodeEditor
@@ -102,6 +113,12 @@
 
     // Outputs
     import Outputs from "./cell_components/Outputs.svelte";
+
+    //Sidebar
+    import PrimeButton from "./cell_components/PrimeButton.svelte";
+
+    //NewCellToolbar
+    import NewCellToolbar from "./cell_components/NewCellToolbar.svelte";
 </script>
 
 <div
@@ -117,45 +134,27 @@
     bind:clientWidth={width}
 >
     <div class="sidebar" id="sidebar">
-        <div class="run-button" on:click={run} on:keydown={run}>
-            {#if !done}
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 55 55"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="run-button-svg"
-                >
-                    <circle cx="27.5" cy="27.5" r="25" />
-                </svg>
-            {:else}
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 55 55"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="run-button-svg"
-                >
-                    <polygon points="19 12 19 43 43 27.5 19 12" />
-                </svg>
-            {/if}
+        <div
+            class="primary-button"
+            on:click={primary_button_click}
+            on:keydown={primary_button_click}
+            style="
+            pointer-events: {cell_state === CellStates.Done ||
+            cell_state === CellStates.Idle
+                ? 'auto'
+                : 'none'};
+            "
+        >
+            <PrimeButton {cell_state} />
         </div>
     </div>
     <div class="not-sidebar" id="not-sidebar">
         <CodeEditor {cell_id} bind:focus />
-        <Outputs {cell_id} />
+        {#if cell.outputs !== undefined}
+            <Outputs {cell_id} />
+        {/if}
     </div>
-    <div class="resize-bar" />
+    <NewCellToolbar {cell_id} />
 </div>
 
 <svelte:window on:mouseup={mouseUp} on:mousemove={mouseMove} />
@@ -172,9 +171,11 @@
         border-radius: 8px;
         position: absolute;
         display: flex;
-        padding: 3px 0px 3px 0px;
+        padding: 3px 3px 3px 3px;
+        justify-content: center;
+        overflow: visible;
 
-        /* cursor: grab; */
+        cursor: grab;
 
         min-width: 300px;
         min-height: 25px;
@@ -185,34 +186,6 @@
     .cell:active {
         border: solid 1px #b7b7b7;
         cursor: grabbing;
-    }
-    .sidebar {
-        width: 25px;
-        border-radius: 5px;
-        float: left;
-        flex-direction: column;
-        padding-top: 2px;
-        padding-right: 2px;
-    }
-    .run-button {
-        width: 100%;
-        height: 25px;
-        background-color: rgba(255, 255, 255, 0);
-        border-radius: 5px;
-        cursor: default;
-        display: flex;
-        align-items: center;
-    }
-    .run-button:hover {
-        background-color: rgba(0, 0, 0, 0.1);
-    }
-    .run-button:active {
-        background-color: rgba(0, 0, 0, 0.2);
-    }
-    .run-button-svg {
-        color: #000000;
-        margin: 0 auto;
-        display: block;
     }
 
     .not-sidebar {
@@ -225,20 +198,29 @@
 
         align-items: middle;
     }
-    .resize-bar {
-        width: 5px;
-        height: 90%;
-        background-color: rgba(215, 215, 215, 0);
-        border-radius: 5px;
-        float: bottom;
-        transition: 0.3s;
-        align-self: center;
-    }
 
-    .resize-bar:hover {
-        width: 5px;
-        background-color: rgba(138, 138, 138, 0.455);
-        cursor: ew-resize;
+    .sidebar {
+        width: 25px;
+        border-radius: 5px;
+        float: left;
+        flex-direction: column;
+        padding-top: 2px;
+        padding-right: 2px;
+    }
+    .primary-button {
+        width: 100%;
+        height: 25px;
+        background-color: rgba(255, 255, 255, 0);
+        border-radius: 5px;
+        cursor: default;
+        display: flex;
+        align-items: center;
+    }
+    .primary-button:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+    .primary-button:active {
+        background-color: rgba(0, 0, 0, 0.2);
     }
 
     /* dark mode */
@@ -255,10 +237,6 @@
         .cell:active {
             border: solid 1px #4a4a4a;
             z-index: 1;
-        }
-
-        .run-button-svg {
-            color: rgba(103, 154, 209, 1);
         }
     }
 </style>
