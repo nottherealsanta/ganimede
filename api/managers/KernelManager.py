@@ -18,10 +18,10 @@ class KernelManger:
 
     def __del__(self) -> None:
         print("shutting down kernel")
-        self.kernel_manager.shutdown_kernel()
-        if self.kernel_client:
-            self.kernel_client.stop_channels()
-            self.kernel_client.close()
+        # self.kernel_manager.shutdown_kernel()
+        # if self.kernel_client:
+        #     self.kernel_client.stop_channels()
+        #     self.kernel_client.close()
 
     async def start_kernel(self):
         logging.debug("Starting kernel")

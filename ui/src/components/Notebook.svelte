@@ -42,12 +42,13 @@
     }
 
     // run set_loc 1 second after the notebook is loaded
-    setTimeout(set_locs, 100);
+    // setTimeout(set_locs, 100);
     // TODO: only if notebook is new to gm
+    notebook.get().then(setTimeout(set_locs, 100));
 </script>
 
 <div class="notebook">
-    {#await notebook.get() then}
+    {#if Object.keys($notebook).length !== 0}
         <!-- nodes -->
         {#each $notebook["cells"] as cell}
             {#if cell.cell_type === "code" && cell.metadata.gm.parent === null}
@@ -63,7 +64,7 @@
                 <Edges current_cell_id={cell.id} {next_id} />
             {/each}
         {/each}
-    {/await}
+    {/if}
 </div>
 
 <style>

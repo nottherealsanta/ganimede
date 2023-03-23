@@ -9,6 +9,9 @@
     let width = 0;
     $: cell.metadata.gm.height = height;
     $: cell.metadata.gm.width = width;
+    onMount(() => {
+        $cells[$id_map[cell_id]] = cell;
+    });
 
     // draggability
     let top = 0;
@@ -40,8 +43,8 @@
     let mouseUp = function () {
         moving = false;
         // snap to grid
-        top = Math.round(top / 12.5) * 12.5;
-        left = Math.round(left / 12.5) * 12.5;
+        cell.metadata.gm.top = Math.round(top / 12.5) * 12.5;
+        cell.metadata.gm.left = Math.round(left / 12.5) * 12.5;
 
         $cells[$id_map[cell_id]] = cell;
     };
@@ -121,12 +124,13 @@
     import NewCellToolbar from "./cell_components/NewCellToolbar.svelte";
 </script>
 
+<!-- if focus variable is true, then cell:focus -->
 <div
     style="
     top: {top}px; 
     left: {left}px;
-    border: {focus ? 'solid 1px rgb(1,1,1, 0.5)' : 'solid 1px rgb(1,1,1, 0.1)'};
     "
+    class:focus
     class="cell"
     id="cell"
     on:mousedown={mouseDown}
@@ -167,25 +171,25 @@
         background-color: #ffffff;
         box-shadow: rgba(17, 17, 26, 0.1) 0px 3px 12px,
             rgba(17, 17, 26, 0.05) 0px 6px 24px;
-        border: solid 1px #3583dc;
+        border: solid 1px #d8d8d8;
         border-radius: 8px;
         position: absolute;
         display: flex;
-        padding: 3px 3px 3px 3px;
+        padding: 1px 3px 3px 3px;
         justify-content: center;
         overflow: visible;
 
         cursor: grab;
 
         min-width: 300px;
-        min-height: 25px;
-    }
-    .cell:hover {
-        border: solid 1px #c7c7c7;
+        min-height: 50px;
     }
     .cell:active {
         border: solid 1px #b7b7b7;
         cursor: grabbing;
+    }
+    .focus {
+        border: solid 1px #000000;
     }
 
     .not-sidebar {
@@ -226,17 +230,19 @@
     /* dark mode */
     @media (prefers-color-scheme: dark) {
         .cell {
-            background-color: #242424;
+            background-color: rgb(30, 30, 30);
             border: solid 1px #2a2a2a;
             box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px,
                 rgba(17, 17, 26, 0.05) 0px 8px 32px;
         }
-        .cell:hover {
-            border: solid 1px #3a3a3a;
-        }
         .cell:active {
-            border: solid 1px #4a4a4a;
+            border: solid 1px #b0b0b0;
             z-index: 1;
+        }
+        .focus {
+            border: solid 1px #1075b8;
+            box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px,
+                rgba(17, 17, 26, 0.05) 0px 8px 32px;
         }
     }
 </style>

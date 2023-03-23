@@ -48,3 +48,6 @@ class RouteManager:
 
     def add_route(self, route_path, route_function, methods, name):
         self.app.add_route(route_path, route_function, methods=methods, name=name)
+
+    def add_websocket_route(self, route_path, route_function, name):
+        self.app.add_websocket_route(route_path, route_function, name=name)

@@ -29,7 +29,7 @@
     /* dark mode */
     @media (prefers-color-scheme: dark) {
         .run-button-svg {
-            color: rgba(103, 154, 209, 1);
+            color: rgba(209, 209, 209, 1);
         }
     }
 </style>

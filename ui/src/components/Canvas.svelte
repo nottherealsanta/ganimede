@@ -1,6 +1,8 @@
 <script>
     import Notebook from "./Notebook.svelte";
     import { zoom } from "../stores/zoom";
+    import { socket, open_socket, send_message } from "../stores/socket";
+    import { onMount } from "svelte";
 
     // zoom
     window.addEventListener(
@@ -15,8 +17,13 @@
         },
         { passive: false }
     );
+
+    onMount(() => {
+        open_socket();
+    });
 </script>
 
+<!-- <button on:click={() => send_message("hello")}>Send</button> -->
 <div
     class="canvas"
     style="
@@ -26,7 +33,11 @@
         transform-origin: 0 0;
     "
 >
-    <Notebook />
+    {#await open_socket}
+        <div>Waiting for socket</div>
+    {:then}
+        <Notebook />
+    {/await}
 </div>
 
 <style>

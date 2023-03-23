@@ -10,8 +10,8 @@ function createNotebookStore() {
         async get() {
             const response = await fetch("/notebook");
             const data = await response.json();
-            console.log("notebook data: ", data);
-            set(JSON.parse(JSON.stringify(data)));
+            // console.log("notebook data: ", data);
+            // set(JSON.parse(JSON.stringify(data)));
         },
 
     };

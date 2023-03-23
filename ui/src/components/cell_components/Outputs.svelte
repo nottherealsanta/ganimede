@@ -82,9 +82,13 @@
     @media (prefers-color-scheme: dark) {
         .outputs {
             color: #fff;
+            border: solid 1px rgba(255, 255, 255, 0.065);
         }
         .output {
             background-color: rgba(0, 0, 0, 0.02);
+        }
+        .output:hover {
+            background-color: rgba(255, 255, 255, 0.08);
         }
     }
 </style>

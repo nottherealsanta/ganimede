@@ -18,7 +18,10 @@
         const id_map = data["id_map"];
 
         new_cell["metadata"]["gm"]["previous"] = [cell_id];
-        $cells[id_map[cell_id]]["metadata"]["gm"]["next"] = [new_cell["id"]];
+        $cells[id_map[cell_id]]["metadata"]["gm"]["next"] = [
+            ...$cells[id_map[cell_id]]["metadata"]["gm"]["next"],
+            new_cell["id"],
+        ];
 
         new_cell["metadata"]["gm"]["top"] =
             $cells[id_map[cell_id]]["metadata"]["gm"]["top"] +
@@ -42,11 +45,10 @@
 <!-- on click console log -->
 <div class="new-cell-toolbar">
     <button class="new-cell-button" on:click={new_code_cell}>
-        + Code Cell
+        <!-- &lt;&sol;&gt; -->
+        + Code
     </button>
-    <button class="new-cell-button" on:click={new_text_cell}>
-        + Text Cell
-    </button>
+    <button class="new-cell-button" on:click={new_text_cell}> + Text </button>
 </div>
 
 <style>
@@ -57,7 +59,7 @@
         width: 90%;
         align-content: center;
         justify-content: center;
-        height: 3px;
+        height: 6px;
         cursor: default;
         display: flex;
         overflow: hidden;
@@ -69,24 +71,37 @@
     }
 
     .new-cell-button {
-        width: 25%;
+        width: 15%;
         height: fit-content;
-        background-color: #ebebeb7d;
-        border: solid 1px #c4c4c4;
-        color: #5c5c5c;
+        background-color: #ffffff;
+        color: #383838;
         cursor: pointer;
         padding: 0%;
         margin: 0px 5px 0px 5px;
         top: -4px;
         position: relative;
         font-size: x-small;
-        /* justify-content: center;
-        align-content: center; */
+        border-radius: 2px;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
     }
     .new-cell-toolbar .new-cell-button {
         visibility: hidden;
+        z-index: -1;
     }
     .new-cell-toolbar:hover .new-cell-button {
         visibility: visible;
+        background-color: #cdcdcd;
+        z-index: 99;
+    }
+
+    /* dark mode */
+    @media (prefers-color-scheme: dark) {
+        .new-cell-button {
+            border: solid 1px #3f3f3f;
+            color: #cdcdcd;
+        }
+        .new-cell-toolbar:hover .new-cell-button {
+            background-color: #2b2b2b;
+        }
     }
 </style>

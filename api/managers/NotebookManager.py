@@ -7,6 +7,8 @@ from random import randint
 from pathlib import Path
 from starlette.requests import Request
 from starlette.responses import JSONResponse
+from managers.KernelManager import KernelManger
+from managers.WebSocketComms import WebSocketComms
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -87,10 +89,12 @@ class Cell:
 class NotebookManager:
     def __init__(
         self,
-        kernel_manager,
+        kernel_manager: KernelManger,
+        ws_comms : WebSocketComms, 
         notebook_path: str = Path(f"{getcwd()}/tests/test0.ipynb"),
     ):
         self.kernel_manager = kernel_manager
+        self.ws_comms = ws_comms
         self.notebook_path = notebook_path
         logging.debug(notebook_path)
 
@@ -116,9 +120,13 @@ class NotebookManager:
 
         self.msg_queue: asyncio.Queue = asyncio.Queue()
 
-    async def get_notebook(self, request: Request) -> JSONResponse:
+    async def send_notebook(self):
+        print("send_notebook")
         await self.kernel_manager.start_kernel()
-        return JSONResponse(self.notebook)
+        await self.ws_comms.send({
+            "channel" : "notebook",
+            "message" : self.notebook
+        })
 
     def init_cells(self):
         for cell in self.notebook["cells"]:
@@ -217,8 +225,6 @@ class NotebookManager:
 
     async def new_cell(self, request: Request) -> JSONResponse:
         print("request.path_params", request)
-        # cell_type = request.path_params["cell_type"]
-        # previous_cell_id = request.path_params["previous_cell_id"]
         request_json = await request.json()
         cell_type = request_json["cell_type"]
         previous_cell_id = request_json["previous_cell_id"]
@@ -234,6 +240,9 @@ class NotebookManager:
             "new_cell": new_cell.to_dict(),
             "id_map": self.id_map,
         }
+
+        self.notebook["cells"] = [cell.to_dict() for cell in self.cells]
+        self.notebook["metadata"]["gm"]["id_map"] = self.id_map
 
 
         return JSONResponse(response)
