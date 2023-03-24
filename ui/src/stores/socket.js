@@ -16,8 +16,8 @@ export async function open_socket() {
 
             }
             socket.send(JSON.stringify({
-                "channel": "status",
-                "message": "socket_ready"
+                "channel": "notebook",
+                "method": "get",
             }));
             console.log("Socket opened");
         };
@@ -26,21 +26,19 @@ export async function open_socket() {
             socket = null;
         }
         socket.onmessage = function (event) {
-            console.log("Socket message: ", event.data);
+            console.log("Socket message: ", JSON.parse(event.data));
             let message = JSON.parse(event.data);
             if (message["channel"] === "notebook") {
-                notebook.set(message["message"]);
+                if (message["method"] === "get") {
+                    notebook.set(message["message"]);
+                }
             }
         };
-
-    };
-}
+    }
+};
 
 export async function send_message(channel = "status"
     , message) {
-    if (socket === null) {
-        await open_socket();
-    }
     socket.send(JSON.stringify({
         "channel": channel,
         "message": message

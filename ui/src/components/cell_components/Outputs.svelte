@@ -69,7 +69,7 @@
         height: fit-content;
         padding: 3px 4px 3px 4px;
         margin: 1px 0px 1px 0px;
-        border-radius: 5px;
+        border-radius: 3px;
         white-space: pre-line;
         overflow: hidden;
         font-size: 12px;

@@ -44,7 +44,7 @@
     // run set_loc 1 second after the notebook is loaded
     // setTimeout(set_locs, 100);
     // TODO: only if notebook is new to gm
-    notebook.get().then(setTimeout(set_locs, 100));
+    // notebook.get().then(setTimeout(set_locs, 200));
 </script>
 
 <div class="notebook">

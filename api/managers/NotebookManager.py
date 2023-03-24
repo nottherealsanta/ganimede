@@ -38,7 +38,7 @@ class Cell:
             self.metadata = cell_dict["metadata"]
         else:
             self.metadata = {
-                "gm" : {
+                "gm": {
                     "top": 0,
                     "left": 0,
                     "height": 0,
@@ -90,7 +90,7 @@ class NotebookManager:
     def __init__(
         self,
         kernel_manager: KernelManger,
-        ws_comms : WebSocketComms, 
+        ws_comms: WebSocketComms,
         notebook_path: str = Path(f"{getcwd()}/tests/test0.ipynb"),
     ):
         self.kernel_manager = kernel_manager
@@ -120,13 +120,24 @@ class NotebookManager:
 
         self.msg_queue: asyncio.Queue = asyncio.Queue()
 
-    async def send_notebook(self):
-        print("send_notebook")
+        self.comms_queue = ws_comms.channel_queues["notebook"]
+
+        asyncio.create_task(self.listen_for_messages())
+
+    async def listen_for_messages(self):
+        while True:
+            item = await self.comms_queue.get()
+            method = item["method"]
+            message = item["message"] if "message" in item else None
+
+            await getattr(self, method)(message)
+
+    async def get(self, message):
+        logging.debug("get notebook")
         await self.kernel_manager.start_kernel()
-        await self.ws_comms.send({
-            "channel" : "notebook",
-            "message" : self.notebook
-        })
+        await self.ws_comms.send(
+            {"channel": "notebook", "method": "get", "message": self.notebook}
+        )
 
     def init_cells(self):
         for cell in self.notebook["cells"]:
@@ -148,10 +159,7 @@ class NotebookManager:
                 parent = None
                 for j in range(i - 1, -1, -1):
                     if self.cells[j].cell_type == "markdown":
-                        if any(
-                            line.startswith("#")
-                            for line in self.cells[j].source
-                        ):
+                        if any(line.startswith("#") for line in self.cells[j].source):
                             parent = self.cells[j]
                             break
                 if parent is not None:
@@ -182,7 +190,6 @@ class NotebookManager:
             json.dump(self.notebook, f, indent=2)
 
     async def run_cell(self, request: Request) -> JSONResponse:
-
         self.msg_queue = asyncio.Queue()
 
         cell_id = request.path_params["cell_id"]
@@ -234,7 +241,7 @@ class NotebookManager:
             }
         )
         self.cells.insert(self.id_map[previous_cell_id] + 1, new_cell)
-        self.id_map[new_cell.id] = len(self.cells)  -1
+        self.id_map[new_cell.id] = len(self.cells) - 1
 
         response = {
             "new_cell": new_cell.to_dict(),
@@ -243,6 +250,5 @@ class NotebookManager:
 
         self.notebook["cells"] = [cell.to_dict() for cell in self.cells]
         self.notebook["metadata"]["gm"]["id_map"] = self.id_map
-
 
         return JSONResponse(response)

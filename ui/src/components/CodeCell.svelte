@@ -230,7 +230,7 @@
     /* dark mode */
     @media (prefers-color-scheme: dark) {
         .cell {
-            background-color: rgb(30, 30, 30);
+            background-color: rgb(35, 35, 35);
             border: solid 1px #2a2a2a;
             box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px,
                 rgba(17, 17, 26, 0.05) 0px 8px 32px;

@@ -23,7 +23,6 @@
     });
 </script>
 
-<!-- <button on:click={() => send_message("hello")}>Send</button> -->
 <div
     class="canvas"
     style="
