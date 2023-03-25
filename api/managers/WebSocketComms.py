@@ -20,7 +20,7 @@ class WebSocketComms:
         self.out_queue.put_nowait(data)
 
     async def endpoint(self, websocket: WebSocket):
-        print("endpoint")
+        logging.debug("endpoint")
         self.websocket = websocket
         await self.websocket.accept()
 
@@ -33,19 +33,19 @@ class WebSocketComms:
                     await self.websocket.send_json(data)
 
                 except Exception as e:
-                    print(e)
+                    logging.debug(e)
                     break
 
         async def receive_task():
             while self.websocket_running:
                 try:
                     data = await self.websocket.receive_json()
-                    print(f"received: {data}")
+                    logging.debug(f"received: {data}")
                     self.channel_queues[data["channel"]].put_nowait(data)
 
                 except Exception as e:
                     self.websocket_running = False
-                    print(e)
+                    logging.debug(e)
                     self.out_queue.put_nowait(None)
                     break
 
