@@ -71,7 +71,7 @@
     }
 
     .new-cell-button {
-        width: 15%;
+        width: 40px;
         height: fit-content;
         background-color: #ffffff;
         color: #383838;

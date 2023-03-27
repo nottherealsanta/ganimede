@@ -24,12 +24,20 @@
 </script>
 
 <div
-    class="canvas"
+    class=" bg-zinc-100
+     dark:bg-neutral-900/95
+     relative overflow-scroll"
     style="
         height: 10000px; 
         width: 10000px; 
         transform: scale({$zoom}); 
         transform-origin: 0 0;
+        background-image: radial-gradient(
+            circle at 0px 0px,
+            rgb(126, 123, 119) 000 1px,
+            transparent 0
+        );
+        background-size: 25px 25px;
     "
 >
     {#await open_socket}
@@ -38,28 +46,3 @@
         <Notebook />
     {/await}
 </div>
-
-<style>
-    .canvas {
-        position: relative;
-        background-color: rgb(255, 255, 255);
-        background-image: radial-gradient(
-            circle at 0px 0px,
-            rgb(126, 123, 119) 000 1px,
-            transparent 0
-        );
-        background-size: 25px 25px;
-        overflow: scroll;
-    }
-    /* darkmode */
-    @media (prefers-color-scheme: dark) {
-        .canvas {
-            background-color: rgb(39, 40, 43);
-            background-image: radial-gradient(
-                circle at 0px 0px,
-                rgb(129, 132, 136) 1px,
-                transparent 0%
-            );
-        }
-    }
-</style>

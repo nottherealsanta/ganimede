@@ -14,10 +14,35 @@
     }
 </script>
 
-<div class="outputs">
+<div
+    class="w-auto h-auto 
+    bg-transparent
+    px-1
+    py-0.5
+    shadow-inner shadow-zinc-100/50 dark:shadow-zinc-900/50
+    border
+    border-zinc-100 dark:border-vs-dark
+    rounded
+    float-bottom
+    mt-0.5
+    cursor-default
+    max-h-52 overflow-y-auto
+    max-w-616 overflow-x-auto
+    "
+>
     {#if cell_type === "code" && outputs}
         {#each outputs as output}
-            <div class="output">
+            <div
+                class="w-fit h-auto
+                bg-transparent
+                hover:bg-gray-100 dark:hover:bg-zinc-700
+                pl-1 pr-1 pt-0.5 pb-0.5
+                rounded
+                whitespace-pre-line
+                overflow-hidden
+                text-xs
+                "
+            >
                 <!-- TODO: each output types as components -->
                 {#if output["output_type"] === "stream"}
                     {output["text"].join(" ")}
@@ -39,56 +64,3 @@
         {@html outputs}
     {/if}
 </div>
-
-<style>
-    .outputs {
-        width: auto;
-        height: fit-content;
-        background-color: transparent;
-        border: solid 1px rgba(0, 0, 0, 0.065);
-        border-radius: 4px;
-        float: bottom;
-        margin-top: 1px;
-        padding: 2px 3px 2px 4px;
-        cursor: default;
-        /* box-shadow: -1px 0px 2px 1px rgba(0, 0, 0, 0.048); */
-
-        max-height: 200px;
-        overflow-y: auto;
-
-        max-width: 616px;
-        overflow-x: auto;
-    }
-    .outputs::-webkit-scrollbar {
-        width: 5px;
-    }
-
-    .output {
-        background-color: rgba(255, 255, 255, 0);
-        width: fit-content;
-        height: fit-content;
-        padding: 3px 4px 3px 4px;
-        margin: 1px 0px 1px 0px;
-        border-radius: 3px;
-        white-space: pre-line;
-        overflow: hidden;
-        font-size: 12px;
-    }
-    .output:hover {
-        background-color: rgba(0, 0, 0, 0.08);
-    }
-
-    /* dark mode */
-    @media (prefers-color-scheme: dark) {
-        .outputs {
-            color: #fff;
-            border: solid 1px rgba(255, 255, 255, 0.065);
-        }
-        .output {
-            background-color: rgba(0, 0, 0, 0.02);
-        }
-        .output:hover {
-            background-color: rgba(255, 255, 255, 0.08);
-        }
-    }
-</style>

@@ -27,6 +27,9 @@ class RouteManager:
         async def bundle_css(request: Request):
             return FileResponse(f"{self.ui_dir}/public/build/bundle.css")
 
+        async def tailwind_app_css(request: Request):
+            return FileResponse(f"{self.ui_dir}/public/css/app.css")
+
         async def favicon(request: Request):
             print("favicon")
             return FileResponse(f"{self.ui_dir}/public/favicon.png")
@@ -43,6 +46,9 @@ class RouteManager:
         )
         self.app.add_route(
             "/build/bundle.css", bundle_css, methods=["GET"], name="bundle_css"
+        )
+        self.app.add_route(
+            "/css/app.css", tailwind_app_css, methods=["GET"], name="tailwind_app_css"
         )
         self.app.add_route("/favicon.png", favicon, methods=["GET"], name="favicon")
 

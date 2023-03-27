@@ -54,44 +54,56 @@
         return max;
     }
 
-    // dark mode
-    let theme = "vs";
-    $: if (
-        window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-    ) {
-        theme = "vs-dark";
-    }
+    // dark-light mode
+    let theme = {
+        dark: "vs-dark",
+        light: "vs",
+    };
+    window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .addEventListener("change", (event) => {
+            console.log(window.matchMedia("(prefers-color-scheme: dark)"));
+            // TODO: if theme is not set in config, then auto change;
+            if (event.matches) {
+                monaco.editor.setTheme(theme.dark);
+            } else {
+                monaco.editor.setTheme(theme.light);
+            }
+        });
+
+    // monaco config
+    $: monaco_config = {
+        value: value,
+        language: language,
+        theme: theme.light,
+        minimap: {
+            enabled: false,
+        },
+        overviewRulerBorder: false,
+        overviewRulerLanes: 0,
+        renderLineHighlight: "none",
+        lineNumbers: config.monaco.lineNumbers,
+        fontSize: config.monaco.fontSize,
+        fontFamily: "Fira Code, monospace",
+        glyphMargin: false,
+        lineNumbersMinChars: 1,
+        lineDecorationsWidth: 0,
+        folding: false,
+        automaticLayout: true, // updates height when `value` changes
+        wordWrap: "on",
+        wrappingColumn: 80,
+        scrollbar: {
+            vertical: "hidden",
+            horizontal: "hidden",
+            handleMouseWheel: false,
+        },
+        scrollBeyondLastLine: false,
+    };
 
     let destroyed;
     onMount(() => {
         monaco = _monaco;
-        editor = monaco.editor.create(container, {
-            value: value,
-            language: language,
-            theme: theme,
-            minimap: {
-                enabled: false,
-            },
-            overviewRulerBorder: false,
-            overviewRulerLanes: 0,
-            renderLineHighlight: "none",
-            lineNumbers: config.monaco.lineNumbers,
-            fontSize: config.monaco.fontSize,
-            glyphMargin: false,
-            lineNumbersMinChars: 1,
-            lineDecorationsWidth: 0,
-            folding: false,
-            automaticLayout: true, // updates height when `value` changes
-            wordWrap: "on",
-            wrappingColumn: 80,
-            scrollbar: {
-                vertical: "hidden",
-                horizontal: "hidden",
-                handleMouseWheel: false,
-            },
-            scrollBeyondLastLine: false,
-        });
+        editor = monaco.editor.create(container, monaco_config);
 
         editor.onDidFocusEditorText(() => {
             focus = true;
@@ -131,7 +143,7 @@
         border-radius: 4px;
         background-color: transparent;
         min-height: 25px;
-        min-width: 300px;
+        min-width: 150px;
         padding-bottom: 3px;
         /* box-shadow: -1px 0px 2px 1px rgba(0, 0, 0, 0.048); */
     }

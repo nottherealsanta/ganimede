@@ -43,8 +43,8 @@
     let mouseUp = function () {
         moving = false;
         // snap to grid
-        cell.metadata.gm.top = Math.round(top / 12.5) * 12.5;
-        cell.metadata.gm.left = Math.round(left / 12.5) * 12.5;
+        // cell.metadata.gm.top = Math.round(top / 12.5) * 12.5;
+        // cell.metadata.gm.left = Math.round(left / 12.5) * 12.5;
 
         $cells[$id_map[cell_id]] = cell;
     };
@@ -124,22 +124,42 @@
     import NewCellToolbar from "./cell_components/NewCellToolbar.svelte";
 </script>
 
-<!-- if focus variable is true, then cell:focus -->
 <div
     style="
     top: {top}px; 
     left: {left}px;
     "
-    class:focus
-    class="cell"
+    class="
+    bg-white dark:bg-vs-dark
+    p-0.5
+    shadow-md shadow-zinc-300 dark:shadow-neutral-900/50
+    border
+    active:border-gray-400 dark:active:border-neutral-800
+    {focus ? 'border-sky-400' : 'border-gray-300 dark:border-vs-dark'}
+    rounded-md
+    absolute flex  justify-center overflow-visible 
+    cursor-grab 
+    active:cursor-grabbing
+    w-fit
+    min-h-[50px]"
     id="cell"
     on:mousedown={mouseDown}
     bind:clientHeight={height}
     bind:clientWidth={width}
 >
-    <div class="sidebar" id="sidebar">
+    <div
+        class="w-6 
+        rounded-md
+        flex flex-col 
+        "
+        id="sidebar"
+    >
         <div
-            class="primary-button"
+            class="h-6
+            rounded-md
+            flex justify-center items-center
+            "
+            id="primary-button"
             on:click={primary_button_click}
             on:keydown={primary_button_click}
             style="
@@ -152,7 +172,7 @@
             <PrimeButton {cell_state} />
         </div>
     </div>
-    <div class="not-sidebar" id="not-sidebar">
+    <div class="w-auto h-full flex flex-col" id="not-sidebar">
         <CodeEditor {cell_id} bind:focus />
         {#if cell.outputs !== undefined}
             <Outputs {cell_id} />
@@ -162,87 +182,3 @@
 </div>
 
 <svelte:window on:mouseup={mouseUp} on:mousemove={mouseMove} />
-
-<style>
-    .cell {
-        top: 100px;
-        left: 100px;
-
-        background-color: #ffffff;
-        box-shadow: rgba(17, 17, 26, 0.1) 0px 3px 12px,
-            rgba(17, 17, 26, 0.05) 0px 6px 24px;
-        border: solid 1px #d8d8d8;
-        border-radius: 8px;
-        position: absolute;
-        display: flex;
-        padding: 1px 3px 3px 3px;
-        justify-content: center;
-        overflow: visible;
-
-        cursor: grab;
-
-        min-width: 300px;
-        min-height: 50px;
-    }
-    .cell:active {
-        border: solid 1px #b7b7b7;
-        cursor: grabbing;
-    }
-    .focus {
-        border: solid 1px #000000;
-    }
-
-    .not-sidebar {
-        width: auto;
-        height: 100%;
-        float: right;
-        display: flex;
-        flex-direction: column;
-        margin-left: 0px;
-
-        align-items: middle;
-    }
-
-    .sidebar {
-        width: 25px;
-        border-radius: 5px;
-        float: left;
-        flex-direction: column;
-        padding-top: 2px;
-        padding-right: 2px;
-    }
-    .primary-button {
-        width: 100%;
-        height: 25px;
-        background-color: rgba(255, 255, 255, 0);
-        border-radius: 5px;
-        cursor: default;
-        display: flex;
-        align-items: center;
-    }
-    .primary-button:hover {
-        background-color: rgba(0, 0, 0, 0.1);
-    }
-    .primary-button:active {
-        background-color: rgba(0, 0, 0, 0.2);
-    }
-
-    /* dark mode */
-    @media (prefers-color-scheme: dark) {
-        .cell {
-            background-color: rgb(35, 35, 35);
-            border: solid 1px #2a2a2a;
-            box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px,
-                rgba(17, 17, 26, 0.05) 0px 8px 32px;
-        }
-        .cell:active {
-            border: solid 1px #b0b0b0;
-            z-index: 1;
-        }
-        .focus {
-            border: solid 1px #1075b8;
-            box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px,
-                rgba(17, 17, 26, 0.05) 0px 8px 32px;
-        }
-    }
-</style>

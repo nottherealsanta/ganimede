@@ -126,9 +126,9 @@ button:focus {
 	position: relative;
 }
 
-.monaco-editor {
+/* .monaco-editor {
 	padding-top: 3px;
-}
+} */
 
 .monaco-editor .lines-content.monaco-editor-background {
 	margin-left: 8px;
