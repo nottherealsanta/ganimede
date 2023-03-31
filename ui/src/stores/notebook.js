@@ -1,4 +1,5 @@
 import { derived, writable } from "svelte/store";
+import { get } from 'svelte/store';
 
 function createNotebookStore() {
     const { subscribe, set, update } = writable({});
@@ -7,13 +8,37 @@ function createNotebookStore() {
         subscribe,
         set,
         update,
-        async get() {
-            const response = await fetch("/notebook");
-            const data = await response.json();
-            // console.log("notebook data: ", data);
-            // set(JSON.parse(JSON.stringify(data)));
+        append_output: ({ cell_id, output }) => {
+            update(n => {
+                const cell = n.cells[get(id_map)[cell_id]];
+                if (cell) {
+                    cell.outputs = [...cell.outputs, output];
+                }
+                return n;
+            }
+            );
         },
+        new_code_cell: ({ new_cell, previous_cell_id, id_map }) => {
+            update(n => {
+                const previous_cell = n.cells[id_map[previous_cell_id]];
+                const previous_cell_index = n.cells.indexOf(previous_cell);
 
+                // set top, left for new cell
+                new_cell["metadata"]["gm"]["top"] = previous_cell["metadata"]["gm"]["top"] + previous_cell["metadata"]["gm"]["height"] + 5;
+                new_cell["metadata"]["gm"]["left"] = previous_cell["metadata"]["gm"]["left"];
+
+                // previous's next 
+                previous_cell["metadata"]["gm"]["next"] = [...previous_cell["metadata"]["gm"]["next"], new_cell.id];
+
+                // insert new cell
+                n.cells.splice(previous_cell_index + 1, 0, new_cell);
+
+                // update id_map
+                n["metadata"]["gm"]["id_map"] = id_map;
+
+                return n;
+            });
+        },
     };
 }
 
@@ -37,5 +62,3 @@ id_map.set = (value) => notebook.update(n => {
     n["metadata"]["gm"]["id_map"] = value;
     return n;
 });
-
-

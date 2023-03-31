@@ -12,6 +12,9 @@
         let source = $notebook["cells"][$id_map[cell_id]].source;
         outputs = marked(source.join("\n"));
     }
+
+    // transitions
+    import { slide } from "svelte/transition";
 </script>
 
 <div
@@ -19,7 +22,7 @@
     bg-transparent
     px-1
     py-0.5
-    shadow-inner shadow-zinc-100/50 dark:shadow-zinc-900/50
+    shadow-inner shadow-zinc-100/50 dark:shadow-zinc-900
     border
     border-zinc-100 dark:border-vs-dark
     rounded

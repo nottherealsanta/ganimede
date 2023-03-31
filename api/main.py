@@ -9,9 +9,20 @@ import uvicorn
 
 from managers.RouteManager import RouteManager
 from managers.ConfigManager import ConfigHandler
-from managers.KernelManager import KernelManger
-from managers.WebSocketComms import WebSocketComms
-from managers.NotebookManager import NotebookManager
+from managers.Kernel import Kernel
+from managers.Comms import Comms
+from managers.Notebook import Notebook
+
+import logging
+import sys
+
+from rich.logging import RichHandler
+
+FORMAT = "%(message)s"
+logging.basicConfig(
+    level="NOTSET", format=FORMAT, datefmt="[%X]", handlers=[RichHandler()]
+)
+log = logging.getLogger(__name__)
 
 loop = asyncio.get_event_loop()
 app = Starlette(debug=True)
@@ -23,17 +34,17 @@ async def on_startup():
 
     route_manager = RouteManager(app)
 
+    comms = Comms()
+
     config_handler = ConfigHandler()
     route_manager.add_route("/config", config_handler.get, ["GET"], "config")
 
-    kernel_manager = KernelManger()
+    kernel = Kernel(comms)
 
-    ws_comms = WebSocketComms()
-
-    notebook = NotebookManager(kernel_manager, ws_comms)
+    notebook = Notebook(kernel, comms)
 
     # websocket route
-    route_manager.add_websocket_route("/", ws_comms.endpoint, "ws")
+    route_manager.add_websocket_route("/", comms.endpoint, "ws")
 
     # async def send_things(request):
     #     await notebook.send_notebook()

@@ -6,20 +6,31 @@
     $: current_cell_bottom =
         $cells[$id_map[current_cell_id]].metadata.gm.top +
         $cells[$id_map[current_cell_id]].metadata.gm.height;
+    $: current_cell_bottom_mid =
+        $cells[$id_map[current_cell_id]].metadata.gm.left +
+        $cells[$id_map[current_cell_id]].metadata.gm.width / 2;
+    $: current_cell_left = $cells[$id_map[current_cell_id]].metadata.gm.left;
+    $: current_cell_right =
+        $cells[$id_map[current_cell_id]].metadata.gm.left +
+        $cells[$id_map[current_cell_id]].metadata.gm.width;
+
     $: next_cell_top = $cells[$id_map[next_id]].metadata.gm.top;
+    $: next_cell_top_mid =
+        $cells[$id_map[next_id]].metadata.gm.left +
+        $cells[$id_map[next_id]].metadata.gm.width / 2;
+    $: next_cell_left = $cells[$id_map[next_id]].metadata.gm.left;
+
     let x1, y1, x2, y2;
     let is_right = false;
-    $: if (next_cell_top > current_cell_bottom) {
-        x1 =
-            $cells[$id_map[current_cell_id]].metadata.gm.left +
-            $cells[$id_map[current_cell_id]].metadata.gm.width / 2;
-        y1 =
-            $cells[$id_map[current_cell_id]].metadata.gm.top +
-            $cells[$id_map[current_cell_id]].metadata.gm.height;
-        x2 =
-            $cells[$id_map[next_id]].metadata.gm.left +
-            $cells[$id_map[next_id]].metadata.gm.width / 2;
-        y2 = $cells[$id_map[next_id]].metadata.gm.top - 2;
+
+    $: if (
+        next_cell_top > current_cell_bottom &&
+        next_cell_left < current_cell_right
+    ) {
+        x1 = current_cell_bottom_mid;
+        y1 = current_cell_bottom;
+        x2 = next_cell_top_mid;
+        y2 = next_cell_top - 2;
         is_right = false;
     } else {
         x1 =
@@ -35,7 +46,18 @@
         is_right = true;
     }
 
-    $: distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+    $: mid_distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+    $: left_distance = Math.sqrt(
+        (current_cell_bottom - next_cell_top) ** 2 +
+            ($cells[$id_map[current_cell_id]].metadata.gm.left -
+                $cells[$id_map[next_id]].metadata.gm.left) **
+                2
+    ); // left bottom corner of current cell to left top corner of next cell
+
+    $: min_width = Math.min(
+        $cells[$id_map[current_cell_id]].metadata.gm.width,
+        $cells[$id_map[next_id]].metadata.gm.width
+    );
 </script>
 
 <svg
@@ -44,7 +66,7 @@
     height="100%"
     class="edge"
 >
-    {#if distance > 50}
+    {#if mid_distance > 20 && left_distance > 10}
         <!-- circle at start -->
         <circle cx={x1} cy={y1} r="2" class="circle" />
         {#if !is_right}
@@ -76,8 +98,25 @@
                 } Z`}
             />
         {/if}
-    {:else}
-        <path class="line" d="M{x1} {y1} L{x2} {y2}" />
+    {:else if y2 - y1 - 4 > 0}
+        <!-- gradient  -->
+        <defs>
+            <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#00000044" />
+                <stop offset="50%" stop-color="#77777744" />
+                <stop offset="100%" stop-color="#ffffff44" />
+            </linearGradient>
+        </defs>
+        <rect
+            x={current_cell_left + 2}
+            y={current_cell_bottom}
+            width={min_width}
+            height={y2 - y1 - 4}
+            fill="url(#gradient)"
+            style="stroke-width: 0;"
+            rx="2"
+            ry="2"
+        />
     {/if}
 </svg>
 

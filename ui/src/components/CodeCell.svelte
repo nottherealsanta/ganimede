@@ -58,56 +58,38 @@
     };
 
     // prime button
+    import { send_message } from "../stores/socket";
     const CellStates = {
         Idle: "idle",
         Queued: "queued",
         Running: "running",
         Done: "done",
     };
+    let primary_button;
     let cell_state = CellStates.Idle;
-    let run_promise;
-    // let done = true;
     async function primary_button_click() {
-        // done = false;
+        console.log("disabling button");
+
         cell_state = CellStates.Queued;
         $cells[$id_map[cell_id]]["outputs"] = [];
-        async function running_promise() {
-            console.log("runing : " + cell_id);
-            const post_response = await fetch(`/notebook/run/${cell_id}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    code: cell.source.join("\n"),
-                }),
-            });
-            const data = await post_response.json();
-            cell_state = CellStates.Running;
-            while (cell_state === CellStates.Running) {
-                const get_response = await fetch(
-                    `/notebook/output/${cell_id}`,
-                    {
-                        method: "GET",
-                    }
-                );
-                const data = await get_response.json();
-                if (data.execution_state === "idle") {
-                    cell_state = CellStates.Done;
-                }
-                if (
-                    data.output_type === "stream" ||
-                    data.output_type === "display_data"
-                ) {
-                    $cells[$id_map[cell_id]]["outputs"] = [
-                        ...$cells[$id_map[cell_id]]["outputs"],
-                        data,
-                    ];
-                }
-            }
-        }
-        run_promise = await running_promise();
+        console.log("sending message");
+        send_message({
+            channel: "notebook",
+            method: "run",
+            message: {
+                cell_id: cell_id,
+                code: cell.source,
+            },
+        });
+
         $cells[$id_map[cell_id]] = cell;
+
+        // disable button for 1 second
+        // disable max (500ms, cell_state === "running")
+        // disable till resposse of state
+        setTimeout(() => {
+            primary_button.disabled = false;
+        }, 1000);
     }
 
     // CodeEditor
@@ -122,6 +104,11 @@
 
     //NewCellToolbar
     import NewCellToolbar from "./cell_components/NewCellToolbar.svelte";
+
+    // transitions
+    import { fade } from "svelte/transition";
+
+    let cell_div;
 </script>
 
 <div
@@ -141,11 +128,13 @@
     cursor-grab 
     active:cursor-grabbing
     w-fit
-    min-h-[50px]"
+    min-h-[30px]"
     id="cell"
     on:mousedown={mouseDown}
     bind:clientHeight={height}
     bind:clientWidth={width}
+    transition:fade={{ duration: 100 }}
+    bind:this={cell_div}
 >
     <div
         class="w-6 
@@ -154,23 +143,24 @@
         "
         id="sidebar"
     >
-        <div
+        <button
             class="h-6
             rounded-md
             flex justify-center items-center
+            cursor-pointer
+            border border-transparent
+            hover:bg-gray-200 dark:hover:bg-neutral-800
+            active:bg-gray-300 dark:active:bg-neutral-700
+            focus:outline-none
+            disabled:bg-gray-100 dark:disabled:bg-neutral-900
             "
             id="primary-button"
             on:click={primary_button_click}
             on:keydown={primary_button_click}
-            style="
-            pointer-events: {cell_state === CellStates.Done ||
-            cell_state === CellStates.Idle
-                ? 'auto'
-                : 'none'};
-            "
+            bind:this={primary_button}
         >
             <PrimeButton {cell_state} />
-        </div>
+        </button>
     </div>
     <div class="w-auto h-full flex flex-col" id="not-sidebar">
         <CodeEditor {cell_id} bind:focus />
@@ -178,6 +168,7 @@
             <Outputs {cell_id} />
         {/if}
     </div>
+
     <NewCellToolbar {cell_id} />
 </div>
 

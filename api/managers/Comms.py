@@ -3,8 +3,10 @@ import logging
 from asyncio import Queue
 import asyncio
 
+log = logging.getLogger(__name__)
 
-class WebSocketComms:
+
+class Comms:
     def __init__(self):
         self.websocket = None
         self.out_queue = Queue()
@@ -16,11 +18,11 @@ class WebSocketComms:
         }
         self.websocket_running = asyncio.Event()
 
-    async def send(self, data: dict):
+    def send(self, data: dict):
         self.out_queue.put_nowait(data)
 
     async def endpoint(self, websocket: WebSocket):
-        logging.debug("endpoint")
+        log.debug("endpoint")
         self.websocket = websocket
         await self.websocket.accept()
 
@@ -30,22 +32,23 @@ class WebSocketComms:
             while self.websocket_running:
                 try:
                     data = await self.out_queue.get()
+                    log.debug(f"sending: {data}")
                     await self.websocket.send_json(data)
 
                 except Exception as e:
-                    logging.debug(e)
+                    log.debug(e)
                     break
 
         async def receive_task():
             while self.websocket_running:
                 try:
                     data = await self.websocket.receive_json()
-                    logging.debug(f"received: {data}")
+                    log.debug(f"received: {data}")
                     self.channel_queues[data["channel"]].put_nowait(data)
 
                 except Exception as e:
                     self.websocket_running = False
-                    logging.debug(e)
+                    log.debug(e)
                     self.out_queue.put_nowait(None)
                     break
 

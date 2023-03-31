@@ -1,40 +1,16 @@
 <script lang="ts">
     import { notebook, cells, id_map } from "../../stores/notebook";
+    import { send_message } from "../../stores/socket";
     export let cell_id;
 
     async function new_code_cell() {
-        const new_code_cell_response = await fetch("/notebook/new_cell", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                cell_type: "code",
+        send_message({
+            channel: "notebook",
+            method: "new_code_cell",
+            message: {
                 previous_cell_id: cell_id,
-            }),
+            },
         });
-        const data = await new_code_cell_response.json();
-        const new_cell = data["new_cell"];
-        const id_map = data["id_map"];
-
-        new_cell["metadata"]["gm"]["previous"] = [cell_id];
-        $cells[id_map[cell_id]]["metadata"]["gm"]["next"] = [
-            ...$cells[id_map[cell_id]]["metadata"]["gm"]["next"],
-            new_cell["id"],
-        ];
-
-        new_cell["metadata"]["gm"]["top"] =
-            $cells[id_map[cell_id]]["metadata"]["gm"]["top"] +
-            $cells[id_map[cell_id]]["metadata"]["gm"]["height"] +
-            10;
-        new_cell["metadata"]["gm"]["left"] =
-            $cells[id_map[cell_id]]["metadata"]["gm"]["left"];
-
-        $notebook["cells"] = [...$notebook["cells"], new_cell];
-        $notebook["metadata"]["gm"]["id_map"] = id_map;
-
-        console.log("new code cell");
-        console.log($notebook);
     }
 
     function new_text_cell() {

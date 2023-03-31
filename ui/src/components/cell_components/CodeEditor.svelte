@@ -35,10 +35,10 @@
     let n_lines = 1;
     let max_columns = 0;
 
-    $: height = Math.ceil(n_lines * 19);
+    $: height = Math.ceil(n_lines * 20);
     $: width = Math.ceil(max_columns * 8) + 50;
     $: width = Math.min(width, max_width);
-    let value = " ";
+    let value = "";
     $: if ($notebook["cells"][$id_map[cell_id]].source !== "") {
         value = $notebook["cells"][$id_map[cell_id]].source.join(" ");
     }
@@ -59,10 +59,15 @@
         dark: "vs-dark",
         light: "vs",
     };
+    // -- current theme
+    let current_theme = window.matchMedia("(prefers-color-scheme: dark)")
+        .matches
+        ? theme.dark
+        : theme.light;
+    // -- watch for dark mode changes
     window
         .matchMedia("(prefers-color-scheme: dark)")
         .addEventListener("change", (event) => {
-            console.log(window.matchMedia("(prefers-color-scheme: dark)"));
             // TODO: if theme is not set in config, then auto change;
             if (event.matches) {
                 monaco.editor.setTheme(theme.dark);
@@ -75,7 +80,7 @@
     $: monaco_config = {
         value: value,
         language: language,
-        theme: theme.light,
+        theme: current_theme,
         minimap: {
             enabled: false,
         },
@@ -145,6 +150,7 @@
         min-height: 25px;
         min-width: 150px;
         padding-bottom: 3px;
+        margin-bottom: 3px;
         /* box-shadow: -1px 0px 2px 1px rgba(0, 0, 0, 0.048); */
     }
 

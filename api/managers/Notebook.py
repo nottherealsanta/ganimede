@@ -1,16 +1,18 @@
-import logging
 from os import getcwd, urandom
 from base64 import urlsafe_b64encode
 import json
 import asyncio
+
+import logging
 from random import randint
 from pathlib import Path
 from starlette.requests import Request
 from starlette.responses import JSONResponse
-from managers.KernelManager import KernelManger
-from managers.WebSocketComms import WebSocketComms
 
-logging.basicConfig(level=logging.DEBUG)
+from managers.Kernel import Kernel
+from managers.Comms import Comms
+
+log = logging.getLogger(__name__)
 
 
 class Cell:
@@ -86,29 +88,30 @@ class Cell:
     #     self.output = kernel.execute(code)
 
 
-class NotebookManager:
+class Notebook:
     def __init__(
         self,
-        kernel_manager: KernelManger,
-        ws_comms: WebSocketComms,
+        kernel: Kernel,
+        comms: Comms,
         notebook_path: str = Path(f"{getcwd()}/tests/test0.ipynb"),
     ):
-        self.kernel_manager = kernel_manager
-        self.ws_comms = ws_comms
+        self.kernel = kernel
+        self.comms = comms
         self.notebook_path = notebook_path
-        logging.debug(notebook_path)
+        log.debug(notebook_path)
 
         # Load notebook
         def load_notebook():
             notebook_path = Path(self.notebook_path)
             if not notebook_path.exists():
-                logging.debug("Notebook does not exist")
+                log.debug("Notebook does not exist")
                 return None
             with open(notebook_path, "r") as f:
                 return json.load(f)
 
         self.notebook = load_notebook()
 
+        # TODO: cells must be a property that mirrors the notebook["cells"] ?
         self.cells = []
         self.init_cells()
 
@@ -120,7 +123,7 @@ class NotebookManager:
 
         self.msg_queue: asyncio.Queue = asyncio.Queue()
 
-        self.comms_queue = ws_comms.channel_queues["notebook"]
+        self.comms_queue = comms.channel_queues["notebook"]
 
         asyncio.create_task(self.listen_for_messages())
 
@@ -130,13 +133,16 @@ class NotebookManager:
             method = item["method"]
             message = item["message"] if "message" in item else None
 
-            await getattr(self, method)(message)
+            if message:
+                await getattr(self, method)(**message)
+            else:
+                await getattr(self, method)()
 
-    async def get(self, message):
-        logging.debug("get notebook")
-        await self.kernel_manager.start_kernel()
-        await self.ws_comms.send(
-            {"channel": "notebook", "method": "get", "message": self.notebook}
+    async def get(self):
+        log.debug("get notebook")
+        await self.kernel.start_kernel()
+        self.comms.send(
+            {"channel": "notebook", "method": "set", "message": self.notebook}
         )
 
     def init_cells(self):
@@ -189,66 +195,90 @@ class NotebookManager:
         with open(self.notebook_path, "w") as f:
             json.dump(self.notebook, f, indent=2)
 
-    async def run_cell(self, request: Request) -> JSONResponse:
+    async def run(self, cell_id: str, code: list[str]):
         self.msg_queue = asyncio.Queue()
 
-        cell_id = request.path_params["cell_id"]
-        code = (await request.json())["code"]
-        logging.debug(f"code: {code}")
+        # set code to cell
+        cell_index = self.id_map[cell_id]
+        self.cells[cell_index].source = code
+        self.cells[cell_index].outputs = []
+
+        log.debug(f"code: {code}")
 
         loop = asyncio.get_event_loop()
 
         execute_task = loop.create_task(
-            self.kernel_manager.execute(code=code, msg_queue=self.msg_queue)
+            self.kernel.execute(code=code, msg_queue=self.msg_queue)
         )
 
-        return JSONResponse({"status": "ok"})
+        while True:
+            msg = await self.msg_queue.get()
 
-    def _parse_output(self, msg):
-        output = {
-            "output_type": msg["msg_type"],
-        }
+            log.debug(f"msg: {msg}")
+            log.debug(f"-msg_queue size: {self.msg_queue.qsize()}")
 
-        # TODO: handle other output types
-        if "text" in msg["content"]:
-            output["text"] = [msg["content"]["text"]]
-        if "data" in msg["content"]:
-            output["data"] = msg["content"]["data"]
-        if "metadata" in msg["content"]:
-            output["metadata"] = msg["content"]["metadata"]
-        if "name" in msg["content"]:
-            output["name"] = msg["content"]["name"]
-        if "execution_state" in msg["content"]:
-            output["execution_state"] = msg["content"]["execution_state"]
+            if (
+                "msg_type" in msg
+                and msg["msg_type"] == "status"
+                and "execution_state" in msg
+                and msg["execution_state"] == "idle"
+            ):  # last message
+                print("break")
+                break
 
-        return output
+            # TODO: move this to output setter
+            if "msg_type" not in msg:  # if message is an output, send it
+                self.cells[cell_index].outputs.append(msg)
+                message = {
+                    "cell_id": cell_id,
+                    "output": msg,
+                }
+                self.comms.send(
+                    {
+                        "channel": "notebook",
+                        "method": "append_output",
+                        "message": message,
+                    }
+                )
 
-    async def get_output(self, request: Request) -> JSONResponse:
-        msg = await self.msg_queue.get()
-        msg = self._parse_output(msg)
-        logging.debug(f"msg: {msg}")
-        logging.debug(f"-output_queue size: {self.msg_queue.qsize()}")
-        return JSONResponse(msg)
+        # TODO: refactor this
+        self.notebook["cells"] = [cell.to_dict() for cell in self.cells]
+        self.notebook["metadata"]["gm"]["id_map"] = self.id_map
 
-    async def new_cell(self, request: Request) -> JSONResponse:
-        print("request.path_params", request)
-        request_json = await request.json()
-        cell_type = request_json["cell_type"]
-        previous_cell_id = request_json["previous_cell_id"]
+    async def new_code_cell(self, previous_cell_id: str):
         new_cell = Cell(
             {
-                "cell_type": cell_type,
+                "cell_type": "code",
             }
         )
+        new_cell.metadata["gm"]["previous"] = [previous_cell_id]
+
+        # previous cell's
+        previous_cell = self.cells[self.id_map[previous_cell_id]]
+        previous_cell.metadata["gm"]["next"] = [new_cell.id]
+
+        # insert new cell
         self.cells.insert(self.id_map[previous_cell_id] + 1, new_cell)
+
+        # update id_map
         self.id_map[new_cell.id] = len(self.cells) - 1
 
         response = {
             "new_cell": new_cell.to_dict(),
+            "previous_cell_id": previous_cell_id,
             "id_map": self.id_map,
         }
 
+        log.debug(f"new cell: {new_cell.id}")
+
+        self.comms.send(
+            {
+                "channel": "notebook",
+                "method": "new_code_cell",
+                "message": response,
+            }
+        )
+
+        # TODO: refactor this
         self.notebook["cells"] = [cell.to_dict() for cell in self.cells]
         self.notebook["metadata"]["gm"]["id_map"] = self.id_map
-
-        return JSONResponse(response)

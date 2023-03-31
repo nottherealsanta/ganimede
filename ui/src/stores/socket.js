@@ -1,7 +1,7 @@
 // create a websocket svelte store 
 
 // import { writable } from "svelte/store";
-import { notebook } from "./notebook";
+import { notebook, cells, id_map, append_output } from "./notebook";
 
 export let socket = null;
 
@@ -27,20 +27,23 @@ export async function open_socket() {
         }
         socket.onmessage = function (event) {
             console.log("Socket message: ", JSON.parse(event.data));
-            let message = JSON.parse(event.data);
-            if (message["channel"] === "notebook") {
-                if (message["method"] === "get") {
-                    notebook.set(message["message"]);
-                }
+            let data = JSON.parse(event.data);
+            let channel = data["channel"];
+            let method = data["method"];
+            let message = data["message"];
+
+            if (data["channel"] === "notebook") {
+                notebook[method](message);
             }
+
         };
     }
 };
 
-export async function send_message(channel = "status"
-    , message) {
+export async function send_message({ channel, method, message }) {
     socket.send(JSON.stringify({
         "channel": channel,
+        "method": method,
         "message": message
     }));
 }

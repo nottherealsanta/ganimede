@@ -4,6 +4,7 @@
     import Edges from "./utility_components/Edges.svelte";
 
     import { notebook, cells, id_map } from "../stores/notebook";
+
     function set_locs() {
         // Iterate through each cell
         for (let cell_index = 0; cell_index < $cells.length; cell_index++) {
@@ -41,20 +42,28 @@
         }
     }
 
-    // run set_loc 1 second after the notebook is loaded
-    // setTimeout(set_locs, 100);
-    // TODO: only if notebook is new to gm
-    // notebook.get().then(setTimeout(set_locs, 200));
+    // if all the cells have 0 as top and left
+    // then set the locations
+    setTimeout(() => {
+        if (
+            $cells.every(
+                (cell) =>
+                    cell.metadata.gm.top === 0 && cell.metadata.gm.left === 0
+            )
+        ) {
+            set_locs();
+        }
+    }, 300);
 </script>
 
 <div class="notebook">
     {#if Object.keys($notebook).length !== 0}
         <!-- nodes -->
         {#each $notebook["cells"] as cell}
-            {#if cell.cell_type === "code" && cell.metadata.gm.parent === null}
+            {#if cell.cell_type === "code"}
                 <CodeCell cell_id={cell.id} />
             {/if}
-            {#if cell.cell_type === "markdown" && cell.metadata.gm.parent === null}
+            {#if cell.cell_type === "markdown"}
                 <MarkdownCell cell_id={cell.id} />
             {/if}
         {/each}
@@ -70,5 +79,6 @@
 <style>
     .notebook {
         display: flex;
+        flex-direction: column;
     }
 </style>

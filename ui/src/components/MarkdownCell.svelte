@@ -86,7 +86,7 @@
         <div use:editor class="md-editor" />
     </div>
 </div>
-<div class="children" style="top: {top + 25}px; left: {left}px;">
+<!-- <div class="children" style="top: {top + 25}px; left: {left}px;">
     {#each cell.metadata.gm.children as child_id}
         {#if $cells[$id_map[child_id]].cell_type === "code"}
             <CodeCell cell_id={child_id} />
@@ -95,7 +95,7 @@
             <svelte:self cell_id={child_id} />
         {/if}
     {/each}
-</div>
+</div> -->
 
 <svelte:window on:mouseup={mouseUp} on:mousemove={mouseMove} />
 
