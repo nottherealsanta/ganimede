@@ -31,7 +31,6 @@ class RouteManager:
             return FileResponse(f"{self.ui_dir}/public/css/app.css")
 
         async def favicon(request: Request):
-            print("favicon")
             return FileResponse(f"{self.ui_dir}/public/favicon.png")
 
         self.app.add_route("/", index, methods=["GET"], name="index")

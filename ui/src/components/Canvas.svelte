@@ -18,6 +18,31 @@
         { passive: false }
     );
 
+    // middle mouse to pan
+    let canvas_div = null;
+    let moving = false;
+    let clicked_x = 0;
+    let clicked_y = 0;
+    let mouseDown = function (event) {
+        // if left click
+        if (event.button === 1 && event.target.id === "canvas") {
+            moving = true;
+            clicked_x = event.offsetX;
+            clicked_y = event.offsetY;
+        }
+    };
+    let mouseUp = function () {
+        moving = false;
+    };
+    let mouseMove = function (event) {
+        if (moving) {
+            window.scrollTo(
+                window.scrollX + clicked_x - event.offsetX,
+                window.scrollY + clicked_y - event.offsetY
+            );
+        }
+    };
+
     onMount(() => {
         open_socket();
     });
@@ -25,8 +50,9 @@
 
 <div
     class=" bg-zinc-100
-     dark:bg-neutral-900/95
-     relative overflow-scroll"
+     dark:bg-neutral-800
+     relative overflow-auto
+     "
     style="
         height: 10000px; 
         width: 10000px; 
@@ -39,6 +65,11 @@
         );
         background-size: 25px 25px;
     "
+    id="canvas"
+    on:mousemove={mouseMove}
+    on:mousedown={mouseDown}
+    on:mouseup={mouseUp}
+    bind:this={canvas_div}
 >
     {#await open_socket}
         <div>Waiting for socket</div>

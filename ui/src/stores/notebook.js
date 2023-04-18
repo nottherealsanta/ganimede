@@ -51,14 +51,15 @@ cells.set = (value) => notebook.update(n => {
 });
 
 export const id_map = derived(notebook, $notebook => {
-    if ($notebook["metadata"] !== undefined) {
-        return $notebook["metadata"]["gm"]["id_map"];
-    } else {
-        return {};
-    }
+    // if ($notebook["metadata"] !== undefined) {
+    //     return $notebook["metadata"]["gm"]["id_map"];
+    // } else {
+    //     return {};
+    // }
+    return $notebook.id_map
 }
 );
 id_map.set = (value) => notebook.update(n => {
-    n["metadata"]["gm"]["id_map"] = value;
+    n["id_map"] = value;
     return n;
 });

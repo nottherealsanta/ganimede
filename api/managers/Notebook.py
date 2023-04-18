@@ -2,12 +2,8 @@ from os import getcwd, urandom
 from base64 import urlsafe_b64encode
 import json
 import asyncio
-
 import logging
-from random import randint
 from pathlib import Path
-from starlette.requests import Request
-from starlette.responses import JSONResponse
 
 from managers.Kernel import Kernel
 from managers.Comms import Comms
@@ -15,77 +11,87 @@ from managers.Comms import Comms
 log = logging.getLogger(__name__)
 
 
+def _generate_random_cell_id(id_length: int = 8) -> str:
+    n_bytes = max(id_length * 3 // 4, 1)
+    return urlsafe_b64encode(urandom(n_bytes)).decode("ascii").rstrip("=")
+
+
 class Cell:
-    def __init__(self, cell_dict: dict):
-        self.cell_type = cell_dict["cell_type"]
+    def __init__(
+        self,
+        id: str = None,
+        cell_type: str = "code",
+        source: list = "",
+        execution_count: int = None,
+        outputs: list = [],
+        top: int = 0,
+        left: int = 0,
+        height: int = 0,
+        width: int = 0,
+        prev: list = [],
+        next: list = [],
+        parent: str = None,
+        children: list = [],
+    ):
+        self.id = id if id else _generate_random_cell_id()
+        self.cell_type = cell_type
+        self.source = source
 
-        if "source" in cell_dict:
-            self.source = cell_dict["source"]
-        else:
-            self.source = ""
+        self.execution_count = execution_count
+        self.outputs = outputs
 
-        if "execution_count" in cell_dict:
-            self.execution_count = cell_dict["execution_count"]
-        else:
-            self.execution_count = None
+        self.top = top
+        self.left = left
+        self.height = height
+        self.width = width
 
-        if "id" in cell_dict:
-            self.id = cell_dict["id"]
-        else:
-            self.id = self._generate_id()
-
-        if "outputs" in cell_dict:
-            self.outputs = cell_dict["outputs"]
-        if "metadata" in cell_dict:
-            self.metadata = cell_dict["metadata"]
-        else:
-            self.metadata = {
-                "gm": {
-                    "top": 0,
-                    "left": 0,
-                    "height": 0,
-                    "width": 0,
-                    "previous": [],
-                    "next": [],
-                    "parent": None,
-                    "children": [],
-                }
-            }
-        self._add_metadata()
-
-    def _generate_id(self, id_length: int = 8) -> str:
-        n_bytes = max(id_length * 3 // 4, 1)
-        return urlsafe_b64encode(urandom(n_bytes)).decode("ascii").rstrip("=")
-
-    def _add_metadata(self):
-        if "gm" not in self.metadata:
-            self.metadata["gm"] = {
-                "top": 0,
-                "left": 0,
-                "height": 0,
-                "width": 0,
-                "previous": [],
-                "next": [],
-                "parent": None,
-                "children": [],
-            }
+        self.prev = prev
+        self.next = next
+        self.parent = parent
+        self.children = children
 
     def to_dict(self) -> dict:
-        _dict = {
+        return self.__dict__
+
+    def save(self) -> dict:
+        return {
             "cell_type": self.cell_type,
-            "metadata": self.metadata,
             "source": self.source,
-            "execution_count": self.execution_count,
-            "id": self.id,
+            "metadata": {
+                "gm": {
+                    "top": self.top,
+                    "left": self.left,
+                    "height": self.height,
+                    "width": self.width,
+                    "prev": self.prev,
+                    "next": self.next,
+                    "parent": self.parent,
+                    "children": self.children,
+                }
+            },
         }
-        if hasattr(self, "outputs"):
-            _dict["outputs"] = self.outputs
-        return _dict
 
-    # def run(self, code: str, kernel=None):
-    #     self.source = code
+    def set(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
-    #     self.output = kernel.execute(code)
+    def get(self, key):
+        return getattr(self, key)
+
+    @property
+    def is_heading(self):
+        if self.cell_type == "markdown":
+            if any(line.lstrip().startswith("#") for line in self.source):
+                return True
+        return False
+
+    @property
+    def heading_level(self):
+        if self.is_heading:
+            for line in self.source:
+                if line.lstrip().startswith("#"):
+                    return line.count("#")
+        return None
 
 
 class Notebook:
@@ -93,41 +99,38 @@ class Notebook:
         self,
         kernel: Kernel,
         comms: Comms,
-        notebook_path: str = Path(f"{getcwd()}/tests/test0.ipynb"),
+        notebook_path: str = Path(f"{getcwd()}/tests/test1.ipynb"),
     ):
         self.kernel = kernel
         self.comms = comms
         self.notebook_path = notebook_path
         log.debug(notebook_path)
 
-        # Load notebook
-        def load_notebook():
-            notebook_path = Path(self.notebook_path)
-            if not notebook_path.exists():
-                log.debug("Notebook does not exist")
-                return None
-            with open(notebook_path, "r") as f:
-                return json.load(f)
-
-        self.notebook = load_notebook()
-
-        # TODO: cells must be a property that mirrors the notebook["cells"] ?
         self.cells = []
-        self.init_cells()
 
-        self.id_map = {}
+        self.notebook_file = self._load_notebook()
 
-        self.add_metadata()
+        if notebook_path is not None:
+            self.init_cells()
 
-        self.save_notebook()
-
-        self.msg_queue: asyncio.Queue = asyncio.Queue()
-
+        # websocket message queue
         self.comms_queue = comms.channel_queues["notebook"]
 
-        asyncio.create_task(self.listen_for_messages())
+        asyncio.create_task(self.listen_comms())
 
-    async def listen_for_messages(self):
+    @property
+    def id_map(self):
+        return {cell.id: i for (i, cell) in enumerate(self.cells)}
+
+    def _load_notebook(self):
+        notebook_path = Path(self.notebook_path)
+        if not notebook_path.exists():
+            log.debug("Notebook does not exist")
+            return None
+        with open(notebook_path, "r") as f:
+            return json.load(f)
+
+    async def listen_comms(self):
         while True:
             item = await self.comms_queue.get()
             method = item["method"]
@@ -141,62 +144,155 @@ class Notebook:
     async def get(self):
         log.debug("get notebook")
         await self.kernel.start_kernel()
+
+        message = {
+            "cells": [cell.to_dict() for cell in self.cells],
+            "id_map": self.id_map,
+        }
         self.comms.send(
-            {"channel": "notebook", "method": "set", "message": self.notebook}
+            {
+                "channel": "notebook",
+                "method": "set",
+                "message": message,
+            }
         )
 
     def init_cells(self):
-        for cell in self.notebook["cells"]:
-            self.cells.append(Cell(cell))
-        if (
-            "gm" not in self.notebook["metadata"]
-        ):  # if notebook is not already graphified
-            # next and previous
-            for i in range(len(self.cells)):
-                current_cell = self.cells[i]
-                previous_cell = self.cells[i - 1] if i > 0 else None
+        for cell in self.notebook_file["cells"]:
+            cell_id = cell["id"] if "id" in cell else _generate_random_cell_id()
 
-                if previous_cell is not None:
-                    current_cell.metadata["gm"]["previous"] = [previous_cell.id]
-                    previous_cell.metadata["gm"]["next"] = [current_cell.id]
-            # parent and children
-            for i in range(len(self.cells)):
-                current_cell = self.cells[i]
-                parent = None
-                for j in range(i - 1, -1, -1):
-                    if self.cells[j].cell_type == "markdown":
-                        if any(line.startswith("#") for line in self.cells[j].source):
-                            parent = self.cells[j]
-                            break
-                if parent is not None:
-                    current_cell.metadata["gm"]["parent"] = parent.id
-                    parent.metadata["gm"]["children"].append(current_cell.id)
+            metadata = cell["metadata"] if "metadata" in cell else {}
+            gm_metadata = metadata["gm"] if "gm" in metadata else {}
 
-    def add_metadata(self):
-        for i in range(len(self.cells)):
-            self.id_map[self.cells[i].id] = i
+            self.cells.append(
+                Cell(
+                    id=cell_id,
+                    cell_type=cell["cell_type"],
+                    source=cell["source"],
+                    execution_count=cell["execution_count"]
+                    if "execution_count" in cell
+                    else None,
+                    outputs=cell["outputs"] if "outputs" in cell else [],
+                    **gm_metadata,
+                )
+            )
 
-        if "gm" not in self.notebook["metadata"]:
-            self.notebook["metadata"]["gm"] = {
-                "canvas": {
-                    "scroll": {
-                        "x": 0,
-                        "y": 0,
-                    },
-                    "zoom": 1,
-                },
-                "id_map": self.id_map,
-            }
+        self._connect_cells()
 
-    def save_notebook(self):
-        self.notebook["cells"] = [cell.to_dict() for cell in self.cells]
-        self.notebook["metadata"]["gm"]["id_map"] = self.id_map
+        for cell in self.cells:
+            log.debug(
+                f"""cell.id {cell.id}
+            cell.type {cell.cell_type}
+            cell.source \n{"".join(cell.source)}
+            cell.is_heading {cell.is_heading}
+            cell.heading_level {cell.heading_level}
+            cell.next {cell.next}
+            cell.prev {cell.prev}
+            cell.parnet {cell.parent}
+            cell.children {cell.children}
+            """
+            )
 
-        with open(self.notebook_path, "w") as f:
-            json.dump(self.notebook, f, indent=2)
+    def _connect_cells(self):
+        """
+        forms the graph of cells
+        next-prev
+        parent-children
+        """
+
+        hlevel_map = {
+            1: [],
+            2: [],
+            3: [],
+            4: [],
+            5: [],
+            6: [],
+        }
+        cell_list = []
+        for i, cell in enumerate(self.cells):
+            if cell.is_heading:
+                hlevel_map[cell.heading_level].append(i)
+
+            cell_list.append(i)
+
+        for level in range(6, 0, -1):
+            for cell_id in hlevel_map[level]:
+                index = cell_list.index(cell_id)
+
+                i = index + 1
+                children = []
+                while i < len(cell_list):
+                    if (
+                        self.cells[i].is_heading
+                        and self.cells[i].heading_level
+                        <= self.cells[index].heading_level
+                    ):
+                        self.cells[index].next = [self.cells[i].id]
+                        self.cells[i].prev = [self.cells[index].id]
+                        break
+
+                    if len(children) > 0:
+                        prev = children[-1]
+                        self.cells[prev].next = [self.cells[i].id]
+                        self.cells[i].prev = [self.cells[prev].id]
+                    children.append(i)
+
+                    if (
+                        self.cells[i].is_heading
+                        and self.cells[i].heading_level
+                        > self.cells[index].heading_level
+                    ):
+                        last_child_id = self.cells[i].children[-1]
+                        last_child_idx = self.id_map[last_child_id]
+
+                        while len(self.cells[last_child_idx].children) > 0:
+                            last_child_id = self.cells[last_child_idx].children[-1]
+                            last_child_idx = self.id_map[last_child_id]
+
+                        i = last_child_idx + 1
+
+                        continue
+
+                    i += 1
+
+                self.cells[index].children = [self.cells[i].id for i in children]
+                for child in children:
+                    self.cells[child].parent = self.cells[index].id
+
+                for i in range(0, len(self.cells[index].children) - 1):
+                    x_id = self.cells[index].children[i]
+                    y_id = self.cells[index].children[i + 1]
+                    x_idx = self.id_map[x_id]
+                    y_idx = self.id_map[y_id]
+                    self.cells[x_idx].next = [y_id]
+                    self.cells[y_idx].prev = [x_id]
+
+    # def add_metadata(self):
+    #     for i in range(len(self.cells)):
+    #         self.id_map[self.cells[i].id] = i
+
+    #     if "gm" not in self.notebook["metadata"]:
+    #         self.notebook["metadata"]["gm"] = {
+    #             "canvas": {
+    #                 "scroll": {
+    #                     "x": 0,
+    #                     "y": 0,
+    #                 },
+    #                 "zoom": 1,
+    #             },
+    #             "id_map": self.id_map,
+    #         }
+
+    # def save_notebook(self):
+    #     log.debug("saving notebook")
+    #     self.notebook["cells"] = [cell.save() for cell in self.cells]
+    #     self.notebook["metadata"]["gm"]["id_map"] = self.id_map
+
+    #     with open(self.notebook_path, "w") as f:
+    #         json.dump(self.notebook, f, indent=2)
 
     async def run(self, cell_id: str, code: list[str]):
-        self.msg_queue = asyncio.Queue()
+        msg_queue = asyncio.Queue()
 
         # set code to cell
         cell_index = self.id_map[cell_id]
@@ -208,14 +304,14 @@ class Notebook:
         loop = asyncio.get_event_loop()
 
         execute_task = loop.create_task(
-            self.kernel.execute(code=code, msg_queue=self.msg_queue)
+            self.kernel.execute(code=code, msg_queue=msg_queue)
         )
 
         while True:
-            msg = await self.msg_queue.get()
+            msg = await msg_queue.get()
 
             log.debug(f"msg: {msg}")
-            log.debug(f"-msg_queue size: {self.msg_queue.qsize()}")
+            log.debug(f"-msg_queue size: {msg_queue.qsize()}")
 
             if (
                 "msg_type" in msg
@@ -223,7 +319,6 @@ class Notebook:
                 and "execution_state" in msg
                 and msg["execution_state"] == "idle"
             ):  # last message
-                print("break")
                 break
 
             # TODO: move this to output setter
@@ -241,44 +336,40 @@ class Notebook:
                     }
                 )
 
-        # TODO: refactor this
-        self.notebook["cells"] = [cell.to_dict() for cell in self.cells]
-        self.notebook["metadata"]["gm"]["id_map"] = self.id_map
+    # async def new_code_cell(self, previous_cell_id: str):
+    #     new_cell = Cell(
+    #         {
+    #             "cell_type": "code",
+    #         }
+    #     )
+    #     new_cell.metadata["gm"]["previous"] = [previous_cell_id]
 
-    async def new_code_cell(self, previous_cell_id: str):
-        new_cell = Cell(
-            {
-                "cell_type": "code",
-            }
-        )
-        new_cell.metadata["gm"]["previous"] = [previous_cell_id]
+    #     # previous cell's
+    #     previous_cell = self.cells[self.id_map[previous_cell_id]]
+    #     previous_cell.metadata["gm"]["next"] = [new_cell.id]
 
-        # previous cell's
-        previous_cell = self.cells[self.id_map[previous_cell_id]]
-        previous_cell.metadata["gm"]["next"] = [new_cell.id]
+    #     # insert new cell
+    #     self.cells.insert(self.id_map[previous_cell_id] + 1, new_cell)
 
-        # insert new cell
-        self.cells.insert(self.id_map[previous_cell_id] + 1, new_cell)
+    #     # update id_map
+    #     self.id_map[new_cell.id] = len(self.cells) - 1
 
-        # update id_map
-        self.id_map[new_cell.id] = len(self.cells) - 1
+    #     response = {
+    #         "new_cell": new_cell.to_dict(),
+    #         "previous_cell_id": previous_cell_id,
+    #         "id_map": self.id_map,
+    #     }
 
-        response = {
-            "new_cell": new_cell.to_dict(),
-            "previous_cell_id": previous_cell_id,
-            "id_map": self.id_map,
-        }
+    #     log.debug(f"new cell: {new_cell.id}")
 
-        log.debug(f"new cell: {new_cell.id}")
+    #     self.comms.send(
+    #         {
+    #             "channel": "notebook",
+    #             "method": "new_code_cell",
+    #             "message": response,
+    #         }
+    #     )
 
-        self.comms.send(
-            {
-                "channel": "notebook",
-                "method": "new_code_cell",
-                "message": response,
-            }
-        )
-
-        # TODO: refactor this
-        self.notebook["cells"] = [cell.to_dict() for cell in self.cells]
-        self.notebook["metadata"]["gm"]["id_map"] = self.id_map
+    #     # TODO: refactor this
+    #     self.notebook["cells"] = [cell.to_dict() for cell in self.cells]
+    #     self.notebook["metadata"]["gm"]["id_map"] = self.id_map

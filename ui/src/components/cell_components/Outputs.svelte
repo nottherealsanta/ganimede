@@ -18,19 +18,20 @@
 </script>
 
 <div
-    class="w-auto h-auto 
+    class="w-full h-auto
     bg-transparent
     px-1
     py-0.5
-    shadow-inner shadow-zinc-100/50 dark:shadow-zinc-900
+    shadow-inner shadow-zinc-100/50 dark:shadow-neutral-800
     border
-    border-zinc-100 dark:border-vs-dark
+    border-zinc-100 dark:border-neutral-900
     rounded
     float-bottom
-    mt-0.5
+    mt-0.25
     cursor-default
     max-h-52 overflow-y-auto
-    max-w-616 overflow-x-auto
+    overflow-x-auto
+    pointer-events-none
     "
 >
     {#if cell_type === "code" && outputs}

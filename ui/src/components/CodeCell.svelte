@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
     import { onMount } from "svelte";
     import { id_map, cells } from "../stores/notebook";
     export let cell_id;
@@ -7,8 +7,8 @@
     // height and width
     let height = 0;
     let width = 0;
-    $: cell.metadata.gm.height = height;
-    $: cell.metadata.gm.width = width;
+    $: cell.height = height;
+    $: cell.width = width;
     onMount(() => {
         $cells[$id_map[cell_id]] = cell;
     });
@@ -17,11 +17,11 @@
     let top = 0;
     let left = 0;
     onMount(() => {
-        top = cell.metadata.gm.top;
-        left = cell.metadata.gm.left;
+        top = cell.top;
+        left = cell.left;
     });
-    $: top = cell.metadata.gm.top;
-    $: left = cell.metadata.gm.left;
+    $: top = cell.top;
+    $: left = cell.left;
 
     let moving = false;
     let clicked_x = 0;
@@ -43,16 +43,16 @@
     let mouseUp = function () {
         moving = false;
         // snap to grid
-        // cell.metadata.gm.top = Math.round(top / 12.5) * 12.5;
-        // cell.metadata.gm.left = Math.round(left / 12.5) * 12.5;
+        // cell.top = Math.round(top / 12.5) * 12.5;
+        // cell.left = Math.round(left / 12.5) * 12.5;
 
         $cells[$id_map[cell_id]] = cell;
     };
     import { zoom } from "../stores/zoom";
     let mouseMove = function (event) {
         if (moving) {
-            cell.metadata.gm.top = (event.pageY - clicked_y) / $zoom;
-            cell.metadata.gm.left = (event.pageX - clicked_x) / $zoom;
+            cell.top = (event.pageY - clicked_y) / $zoom;
+            cell.left = (event.pageX - clicked_x) / $zoom;
             $cells[$id_map[cell_id]] = cell;
         }
     };
@@ -68,8 +68,6 @@
     let primary_button;
     let cell_state = CellStates.Idle;
     async function primary_button_click() {
-        console.log("disabling button");
-
         cell_state = CellStates.Queued;
         $cells[$id_map[cell_id]]["outputs"] = [];
         console.log("sending message");
@@ -121,11 +119,12 @@
     p-0.5
     shadow-md shadow-zinc-300 dark:shadow-neutral-900/50
     border
+    border-gray-300 dark:border-neutral-800
     active:border-gray-400 dark:active:border-neutral-800
     {focus ? 'border-sky-400' : 'border-gray-300 dark:border-vs-dark'}
     rounded-md
-    absolute flex  justify-center overflow-visible 
-    cursor-grab 
+    absolute flex justify-center overflow-visible
+    cursor-grab
     active:cursor-grabbing
     w-fit
     min-h-[30px]"
@@ -137,9 +136,9 @@
     bind:this={cell_div}
 >
     <div
-        class="w-6 
+        class="w-6
         rounded-md
-        flex flex-col 
+        flex flex-col
         "
         id="sidebar"
     >
@@ -164,7 +163,7 @@
     </div>
     <div class="w-auto h-full flex flex-col" id="not-sidebar">
         <CodeEditor {cell_id} bind:focus />
-        {#if cell.outputs !== undefined}
+        {#if cell.outputs.length > 0}
             <Outputs {cell_id} />
         {/if}
     </div>
@@ -172,4 +171,32 @@
     <NewCellToolbar {cell_id} />
 </div>
 
-<svelte:window on:mouseup={mouseUp} on:mousemove={mouseMove} />
+<svelte:window on:mouseup={mouseUp} on:mousemove={mouseMove} /> -->
+
+<script lang="ts">
+    import Cell from "./Cell.svelte";
+    import { id_map, cells } from "../stores/notebook";
+    import Outputs from "./cell_components/Outputs.svelte";
+
+    export let cell_id;
+
+    $: cell = $cells[$id_map[cell_id]];
+
+    import CodeEditor from "./cell_components/CodeEditor.svelte";
+    import { onMount } from "svelte";
+    let focus;
+</script>
+
+<Cell {cell}>
+    <!-- <div class="w-6rounded-md flex flex-col">
+        <button id="primary-button">a </button>
+    </div>--
+    <div class="w-auto h-full flex flex-col"> -->
+    <CodeEditor {cell_id} bind:focus />
+    {#if cell.outputs.length > 0}
+        <Outputs {cell_id} />
+    {/if}
+
+    <!-- </div> -->
+    <!-- </div> -->
+</Cell>

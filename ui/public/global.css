@@ -11,7 +11,6 @@ body {
 	box-sizing: border-box;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 	font-size: 12px;
-
 }
 
 @media (prefers-color-scheme: dark) {
@@ -80,17 +79,18 @@ button:focus {
 
 /* Track */
 ::-webkit-scrollbar-track {
-	background: #e2e2e2;
+	background: rgb(244, 244, 244);
+	width: 2px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-	background: #b5b5b5;
+	background: rgb(220, 220, 220);
 }
 
 /* right corner color */
 ::-webkit-scrollbar-corner {
-	background: #e2e2e2;
+	background: rgb(244, 244, 244);
 }
 
 /* border-radius */
@@ -103,17 +103,17 @@ button:focus {
 
 	/* Track */
 	::-webkit-scrollbar-track {
-		background: #646464;
+		background: rgb(35, 35, 35)
 	}
 
 	/* Handle */
 	::-webkit-scrollbar-thumb {
-		background: rgb(157, 157, 157);
+		background: rgb(55, 55, 55);
 	}
 
 	/* right corner color */
 	::-webkit-scrollbar-corner {
-		background: #646464;
+		background: rgb(35, 35, 35);
 	}
 }
 
@@ -150,7 +150,49 @@ h5,
 h6 {
 	color: black;
 	margin-block-start: 5px;
-	margin-block-end: 5px
+	margin-block-end: 5px;
+}
+
+.milkdown h1 {
+	font-size: xx-large;
+	font-weight: 700;
+}
+
+.milkdown h2 {
+	font-size: x-large;
+	font-weight: 700;
+}
+
+.milkdown h3 {
+	font-size: large;
+	font-weight: 700;
+}
+
+.milkdown h4 {
+	font-size: medium;
+	font-weight: 700;
+}
+
+.milkdown h5 {
+	font-size: small;
+	font-weight: 700;
+}
+
+.milkdown h6 {
+	font-size: x-small;
+	font-weight: 700;
+}
+
+.ProseMirror {
+	padding-left: 0.5rem;
+	padding-bottom: 0.1rem;
+	padding-top: 0.1rem;
+	padding-right: 0.5rem;
+	white-space: pre-wrap;
+}
+
+.ProseMirror pre {
+	white-space: pre-wrap;
 }
 
 @media (prefers-color-scheme: dark) {

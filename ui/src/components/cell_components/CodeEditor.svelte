@@ -35,12 +35,12 @@
     let n_lines = 1;
     let max_columns = 0;
 
-    $: height = Math.ceil(n_lines * 20);
+    $: height = Math.ceil(n_lines * 21);
     $: width = Math.ceil(max_columns * 8) + 50;
     $: width = Math.min(width, max_width);
     let value = "";
     $: if ($notebook["cells"][$id_map[cell_id]].source !== "") {
-        value = $notebook["cells"][$id_map[cell_id]].source.join(" ");
+        value = $notebook["cells"][$id_map[cell_id]].source.join("\n");
     }
 
     function get_max_columns() {
@@ -134,7 +134,11 @@
     });
 </script>
 
-<div class="cell-input" style="height: {height}px; width: {width}px;">
+<div
+    class="cell-input"
+    style="height: {height}px; width: {width}px;"
+    id="cell-input"
+>
     <div class="codeeditor" bind:this={container} />
 </div>
 
@@ -144,7 +148,7 @@
         overflow: hidden;
         float: top;
         position: relative;
-        /* border: solid 1px rgba(0, 0, 0, 0.08); */
+        border: solid 1px rgba(0, 0, 0, 0.15);
         border-radius: 4px;
         background-color: transparent;
         min-height: 25px;

@@ -46,7 +46,7 @@ class Kernel:
         self._busy = value
 
     def __del__(self) -> None:
-        print("shutting down kernel")
+        log.debug("Shutting down kernel")
         # self.kernel_manager.shutdown_kernel()
         # if self.kernel_client:
         #     self.kernel_client.stop_channels()
@@ -99,7 +99,7 @@ class Kernel:
         return output
 
     async def execute(self, code: str, msg_queue: asyncio.Queue):
-        log.debug(f"Executing: {code}")
+        log.debug(f"executing: {code}")
 
         if self.kernel_client is None:
             log.debug("Kernel not started")
@@ -112,8 +112,7 @@ class Kernel:
             code = "\n".join(code)
             self.kernel_client.execute(code)
             client_execute_reply = await self.kernel_client.get_shell_msg()
-            # log.debug(f"client_execute_reply: {client_execute_reply}")
-            # return JSONResponse({"status": "ok"})
+            log.debug(f"client_execute_reply: {client_execute_reply}")
 
         async def proc_io_msgs() -> None:
             self.busy = True
@@ -126,7 +125,6 @@ class Kernel:
                     #
                     if msg["msg_type"] == "status":
                         if msg["content"]["execution_state"] == "idle":
-                            log.debug("Kernel idle")
                             self.busy = False
                         msg = {
                             "msg_type": "status",
@@ -142,7 +140,7 @@ class Kernel:
                     msg_queue.put_nowait(msg)
                     log.debug(f"+msg_queue size: {msg_queue.qsize()}")
                 except queue.Empty:
-                    log.debug("No more messages")
+                    log.debug("msg_queue empty")
                     pass
 
         loop = asyncio.get_event_loop()

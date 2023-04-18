@@ -1,5 +1,4 @@
 <script lang="ts">
-    import CodeCell from "./CodeCell.svelte";
     import { onMount } from "svelte";
     import { id_map, cells } from "../stores/notebook";
     export let cell_id;
@@ -8,22 +7,25 @@
     // height and width
     let height = 0;
     let width = 0;
-    // $: cell.metadata.gm.height = height;
-    // $: cell.metadata.gm.width = width;
+    // $: cell.height = height;
+    // $: cell.width = width;
     $: if (cell) {
-        cell.metadata.gm.height = height;
-        cell.metadata.gm.width = width;
+        cell.height = height;
+        cell.width = width;
     }
+    onMount(() => {
+        $cells[$id_map[cell_id]] = cell;
+    });
 
     // draggability
     let top = 0;
     let left = 0;
     onMount(() => {
-        top = cell.metadata.gm.top;
-        left = cell.metadata.gm.left;
+        top = cell.top;
+        left = cell.left;
     });
-    $: top = cell.metadata.gm.top;
-    $: left = cell.metadata.gm.left;
+    $: top = cell.top;
+    $: left = cell.left;
 
     let moving = false;
     let clicked_x = 0;
@@ -45,29 +47,47 @@
     let mouseUp = function () {
         moving = false;
         // snap to grid
-        top = Math.round(top / 12.5) * 12.5;
-        left = Math.round(left / 12.5) * 12.5;
+        // top = Math.round(top / 12.5) * 12.5;
+        // left = Math.round(left / 12.5) * 12.5;
+
+        $cells[$id_map[cell_id]] = cell;
     };
     import { zoom } from "../stores/zoom";
     let mouseMove = function (event) {
         if (moving) {
-            cell.metadata.gm.top = (event.pageY - clicked_y) / $zoom;
-            cell.metadata.gm.left = (event.pageX - clicked_x) / $zoom;
+            cell.top = (event.pageY - clicked_y) / $zoom;
+            cell.left = (event.pageX - clicked_x) / $zoom;
+            $cells[$id_map[cell_id]] = cell;
         }
     };
 
     import { Editor, rootCtx, defaultValueCtx } from "@milkdown/core";
     import { commonmark } from "@milkdown/preset-commonmark";
+    import { children } from "svelte/internal";
 
     function editor(dom) {
         Editor.make()
             .config((ctx) => {
                 ctx.set(rootCtx, dom);
-                ctx.set(defaultValueCtx, cell.source.join(""));
+                ctx.set(defaultValueCtx, cell.source.join("\n"));
             })
             .use(commonmark)
             .create();
     }
+
+    // children height and width
+    // let tissue_height = 0;
+    // let tissue_width = 0;
+    // onMount(() => {
+    //     let children = cell.children;
+    //     for (let i = 0; i < children.length; i++) {
+    //         console.log("children[i]", children[i]);
+    //         tissue_height += $cells[$id_map[children[i]]].height;
+    //         tissue_width += $cells[$id_map[children[i]]].width;
+    //     }
+    //     console.log("tissue_height", tissue_height);
+    //     console.log("tissue_width", tissue_width);
+    // });
 </script>
 
 <div
@@ -75,110 +95,45 @@
     top: {top}px; 
     left: {left}px;
     "
-    class="cell"
+    class="
+    bg-neutral-200/70 dark:bg-neutral-700/40
+    p-0.5
+    rounded-md
+    shadow-md shadow-zinc-300 dark:shadow-neutral-900/50
+    border border-gray-300 dark:border-gray-700
+    hover:border-gray-400 dark:hover:border-gray-600
+    active:border-gray-500 dark:active:border-gray-500
+    w-fit
+    h-fit
+    cursor-grab
+    absolute
+    flex
+    flex-col
+    justify-center
+    resize
+    min-w-300
+    overflow-visible
+    "
     id="cell"
-    on:mousedown|self={mouseDown}
+    on:mousedown={mouseDown}
+    bind:clientHeight={height}
+    bind:clientWidth={width}
 >
-    <div class="sidebar" id="sidebar">
-        <div class="collapse-button" />
+    <div class="flex flex-row">
+        <div class="w-6 rounded-md flex flex-col" id="sidebar">
+            <div class="collapse-button" />
+        </div>
+        <div
+            class="w-auto h-full flex flex-col pt-1 pb-1 pr-1"
+            id="not-sidebar"
+        >
+            <div
+                use:editor
+                class="bg-gray-50/100 dark:bg-neutral-800/100 w-full h-fit mr-10 rounded-sm"
+            />
+        </div>
     </div>
-    <div class="not-sidebar" id="not-sidebar">
-        <div use:editor class="md-editor" />
-    </div>
+    <div class="bg-red-500 rounded-md bottom-0 w-full h-full" />
 </div>
-<!-- <div class="children" style="top: {top + 25}px; left: {left}px;">
-    {#each cell.metadata.gm.children as child_id}
-        {#if $cells[$id_map[child_id]].cell_type === "code"}
-            <CodeCell cell_id={child_id} />
-        {/if}
-        {#if $cells[$id_map[child_id]].cell_type === "markdown"}
-            <svelte:self cell_id={child_id} />
-        {/if}
-    {/each}
-</div> -->
 
 <svelte:window on:mouseup={mouseUp} on:mousemove={mouseMove} />
-
-<style>
-    .cell {
-        top: 100px;
-        left: 100px;
-
-        background-color: rgba(230, 230, 230, 0.455);
-        box-shadow: rgba(17, 17, 26, 0.1) 0px 3px 12px,
-            rgba(17, 17, 26, 0.05) 0px 6px 24px;
-        border: solid 1px rgb(170, 170, 170);
-        border-radius: 6px;
-        position: absolute;
-        display: flex;
-        padding: 5px 0px 5px 2px;
-
-        cursor: grab;
-
-        width: fit-content;
-        height: fit-content;
-
-        min-width: 300px;
-        min-height: 25px;
-    }
-    .cell:hover {
-        border: solid 1px #c7c7c7;
-    }
-    .cell:active {
-        border: solid 1px #b7b7b7;
-        cursor: grabbing;
-    }
-    .sidebar {
-        width: 25px;
-        border-radius: 5px;
-        float: left;
-        flex-direction: column;
-        padding-top: 2px;
-        padding-right: 2px;
-    }
-
-    .not-sidebar {
-        width: auto;
-        height: 100%;
-        float: right;
-        display: flex;
-        flex-direction: column;
-        margin-left: 0px;
-
-        align-items: middle;
-    }
-
-    .md-editor {
-        height: fit-content;
-        width: fit-content;
-        min-width: 200px;
-        margin: 5px 0px 5px 0px;
-    }
-
-    .children {
-        width: 100px;
-        height: max-content;
-        display: flex;
-        flex-direction: column;
-        margin-left: 0px;
-        background-color: aliceblue;
-        position: absolute;
-    }
-
-    /* dark mode */
-    @media (prefers-color-scheme: dark) {
-        .cell {
-            background-color: rgba(30, 30, 30, 0.726);
-            border: solid 1px #2a2a2a;
-            box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px,
-                rgba(17, 17, 26, 0.05) 0px 8px 32px;
-        }
-        .cell:hover {
-            border: solid 1px #3a3a3a;
-        }
-        .cell:active {
-            border: solid 1px #4a4a4a;
-            z-index: 1;
-        }
-    }
-</style>

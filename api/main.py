@@ -30,7 +30,7 @@ app = Starlette(debug=True)
 
 @app.on_event("startup")
 async def on_startup():
-    print("startup")
+    log.info("Starting up")
 
     route_manager = RouteManager(app)
 
@@ -45,38 +45,6 @@ async def on_startup():
 
     # websocket route
     route_manager.add_websocket_route("/", comms.endpoint, "ws")
-
-    # async def send_things(request):
-    #     await notebook.send_notebook()
-    #     return JSONResponse({"status": "ok"})
-
-    # route_manager.add_route("/notebook", send_things, ["GET"], "notebook")
-
-    # print("send_notebook")
-    # await notebook_manager.send_notebook()
-
-    # get notebook route
-    # route_manager.add_route(
-    #     "/notebook", notebook_manager.send_notebook, ["GET"], "notebook"
-    # )
-    # # run cell route
-    # route_manager.add_route(
-    #     "/notebook/run/{cell_id}",
-    #     notebook_manager.run_cell,
-    #     ["POST"],
-    #     "notebook_run_cell",
-    # )
-    # # get output route
-    # route_manager.add_route(
-    #     "/notebook/output/{cell_id}",
-    #     notebook_manager.get_output,
-    #     ["GET"],
-    #     "notebook_get_output",
-    # )
-
-    # # new cell route
-    # route_manager.add_route(
-    #     "/notebook/new_cell", notebook_manager.new_cell, ["POST"], "notebook_new_cell", )
 
 
 if __name__ == "__main__":
