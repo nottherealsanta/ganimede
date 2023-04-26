@@ -24,17 +24,17 @@ function createNotebookStore() {
                 const previous_cell_index = n.cells.indexOf(previous_cell);
 
                 // set top, left for new cell
-                new_cell["metadata"]["gm"]["top"] = previous_cell["metadata"]["gm"]["top"] + previous_cell["metadata"]["gm"]["height"] + 5;
-                new_cell["metadata"]["gm"]["left"] = previous_cell["metadata"]["gm"]["left"];
+                new_cell["top"] = previous_cell["top"] + previous_cell["height"] + 5;
+                new_cell["left"] = previous_cell["left"];
 
                 // previous's next 
-                previous_cell["metadata"]["gm"]["next"] = [...previous_cell["metadata"]["gm"]["next"], new_cell.id];
+                previous_cell["next"] = [...previous_cell["next"], new_cell.id];
 
                 // insert new cell
                 n.cells.splice(previous_cell_index + 1, 0, new_cell);
 
                 // update id_map
-                n["metadata"]["gm"]["id_map"] = id_map;
+                n["id_map"] = id_map;
 
                 return n;
             });
@@ -51,11 +51,6 @@ cells.set = (value) => notebook.update(n => {
 });
 
 export const id_map = derived(notebook, $notebook => {
-    // if ($notebook["metadata"] !== undefined) {
-    //     return $notebook["metadata"]["gm"]["id_map"];
-    // } else {
-    //     return {};
-    // }
     return $notebook.id_map
 }
 );
@@ -63,3 +58,61 @@ id_map.set = (value) => notebook.update(n => {
     n["id_map"] = value;
     return n;
 });
+
+
+export function get_heading_level(source) {
+    // get markdown heading_level from source
+    const heading_level = source[0].match(/#+/g);
+
+    if (heading_level) {
+        return heading_level[0].length;
+    }
+    return null;
+}
+// create a derived store that returns the heading level of the current cell
+// {id: heading_level}
+export const heading_levels = derived(notebook, $notebook => {
+    const heading_levels = {};
+    if (!$notebook.cells) {
+        return heading_levels;
+    }
+    $notebook.cells.forEach(cell => {
+        if (cell.type === "markdown") {
+            heading_levels[cell.id] = get_heading_level(cell.source);
+        }
+    });
+    return heading_levels;
+}
+);
+
+export const heading_levels_inv = derived(heading_levels, $heading_levels => {
+    const heading_levels_inv = {
+        1: [],
+        2: [],
+        3: [],
+        4: [],
+        5: [],
+        6: [],
+    };
+    Object.entries($heading_levels).forEach(([id, level]) => {
+        if (level) {
+            heading_levels_inv[level].push(id);
+        }
+    });
+    return heading_levels_inv;
+}
+);
+
+export const parent_less_cells = derived([heading_levels, notebook], ([$heading_levels, $notebook]) => {
+    const parent_less_cells = [];
+    if (!$notebook.cells) {
+        return parent_less_cells;
+    }
+    $notebook.cells.forEach(cell => {
+        if (cell.parent === null && !$heading_levels[cell.id]) {
+            parent_less_cells.push(cell.id);
+        }
+    });
+    return parent_less_cells;
+}
+);

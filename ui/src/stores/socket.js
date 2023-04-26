@@ -33,7 +33,7 @@ export async function open_socket() {
             let method = data["method"];
             let message = data["message"];
 
-            if (data["channel"] === "notebook") {
+            if (channel === "notebook") {
                 notebook[method](message);
             }
 

@@ -58,7 +58,7 @@
 </script>
 
 <svg
-    style="position: absolute; z-index: -1; pointer-events: none;"
+    style="position: absolute; pointer-events: none;"
     width="100%"
     height="100%"
     class="edge"
@@ -93,9 +93,9 @@
                 } Z`}
             />
         {/if}
-    {:else if y2 - y1 - 4 > 0}
+        <!-- {:else if y2 - y1 - 4 > 0} -->
         <!-- gradient  -->
-        <defs>
+        <!-- <defs>
             <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
                 <stop offset="0%" stop-color="#00000033" />
                 <stop offset="50%" stop-color="#77777733" />
@@ -111,7 +111,7 @@
             style="stroke-width: 0;"
             rx="4"
             ry="4"
-        />
+        /> -->
     {/if}
 </svg>
 

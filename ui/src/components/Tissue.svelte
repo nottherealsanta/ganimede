@@ -1,24 +1,84 @@
 <script>
-    import { cells, id_map } from "../stores/notebook";
+    import { cells, id_map, heading_levels } from "../stores/notebook";
 
     let div = null;
 
     export let cell_id;
     $: cell = $cells[$id_map[cell_id]];
 
+    $: is_heading = $heading_levels[cell_id];
+
+    import mouse_pos from "../stores/mouse.js";
     import { get_mouse_pos_on_cell } from "../utils/cell_utils.js";
     $: mouse_pos_on_cell = get_mouse_pos_on_cell(cell, $mouse_pos);
 
     let inside_div_height = 0;
     $: min_height = inside_div_height + 10;
-    $: cell.height = min_height;
+    $: if (cell.height < min_height) {
+        cell.height = min_height;
+    }
 
     let inside_div_width = 0;
     $: if (cell.width < inside_div_width) {
         cell.width = inside_div_width + 10;
     }
 
-    import mouse_pos from "../stores/mouse.js";
+    // resize
+    import {
+        detect_cell_edge,
+        cell_edge_to_cursor,
+        cell_edge_to_resize_fn,
+    } from "../utils/cell_utils.js";
+
+    let resize_clicked = {
+        at: null,
+        x: 0,
+        y: 0,
+    };
+
+    function resize_mousemove(e) {
+        if (resize_clicked.at === null && cell.type !== "code") {
+            // hover
+            let cell_edge = detect_cell_edge(cell, mouse_pos_on_cell);
+            if (cell_edge) {
+                div.style.cursor = cell_edge_to_cursor(cell_edge);
+            } else {
+                div.style.cursor = "default";
+            }
+        } else {
+            // resize_clicked for resize
+            [cell.top, cell.left, cell.height, cell.width] =
+                cell_edge_to_resize_fn($mouse_pos, resize_clicked, cell);
+            if (cell.height < min_height) {
+                cell.height = min_height;
+            }
+            $cells[$id_map[cell_id]] = cell;
+        }
+    }
+
+    function resize_mousedown(e) {
+        if (
+            e.button === 0 &&
+            e.target.id === "cell" &&
+            cell.type !== "code" &&
+            !dragging
+        ) {
+            e.preventDefault();
+            resize_clicked = {
+                at: detect_cell_edge(cell, mouse_pos_on_cell),
+                x: mouse_pos_on_cell.x,
+                y: mouse_pos_on_cell.y,
+            };
+        }
+    }
+
+    function resize_mouseup(e) {
+        resize_clicked = {
+            at: null,
+            x: 0,
+            y: 0,
+        };
+    }
 
     // drag handle
     let drag_handle = null;
@@ -68,7 +128,7 @@
         dragging = false;
     }
 
-    import NewCellToolbar from "../components/cell_components/NewCellToolbar.svelte";
+    import NewCellToolbar from "./cell_components/NewCellToolbar.svelte";
 </script>
 
 <div
@@ -80,15 +140,16 @@
     opacity: {dragging ? 0.75 : 1};
     "
     class="
-    bg-white dark:bg-vs-dark
+    bg-gray-50/50 dark:bg-neutral-800/50
     absolute rounded-lg
-    border
-    border-gray-300 dark:border-neutral-800
+    border-2
+    border-gray-500 dark:border-gray-400
     shadow-md shadow-zinc-300 dark:shadow-neutral-900/50
     flex overflow-visible p-1 cursor-default
     "
     id="cell"
     bind:this={div}
+    on:mousedown={resize_mousedown}
 >
     <!-- this inside div exists to get the height and width of the content -->
     <div
@@ -126,6 +187,8 @@
 </div>
 
 <svelte:window
+    on:mouseup={resize_mouseup}
+    on:mousemove={resize_mousemove}
     on:mouseup={drag_handle_mouseup}
     on:mousemove={drag_handle_mousemove}
 />

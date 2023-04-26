@@ -1,5 +1,4 @@
-from os import getcwd, urandom
-from base64 import urlsafe_b64encode
+from os import getcwd
 import json
 import asyncio
 import logging
@@ -7,91 +6,9 @@ from pathlib import Path
 
 from managers.Kernel import Kernel
 from managers.Comms import Comms
+from managers.Cell import Cell
 
 log = logging.getLogger(__name__)
-
-
-def _generate_random_cell_id(id_length: int = 8) -> str:
-    n_bytes = max(id_length * 3 // 4, 1)
-    return urlsafe_b64encode(urandom(n_bytes)).decode("ascii").rstrip("=")
-
-
-class Cell:
-    def __init__(
-        self,
-        id: str = None,
-        cell_type: str = "code",
-        source: list = "",
-        execution_count: int = None,
-        outputs: list = [],
-        top: int = 0,
-        left: int = 0,
-        height: int = 0,
-        width: int = 0,
-        prev: list = [],
-        next: list = [],
-        parent: str = None,
-        children: list = [],
-    ):
-        self.id = id if id else _generate_random_cell_id()
-        self.cell_type = cell_type
-        self.source = source
-
-        self.execution_count = execution_count
-        self.outputs = outputs
-
-        self.top = top
-        self.left = left
-        self.height = height
-        self.width = width
-
-        self.prev = prev
-        self.next = next
-        self.parent = parent
-        self.children = children
-
-    def to_dict(self) -> dict:
-        return self.__dict__
-
-    def save(self) -> dict:
-        return {
-            "cell_type": self.cell_type,
-            "source": self.source,
-            "metadata": {
-                "gm": {
-                    "top": self.top,
-                    "left": self.left,
-                    "height": self.height,
-                    "width": self.width,
-                    "prev": self.prev,
-                    "next": self.next,
-                    "parent": self.parent,
-                    "children": self.children,
-                }
-            },
-        }
-
-    def set(self, **kwargs):
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-
-    def get(self, key):
-        return getattr(self, key)
-
-    @property
-    def is_heading(self):
-        if self.cell_type == "markdown":
-            if any(line.lstrip().startswith("#") for line in self.source):
-                return True
-        return False
-
-    @property
-    def heading_level(self):
-        if self.is_heading:
-            for line in self.source:
-                if line.lstrip().startswith("#"):
-                    return line.count("#")
-        return None
 
 
 class Notebook:
@@ -159,15 +76,13 @@ class Notebook:
 
     def init_cells(self):
         for cell in self.notebook_file["cells"]:
-            cell_id = cell["id"] if "id" in cell else _generate_random_cell_id()
-
             metadata = cell["metadata"] if "metadata" in cell else {}
             gm_metadata = metadata["gm"] if "gm" in metadata else {}
 
             self.cells.append(
                 Cell(
-                    id=cell_id,
-                    cell_type=cell["cell_type"],
+                    id=None,
+                    type=cell["cell_type"],
                     source=cell["source"],
                     execution_count=cell["execution_count"]
                     if "execution_count" in cell
@@ -182,13 +97,13 @@ class Notebook:
         for cell in self.cells:
             log.debug(
                 f"""cell.id {cell.id}
-            cell.type {cell.cell_type}
+            cell.type {cell.type}
             cell.source \n{"".join(cell.source)}
             cell.is_heading {cell.is_heading}
             cell.heading_level {cell.heading_level}
             cell.next {cell.next}
             cell.prev {cell.prev}
-            cell.parnet {cell.parent}
+            cell.parent {cell.parent}
             cell.children {cell.children}
             """
             )
@@ -225,10 +140,16 @@ class Notebook:
                     if (
                         self.cells[i].is_heading
                         and self.cells[i].heading_level
-                        <= self.cells[index].heading_level
+                        == self.cells[index].heading_level
                     ):
                         self.cells[index].next = [self.cells[i].id]
                         self.cells[i].prev = [self.cells[index].id]
+                        break
+                    if (
+                        self.cells[i].is_heading
+                        and self.cells[i].heading_level
+                        < self.cells[index].heading_level
+                    ):
                         break
 
                     if len(children) > 0:
@@ -267,6 +188,15 @@ class Notebook:
                     self.cells[x_idx].next = [y_id]
                     self.cells[y_idx].prev = [x_id]
 
+        # connect the parent_less cells
+        for i, cell in enumerate(self.cells):
+            if cell.parent is None and not cell.is_heading:
+                if i == 0:
+                    continue
+                prev_id = self.cells[i - 1].id
+                cell.prev = [prev_id]
+                self.cells[i - 1].next = [cell.id]
+
     # def add_metadata(self):
     #     for i in range(len(self.cells)):
     #         self.id_map[self.cells[i].id] = i
@@ -287,7 +217,6 @@ class Notebook:
     #     log.debug("saving notebook")
     #     self.notebook["cells"] = [cell.save() for cell in self.cells]
     #     self.notebook["metadata"]["gm"]["id_map"] = self.id_map
-
     #     with open(self.notebook_path, "w") as f:
     #         json.dump(self.notebook, f, indent=2)
 

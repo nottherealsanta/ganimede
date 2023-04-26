@@ -3,8 +3,11 @@
     import { zoom } from "../stores/zoom";
     import { socket, open_socket, send_message } from "../stores/socket";
     import { onMount } from "svelte";
+    let canvas_div = null;
 
     // zoom
+    import mouse_pos from "../stores/mouse.js";
+
     window.addEventListener(
         "wheel",
         function (e) {
@@ -12,14 +15,17 @@
                 e.preventDefault();
                 $zoom -= e.deltaY / 250;
                 if ($zoom < 0.1) $zoom = 0.1;
-                // this.document.body.style.zoom = $zoom;
+                if ($zoom > 10) $zoom = 10;
+                this.window.scrollTo(
+                    $mouse_pos.x - (e.clientX - e.target.offsetLeft),
+                    $mouse_pos.y - (e.clientY - e.target.offsetTop)
+                );
             }
         },
         { passive: false }
     );
 
     // middle mouse to pan
-    let canvas_div = null;
     let moving = false;
     let clicked_x = 0;
     let clicked_y = 0;
@@ -45,6 +51,8 @@
 
     onMount(() => {
         open_socket();
+        // TODO: check config for user-saved view-x, view-y, view-zoom
+        // window.scrollTo(5000, 5000);
     });
 </script>
 

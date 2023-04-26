@@ -85,7 +85,7 @@ button:focus {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-	background: rgb(220, 220, 220);
+	background: rgb(210, 210, 210);
 }
 
 /* right corner color */
@@ -154,32 +154,32 @@ h6 {
 }
 
 .milkdown h1 {
-	font-size: xx-large;
-	font-weight: 700;
-}
-
-.milkdown h2 {
 	font-size: x-large;
 	font-weight: 700;
 }
 
-.milkdown h3 {
+.milkdown h2 {
 	font-size: large;
 	font-weight: 700;
 }
 
-.milkdown h4 {
+.milkdown h3 {
 	font-size: medium;
 	font-weight: 700;
 }
 
-.milkdown h5 {
+.milkdown h4 {
 	font-size: small;
 	font-weight: 700;
 }
 
-.milkdown h6 {
+.milkdown h5 {
 	font-size: x-small;
+	font-weight: 700;
+}
+
+.milkdown h6 {
+	font-size: xx-small;
 	font-weight: 700;
 }
 
