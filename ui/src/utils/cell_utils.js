@@ -1,7 +1,10 @@
 export function get_mouse_pos_on_cell(cell, mouse_pos) {
   // check if mouse is inside cell
-  if (mouse_pos.x > cell.left - 16 && mouse_pos.x < cell.left + cell.width &&
-    mouse_pos.y > cell.top && mouse_pos.y < cell.top + cell.height) {
+  let padding = 16;
+  // if (mouse_pos.x > cell.left - 16 && mouse_pos.x < cell.left + cell.width &&
+  //   mouse_pos.y > cell.top && mouse_pos.y < cell.top + cell.height) {
+  if (mouse_pos.x > cell.left - padding && mouse_pos.x < cell.left + cell.width + padding &&
+    mouse_pos.y > cell.top - padding && mouse_pos.y < cell.top + cell.height + padding) {
     return {
       x: mouse_pos.x - cell.left,
       y: mouse_pos.y - cell.top

@@ -1,7 +1,7 @@
 <script>
     export let cell_id;
 
-    import { id_map, cells } from "../../stores/notebook";
+    import { id_map, cells, notebook } from "../../stores/notebook";
     $: cell = $cells[$id_map[cell_id]];
 
     let hover = false;
@@ -17,43 +17,35 @@
     let div = null;
     // run
     import { send_message } from "../../stores/socket";
-    const CellStates = {
-        Idle: "idle",
-        Queued: "queued",
-        Running: "running",
-        Done: "done",
-    };
-    let cell_state = CellStates.Idle;
     async function primary_button_click() {
-        if (cell_state !== CellStates.Idle) {
+        if ($cells[$id_map[cell_id]].state !== "idle") {
             return;
         }
-        cell_state = CellStates.Queued;
+        $cells[$id_map[cell_id]].state = "queued";
         $cells[$id_map[cell_id]]["outputs"] = [];
         console.log("sending message");
         send_message({
             channel: "notebook",
-            method: "run",
+            method: "queue_cell",
             message: {
                 cell_id: cell_id,
                 code: cell.source,
             },
         });
 
-        $cells[$id_map[cell_id]] = cell;
-
         // disable button for 1 second
         // disable max (500ms, cell_state === "running")
         // disable till resposse of state
         setTimeout(() => {
-            cell_state = CellStates.Idle;
+            //pass
         }, 500);
     }
 </script>
 
 <div
     class="bg-transparent hover:bg-neutral-100 dark:hover:bg-neutral-800 active:bg-neutral-200 dark:active:bg-neutral-700
-    flex w-6 h-6 p-0 m-0 border border-zinc-100 dark:border-neutral-800 rounded items-center justify-center mr-1"
+    flex w-6 h-6 p-0 m-0 border border-zinc-100 dark:border-neutral-800 rounded items-center justify-center mr-1
+    stroke-black dark:stroke-white fill-black dark:fill-white"
     on:click={(e) => {
         e.stopPropagation();
         primary_button_click();
@@ -67,36 +59,69 @@
     }}
     bind:this={div}
 >
-    {#if hover}
+    {#if $cells[$id_map[cell_id]].state == "idle"}
+        {#if hover}
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 55 55"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
+                <polygon points="19 12 19 43 43 27.5 19 12" />
+            </svg>
+        {:else}
+            <div class="font-mono text-[11px]">{execution_count}</div>
+        {/if}
+    {:else if $cells[$id_map[cell_id]].state == "queued"}
         <svg
+            version="1.1"
+            id="L9"
             xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 55 55"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="3"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="run-button-svg"
+            x="0px"
+            y="0px"
+            viewBox="0 0 100 100"
+            enable-background="new 0 0 0 0"
         >
-            <polygon points="19 12 19 43 43 27.5 19 12" />
+            <path
+                d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50"
+            >
+                <animateTransform
+                    attributeName="transform"
+                    type="rotate"
+                    dur="5s"
+                    from="360 50 50"
+                    to="0 50 50"
+                    repeatCount="indefinite"
+                />
+            </path>
         </svg>
-    {:else}
-        <div class="font-mono text-[11px]">{execution_count}</div>
+    {:else if $cells[$id_map[cell_id]].state == "running"}
+        <svg
+            version="1.1"
+            id="L9"
+            xmlns="http://www.w3.org/2000/svg"
+            x="0px"
+            y="0px"
+            viewBox="0 0 100 100"
+            enable-background="new 0 0 0 0"
+        >
+            <path
+                d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50"
+            >
+                <animateTransform
+                    attributeName="transform"
+                    type="rotate"
+                    dur="1s"
+                    from="0 50 50"
+                    to="360 50 50"
+                    repeatCount="indefinite"
+                />
+            </path>
+        </svg>
     {/if}
 </div>
-
-<style>
-    .run-button-svg {
-        color: #000000;
-        margin: 0 auto;
-        display: block;
-    }
-    /* dark mode */
-    @media (prefers-color-scheme: dark) {
-        .run-button-svg {
-            color: rgba(209, 209, 209, 1);
-        }
-    }
-</style>

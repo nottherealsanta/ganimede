@@ -1,5 +1,6 @@
 import { derived, writable } from "svelte/store";
 import { get } from 'svelte/store';
+import { send_message } from "../stores/socket";
 
 function createNotebookStore() {
     const { subscribe, set, update } = writable({});
@@ -14,6 +15,7 @@ function createNotebookStore() {
                 if (cell) {
                     cell.outputs = [...cell.outputs, output];
                 }
+                n.cells[get(id_map)[cell_id]] = cell;
                 return n;
             }
             );
@@ -22,26 +24,26 @@ function createNotebookStore() {
             update(n => {
                 const previous_cell = n.cells[id_map[previous_cell_id]];
                 const previous_cell_index = n.cells.indexOf(previous_cell);
-
                 // set top, left for new cell
                 new_cell["top"] = previous_cell["top"] + previous_cell["height"] + 5;
                 new_cell["left"] = previous_cell["left"];
-
                 // insert new cell
                 n.cells.splice(previous_cell_index + 1, 0, new_cell);
-
                 // update id_map
                 n["id_map"] = id_map;
-
                 // update np_graph
                 n["np_graph"] = np_graph
-
                 // update pc_graph
                 n["pc_graph"] = pc_graph
-
-
                 return n;
             });
+        },
+        change_cell_state: ({ cell_id, state }) => {
+            update(n => {
+                n.cells[get(id_map)[cell_id]].state = state;
+                return n;
+            }
+            );
         },
     };
 }

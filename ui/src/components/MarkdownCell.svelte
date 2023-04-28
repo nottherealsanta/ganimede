@@ -15,7 +15,7 @@
         Editor.make()
             .config((ctx) => {
                 ctx.set(rootCtx, dom);
-                ctx.set(defaultValueCtx, cell.source.join("\n"));
+                ctx.set(defaultValueCtx, cell.source.join(""));
             })
             .use(commonmark)
             .create();
@@ -26,14 +26,14 @@
     <Tissue {cell_id}>
         <div
             use:editor
-            class="bg-gray-50 dark:bg-neutral-800 w-full h-fit mr-1 mt-1 mb-1 ml-1 rounded"
+            class="bg-gray-50 dark:bg-neutral-800 w-full h-fit m-1 rounded"
         />
     </Tissue>
 {:else}
     <Cell {cell_id}>
         <div
             use:editor
-            class="bg-gray-50 dark:bg-neutral-800 w-full h-fit mr-1 mt-1 mb-1 ml-1 rounded"
+            class="bg-gray-50 dark:bg-neutral-800 w-fit h-fit m-1 rounded"
         />
     </Cell>
 {/if}

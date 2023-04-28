@@ -1,6 +1,7 @@
 from os import getcwd
 import json
 import asyncio
+import queue
 import logging
 from pathlib import Path
 
@@ -16,7 +17,7 @@ class Notebook:
         self,
         kernel: Kernel,
         comms: Comms,
-        notebook_path: str = Path(f"{getcwd()}/tests/test2.ipynb"),
+        notebook_path: str = Path(f"{getcwd()}/tests/test0.ipynb"),
     ):
         self.kernel = kernel
         self.comms = comms
@@ -34,8 +35,10 @@ class Notebook:
 
         # websocket message queue
         self.comms_queue = comms.channel_queues["notebook"]
-
         asyncio.create_task(self.listen_comms())
+
+        self.run_queue = asyncio.Queue()
+        asyncio.create_task(self.run_queue_loop())
 
     @property
     def id_map(self):
@@ -144,8 +147,6 @@ class Notebook:
                         and self.cells[i].heading_level
                         == self.cells[index].heading_level
                     ):
-                        # self.cells[index].next = [self.cells[i].id]
-                        # self.cells[i].prev = [self.cells[index].id]
                         self.np_graph[self.cells[index].id] = [self.cells[i].id]
                         break
                     if (
@@ -157,8 +158,6 @@ class Notebook:
 
                     if len(children) > 0:
                         prev = children[-1]
-                        # self.cells[prev].next = [self.cells[i].id]
-                        # self.cells[i].prev = [self.cells[prev].id]
                         self.np_graph[self.cells[prev].id] = [self.cells[i].id]
                     children.append(i)
 
@@ -167,18 +166,13 @@ class Notebook:
                         and self.cells[i].heading_level
                         > self.cells[index].heading_level
                     ):
-                        # last_child_id = self.cells[i].children[-1]
-                        # last_child_idx = self.id_map[last_child_id]
                         last_child_id = self.pc_graph[self.cells[i].id][-1]
                         last_child_idx = self.id_map[last_child_id]
 
-                        # while len(self.cells[last_child_idx].children) > 0:
                         while (
                             self.cells[last_child_idx].id in self.pc_graph
                             and len(self.pc_graph[self.cells[last_child_idx].id]) > 0
                         ):
-                            # last_child_id = self.cells[last_child_idx].children[-1]
-                            # last_child_idx = self.id_map[last_child_id]
                             last_child_id = self.pc_graph[
                                 self.cells[last_child_idx].id
                             ][-1]
@@ -190,11 +184,7 @@ class Notebook:
 
                     i += 1
 
-                # self.cells[index].children = [self.cells[i].id for i in children]
-                # self.pc_graph[self.cells[index].id] =
-
                 for child in children:
-                    # self.cells[child].parent = self.cells[index].id
                     if self.cells[index].id not in self.pc_graph:
                         self.pc_graph[self.cells[index].id] = []
                     self.pc_graph[self.cells[index].id].append(self.cells[child].id)
@@ -204,8 +194,6 @@ class Notebook:
                     y_id = self.pc_graph[self.cells[index].id][i + 1]
                     x_idx = self.id_map[x_id]
                     y_idx = self.id_map[y_id]
-                    # self.cells[x_idx].next = [y_id]
-                    # self.cells[y_idx].prev = [x_id]
                     self.np_graph[x_id] = [y_id]
 
         # connect the parent_less cells
@@ -220,6 +208,29 @@ class Notebook:
         for i, cell in enumerate(parent_less_cells):
             idx = self.id_map[cell]
             self.np_graph[cell] = [self.cells[idx + 1].id]
+
+    async def queue_cell(self, cell_id: str, code: list[str]):
+        log.debug(f"queue_cell: {cell_id}")
+        self.run_queue.put_nowait((cell_id, code))
+
+    async def run_queue_loop(self):
+        while True:
+            cell_id, code = await self.run_queue.get()
+            self._change_cell_state(cell_id, "running")
+            await self.run(cell_id, code)
+
+    def _change_cell_state(self, cell_id: str, state: str):
+        self.cells[self.id_map[cell_id]].state = state
+        self.comms.send(
+            {
+                "channel": "notebook",
+                "method": "change_cell_state",
+                "message": {
+                    "cell_id": cell_id,
+                    "state": state,
+                },
+            }
+        )
 
     async def run(self, cell_id: str, code: list[str]):
         msg_queue = asyncio.Queue()
@@ -249,6 +260,7 @@ class Notebook:
                 and "execution_state" in msg
                 and msg["execution_state"] == "idle"
             ):  # last message
+                self._change_cell_state(cell_id, "idle")
                 break
 
             # TODO: move this to output setter
@@ -278,6 +290,7 @@ class Notebook:
 
         new_cell = Cell(
             type="code",
+            source=[],
         )
 
         self.cells.insert(self.id_map[previous_cell_id] + 1, new_cell)

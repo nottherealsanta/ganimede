@@ -41,6 +41,46 @@
         y: 0,
     };
 
+    function resize_mousedown(e) {
+        if (
+            e.button === 0 &&
+            e.target.id === "tissue" &&
+            cell.type !== "code" &&
+            !dragging
+        ) {
+            e.preventDefault();
+            resize_clicked = {
+                at: detect_cell_edge(cell, mouse_pos_on_cell),
+                x: mouse_pos_on_cell.x,
+                y: mouse_pos_on_cell.y,
+            };
+            //  get x and y bound by looking at tissue's children
+            let children = $pc_graph[cell_id];
+            let x_bounds = [cell.left + cell.width, cell.left];
+            let y_bounds = [cell.top + cell.height, cell.top];
+            console.log("> bounds: ", x_bounds, y_bounds);
+            for (let child of children) {
+                let child_cell = $cells[$id_map[child]];
+                x_bounds[0] = Math.min(x_bounds[0], child_cell.left);
+                x_bounds[1] = Math.max(
+                    x_bounds[1],
+                    child_cell.left + child_cell.width
+                );
+                y_bounds[0] = Math.min(y_bounds[0], child_cell.top);
+                y_bounds[1] = Math.max(
+                    y_bounds[1],
+                    child_cell.top + child_cell.height
+                );
+            }
+            x_bounds[0] -= 25;
+            x_bounds[1] += 25;
+            y_bounds[0] -= min_height + 10;
+            y_bounds[1] += 25;
+            resize_clicked.x_bounds = x_bounds;
+            resize_clicked.y_bounds = y_bounds;
+        }
+    }
+
     function resize_mousemove(e) {
         if (resize_clicked.at === null && cell.type !== "code") {
             // hover
@@ -57,23 +97,22 @@
             if (cell.height < min_height) {
                 cell.height = min_height;
             }
-            $cells[$id_map[cell_id]] = cell;
-        }
-    }
 
-    function resize_mousedown(e) {
-        if (
-            e.button === 0 &&
-            e.target.id === "cell" &&
-            cell.type !== "code" &&
-            !dragging
-        ) {
-            e.preventDefault();
-            resize_clicked = {
-                at: detect_cell_edge(cell, mouse_pos_on_cell),
-                x: mouse_pos_on_cell.x,
-                y: mouse_pos_on_cell.y,
-            };
+            // bound
+            if (cell.left < resize_clicked.x_bounds[0]) {
+                cell.left = resize_clicked.x_bounds[0];
+            }
+            if (cell.left + cell.width > resize_clicked.x_bounds[1]) {
+                cell.left = resize_clicked.x_bounds[1] - cell.width;
+            }
+            if (cell.top < resize_clicked.y_bounds[0]) {
+                cell.top = resize_clicked.y_bounds[0];
+            }
+            if (cell.top + cell.height > resize_clicked.y_bounds[1]) {
+                cell.top = resize_clicked.y_bounds[1] - cell.height;
+            }
+
+            $cells[$id_map[cell_id]] = cell;
         }
     }
 
@@ -152,7 +191,7 @@
     shadow-md shadow-zinc-300 dark:shadow-neutral-900/50
     flex overflow-visible p-1 cursor-default
     "
-    id="cell"
+    id="tissue"
     bind:this={div}
     on:mousedown={resize_mousedown}
 >
@@ -164,13 +203,13 @@
     >
         <slot />
     </div>
-    <NewCellToolbar {cell_id} />
     <!-- drag handle -->
     {#if mouse_pos_on_cell || is_mouse_inside_this_div(drag_handle, $mouse_pos) || dragging}
         {#if $mouse_pos.y - cell.top > 0}
+            <NewCellToolbar {cell_id} />
             <div
                 style="top:{$mouse_pos.y - cell.top - 10}px; "
-                class="absolute bg-transparent w-4 h-5 -left-4 cursor-grab active:cursor-grabbing"
+                class="absolute bg-transparent w-4 h-5 -left-5 cursor-grab active:cursor-grabbing fill-neutral-500 dark:fill-neutral-400"
                 bind:this={drag_handle}
                 on:mousedown={drag_handle_mousedown}
             >
@@ -178,12 +217,9 @@
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-5 w-4 text-gray-700"
                     viewBox="0 0 20 20"
-                    fill="currentColor"
                 >
                     <path
-                        fill-rule="evenodd"
                         d="M 4 2 a 1 1 0 0 0 0 3 A 1 1 0 0 0 4 2 z z z m 0 7 A 1 1 0 0 0 4 12 A 1 1 0 0 0 4 9 m 0 7 A 1 1 0 0 0 4 19 A 1 1 0 0 0 4 16 m 10 -14 A 1 1 0 0 0 14 5 A 1 1 0 0 0 14 2 m 0 7 A 1 1 0 0 0 14 12 A 1 1 0 0 0 14 9 m 0 7 A 1 1 0 0 0 14 19 A 1 1 0 0 0 14 16"
-                        clip-rule="evenodd"
                     />
                 </svg>
             </div>

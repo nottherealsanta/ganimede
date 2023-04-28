@@ -40,7 +40,7 @@
     $: width = Math.min(width, max_width);
     let value = "";
     $: if ($notebook["cells"][$id_map[cell_id]].source !== "") {
-        value = $notebook["cells"][$id_map[cell_id]].source.join("\n");
+        value = $notebook["cells"][$id_map[cell_id]].source.join("");
     }
 
     function get_max_columns() {

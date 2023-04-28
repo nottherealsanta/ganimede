@@ -84,21 +84,19 @@
     >
         <slot />
     </div>
-    <NewCellToolbar {cell_id} />
     <!-- drag handle -->
     {#if mouse_pos_on_cell || is_mouse_inside_this_div(drag_handle, $mouse_pos) || dragging}
-        {#if $mouse_pos.y - cell.top > 0}
+        {#if $mouse_pos.y - cell.top > 0 && $mouse_pos.y - cell.top < cell.height + 10}
+            <NewCellToolbar {cell_id} />
             <div
                 style="top:{$mouse_pos.y - cell.top - 10}px; "
-                class="absolute bg-transparent w-4 h-5 -left-4 cursor-grab active:cursor-grabbing"
-                bind:this={drag_handle}
+                class="absolute bg-transparent w-4 h-5 -left-5 cursor-grab active:cursor-grabbing fill-neutral-500 dark:fill-neutral-400"
                 on:mousedown={drag_handle_mousedown}
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-5 w-4 text-gray-700"
                     viewBox="0 0 20 20"
-                    fill="currentColor"
                 >
                     <path
                         fill-rule="evenodd"

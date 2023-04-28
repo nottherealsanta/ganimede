@@ -20,7 +20,7 @@
         for (let cell_index = 0; cell_index < $cells.length; cell_index++) {
             $cells[cell_index].top = _top;
             $cells[cell_index].left = _left;
-            _top += $cells[cell_index].height + 5;
+            _top += $cells[cell_index].height + 10;
         }
         //  h6 -> h1, set width, height by looking at children's width, height
         for (let level = 6; level >= 1; level--) {
@@ -32,16 +32,43 @@
                 for (let child_id of children) {
                     let child = $cells[$id_map[child_id]];
                     width = Math.max(width, child.width);
-                    height += child.height + 5;
+                    height += child.height + 10;
                     $cells[$id_map[child_id]].left = cell.left + level * 25;
                 }
                 cell.width = width + 50;
-                cell.height = height + 5;
+                cell.height = height + 25;
                 $cells[$id_map[cell_id]] = cell;
             }
         }
+        // h1 -> h6, set next's top and left
+        for (let level = 1; level <= 6; level++) {
+            for (let cell_id of $heading_levels_inv[level]) {
+                let cell = $cells[$id_map[cell_id]];
+                if ($np_graph[cell_id]) {
+                    let next = $cells[$id_map[$np_graph[cell_id][0]]];
+                    if (next) {
+                        let d_top = next.top;
+                        let d_left = next.left;
+                        next.top = cell.top + cell.height + 10;
+                        next.left = cell.left;
+                        d_top -= next.top;
+                        d_left -= next.left;
+                        $cells[$id_map[$np_graph[cell_id][0]]] = next;
+                        // move all children by d_top, d_left
+                        for (let child_id of $pc_graph[next.id]) {
+                            let child = $cells[$id_map[child_id]];
+                            console.log(child);
+                            child.top -= d_top;
+                            child.left -= d_left;
+                            $cells[$id_map[child_id]] = child;
+                        }
+                    }
+                }
+            }
+        }
 
-        window.scrollTo(5000 - 400, 5000 - 200);
+        // window.scrollTo(5000 - 400, 5000 - 200);
+        window.scrollTo(5000, 5000);
     }
 
     setTimeout(() => {

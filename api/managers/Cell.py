@@ -33,6 +33,8 @@ class Cell:
         self._height = height
         self._width = width
 
+        self._state = "idle"  # idle, running, queued, done
+
     def to_dict(self) -> dict:
         return {k[1:]: v for k, v in self.__dict__.items()}
 

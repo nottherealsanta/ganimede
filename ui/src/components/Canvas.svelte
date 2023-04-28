@@ -13,45 +13,62 @@
         function (e) {
             if (e.ctrlKey) {
                 e.preventDefault();
-                $zoom -= e.deltaY / 250;
-                if ($zoom < 0.1) $zoom = 0.1;
-                if ($zoom > 10) $zoom = 10;
+                // $zoom -= 0.01;
+                $zoom -= Math.sign(e.deltaY) * 0.1;
+                if ($zoom < 1) $zoom = 1;
+                if ($zoom > 2) $zoom = 2;
                 this.window.scrollTo(
-                    $mouse_pos.x - (e.clientX - e.target.offsetLeft),
-                    $mouse_pos.y - (e.clientY - e.target.offsetTop)
+                    $mouse_pos.x - e.clientX / $zoom + 5000 / $zoom,
+                    $mouse_pos.y - e.clientY / $zoom + 5000 / $zoom
                 );
             }
+            _log(e, "wheel");
         },
         { passive: false }
     );
+
+    // $: this.window.scrollTo(e.pageX - e.clientX, e.pageY - e.clientY);
+
+    function _log(e, x) {
+        console.log(x);
+        console.log($zoom);
+        //log event
+
+        console.log("page: ", e.pageX, e.pageY);
+        console.log("client: ", e.clientX, e.clientY);
+        console.log("scroll: ", window.scrollX, window.scrollY);
+        console.log("mouse: ", $mouse_pos.x, $mouse_pos.y);
+        console.log();
+    }
 
     // middle mouse to pan
     let moving = false;
     let clicked_x = 0;
     let clicked_y = 0;
-    let mouseDown = function (event) {
+    let mouseDown = function (e) {
         // if left click
-        if (event.button === 1 && event.target.id === "canvas") {
+        if (e.button === 1 && e.target.id === "canvas") {
             moving = true;
-            clicked_x = event.offsetX;
-            clicked_y = event.offsetY;
+            clicked_x = e.offsetX;
+            clicked_y = e.offsetY;
         }
     };
     let mouseUp = function () {
         moving = false;
     };
-    let mouseMove = function (event) {
+    let mouseMove = function (e) {
+        _log(e, "move");
         if (moving) {
             window.scrollTo(
-                window.scrollX + clicked_x - event.offsetX,
-                window.scrollY + clicked_y - event.offsetY
+                window.scrollX + clicked_x - e.offsetX,
+                window.scrollY + clicked_y - e.offsetY
             );
         }
     };
 
     onMount(() => {
         open_socket();
-        // TODO: check config for user-saved view-x, view-y, view-zoom
+        // TODO: check config for user-saved view-x, view-y, view-$zoom
         // window.scrollTo(5000, 5000);
     });
 </script>
@@ -65,7 +82,7 @@
         height: 10000px; 
         width: 10000px; 
         transform: scale({$zoom}); 
-        transform-origin: 0 0;
+        transform-origin: 0 0 ;
         background-image: radial-gradient(
             circle at 0px 0px,
             rgb(126, 123, 119) 000 1px,

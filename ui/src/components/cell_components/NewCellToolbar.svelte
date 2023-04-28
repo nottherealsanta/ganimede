@@ -35,7 +35,7 @@
     import NewCellToolbarIcon from "./NewCellToolbarIcon.svelte";
 
     let item_class =
-        "w-8 h-4 flex justify-center items-center -ml-0.25 hover:bg-gray-100 dark:hover:bg-gray-800 active:bg-gray-200 dark:active:bg-gray-700 ";
+        "w-8 h-4 flex justify-center items-center -ml-0.25 hover:bg-neutral-100 dark:hover:bg-neutral-800 active:bg-neutral-200 dark:active:bg-neutral-700 ";
     let item_class_expect_first =
         "border-l border-gray-300 dark:border-neutral-700";
 
@@ -53,14 +53,20 @@
 </script>
 
 <div
-    class="absolute -bottom-0 left-0 w-full h-0 flex justify-center items-center pointer-events-auto"
-    on:mouseleave={() => {
-        is_hover = false;
-    }}
+    class="absolute -bottom-0 left-0 w-full h-0 flex justify-center items-center"
 >
     {#if is_hover}
         <div
-            class="relative w-40 h-4 flex flex-row justify-center items-center cursor-default bg-white dark:bg-vs-dark rounded border border-gray-300 dark:border-neutral-700 overflow-clip fill-gray-600 dark:fill-gray-300"
+            class="relative w-40 h-4 -bottom-0 flex flex-row justify-center items-center cursor-default
+            bg-white dark:bg-vs-dark rounded border border-gray-300 dark:border-neutral-700
+            overflow-clip fill-gray-600 dark:fill-gray-300 z-10"
+            on:mouseleave={() => {
+                is_hover = false;
+                console.log("mouse out");
+            }}
+            on:blur={() => {
+                // is_hover = false;
+            }}
         >
             <div
                 class={item_class}
@@ -85,7 +91,7 @@
     {:else}
         <div
             class="absolute w-2 h-2 rounded-full bg-transparent flex justify-center items-center
-            cursor-pointer fill-neutral-400/75 dark:fill-neutral-300 stroke-neutral-400 dark:stroke-neutral-500 stroke-2"
+            cursor-pointer fill-neutral-400/75 dark:fill-neutral-300/75 stroke-neutral-400 dark:stroke-neutral-500 stroke-2"
             id="new-cell-toolbar"
             on:click|stopPropagation={connector_click}
             on:keydown={() => {}}
