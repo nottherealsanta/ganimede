@@ -16,7 +16,7 @@ class Notebook:
         self,
         kernel: Kernel,
         comms: Comms,
-        notebook_path: str = Path(f"{getcwd()}/tests/test1.ipynb"),
+        notebook_path: str = Path(f"{getcwd()}/tests/test2.ipynb"),
     ):
         self.kernel = kernel
         self.comms = comms
@@ -24,6 +24,8 @@ class Notebook:
         log.debug(notebook_path)
 
         self.cells = []
+        self.np_graph = {}  # next-prev directed graph
+        self.pc_graph = {}  # parent-children directed graph
 
         self.notebook_file = self._load_notebook()
 
@@ -65,6 +67,8 @@ class Notebook:
         message = {
             "cells": [cell.to_dict() for cell in self.cells],
             "id_map": self.id_map,
+            "np_graph": self.np_graph,
+            "pc_graph": self.pc_graph,
         }
         self.comms.send(
             {
@@ -101,12 +105,10 @@ class Notebook:
             cell.source \n{"".join(cell.source)}
             cell.is_heading {cell.is_heading}
             cell.heading_level {cell.heading_level}
-            cell.next {cell.next}
-            cell.prev {cell.prev}
-            cell.parent {cell.parent}
-            cell.children {cell.children}
             """
             )
+        log.debug(f"np_graph {self.np_graph}")
+        log.debug(f"pc_graph {self.pc_graph}")
 
     def _connect_cells(self):
         """
@@ -142,8 +144,9 @@ class Notebook:
                         and self.cells[i].heading_level
                         == self.cells[index].heading_level
                     ):
-                        self.cells[index].next = [self.cells[i].id]
-                        self.cells[i].prev = [self.cells[index].id]
+                        # self.cells[index].next = [self.cells[i].id]
+                        # self.cells[i].prev = [self.cells[index].id]
+                        self.np_graph[self.cells[index].id] = [self.cells[i].id]
                         break
                     if (
                         self.cells[i].is_heading
@@ -154,8 +157,9 @@ class Notebook:
 
                     if len(children) > 0:
                         prev = children[-1]
-                        self.cells[prev].next = [self.cells[i].id]
-                        self.cells[i].prev = [self.cells[prev].id]
+                        # self.cells[prev].next = [self.cells[i].id]
+                        # self.cells[i].prev = [self.cells[prev].id]
+                        self.np_graph[self.cells[prev].id] = [self.cells[i].id]
                     children.append(i)
 
                     if (
@@ -163,11 +167,21 @@ class Notebook:
                         and self.cells[i].heading_level
                         > self.cells[index].heading_level
                     ):
-                        last_child_id = self.cells[i].children[-1]
+                        # last_child_id = self.cells[i].children[-1]
+                        # last_child_idx = self.id_map[last_child_id]
+                        last_child_id = self.pc_graph[self.cells[i].id][-1]
                         last_child_idx = self.id_map[last_child_id]
 
-                        while len(self.cells[last_child_idx].children) > 0:
-                            last_child_id = self.cells[last_child_idx].children[-1]
+                        # while len(self.cells[last_child_idx].children) > 0:
+                        while (
+                            self.cells[last_child_idx].id in self.pc_graph
+                            and len(self.pc_graph[self.cells[last_child_idx].id]) > 0
+                        ):
+                            # last_child_id = self.cells[last_child_idx].children[-1]
+                            # last_child_idx = self.id_map[last_child_id]
+                            last_child_id = self.pc_graph[
+                                self.cells[last_child_idx].id
+                            ][-1]
                             last_child_idx = self.id_map[last_child_id]
 
                         i = last_child_idx + 1
@@ -176,49 +190,36 @@ class Notebook:
 
                     i += 1
 
-                self.cells[index].children = [self.cells[i].id for i in children]
-                for child in children:
-                    self.cells[child].parent = self.cells[index].id
+                # self.cells[index].children = [self.cells[i].id for i in children]
+                # self.pc_graph[self.cells[index].id] =
 
-                for i in range(0, len(self.cells[index].children) - 1):
-                    x_id = self.cells[index].children[i]
-                    y_id = self.cells[index].children[i + 1]
+                for child in children:
+                    # self.cells[child].parent = self.cells[index].id
+                    if self.cells[index].id not in self.pc_graph:
+                        self.pc_graph[self.cells[index].id] = []
+                    self.pc_graph[self.cells[index].id].append(self.cells[child].id)
+
+                for i in range(0, len(self.pc_graph[self.cells[index].id]) - 1):
+                    x_id = self.pc_graph[self.cells[index].id][i]
+                    y_id = self.pc_graph[self.cells[index].id][i + 1]
                     x_idx = self.id_map[x_id]
                     y_idx = self.id_map[y_id]
-                    self.cells[x_idx].next = [y_id]
-                    self.cells[y_idx].prev = [x_id]
+                    # self.cells[x_idx].next = [y_id]
+                    # self.cells[y_idx].prev = [x_id]
+                    self.np_graph[x_id] = [y_id]
 
         # connect the parent_less cells
+        parent_less_cells = []
         for i, cell in enumerate(self.cells):
-            if cell.parent is None and not cell.is_heading:
-                if i == 0:
-                    continue
-                prev_id = self.cells[i - 1].id
-                cell.prev = [prev_id]
-                self.cells[i - 1].next = [cell.id]
-
-    # def add_metadata(self):
-    #     for i in range(len(self.cells)):
-    #         self.id_map[self.cells[i].id] = i
-
-    #     if "gm" not in self.notebook["metadata"]:
-    #         self.notebook["metadata"]["gm"] = {
-    #             "canvas": {
-    #                 "scroll": {
-    #                     "x": 0,
-    #                     "y": 0,
-    #                 },
-    #                 "zoom": 1,
-    #             },
-    #             "id_map": self.id_map,
-    #         }
-
-    # def save_notebook(self):
-    #     log.debug("saving notebook")
-    #     self.notebook["cells"] = [cell.save() for cell in self.cells]
-    #     self.notebook["metadata"]["gm"]["id_map"] = self.id_map
-    #     with open(self.notebook_path, "w") as f:
-    #         json.dump(self.notebook, f, indent=2)
+            if cell.id not in self.pc_graph:
+                for cell_id in self.pc_graph.keys():
+                    if cell.id in self.pc_graph[cell_id]:
+                        break
+                else:
+                    parent_less_cells.append(cell.id)
+        for i, cell in enumerate(parent_less_cells):
+            idx = self.id_map[cell]
+            self.np_graph[cell] = [self.cells[idx + 1].id]
 
     async def run(self, cell_id: str, code: list[str]):
         msg_queue = asyncio.Queue()
@@ -265,40 +266,48 @@ class Notebook:
                     }
                 )
 
-    # async def new_code_cell(self, previous_cell_id: str):
-    #     new_cell = Cell(
-    #         {
-    #             "cell_type": "code",
-    #         }
-    #     )
-    #     new_cell.metadata["gm"]["previous"] = [previous_cell_id]
+    def _find_parent(self, cell_id: str):
+        for key in self.pc_graph.keys():
+            if cell_id in self.pc_graph[key]:
+                return key
+        return None
 
-    #     # previous cell's
-    #     previous_cell = self.cells[self.id_map[previous_cell_id]]
-    #     previous_cell.metadata["gm"]["next"] = [new_cell.id]
+    async def new_code_cell(self, previous_cell_id: str):
+        log.debug(f"previous cell: {previous_cell_id}")
+        log.debug(f"cells: {self.cells}")
 
-    #     # insert new cell
-    #     self.cells.insert(self.id_map[previous_cell_id] + 1, new_cell)
+        new_cell = Cell(
+            type="code",
+        )
 
-    #     # update id_map
-    #     self.id_map[new_cell.id] = len(self.cells) - 1
+        self.cells.insert(self.id_map[previous_cell_id] + 1, new_cell)
 
-    #     response = {
-    #         "new_cell": new_cell.to_dict(),
-    #         "previous_cell_id": previous_cell_id,
-    #         "id_map": self.id_map,
-    #     }
+        if previous_cell_id not in self.np_graph:
+            self.np_graph[previous_cell_id] = [new_cell.id]
+        else:
+            self.np_graph[previous_cell_id].append(new_cell.id)
 
-    #     log.debug(f"new cell: {new_cell.id}")
+        prev_parent = self._find_parent(previous_cell_id)
+        if prev_parent is not None:
+            if prev_parent not in self.pc_graph:
+                self.pc_graph[prev_parent] = [new_cell.id]
+            else:
+                self.pc_graph[prev_parent].append(new_cell.id)
 
-    #     self.comms.send(
-    #         {
-    #             "channel": "notebook",
-    #             "method": "new_code_cell",
-    #             "message": response,
-    #         }
-    #     )
+        response = {
+            "new_cell": new_cell.to_dict(),
+            "previous_cell_id": previous_cell_id,
+            "id_map": self.id_map,
+            "np_graph": self.np_graph,
+            "pc_graph": self.pc_graph,
+        }
 
-    #     # TODO: refactor this
-    #     self.notebook["cells"] = [cell.to_dict() for cell in self.cells]
-    #     self.notebook["metadata"]["gm"]["id_map"] = self.id_map
+        log.debug(f"new cell: {new_cell.id}")
+
+        self.comms.send(
+            {
+                "channel": "notebook",
+                "method": "new_code_cell",
+                "message": response,
+            }
+        )

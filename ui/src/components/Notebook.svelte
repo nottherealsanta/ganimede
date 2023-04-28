@@ -7,6 +7,8 @@
         notebook,
         cells,
         id_map,
+        np_graph,
+        pc_graph,
         heading_levels,
         heading_levels_inv,
         parent_less_cells,
@@ -24,7 +26,7 @@
         for (let level = 6; level >= 1; level--) {
             for (let cell_id of $heading_levels_inv[level]) {
                 let cell = $cells[$id_map[cell_id]];
-                let children = cell.children;
+                let children = $pc_graph[cell_id];
                 let width = cell.width;
                 let height = cell.height;
                 for (let child_id of children) {
@@ -56,20 +58,24 @@
                 {#if $cells[$id_map[cell_id]].type === "markdown"}
                     <MarkdownCell {cell_id} />
                 {/if}
-                {#each $cells[$id_map[cell_id]].children as child_id}
+                {#each $pc_graph[cell_id] as child_id}
                     {#if $cells[$id_map[child_id]].type === "markdown" && $heading_levels[child_id] === null}
                         <MarkdownCell cell_id={child_id} />
                     {/if}
                     {#if $cells[$id_map[child_id]].type === "code"}
                         <CodeCell cell_id={child_id} />
                     {/if}
-                    {#each $cells[$id_map[child_id]].next as next_id}
-                        <Edges current_cell_id={child_id} {next_id} />
+                    {#if $np_graph[child_id]}
+                        {#each $np_graph[child_id] as next_id}
+                            <Edges current_cell_id={child_id} {next_id} />
+                        {/each}
+                    {/if}
+                {/each}
+                {#if $np_graph[cell_id]}
+                    {#each $np_graph[cell_id] as next_id}
+                        <Edges current_cell_id={cell_id} {next_id} />
                     {/each}
-                {/each}
-                {#each $cells[$id_map[cell_id]].next as next_id}
-                    <Edges current_cell_id={cell_id} {next_id} />
-                {/each}
+                {/if}
             {/each}
         {/each}
 
@@ -80,9 +86,11 @@
             {#if $cells[$id_map[cell_id]].type === "code"}
                 <CodeCell {cell_id} />
             {/if}
-            {#each $cells[$id_map[cell_id]].next as next_id}
-                <Edges current_cell_id={cell_id} {next_id} />
-            {/each}
+            {#if $np_graph[cell_id]}
+                {#each $np_graph[cell_id] as next_id}
+                    <Edges current_cell_id={cell_id} {next_id} />
+                {/each}
+            {/if}
         {/each}
     {/if}
 </div>

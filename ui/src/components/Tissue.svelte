@@ -1,5 +1,10 @@
 <script>
-    import { cells, id_map, heading_levels } from "../stores/notebook";
+    import {
+        cells,
+        id_map,
+        heading_levels,
+        pc_graph,
+    } from "../stores/notebook";
 
     let div = null;
 
@@ -98,15 +103,15 @@
                 children: [],
             };
 
-            let children = cell.children;
+            let children = $pc_graph[cell_id];
             for (let child of children) {
                 dh_clicked.children.push({
                     id: child,
                     x: $mouse_pos.x - $cells[$id_map[child]].left,
                     y: $mouse_pos.y - $cells[$id_map[child]].top,
                 });
-                if ($cells[$id_map[child]].children.length > 0) {
-                    children.push(...$cells[$id_map[child]].children);
+                if ($pc_graph[child]) {
+                    children.push(...$pc_graph[child]);
                 }
             }
         }
@@ -140,7 +145,7 @@
     opacity: {dragging ? 0.75 : 1};
     "
     class="
-    bg-gray-50/50 dark:bg-neutral-800/50
+    bg-gray-50/50 dark:bg-neutral-800/30
     absolute rounded-lg
     border-2
     border-gray-500 dark:border-gray-400
@@ -159,7 +164,7 @@
     >
         <slot />
     </div>
-    <NewCellToolbar />
+    <NewCellToolbar {cell_id} />
     <!-- drag handle -->
     {#if mouse_pos_on_cell || is_mouse_inside_this_div(drag_handle, $mouse_pos) || dragging}
         {#if $mouse_pos.y - cell.top > 0}

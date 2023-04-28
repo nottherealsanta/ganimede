@@ -14,8 +14,8 @@
     }
 </script>
 
-<div class="flex items-start h-auto w-full justify-center align-stretch">
-    <div class="flex h-full w-6 mr-2" />
+<div class="flex items-start h-auto w-full justify-center align-stretch mt-1">
+    <div class="flex h-full w-6" style="margin-right:7px" />
     <div
         class="w-full h-auto bg-transparent px-1 py-0.5 shadow-inner shadow-zinc-100/50 dark:shadow-vs-dark
                     border border-zinc-100 dark:border-neutral-800 rounded float-bottom mt-0.25 cursor-default

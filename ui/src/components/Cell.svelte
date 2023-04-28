@@ -1,5 +1,5 @@
 <script>
-    import { cells, id_map } from "../stores/notebook";
+    import { cells, id_map, pc_graph } from "../stores/notebook";
 
     let div = null;
 
@@ -14,9 +14,7 @@
     $: cell.height = min_height;
 
     let inside_div_width = 0;
-    $: if (cell.width < inside_div_width) {
-        cell.width = inside_div_width + 10;
-    }
+    $: cell.width = inside_div_width + 10;
 
     import mouse_pos from "../stores/mouse.js";
 
@@ -37,18 +35,6 @@
                 y: $mouse_pos.y - cell.top,
                 children: [],
             };
-
-            let children = cell.children;
-            for (let child of children) {
-                dh_clicked.children.push({
-                    id: child,
-                    x: $mouse_pos.x - $cells[$id_map[child]].left,
-                    y: $mouse_pos.y - $cells[$id_map[child]].top,
-                });
-                if ($cells[$id_map[child]].children.length > 0) {
-                    children.push(...$cells[$id_map[child]].children);
-                }
-            }
         }
     }
     function drag_handle_mousemove(e) {
@@ -98,7 +84,7 @@
     >
         <slot />
     </div>
-    <NewCellToolbar />
+    <NewCellToolbar {cell_id} />
     <!-- drag handle -->
     {#if mouse_pos_on_cell || is_mouse_inside_this_div(drag_handle, $mouse_pos) || dragging}
         {#if $mouse_pos.y - cell.top > 0}

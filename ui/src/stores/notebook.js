@@ -18,7 +18,7 @@ function createNotebookStore() {
             }
             );
         },
-        new_code_cell: ({ new_cell, previous_cell_id, id_map }) => {
+        new_code_cell: ({ new_cell, previous_cell_id, id_map, np_graph, pc_graph }) => {
             update(n => {
                 const previous_cell = n.cells[id_map[previous_cell_id]];
                 const previous_cell_index = n.cells.indexOf(previous_cell);
@@ -27,14 +27,18 @@ function createNotebookStore() {
                 new_cell["top"] = previous_cell["top"] + previous_cell["height"] + 5;
                 new_cell["left"] = previous_cell["left"];
 
-                // previous's next 
-                previous_cell["next"] = [...previous_cell["next"], new_cell.id];
-
                 // insert new cell
                 n.cells.splice(previous_cell_index + 1, 0, new_cell);
 
                 // update id_map
                 n["id_map"] = id_map;
+
+                // update np_graph
+                n["np_graph"] = np_graph
+
+                // update pc_graph
+                n["pc_graph"] = pc_graph
+
 
                 return n;
             });
@@ -56,6 +60,24 @@ export const id_map = derived(notebook, $notebook => {
 );
 id_map.set = (value) => notebook.update(n => {
     n["id_map"] = value;
+    return n;
+});
+
+export const np_graph = derived(notebook, $notebook => {
+    return $notebook.np_graph
+}
+);
+np_graph.set = (value) => notebook.update(n => {
+    n["np_graph"] = value;
+    return n;
+});
+
+export const pc_graph = derived(notebook, $notebook => {
+    return $notebook.pc_graph
+}
+);
+pc_graph.set = (value) => notebook.update(n => {
+    n["pc_graph"] = value;
     return n;
 });
 
@@ -103,13 +125,26 @@ export const heading_levels_inv = derived(heading_levels, $heading_levels => {
 }
 );
 
+function _find_parent(cell_id) {
+    // find parent of cell_id
+    let parent_id = null;
+    // see in pc_graph if cell_id is a child of any other cell
+    Object.entries(get(pc_graph)).forEach(([parent, children]) => {
+        if (children.includes(cell_id)) {
+            parent_id = parent;
+        }
+    }
+    );
+    return parent_id;
+}
+
 export const parent_less_cells = derived([heading_levels, notebook], ([$heading_levels, $notebook]) => {
     const parent_less_cells = [];
     if (!$notebook.cells) {
         return parent_less_cells;
     }
     $notebook.cells.forEach(cell => {
-        if (cell.parent === null && !$heading_levels[cell.id]) {
+        if (_find_parent(cell.id) === null && !$heading_levels[cell.id]) {
             parent_less_cells.push(cell.id);
         }
     });

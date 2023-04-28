@@ -5,6 +5,15 @@
     $: cell = $cells[$id_map[cell_id]];
 
     let hover = false;
+    let execution_count;
+    $: if (cell) {
+        if (cell.execution_count === null) {
+            execution_count = "[ ]";
+        } else {
+            execution_count = cell.execution_count;
+        }
+    }
+
     let div = null;
     // run
     import { send_message } from "../../stores/socket";
@@ -16,7 +25,9 @@
     };
     let cell_state = CellStates.Idle;
     async function primary_button_click() {
-        div.disabled = true;
+        if (cell_state !== CellStates.Idle) {
+            return;
+        }
         cell_state = CellStates.Queued;
         $cells[$id_map[cell_id]]["outputs"] = [];
         console.log("sending message");
@@ -35,8 +46,8 @@
         // disable max (500ms, cell_state === "running")
         // disable till resposse of state
         setTimeout(() => {
-            div.disabled = false;
-        }, 1000);
+            cell_state = CellStates.Idle;
+        }, 500);
     }
 </script>
 
@@ -72,7 +83,7 @@
             <polygon points="19 12 19 43 43 27.5 19 12" />
         </svg>
     {:else}
-        <div class="font-mono text-[11px]">{cell.execution_count}</div>
+        <div class="font-mono text-[11px]">{execution_count}</div>
     {/if}
 </div>
 

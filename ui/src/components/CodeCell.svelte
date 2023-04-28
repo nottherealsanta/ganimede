@@ -14,7 +14,7 @@
 </script>
 
 <Cell {cell_id}>
-    <div class="flex items-start h-auto justify-center align-stretch">
+    <div class="flex items-start w-fit h-auto justify-center align-stretch">
         <PrimeButton {cell_id} />
         <CodeEditor {cell_id} bind:focus />
     </div>

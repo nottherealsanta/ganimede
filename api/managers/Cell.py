@@ -1,5 +1,6 @@
 from os import urandom
 from base64 import urlsafe_b64encode
+from typing import Any
 
 
 def _generate_random_cell_id(id_length: int = 8) -> str:
@@ -19,55 +20,38 @@ class Cell:
         left: int = 0,
         height: int = 0,
         width: int = 0,
-        prev: list = [],
-        next: list = [],
-        parent: str = None,
-        children: list = [],
     ):
-        self.id = id if id else _generate_random_cell_id()
-        self.type = type
-        self.source = source
+        self._id = id if id else _generate_random_cell_id()
+        self._type = type
+        self._source = source
 
-        self.execution_count = execution_count
-        self.outputs = outputs
+        self._execution_count = execution_count
+        self._outputs = outputs
 
-        self.top = top
-        self.left = left
-        self.height = height
-        self.width = width
-
-        self.prev = prev
-        self.next = next
-        self.parent = parent
-        self.children = children
+        self._top = top
+        self._left = left
+        self._height = height
+        self._width = width
 
     def to_dict(self) -> dict:
-        return self.__dict__
+        return {k[1:]: v for k, v in self.__dict__.items()}
 
-    def save(self) -> dict:
+    def _save(self) -> dict:
         return {
-            "cell_type": self.type,
-            "source": self.source,
+            "cell_type": self._type,
+            "source": self._source,
             "metadata": {
                 "gm": {
-                    "top": self.top,
-                    "left": self.left,
-                    "height": self.height,
-                    "width": self.width,
-                    "prev": self.prev,
-                    "next": self.next,
-                    "parent": self.parent,
-                    "children": self.children,
+                    "top": self._top,
+                    "left": self._left,
+                    "height": self._height,
+                    "width": self._width,
                 }
             },
         }
 
-    def set(self, **kwargs):
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-
-    def get(self, key):
-        return getattr(self, key)
+    def __getattr__(self, __name: str) -> Any:
+        return self.__dict__[f"_{__name}"]
 
     @property
     def is_heading(self):

@@ -57,65 +57,7 @@
     );
 </script>
 
-<svg
-    style="position: absolute; pointer-events: none;"
-    width="100%"
-    height="100%"
-    class="edge"
->
-    {#if mid_distance > 20 && left_distance > 20}
-        {#if !is_right}
-            <!-- bezier curve -->
-            <path
-                class="line"
-                d={`M ${x1} ${y1 + 1} C ${x1} ${y1 + 50}, ${x2} ${
-                    y2 - 50
-                }, ${x2} ${y2 - 5}`}
-            />
-            <!-- downward facing arrow -->
-            <path
-                class="arrow"
-                d={`M ${x2} ${y2 - 1} L ${x2 - 3} ${y2 - 5} L ${x2 + 3} ${
-                    y2 - 5
-                } Z`}
-            />
-        {:else}
-            <!-- bezier curve -->
-            <path
-                class="line"
-                d={`M ${x1} ${y1} C ${x1} ${y1}, ${x2 - 50} ${y2}, ${x2} ${y2}`}
-            />
-            <!-- right facing arrow -->
-            <path
-                class="arrow"
-                d={`M ${x2} ${y2} L ${x2 - 5} ${y2 - 3} L ${x2 - 5} ${
-                    y2 + 3
-                } Z`}
-            />
-        {/if}
-        <!-- {:else if y2 - y1 - 4 > 0} -->
-        <!-- gradient  -->
-        <!-- <defs>
-            <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#00000033" />
-                <stop offset="50%" stop-color="#77777733" />
-                <stop offset="100%" stop-color="#ffffff88" />
-            </linearGradient>
-        </defs>
-        <rect
-            x={current_cell_left + 2}
-            y={current_cell_bottom}
-            width={min_width}
-            height={y2 - y1 - 4}
-            fill="url(#gradient)"
-            style="stroke-width: 0;"
-            rx="4"
-            ry="4"
-        /> -->
-    {/if}
-</svg>
-
-<style>
+<!-- <style>
     .edge {
         stroke: #606060;
     }
@@ -144,4 +86,62 @@
             fill: #d7d7d7;
         }
     }
-</style>
+</style> -->
+
+<svg
+    style="position: absolute; pointer-events: none;"
+    width="100%"
+    height="100%"
+    class="stroke-neutral-500 dark:stroke-neutral-400"
+>
+    {#if mid_distance > 20 && left_distance > 20}
+        {#if !is_right}
+            <!-- bezier curve -->
+            <path
+                class="stroke-1 fill-none pointer-events-all hover:stroke-2"
+                d={`M ${x1} ${y1 + 1} C ${x1} ${y1 + 50}, ${x2} ${
+                    y2 - 50
+                }, ${x2} ${y2 - 5}`}
+            />
+            <!-- downward facing arrow -->
+            <path
+                class="stroke-2 fill-neutral-500 dark:fill-neutral-400"
+                d={`M ${x2} ${y2 - 1} L ${x2 - 3} ${y2 - 5} L ${x2 + 3} ${
+                    y2 - 5
+                } Z`}
+            />
+        {:else}
+            <!-- bezier curve -->
+            <path
+                class="stroke-1 fill-none pointer-events-all hover:stroke-2"
+                d={`M ${x1} ${y1} C ${x1} ${y1}, ${x2 - 50} ${y2}, ${x2} ${y2}`}
+            />
+            <!-- right facing arrow -->
+            <path
+                class="stroke-2 fill-neutral-500 dark:fill-neutral-400"
+                d={`M ${x2} ${y2} L ${x2 - 5} ${y2 - 3} L ${x2 - 5} ${
+                    y2 + 3
+                } Z`}
+            />
+        {/if}
+        <!-- {:else if y2 - y1 - 4 > 0} -->
+        <!-- gradient  -->
+        <!-- <defs>
+            <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#00000033" />
+                <stop offset="50%" stop-color="#77777733" />
+                <stop offset="100%" stop-color="#ffffff88" />
+            </linearGradient>
+        </defs>
+        <rect
+            x={current_cell_left + 2}
+            y={current_cell_bottom}
+            width={min_width}
+            height={y2 - y1 - 4}
+            fill="url(#gradient)"
+            style="stroke-width: 0;"
+            rx="4"
+            ry="4"
+        /> -->
+    {/if}
+</svg>

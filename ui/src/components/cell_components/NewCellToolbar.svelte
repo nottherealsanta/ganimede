@@ -18,6 +18,11 @@
     //     console.log("new text cell");
     // }
 
+    export let cell_id;
+
+    // import { id_map, cells } from "../../stores/notebook";
+    // $: cell = $cells[$id_map[cell_id]];
+
     function connector_click(e) {
         e.preventDefault();
         console.log("button click");
@@ -28,6 +33,23 @@
     let is_hover = false;
 
     import NewCellToolbarIcon from "./NewCellToolbarIcon.svelte";
+
+    let item_class =
+        "w-8 h-4 flex justify-center items-center -ml-0.25 hover:bg-gray-100 dark:hover:bg-gray-800 active:bg-gray-200 dark:active:bg-gray-700 ";
+    let item_class_expect_first =
+        "border-l border-gray-300 dark:border-neutral-700";
+
+    import { send_message } from "../../stores/socket";
+
+    async function new_code_cell() {
+        send_message({
+            channel: "notebook",
+            method: "new_code_cell",
+            message: {
+                previous_cell_id: cell_id,
+            },
+        });
+    }
 </script>
 
 <div
@@ -38,35 +60,32 @@
 >
     {#if is_hover}
         <div
-            class="relative w-40 h-4 flex flex-row justify-center items-center cursor-default bg-white dark:bg-vs-dark rounded border border-gray-300 dark:border-neutral-700 overflow-clip"
+            class="relative w-40 h-4 flex flex-row justify-center items-center cursor-default bg-white dark:bg-vs-dark rounded border border-gray-300 dark:border-neutral-700 overflow-clip fill-gray-600 dark:fill-gray-300"
         >
-            <div class="w-8 h-4 flex justify-center items-center -ml-0.25">
+            <div
+                class={item_class}
+                on:click={new_code_cell}
+                on:keydown={() => {}}
+            >
                 <NewCellToolbarIcon icon_name="python" />
             </div>
-            <div
-                class="w-8 h-4 flex justify-center items-center -ml-0.25 border-l border-gray-300 dark:border-neutral-700"
-            >
+            <div class={item_class + " " + item_class_expect_first}>
                 <NewCellToolbarIcon icon_name="markdown" />
             </div>
-            <div
-                class="w-8 h-4 flex justify-center items-center -ml-0.25 border-l border-gray-300 dark:border-neutral-700"
-            >
+            <div class={item_class + " " + item_class_expect_first}>
                 <NewCellToolbarIcon icon_name="connector" />
             </div>
-            <div
-                class="w-8 h-4 flex justify-center items-center -ml-0.25 border-l border-gray-300 dark:border-neutral-700"
-            >
-                <div>p</div>
+            <div class={item_class + " " + item_class_expect_first}>
+                <NewCellToolbarIcon icon_name="disconnect" />
             </div>
-            <div
-                class="w-8 h-4 flex justify-center items-center -ml-0.25 border-l border-gray-300 dark:border-neutral-700"
-            >
-                <div>p</div>
+            <div class={item_class + " " + item_class_expect_first}>
+                <NewCellToolbarIcon icon_name="newCellMenu" />
             </div>
         </div>
     {:else}
         <div
-            class="absolute w-2 h-2 hover:w-2.5 hover:h-2.5 rounded-full bg-gray-300/40 hover:bg-gray-100 flex justify-center items-center cursor-pointer"
+            class="absolute w-2 h-2 rounded-full bg-transparent flex justify-center items-center
+            cursor-pointer fill-neutral-400/75 dark:fill-neutral-300 stroke-neutral-400 dark:stroke-neutral-500 stroke-2"
             id="new-cell-toolbar"
             on:click|stopPropagation={connector_click}
             on:keydown={() => {}}
@@ -75,15 +94,12 @@
             }}
         >
             <svg
-                class="w-full h-full pointer-events-none text-white dark:text-gray-800"
+                class="w-full h-full pointer-events-none"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
-                fill="currentColor"
             >
                 <path
-                    fill-rule="evenodd"
                     d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 100-12 6 6 0 000 12z"
-                    clip-rule="evenodd"
                 /></svg
             >
         </div>

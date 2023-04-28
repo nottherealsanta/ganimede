@@ -134,15 +134,7 @@
     });
 </script>
 
-<div
-    class="cell-input"
-    style="height: {height}px; width: {width}px;"
-    id="cell-input"
->
-    <div class="codeeditor" bind:this={container} />
-</div>
-
-<style>
+<!-- <style>
     .cell-input {
         display: flex;
         overflow: hidden;
@@ -153,8 +145,6 @@
         background-color: transparent;
         min-height: 25px;
         min-width: 150px;
-        padding-bottom: 3px;
-        margin-bottom: 3px;
         /* box-shadow: -1px 0px 2px 1px rgba(0, 0, 0, 0.048); */
     }
 
@@ -164,4 +154,16 @@
         cursor: text;
         margin: 3px 0px 3px 0px;
     }
-</style>
+</style> -->
+
+<div
+    class="flex overflow-hidden relative border rounded border-zinc-100 dark:border-neutral-800 bg-transparent align-middle"
+    style="height: {height}px; width: {width}px; min-height: 25px; min-width: 150px;"
+    id="cell-input"
+>
+    <div
+        class="w-full h-full cursor-text"
+        style=" margin: 3px 0px 3px 0px;"
+        bind:this={container}
+    />
+</div>
