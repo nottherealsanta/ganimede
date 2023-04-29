@@ -58,7 +58,6 @@
             let children = $pc_graph[cell_id];
             let x_bounds = [cell.left + cell.width, cell.left];
             let y_bounds = [cell.top + cell.height, cell.top];
-            console.log("> bounds: ", x_bounds, y_bounds);
             for (let child of children) {
                 let child_cell = $cells[$id_map[child]];
                 x_bounds[0] = Math.min(x_bounds[0], child_cell.left);
@@ -92,6 +91,7 @@
             }
         } else {
             // resize_clicked for resize
+            let prev_width = cell.width;
             [cell.top, cell.left, cell.height, cell.width] =
                 cell_edge_to_resize_fn($mouse_pos, resize_clicked, cell);
             if (cell.height < min_height) {
@@ -99,17 +99,19 @@
             }
 
             // bound
-            if (cell.left < resize_clicked.x_bounds[0]) {
+            if (cell.left + cell.width < resize_clicked.x_bounds[1]) {
+                cell.width = resize_clicked.x_bounds[1] - cell.left;
+            }
+            if (cell.left > resize_clicked.x_bounds[0]) {
                 cell.left = resize_clicked.x_bounds[0];
+                cell.width = resize_clicked.x_bounds[1] - cell.left;
             }
-            if (cell.left + cell.width > resize_clicked.x_bounds[1]) {
-                cell.left = resize_clicked.x_bounds[1] - cell.width;
+            if (cell.top + cell.height < resize_clicked.y_bounds[1]) {
+                cell.height = resize_clicked.y_bounds[1] - cell.top;
             }
-            if (cell.top < resize_clicked.y_bounds[0]) {
+            if (cell.top > resize_clicked.y_bounds[0]) {
                 cell.top = resize_clicked.y_bounds[0];
-            }
-            if (cell.top + cell.height > resize_clicked.y_bounds[1]) {
-                cell.top = resize_clicked.y_bounds[1] - cell.height;
+                cell.height = resize_clicked.y_bounds[1] - cell.top;
             }
 
             $cells[$id_map[cell_id]] = cell;
@@ -131,6 +133,7 @@
     let dh_clicked = {
         x: 0,
         y: 0,
+        children: [],
     };
     function drag_handle_mousedown(e) {
         if (e.button === 0) {
@@ -141,14 +144,16 @@
                 y: $mouse_pos.y - cell.top,
                 children: [],
             };
+            // copy value instead of reference
+            let children = [...$pc_graph[cell_id]];
 
-            let children = $pc_graph[cell_id];
             for (let child of children) {
                 dh_clicked.children.push({
                     id: child,
                     x: $mouse_pos.x - $cells[$id_map[child]].left,
                     y: $mouse_pos.y - $cells[$id_map[child]].top,
                 });
+
                 if ($pc_graph[child]) {
                     children.push(...$pc_graph[child]);
                 }
@@ -170,6 +175,11 @@
     }
     function drag_handle_mouseup(e) {
         dragging = false;
+        dh_clicked = {
+            x: 0,
+            y: 0,
+            children: [],
+        };
     }
 
     import NewCellToolbar from "./cell_components/NewCellToolbar.svelte";
