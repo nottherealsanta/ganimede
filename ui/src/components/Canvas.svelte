@@ -8,38 +8,41 @@
     // zoom
     import mouse_pos from "../stores/mouse.js";
 
+    let min_zoom = 0.5;
+    let max_zoom = 3;
+    let d_zoom = 0.1;
+
     window.addEventListener(
         "wheel",
         function (e) {
             if (e.ctrlKey) {
                 e.preventDefault();
-                // $zoom -= 0.01;
-                $zoom -= Math.sign(e.deltaY) * 0.1;
-                if ($zoom < 1) $zoom = 1;
-                if ($zoom > 2) $zoom = 2;
-                this.window.scrollTo(
-                    $mouse_pos.x - e.clientX / $zoom + 5000 / $zoom,
-                    $mouse_pos.y - e.clientY / $zoom + 5000 / $zoom
-                );
+                e.stopImmediatePropagation();
+
+                if ($mouse_pos.x !== 0 && $mouse_pos.y !== 0) {
+                    // $zoom -= 0.01;
+                    $zoom -= Math.sign(e.deltaY) * d_zoom;
+                    $zoom = Math.round($zoom * 100) / 100;
+
+                    if ($zoom < min_zoom) {
+                        $zoom = min_zoom;
+                    } else if ($zoom >= min_zoom && $zoom <= max_zoom) {
+                        let next_scroll_X =
+                            window.scrollX -
+                            $mouse_pos.x * d_zoom * Math.sign(e.deltaY);
+                        let next_scroll_Y =
+                            window.scrollY -
+                            $mouse_pos.y * d_zoom * Math.sign(e.deltaY);
+
+                        window.scrollTo(next_scroll_X, next_scroll_Y);
+                    } else if ($zoom > max_zoom) {
+                        $zoom = max_zoom;
+                    }
+                }
             }
-            _log(e, "wheel");
         },
         { passive: false }
     );
-
-    // $: this.window.scrollTo(e.pageX - e.clientX, e.pageY - e.clientY);
-
-    function _log(e, x) {
-        console.log(x);
-        console.log($zoom);
-        //log event
-
-        console.log("page: ", e.pageX, e.pageY);
-        console.log("client: ", e.clientX, e.clientY);
-        console.log("scroll: ", window.scrollX, window.scrollY);
-        console.log("mouse: ", $mouse_pos.x, $mouse_pos.y);
-        console.log();
-    }
 
     // middle mouse to pan
     let moving = false;
@@ -57,7 +60,6 @@
         moving = false;
     };
     let mouseMove = function (e) {
-        _log(e, "move");
         if (moving) {
             window.scrollTo(
                 window.scrollX + clicked_x - e.offsetX,

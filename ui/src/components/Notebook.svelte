@@ -67,8 +67,7 @@
             }
         }
 
-        // window.scrollTo(5000 - 400, 5000 - 200);
-        window.scrollTo(5000, 5000);
+        window.scrollTo(5000 - 400, 5000 - 200);
     }
 
     setTimeout(() => {
