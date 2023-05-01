@@ -73,7 +73,7 @@
             }
             x_bounds[0] -= 25;
             x_bounds[1] += 25;
-            y_bounds[0] -= min_height + 10;
+            y_bounds[0] -= min_height;
             y_bounds[1] += 25;
             resize_clicked.x_bounds = x_bounds;
             resize_clicked.y_bounds = y_bounds;
@@ -91,7 +91,6 @@
             }
         } else {
             // resize_clicked for resize
-            let prev_width = cell.width;
             [cell.top, cell.left, cell.height, cell.width] =
                 cell_edge_to_resize_fn($mouse_pos, resize_clicked, cell);
             if (cell.height < min_height) {
@@ -139,14 +138,13 @@
         if (e.button === 0) {
             e.preventDefault();
             dragging = true;
+
             dh_clicked = {
                 x: $mouse_pos.x - cell.left,
                 y: $mouse_pos.y - cell.top,
                 children: [],
             };
-            // copy value instead of reference
-            let children = [...$pc_graph[cell_id]];
-
+            let children = [...$pc_graph[cell_id]]; // cp-val instead of cp-ref
             for (let child of children) {
                 dh_clicked.children.push({
                     id: child,
@@ -175,11 +173,22 @@
     }
     function drag_handle_mouseup(e) {
         dragging = false;
+
+        // clear dh_clicked
         dh_clicked = {
             x: 0,
             y: 0,
             children: [],
         };
+    }
+
+    // mouse on tissue
+    let mouse_on_tissue = false;
+    function mouse_on_tissue_enter(e) {
+        mouse_on_tissue = true;
+    }
+    function mouse_on_tissue_leave(e) {
+        mouse_on_tissue = false;
     }
 
     import NewCellToolbar from "./cell_components/NewCellToolbar.svelte";
@@ -204,6 +213,10 @@
     id="tissue"
     bind:this={div}
     on:mousedown={resize_mousedown}
+    on:mouseover={mouse_on_tissue_enter}
+    on:mouseleave={mouse_on_tissue_leave}
+    on:focus={mouse_on_tissue_enter}
+    on:blur={mouse_on_tissue_leave}
 >
     <!-- this inside div exists to get the height and width of the content -->
     <div
@@ -214,12 +227,12 @@
         <slot />
     </div>
     <!-- drag handle -->
-    {#if mouse_pos_on_cell || is_mouse_inside_this_div(drag_handle, $mouse_pos) || dragging}
+    {#if (mouse_pos_on_cell && mouse_on_tissue) || is_mouse_inside_this_div(drag_handle, $mouse_pos) || dragging}
         {#if $mouse_pos.y - cell.top > 0}
             <NewCellToolbar {cell_id} />
             <div
                 style="top:{$mouse_pos.y - cell.top - 10}px; "
-                class="absolute bg-transparent w-4 h-5 -left-5 cursor-grab active:cursor-grabbing fill-neutral-500 dark:fill-neutral-400"
+                class="absolute bg-transparent w-5 h-8 -left-5 cursor-grab active:cursor-grabbing fill-neutral-500 dark:fill-neutral-400"
                 bind:this={drag_handle}
                 on:mousedown={drag_handle_mousedown}
             >

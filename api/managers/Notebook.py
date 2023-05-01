@@ -232,6 +232,19 @@ class Notebook:
             }
         )
 
+    def _set_execution_count(self, cell_id: str, execution_count: int):
+        self.cells[self.id_map[cell_id]].execution_count = execution_count
+        self.comms.send(
+            {
+                "channel": "notebook",
+                "method": "set_execution_count",
+                "message": {
+                    "cell_id": cell_id,
+                    "execution_count": execution_count,
+                },
+            }
+        )
+
     async def run(self, cell_id: str, code: list[str]):
         msg_queue = asyncio.Queue()
 
@@ -248,11 +261,18 @@ class Notebook:
             self.kernel.execute(code=code, msg_queue=msg_queue)
         )
 
+        execution_count_already_set = False
+        is_kernel_idle = False
+
         while True:
             msg = await msg_queue.get()
 
             log.debug(f"msg: {msg}")
             log.debug(f"-msg_queue size: {msg_queue.qsize()}")
+
+            if "msg_type" in msg and msg["msg_type"] == "execute_reply":
+                self._set_execution_count(cell_id, msg["execution_count"])
+                execution_count_already_set = True
 
             if (
                 "msg_type" in msg
@@ -261,6 +281,9 @@ class Notebook:
                 and msg["execution_state"] == "idle"
             ):  # last message
                 self._change_cell_state(cell_id, "idle")
+                is_kernel_idle = True
+
+            if execution_count_already_set and is_kernel_idle:  # last message
                 break
 
             # TODO: move this to output setter
@@ -290,7 +313,7 @@ class Notebook:
 
         new_cell = Cell(
             type="code",
-            source=[],
+            source=[""],
         )
 
         self.cells.insert(self.id_map[previous_cell_id] + 1, new_cell)
@@ -322,5 +345,15 @@ class Notebook:
                 "channel": "notebook",
                 "method": "new_code_cell",
                 "message": response,
+            }
+        )
+
+        self.comms.send(
+            {
+                "channel": "notebook",
+                "method": "resize_ancestors",
+                "message": {
+                    "cell_id": previous_cell_id,
+                },
             }
         )

@@ -113,6 +113,14 @@ class Kernel:
             self.kernel_client.execute(code)
             client_execute_reply = await self.kernel_client.get_shell_msg()
             log.debug(f"client_execute_reply: {client_execute_reply}")
+            msg_queue.put_nowait(
+                {
+                    "msg_type": "execute_reply",
+                    "execution_count": client_execute_reply["content"][
+                        "execution_count"
+                    ],
+                }
+            )
 
         async def proc_io_msgs() -> None:
             self.busy = True

@@ -7,11 +7,11 @@
     $: outputs = $notebook["cells"][$id_map[cell_id]].outputs;
 
     // markdown
-    import { marked } from "marked";
-    $: if (cell_type === "markdown") {
-        let source = $notebook["cells"][$id_map[cell_id]].source;
-        outputs = marked(source.join("\n"));
-    }
+    // import { marked } from "marked";
+    // $: if (cell_type === "markdown") {
+    //     let source = $notebook["cells"][$id_map[cell_id]].source;
+    //     outputs = marked(source.join("\n"));
+    // }
 </script>
 
 <div class="flex items-start h-auto w-full justify-center align-stretch mt-1">

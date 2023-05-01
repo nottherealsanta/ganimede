@@ -29,13 +29,14 @@ function createNotebookStore() {
                 new_cell["left"] = previous_cell["left"];
                 // insert new cell
                 n.cells.splice(previous_cell_index + 1, 0, new_cell);
-                // update id_map
+
+                // update maps
                 n["id_map"] = id_map;
-                // update np_graph
                 n["np_graph"] = np_graph
-                // update pc_graph
                 n["pc_graph"] = pc_graph
+
                 return n;
+
             });
         },
         change_cell_state: ({ cell_id, state }) => {
@@ -44,6 +45,16 @@ function createNotebookStore() {
                 return n;
             }
             );
+        },
+        set_execution_count: ({ cell_id, execution_count }) => {
+            update(n => {
+                n.cells[get(id_map)[cell_id]].execution_count = execution_count;
+                return n;
+            }
+            );
+        },
+        resize_ancestors: ({ cell_id }) => {
+            _resize_ancestors(cell_id);
         },
     };
 }
@@ -93,8 +104,7 @@ export function get_heading_level(source) {
     }
     return null;
 }
-// create a derived store that returns the heading level of the current cell
-// {id: heading_level}
+
 export const heading_levels = derived(notebook, $notebook => {
     const heading_levels = {};
     if (!$notebook.cells) {
@@ -139,6 +149,74 @@ function _find_parent(cell_id) {
     );
     return parent_id;
 }
+
+function _find_ancestors(cell_id) {
+    // find ancestors of cell_id
+    const ancestors = [];
+    let parent_id = _find_parent(cell_id);
+    while (parent_id) {
+        ancestors.push(parent_id);
+        parent_id = _find_parent(parent_id);
+    }
+    return ancestors;
+
+}
+
+export function _resize_ancestors(cell_id) {
+    let ancestors = _find_ancestors(cell_id);
+    // for parent in ancestors
+    ancestors.forEach(parent_id => {
+        let children = get(pc_graph)[parent_id];
+        let parent_cell = get(cells)[get(id_map)[parent_id]];
+
+        console.log("parent_id", parent_id, "children", children);
+        let x_bounds = [parent_cell.left + parent_cell.width, parent_cell.left];
+        let y_bounds = [parent_cell.top + parent_cell.height, parent_cell.top];
+        console.log("x_bounds", x_bounds, "y_bounds", y_bounds);
+
+        for (let child of children) {
+            let child_cell = get(cells)[get(id_map)[child]];
+            x_bounds[0] = Math.min(x_bounds[0], child_cell.left);
+            x_bounds[1] = Math.max(
+                x_bounds[1],
+                child_cell.left + child_cell.width
+            );
+            y_bounds[0] = Math.min(y_bounds[0], child_cell.top);
+            y_bounds[1] = Math.max(
+                y_bounds[1],
+                child_cell.top + child_cell.height
+            );
+        }
+        x_bounds[0] -= 25;
+        x_bounds[1] += 25;
+        y_bounds[1] += 25;
+        console.log("x_bounds", x_bounds, "y_bounds", y_bounds);
+
+        // bound
+        if (parent_cell.left + parent_cell.width < x_bounds[1]) {
+            parent_cell.width = x_bounds[1] - parent_cell.left;
+        }
+        if (parent_cell.left > x_bounds[0]) {
+            parent_cell.left = x_bounds[0];
+            parent_cell.width = x_bounds[1] - parent_cell.left;
+        }
+        if (parent_cell.top + parent_cell.height < y_bounds[1]) {
+            parent_cell.height = y_bounds[1] - parent_cell.top;
+        }
+        if (parent_cell.top > y_bounds[0]) {
+            parent_cell.top = y_bounds[0];
+            parent_cell.height = y_bounds[1] - parent_cell.top;
+        }
+        notebook.update(n => {
+            n.cells[get(id_map)[parent_id]] = parent_cell;
+            return n;
+        }
+        );
+
+    }
+    );
+}
+
 
 export const parent_less_cells = derived([heading_levels, notebook], ([$heading_levels, $notebook]) => {
     const parent_less_cells = [];

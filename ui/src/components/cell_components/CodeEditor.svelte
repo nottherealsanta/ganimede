@@ -32,9 +32,9 @@
     let monaco;
     let container;
     let editor;
-    let n_lines = 1;
     let max_columns = 0;
 
+    $: n_lines = cell.source.length;
     $: height = Math.ceil(n_lines * 21);
     $: width = Math.ceil(max_columns * 8) + 50;
     $: width = Math.min(width, max_width);
@@ -119,7 +119,7 @@
 
         editor.onDidChangeModelContent((e) => {
             max_columns = get_max_columns();
-            n_lines = editor._modelData.viewModel.getLineCount();
+            // n_lines = editor._modelData.viewModel.getLineCount();
             $notebook["cells"][$id_map[cell_id]].source = editor
                 .getValue()
                 .split("\n");

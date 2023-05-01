@@ -1,5 +1,11 @@
 <script>
-    import { cells, id_map, pc_graph } from "../stores/notebook";
+    import { onMount } from "svelte";
+    import {
+        cells,
+        id_map,
+        pc_graph,
+        _resize_ancestors,
+    } from "../stores/notebook";
 
     let div = null;
 
@@ -90,7 +96,7 @@
             <NewCellToolbar {cell_id} />
             <div
                 style="top:{$mouse_pos.y - cell.top - 10}px; "
-                class="absolute bg-transparent w-4 h-5 -left-5 cursor-grab active:cursor-grabbing fill-neutral-500 dark:fill-neutral-400"
+                class="absolute bg-transparent w-5 h-7 -left-5 cursor-grab active:cursor-grabbing fill-neutral-500 dark:fill-neutral-400"
                 on:mousedown={drag_handle_mousedown}
             >
                 <svg

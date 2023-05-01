@@ -15,12 +15,12 @@
     } from "../stores/notebook";
 
     function set_locs() {
-        let _top = 5000;
+        let _top = 1000;
         let _left = 5000;
         for (let cell_index = 0; cell_index < $cells.length; cell_index++) {
             $cells[cell_index].top = _top;
             $cells[cell_index].left = _left;
-            _top += $cells[cell_index].height + 10;
+            _top += $cells[cell_index].height + 5;
         }
         //  h6 -> h1, set width, height by looking at children's width, height
         for (let level = 6; level >= 1; level--) {
@@ -32,7 +32,7 @@
                 for (let child_id of children) {
                     let child = $cells[$id_map[child_id]];
                     width = Math.max(width, child.width);
-                    height += child.height + 10;
+                    height += child.height + 5;
                     $cells[$id_map[child_id]].left = cell.left + level * 25;
                 }
                 cell.width = width + 50;
@@ -49,7 +49,7 @@
                     if (next) {
                         let d_top = next.top;
                         let d_left = next.left;
-                        next.top = cell.top + cell.height + 10;
+                        next.top = cell.top + cell.height + 5;
                         next.left = cell.left;
                         d_top -= next.top;
                         d_left -= next.left;
@@ -57,7 +57,6 @@
                         // move all children by d_top, d_left
                         for (let child_id of $pc_graph[next.id]) {
                             let child = $cells[$id_map[child_id]];
-                            console.log(child);
                             child.top -= d_top;
                             child.left -= d_left;
                             $cells[$id_map[child_id]] = child;
@@ -67,7 +66,7 @@
             }
         }
 
-        window.scrollTo(5000 - 400, 5000 - 200);
+        window.scrollTo(5000 - 400, 1000 - 200);
     }
 
     setTimeout(() => {

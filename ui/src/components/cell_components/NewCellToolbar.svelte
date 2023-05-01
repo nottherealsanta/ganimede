@@ -20,8 +20,8 @@
 
     export let cell_id;
 
-    // import { id_map, cells } from "../../stores/notebook";
-    // $: cell = $cells[$id_map[cell_id]];
+    import { id_map, cells } from "../../stores/notebook";
+    $: cell = $cells[$id_map[cell_id]];
 
     function connector_click(e) {
         e.preventDefault();
@@ -50,6 +50,16 @@
             },
         });
     }
+
+    async function new_markdown_cell() {
+        send_message({
+            channel: "notebook",
+            method: "new_markdown_cell",
+            message: {
+                previous_cell_id: cell_id,
+            },
+        });
+    }
 </script>
 
 <div
@@ -62,7 +72,6 @@
             overflow-clip fill-gray-600 dark:fill-gray-300 z-10"
             on:mouseleave={() => {
                 is_hover = false;
-                console.log("mouse out");
             }}
             on:blur={() => {
                 // is_hover = false;
@@ -75,7 +84,11 @@
             >
                 <NewCellToolbarIcon icon_name="python" />
             </div>
-            <div class={item_class + " " + item_class_expect_first}>
+            <div
+                class={item_class + " " + item_class_expect_first}
+                on:click={new_markdown_cell}
+                on:keydown={() => {}}
+            >
                 <NewCellToolbarIcon icon_name="markdown" />
             </div>
             <div class={item_class + " " + item_class_expect_first}>
