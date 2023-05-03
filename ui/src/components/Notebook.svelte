@@ -55,11 +55,13 @@
                         d_left -= next.left;
                         $cells[$id_map[$np_graph[cell_id][0]]] = next;
                         // move all children by d_top, d_left
-                        for (let child_id of $pc_graph[next.id]) {
-                            let child = $cells[$id_map[child_id]];
-                            child.top -= d_top;
-                            child.left -= d_left;
-                            $cells[$id_map[child_id]] = child;
+                        if ($pc_graph[next.id]) {
+                            for (let child_id of $pc_graph[next.id]) {
+                                let child = $cells[$id_map[child_id]];
+                                child.top -= d_top;
+                                child.left -= d_left;
+                                $cells[$id_map[child_id]] = child;
+                            }
                         }
                     }
                 }
@@ -83,19 +85,22 @@
                 {#if $cells[$id_map[cell_id]].type === "markdown"}
                     <MarkdownCell {cell_id} />
                 {/if}
-                {#each $pc_graph[cell_id] as child_id}
-                    {#if $cells[$id_map[child_id]].type === "markdown" && $heading_levels[child_id] === null}
-                        <MarkdownCell cell_id={child_id} />
-                    {/if}
-                    {#if $cells[$id_map[child_id]].type === "code"}
-                        <CodeCell cell_id={child_id} />
-                    {/if}
-                    {#if $np_graph[child_id]}
-                        {#each $np_graph[child_id] as next_id}
-                            <Edges current_cell_id={child_id} {next_id} />
-                        {/each}
-                    {/if}
-                {/each}
+                {#if $pc_graph[cell_id]}
+                    {#each $pc_graph[cell_id] as child_id}
+                        {#if $cells[$id_map[child_id]].type === "markdown"}
+                            <MarkdownCell cell_id={child_id} />
+                        {/if}
+                        {#if $cells[$id_map[child_id]].type === "code"}
+                            <CodeCell cell_id={child_id} />
+                        {/if}
+                        {#if $np_graph[child_id]}
+                            {#each $np_graph[child_id] as next_id}
+                                <Edges current_cell_id={child_id} {next_id} />
+                            {/each}
+                        {/if}
+                    {/each}
+                {/if}
+
                 {#if $np_graph[cell_id]}
                     {#each $np_graph[cell_id] as next_id}
                         <Edges current_cell_id={cell_id} {next_id} />

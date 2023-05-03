@@ -8,7 +8,7 @@
     // zoom
     import mouse_pos from "../stores/mouse.js";
 
-    let min_zoom = 0.3;
+    let min_zoom = 0.6;
     let max_zoom = 1.7;
     let d_zoom = 0.1;
 
@@ -27,14 +27,6 @@
                     if ($zoom < min_zoom) {
                         $zoom = min_zoom;
                     } else if ($zoom >= min_zoom && $zoom <= max_zoom) {
-                        // let next_scroll_X =
-                        //     window.scrollX -
-                        //     $mouse_pos.x * d_zoom * Math.sign(e.deltaY);
-                        // let next_scroll_Y =
-                        //     window.scrollY -
-                        //     $mouse_pos.y * d_zoom * Math.sign(e.deltaY);
-
-                        // window.scrollTo(next_scroll_X, next_scroll_Y);
                         this.window.scrollBy({
                             left: -$mouse_pos.x * d_zoom * Math.sign(e.deltaY),
                             top: -$mouse_pos.y * d_zoom * Math.sign(e.deltaY),
@@ -88,10 +80,15 @@
     };
     let mouseMove = function (e) {
         if (moving) {
-            window.scrollTo(
-                window.scrollX + clicked_x - $mouse_pos.x,
-                window.scrollY + clicked_y - $mouse_pos.y
-            );
+            // window.scrollTo(
+            //     window.scrollX + clicked_x - $mouse_pos.x,
+            //     window.scrollY + clicked_y - $mouse_pos.y
+            // );
+            window.scrollBy({
+                left: clicked_x - $mouse_pos.x,
+                top: clicked_y - $mouse_pos.y,
+                behavior: "instant",
+            });
         }
     };
 

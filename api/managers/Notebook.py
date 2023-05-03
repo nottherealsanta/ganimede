@@ -17,7 +17,7 @@ class Notebook:
         self,
         kernel: Kernel,
         comms: Comms,
-        notebook_path: str = Path(f"{getcwd()}/tests/test0.ipynb"),
+        notebook_path: str = Path(f"{getcwd()}/tests/test3.ipynb"),
     ):
         self.kernel = kernel
         self.comms = comms
@@ -207,7 +207,8 @@ class Notebook:
                     parent_less_cells.append(cell.id)
         for i, cell in enumerate(parent_less_cells):
             idx = self.id_map[cell]
-            self.np_graph[cell] = [self.cells[idx + 1].id]
+            if idx < len(self.cells) - 1:
+                self.np_graph[cell] = [self.cells[idx + 1].id]
 
     async def queue_cell(self, cell_id: str, code: list[str]):
         log.debug(f"queue_cell: {cell_id}")
@@ -344,6 +345,57 @@ class Notebook:
             {
                 "channel": "notebook",
                 "method": "new_code_cell",
+                "message": response,
+            }
+        )
+
+        self.comms.send(
+            {
+                "channel": "notebook",
+                "method": "resize_ancestors",
+                "message": {
+                    "cell_id": previous_cell_id,
+                },
+            }
+        )
+
+    async def new_markdown_cell(self, previous_cell_id: str):
+        log.debug(f"previous cell: {previous_cell_id}")
+        log.debug(f"cells: {self.cells}")
+
+        new_cell = Cell(
+            type="markdown",
+            source=[""],
+        )
+
+        self.cells.insert(self.id_map[previous_cell_id] + 1, new_cell)
+
+        if previous_cell_id not in self.np_graph:
+            self.np_graph[previous_cell_id] = [new_cell.id]
+        else:
+            self.np_graph[previous_cell_id].append(new_cell.id)
+
+        prev_parent = self._find_parent(previous_cell_id)
+        if prev_parent is not None:
+            if prev_parent not in self.pc_graph:
+                self.pc_graph[prev_parent] = [new_cell.id]
+            else:
+                self.pc_graph[prev_parent].append(new_cell.id)
+
+        response = {
+            "new_cell": new_cell.to_dict(),
+            "previous_cell_id": previous_cell_id,
+            "id_map": self.id_map,
+            "np_graph": self.np_graph,
+            "pc_graph": self.pc_graph,
+        }
+
+        log.debug(f"new cell: {new_cell.id}")
+
+        self.comms.send(
+            {
+                "channel": "notebook",
+                "method": "new_markdown_cell",
                 "message": response,
             }
         )

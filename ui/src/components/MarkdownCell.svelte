@@ -6,7 +6,7 @@
     export let cell_id;
 
     $: cell = $cells[$id_map[cell_id]];
-    $: is_heading = cell.source[0].startsWith("#");
+    $: is_heading = true; //cell.source[0].startsWith("#");
 
     import { Editor, rootCtx, defaultValueCtx } from "@milkdown/core";
     import { commonmark } from "@milkdown/preset-commonmark";
@@ -41,9 +41,12 @@
     </Tissue>
 {:else}
     <Cell {cell_id}>
-        <div
-            class="bg-gray-50 dark:bg-neutral-800 w-fit h-fit m-1 rounded"
-            use:editor
-        />
+        <div class="flex items-start w-fit h-auto justify-center align-stretch">
+            <div class="w-6 h-6" />
+            <div
+                class="bg-gray-50 dark:bg-neutral-800 w-fit h-fit m-1 rounded"
+                use:editor
+            />
+        </div>
     </Cell>
 {/if}

@@ -27,6 +27,7 @@
     let height = 0;
     let width = 0;
     let max_width = 616;
+    let min_min_width = 200;
 
     import { onMount } from "svelte";
     let monaco;
@@ -36,8 +37,10 @@
 
     $: n_lines = cell.source.length;
     $: height = Math.ceil(n_lines * 21);
+    // $: width = Math.ceil(max_columns * 8) + 50;
     $: width = Math.ceil(max_columns * 8) + 50;
     $: width = Math.min(width, max_width);
+    $: width = Math.max(width, min_min_width);
     let value = "";
     $: if ($notebook["cells"][$id_map[cell_id]].source !== "") {
         value = $notebook["cells"][$id_map[cell_id]].source.join("");
@@ -157,8 +160,8 @@
 </style> -->
 
 <div
-    class="flex overflow-hidden relative border rounded border-zinc-100 dark:border-neutral-800 bg-transparent align-middle"
-    style="height: {height}px; width: {width}px; min-height: 25px; min-width: 150px;"
+    class="flex flex-1 overflow-hidden relative border rounded border-zinc-100 dark:border-neutral-800 bg-transparent align-middle"
+    style="height: {height}px; min-height: 25px; min-width: {width}px; width: 100%;"
     id="cell-input"
 >
     <div

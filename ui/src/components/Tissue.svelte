@@ -58,23 +58,26 @@
             let children = $pc_graph[cell_id];
             let x_bounds = [cell.left + cell.width, cell.left];
             let y_bounds = [cell.top + cell.height, cell.top];
-            for (let child of children) {
-                let child_cell = $cells[$id_map[child]];
-                x_bounds[0] = Math.min(x_bounds[0], child_cell.left);
-                x_bounds[1] = Math.max(
-                    x_bounds[1],
-                    child_cell.left + child_cell.width
-                );
-                y_bounds[0] = Math.min(y_bounds[0], child_cell.top);
-                y_bounds[1] = Math.max(
-                    y_bounds[1],
-                    child_cell.top + child_cell.height
-                );
+
+            if (children) {
+                for (let child of children) {
+                    let child_cell = $cells[$id_map[child]];
+                    x_bounds[0] = Math.min(x_bounds[0], child_cell.left);
+                    x_bounds[1] = Math.max(
+                        x_bounds[1],
+                        child_cell.left + child_cell.width
+                    );
+                    y_bounds[0] = Math.min(y_bounds[0], child_cell.top);
+                    y_bounds[1] = Math.max(
+                        y_bounds[1],
+                        child_cell.top + child_cell.height
+                    );
+                }
+                x_bounds[0] -= 25;
+                x_bounds[1] += 25;
+                y_bounds[0] -= min_height;
+                y_bounds[1] += 25;
             }
-            x_bounds[0] -= 25;
-            x_bounds[1] += 25;
-            y_bounds[0] -= min_height;
-            y_bounds[1] += 25;
             resize_clicked.x_bounds = x_bounds;
             resize_clicked.y_bounds = y_bounds;
         }
@@ -144,16 +147,18 @@
                 y: $mouse_pos.y - cell.top,
                 children: [],
             };
-            let children = [...$pc_graph[cell_id]]; // cp-val instead of cp-ref
-            for (let child of children) {
-                dh_clicked.children.push({
-                    id: child,
-                    x: $mouse_pos.x - $cells[$id_map[child]].left,
-                    y: $mouse_pos.y - $cells[$id_map[child]].top,
-                });
+            if ($pc_graph[cell_id]) {
+                let children = [...$pc_graph[cell_id]]; // cp-val instead of cp-ref
+                for (let child of children) {
+                    dh_clicked.children.push({
+                        id: child,
+                        x: $mouse_pos.x - $cells[$id_map[child]].left,
+                        y: $mouse_pos.y - $cells[$id_map[child]].top,
+                    });
 
-                if ($pc_graph[child]) {
-                    children.push(...$pc_graph[child]);
+                    if ($pc_graph[child]) {
+                        children.push(...$pc_graph[child]);
+                    }
                 }
             }
         }

@@ -96,6 +96,11 @@ class Kernel:
         if "traceback" in msg["content"]:
             output["traceback"] = msg["content"]["traceback"]
 
+        # TODO: handle this at reading file
+        if "data" in output:
+            for key, value in output["data"].items():
+                output["data"][key] = value.split("\n")
+
         return output
 
     async def execute(self, code: str, msg_queue: asyncio.Queue):
@@ -121,6 +126,15 @@ class Kernel:
                     ],
                 }
             )
+            if "error" in client_execute_reply["content"]:
+                msg_queue.put_nowait(
+                    {
+                        "ename": client_execute_reply["content"]["ename"],
+                        "evalue": client_execute_reply["content"]["evalue"],
+                        "output_type": "error",
+                        "traceback": client_execute_reply["content"]["traceback"],
+                    }
+                )
 
         async def proc_io_msgs() -> None:
             self.busy = True

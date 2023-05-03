@@ -39,6 +39,25 @@ function createNotebookStore() {
 
             });
         },
+        new_markdown_cell: ({ new_cell, previous_cell_id, id_map, np_graph, pc_graph }) => {
+            update(n => {
+                const previous_cell = n.cells[id_map[previous_cell_id]];
+                const previous_cell_index = n.cells.indexOf(previous_cell);
+                // set top, left for new cell
+                new_cell["top"] = previous_cell["top"] + previous_cell["height"] + 5;
+                new_cell["left"] = previous_cell["left"];
+                // insert new cell
+                n.cells.splice(previous_cell_index + 1, 0, new_cell);
+
+                // update maps
+                n["id_map"] = id_map;
+                n["np_graph"] = np_graph
+                n["pc_graph"] = pc_graph
+
+                return n;
+
+            });
+        },
         change_cell_state: ({ cell_id, state }) => {
             update(n => {
                 n.cells[get(id_map)[cell_id]].state = state;

@@ -43,8 +43,8 @@
 </script>
 
 <div
-    class="bg-transparent hover:bg-neutral-100 dark:hover:bg-neutral-800 active:bg-neutral-200 dark:active:bg-neutral-700
-    flex w-6 h-6 p-0 m-0 border border-zinc-100 dark:border-neutral-800 rounded items-center justify-center mr-1
+    class="flex flex-none bg-transparent hover:bg-neutral-100 dark:hover:bg-neutral-800 active:bg-neutral-200 dark:active:bg-neutral-700
+     w-6 h-6 p-0 m-0 border border-zinc-100 dark:border-neutral-800 rounded items-center justify-center mr-1
     stroke-black dark:stroke-white fill-black dark:fill-white"
     on:click={(e) => {
         e.stopPropagation();

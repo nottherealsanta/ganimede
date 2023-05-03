@@ -206,3 +206,53 @@ h6 {
 		color: white;
 	}
 }
+
+
+/* outputs dataframe */
+.dataframe {
+	border-collapse: collapse;
+	border: 0px;
+	padding: 0;
+	font-weight: 400;
+}
+.dataframe td, .dataframe th {
+	border: 0px;
+	padding: 1px 6px;
+}
+.dataframe tr:nth-child(even) {
+	background-color: #f5f5f5;
+}
+.dataframe tr:nth-child(odd) {
+	background-color: #ffffff;
+}
+.dataframe tr:hover {
+	background-color: #cccccc88;
+}
+.dataframe th {
+	color: #333333;
+	font-weight: 600;
+}
+.dataframe thead tr th {
+	background-color: #f0f0f0;
+	font-weight: 700;
+}
+
+@media (prefers-color-scheme: dark) {
+	.dataframe {
+		border: 1px solid #333333;
+		border-radius: 0.25rem/* 4px */;
+	}
+	.dataframe tr:nth-child(even) {
+		background-color: #333333;
+	}
+	.dataframe tr:nth-child(odd) {
+		background-color: #444444;
+	}
+	.dataframe tr:hover {
+		background-color: #555555;
+	}
+	.dataframe th {
+		background-color: rgba(0, 0, 0, 0.251);
+		color: #ffffff;
+	}
+}
