@@ -29,11 +29,13 @@
                 let children = $pc_graph[cell_id];
                 let width = cell.width;
                 let height = cell.height;
-                for (let child_id of children) {
-                    let child = $cells[$id_map[child_id]];
-                    width = Math.max(width, child.width);
-                    height += child.height + 5;
-                    $cells[$id_map[child_id]].left = cell.left + level * 25;
+                if (children) {
+                    for (let child_id of children) {
+                        let child = $cells[$id_map[child_id]];
+                        width = Math.max(width, child.width);
+                        height += child.height + 5;
+                        $cells[$id_map[child_id]].left = cell.left + level * 25;
+                    }
                 }
                 cell.width = width + 50;
                 cell.height = height + 25;

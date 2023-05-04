@@ -17,7 +17,7 @@ class Notebook:
         self,
         kernel: Kernel,
         comms: Comms,
-        notebook_path: str = Path(f"{getcwd()}/tests/test3.ipynb"),
+        notebook_path: str = Path(f"{getcwd()}/tests/test0.ipynb"),
     ):
         self.kernel = kernel
         self.comms = comms
@@ -132,12 +132,14 @@ class Notebook:
         for i, cell in enumerate(self.cells):
             if cell.is_heading:
                 hlevel_map[cell.heading_level].append(i)
+                self.pc_graph[cell.id] = []
 
             cell_list.append(i)
 
         for level in range(6, 0, -1):
             for cell_id in hlevel_map[level]:
                 index = cell_list.index(cell_id)
+                log.debug(f"cell_id {cell_id} index {index}")
 
                 i = index + 1
                 children = []
@@ -189,6 +191,7 @@ class Notebook:
                         self.pc_graph[self.cells[index].id] = []
                     self.pc_graph[self.cells[index].id].append(self.cells[child].id)
 
+                log.debug(self.pc_graph)
                 for i in range(0, len(self.pc_graph[self.cells[index].id]) - 1):
                     x_id = self.pc_graph[self.cells[index].id][i]
                     y_id = self.pc_graph[self.cells[index].id][i + 1]
@@ -213,12 +216,36 @@ class Notebook:
     async def queue_cell(self, cell_id: str, code: list[str]):
         log.debug(f"queue_cell: {cell_id}")
         self.run_queue.put_nowait((cell_id, code))
+        self._change_cell_state(cell_id, "queued")
+
+    async def interrupt_kernel(self):
+        await self.empty_run_queue()
+        await self.kernel.interrupt()
 
     async def run_queue_loop(self):
         while True:
             cell_id, code = await self.run_queue.get()
             self._change_cell_state(cell_id, "running")
+            self._clear_outputs(cell_id)
             await self.run(cell_id, code)
+
+    async def empty_run_queue(self):
+        log.debug("empty_run_queue")
+        while self.run_queue.qsize() > 0:
+            cell_id, _ = self.run_queue.get_nowait()
+            self._change_cell_state(cell_id, "idle")
+
+    def _clear_outputs(self, cell_id: str):
+        self.cells[self.id_map[cell_id]].outputs = []
+        self.comms.send(
+            {
+                "channel": "notebook",
+                "method": "clear_outputs",
+                "message": {
+                    "cell_id": cell_id,
+                },
+            }
+        )
 
     def _change_cell_state(self, cell_id: str, state: str):
         self.cells[self.id_map[cell_id]].state = state
@@ -289,6 +316,10 @@ class Notebook:
 
             # TODO: move this to output setter
             if "msg_type" not in msg:  # if message is an output, send it
+                # if the message is an error, clear the run queue
+                if msg["output_type"] == "error":
+                    await self.empty_run_queue()
+
                 self.cells[cell_index].outputs.append(msg)
                 message = {
                     "cell_id": cell_id,

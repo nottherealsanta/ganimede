@@ -18,27 +18,24 @@
     // run
     import { send_message } from "../../stores/socket";
     async function primary_button_click() {
-        if ($cells[$id_map[cell_id]].state !== "idle") {
-            return;
+        let state = $cells[$id_map[cell_id]].state;
+        if (state === "idle") {
+            send_message({
+                channel: "notebook",
+                method: "queue_cell",
+                message: {
+                    cell_id: cell_id,
+                    code: cell.source,
+                },
+            });
         }
-        $cells[$id_map[cell_id]].state = "queued";
-        $cells[$id_map[cell_id]]["outputs"] = [];
-        console.log("sending message");
-        send_message({
-            channel: "notebook",
-            method: "queue_cell",
-            message: {
-                cell_id: cell_id,
-                code: cell.source,
-            },
-        });
-
-        // disable button for 1 second
-        // disable max (500ms, cell_state === "running")
-        // disable till resposse of state
-        setTimeout(() => {
-            //pass
-        }, 500);
+        if (state === "queued" || state === "running") {
+            send_message({
+                channel: "notebook",
+                method: "interrupt_kernel",
+                message: {},
+            });
+        }
     }
 </script>
 
@@ -78,50 +75,74 @@
             <div class="font-mono text-[11px]">{execution_count}</div>
         {/if}
     {:else if $cells[$id_map[cell_id]].state == "queued"}
-        <svg
-            version="1.1"
-            id="L9"
-            xmlns="http://www.w3.org/2000/svg"
-            x="0px"
-            y="0px"
-            viewBox="0 0 100 100"
-            enable-background="new 0 0 0 0"
-        >
-            <path
-                d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50"
+        {#if hover}
+            <svg
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                stroke="black"
+                stroke-width="0.5"
             >
-                <animateTransform
-                    attributeName="transform"
-                    type="rotate"
-                    dur="5s"
-                    from="360 50 50"
-                    to="0 50 50"
-                    repeatCount="indefinite"
-                />
-            </path>
-        </svg>
+                <rect x="6" y="6" width="7" height="7" />
+            </svg>
+        {:else}
+            <svg
+                version="1.1"
+                id="L9"
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                viewBox="0 0 100 100"
+                enable-background="new 0 0 0 0"
+            >
+                <path
+                    d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50"
+                >
+                    <animateTransform
+                        attributeName="transform"
+                        type="rotate"
+                        dur="5s"
+                        from="360 50 50"
+                        to="0 50 50"
+                        repeatCount="indefinite"
+                    />
+                </path>
+            </svg>
+        {/if}
     {:else if $cells[$id_map[cell_id]].state == "running"}
-        <svg
-            version="1.1"
-            id="L9"
-            xmlns="http://www.w3.org/2000/svg"
-            x="0px"
-            y="0px"
-            viewBox="0 0 100 100"
-            enable-background="new 0 0 0 0"
-        >
-            <path
-                d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50"
+        {#if hover}
+            <svg
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                stroke="black"
+                stroke-width="0.5"
             >
-                <animateTransform
-                    attributeName="transform"
-                    type="rotate"
-                    dur="1s"
-                    from="0 50 50"
-                    to="360 50 50"
-                    repeatCount="indefinite"
-                />
-            </path>
-        </svg>
+                <rect x="6" y="6" width="7" height="7" />
+            </svg>
+        {:else}
+            <svg
+                version="1.1"
+                id="L9"
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                viewBox="0 0 100 100"
+                enable-background="new 0 0 0 0"
+            >
+                <path
+                    d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50"
+                >
+                    <animateTransform
+                        attributeName="transform"
+                        type="rotate"
+                        dur="1s"
+                        from="0 50 50"
+                        to="360 50 50"
+                        repeatCount="indefinite"
+                    />
+                </path>
+            </svg>
+        {/if}
     {/if}
 </div>

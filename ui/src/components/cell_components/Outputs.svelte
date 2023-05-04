@@ -1,10 +1,25 @@
 <script lang="ts">
+    import { onMount } from "svelte";
     export let cell_id;
-    import { notebook, id_map } from "../../stores/notebook";
+    import { cells, id_map } from "../../stores/notebook";
 
     // outputs
-    $: outputs = $notebook["cells"][$id_map[cell_id]].outputs;
+    $: outputs = $cells[$id_map[cell_id]].outputs;
 
+    // last heights
+    $: cell = $cells[$id_map[cell_id]];
+    let height = 0;
+    let last_height = 0;
+    $: if (cell.state == "queued") {
+        last_height = height;
+    } else if (cell.state == "idle") {
+        last_height = 0;
+    }
+    onMount(() => {
+        last_height = height;
+    });
+
+    // output components
     import ErrorOutput from "./output_components/ErrorOutput.svelte";
     import HtmlOutput from "./output_components/HTMLOutput.svelte";
     import ImageOutput from "./output_components/ImageOutput.svelte";
@@ -14,7 +29,10 @@
 
 <div
     class="flex items-start h-auto w-full justify-center align-stretch mt-1 overflow-y-auto"
-    style="max-width: 616px; max-height: 616px;"
+    style="max-width: 616px; max-height: 616px; 
+    min-height: {last_height}px; 
+    {cell.state == 'queued' ? 'opacity: 0.5' : ''}"
+    bind:clientHeight={height}
 >
     <div class="flex h-full w-6" style="margin-right:7px" />
     <div

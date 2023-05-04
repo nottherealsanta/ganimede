@@ -255,4 +255,7 @@ h6 {
 		background-color: rgba(0, 0, 0, 0.251);
 		color: #ffffff;
 	}
+	.dataframe thead tr th {
+		background-color: #333333;
+	}
 }

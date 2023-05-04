@@ -1,6 +1,5 @@
 import { derived, writable } from "svelte/store";
 import { get } from 'svelte/store';
-import { send_message } from "../stores/socket";
 
 function createNotebookStore() {
     const { subscribe, set, update } = writable({});
@@ -57,6 +56,17 @@ function createNotebookStore() {
                 return n;
 
             });
+        },
+        clear_outputs: ({ cell_id }) => {
+            update(n => {
+                const cell = n.cells[get(id_map)[cell_id]];
+                if (cell) {
+                    cell.outputs = [];
+                }
+                n.cells[get(id_map)[cell_id]] = cell;
+                return n;
+            }
+            );
         },
         change_cell_state: ({ cell_id, state }) => {
             update(n => {
@@ -188,10 +198,8 @@ export function _resize_ancestors(cell_id) {
         let children = get(pc_graph)[parent_id];
         let parent_cell = get(cells)[get(id_map)[parent_id]];
 
-        console.log("parent_id", parent_id, "children", children);
         let x_bounds = [parent_cell.left + parent_cell.width, parent_cell.left];
         let y_bounds = [parent_cell.top + parent_cell.height, parent_cell.top];
-        console.log("x_bounds", x_bounds, "y_bounds", y_bounds);
 
         for (let child of children) {
             let child_cell = get(cells)[get(id_map)[child]];
@@ -209,7 +217,6 @@ export function _resize_ancestors(cell_id) {
         x_bounds[0] -= 25;
         x_bounds[1] += 25;
         y_bounds[1] += 25;
-        console.log("x_bounds", x_bounds, "y_bounds", y_bounds);
 
         // bound
         if (parent_cell.left + parent_cell.width < x_bounds[1]) {

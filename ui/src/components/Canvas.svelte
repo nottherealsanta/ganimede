@@ -131,7 +131,7 @@
 
 <div
     id="zoom"
-    class="fixed flex flex-row bottom-5 w-[120px] h-8 right-5 p-[1px] bg-neutral-100 dark:bg-neutral-800
+    class="fixed flex flex-row bottom-5 w-[120px] h-8 left-5 p-[1px] bg-neutral-100 dark:bg-neutral-800
     border rounded border-neutral-300 dark:border-neutral-700 justify-center align-middle pointer-events-auto"
 >
     <div

@@ -3,21 +3,18 @@
     export let current_cell_id;
     export let next_id;
 
-    $: current_cell_bottom =
-        $cells[$id_map[current_cell_id]].top +
-        $cells[$id_map[current_cell_id]].height;
-    $: current_cell_bottom_mid =
-        $cells[$id_map[current_cell_id]].left +
-        $cells[$id_map[current_cell_id]].width / 2;
-    $: current_cell_left = $cells[$id_map[current_cell_id]].left;
-    $: current_cell_right =
-        $cells[$id_map[current_cell_id]].left +
-        $cells[$id_map[current_cell_id]].width;
+    $: current_cell = $cells[$id_map[current_cell_id]];
+    $: current_cell_bottom = current_cell.top + current_cell.height;
+    $: current_cell_center = current_cell.left + current_cell.width / 2;
+    $: current_cell_left = current_cell.left;
+    $: current_cell_right = current_cell.left + current_cell.width;
+    $: current_cell_mid = current_cell.top + current_cell.height / 2;
 
-    $: next_cell_top = $cells[$id_map[next_id]].top;
-    $: next_cell_top_mid =
-        $cells[$id_map[next_id]].left + $cells[$id_map[next_id]].width / 2;
-    $: next_cell_left = $cells[$id_map[next_id]].left;
+    $: next_cell = $cells[$id_map[next_id]];
+    $: next_cell_top = next_cell.top;
+    $: next_cell_center = next_cell.left + next_cell.width / 2;
+    $: next_cell_left = next_cell.left;
+    $: next_cell_mid = next_cell.top + next_cell.height / 2;
 
     let x1, y1, x2, y2;
     let is_right = false;
@@ -26,20 +23,16 @@
         next_cell_top > current_cell_bottom &&
         next_cell_left < current_cell_right
     ) {
-        x1 = current_cell_bottom_mid;
+        x1 = current_cell_center;
         y1 = current_cell_bottom;
-        x2 = next_cell_top_mid;
+        x2 = next_cell_center;
         y2 = next_cell_top;
         is_right = false;
     } else {
-        x1 =
-            $cells[$id_map[current_cell_id]].left +
-            $cells[$id_map[current_cell_id]].width;
-        y1 =
-            $cells[$id_map[current_cell_id]].top +
-            $cells[$id_map[current_cell_id]].height / 2;
-        x2 = $cells[$id_map[next_id]].left;
-        y2 = $cells[$id_map[next_id]].top + $cells[$id_map[next_id]].height / 2;
+        x1 = current_cell_right;
+        y1 = current_cell_mid;
+        x2 = next_cell_left;
+        y2 = next_cell_mid;
         is_right = true;
     }
 

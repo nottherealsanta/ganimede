@@ -71,6 +71,9 @@ class Kernel:
         log.debug("Kernel started")
         log.debug(f"Kernel client: {self.kernel_client}")
 
+    async def interrupt(self):
+        await self.kernel_manager.interrupt_kernel()
+
     async def flush_io_pub(self):
         while True:
             try:

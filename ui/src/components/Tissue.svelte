@@ -209,11 +209,12 @@
     "
     class="
     bg-gray-50/50 dark:bg-neutral-800/30
+    pr-2
     absolute rounded-lg
-    border-2
+    border-l-2 border-r-2 border-t-2 border-b-2
     border-gray-500 dark:border-gray-400
     shadow-md shadow-zinc-300 dark:shadow-neutral-900/50
-    flex overflow-visible p-1 cursor-default
+    flex overflow-visible cursor-default
     "
     id="tissue"
     bind:this={div}
@@ -224,12 +225,15 @@
     on:blur={mouse_on_tissue_leave}
 >
     <!-- this inside div exists to get the height and width of the content -->
-    <div
-        style="height: fit-content; width: fit-content;"
-        bind:clientHeight={inside_div_height}
-        bind:clientWidth={inside_div_width}
-    >
-        <slot />
+    <div class="flex flex-row">
+        <div class="w-2 h-full bg-gray-500 dark:bg-gray-400" />
+        <div
+            style="height: fit-content; width: fit-content;"
+            bind:clientHeight={inside_div_height}
+            bind:clientWidth={inside_div_width}
+        >
+            <slot />
+        </div>
     </div>
     <!-- drag handle -->
     {#if (mouse_pos_on_cell && mouse_on_tissue) || is_mouse_inside_this_div(drag_handle, $mouse_pos) || dragging}

@@ -18,7 +18,7 @@
         <PrimeButton {cell_id} />
         <CodeEditor {cell_id} bind:focus />
     </div>
-    {#if cell.outputs.length > 0}
+    {#if cell.outputs.length > 0 || cell.state == "running"}
         <Outputs {cell_id} />
     {/if}
 </Cell>
