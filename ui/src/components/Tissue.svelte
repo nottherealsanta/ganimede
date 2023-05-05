@@ -226,7 +226,7 @@
 >
     <!-- this inside div exists to get the height and width of the content -->
     <div class="flex flex-row">
-        <div class="w-2 h-full bg-gray-500 dark:bg-gray-400" />
+        <div class="w-2 h-full bg-gray-500 dark:bg-gray-300" />
         <div
             style="height: fit-content; width: fit-content;"
             bind:clientHeight={inside_div_height}

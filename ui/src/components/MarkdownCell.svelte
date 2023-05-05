@@ -36,7 +36,7 @@
     <Tissue {cell_id}>
         <!-- <div style="min-width: 200px;"> -->
         <div
-            class="bg-gray-50 dark:bg-neutral-800 w-full h-fit m-1 rounded"
+            class="bg-gray-50 dark:bg-neutral-700 w-full h-fit m-1 rounded min-w-[200px] min-h-[25px]"
             use:editor
         />
         <!-- </div> -->
@@ -44,9 +44,9 @@
 {:else}
     <Cell {cell_id}>
         <div class="flex items-start w-fit h-auto justify-center align-stretch">
-            <div class="w-3 h-6" />
+            <div class="w-6 h-6" />
             <div
-                class="bg-gray-50 dark:bg-neutral-800 w-fit h-fit m-1 rounded"
+                class="bg-gray-50 dark:bg-neutral-800 w-fit h-fit rounded min-w-[200px] min-h-[25px]"
                 use:editor
             />
         </div>

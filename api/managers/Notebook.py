@@ -17,7 +17,7 @@ class Notebook:
         self,
         kernel: Kernel,
         comms: Comms,
-        notebook_path: str = Path(f"{getcwd()}/tests/test0.ipynb"),
+        notebook_path: str = Path(f"{getcwd()}/tests/test4.ipynb"),
     ):
         self.kernel = kernel
         self.comms = comms

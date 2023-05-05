@@ -1,8 +1,5 @@
-// create a websocket svelte store 
-
 // import { writable } from "svelte/store";
-import { get } from 'svelte/store';
-import { notebook, cells, id_map, append_output } from "./notebook";
+import { notebook } from "./notebook";
 
 export let socket = null;
 

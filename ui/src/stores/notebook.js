@@ -34,7 +34,9 @@ function createNotebookStore() {
                 n["np_graph"] = np_graph
                 n["pc_graph"] = pc_graph
 
+                console.log(">n:", n);
                 return n;
+
 
             });
         },
@@ -105,6 +107,34 @@ id_map.set = (value) => notebook.update(n => {
     return n;
 });
 
+// parent-child graph
+export const pc_graph = derived(notebook, $notebook => {
+    return $notebook.pc_graph
+}
+);
+pc_graph.set = (value) => notebook.update(n => {
+    n["pc_graph"] = value;
+    return n;
+});
+//child-parent graph
+export const cp_graph = derived(notebook, $notebook => {
+    // reverse pc_graph, which is map of list 
+    const cp_graph = {};
+    // for parent in pc_graph; for child in pc_graph[parent]
+
+    for (const parent in $notebook.pc_graph) {
+        for (const child of $notebook.pc_graph[parent]) {
+            cp_graph[child] = parent;
+        }
+    }
+    return cp_graph;
+}
+);
+cp_graph.set = (value) => notebook.update(n => {
+    console.error("cp_graph is read-only");
+});
+
+// next-prev graph
 export const np_graph = derived(notebook, $notebook => {
     return $notebook.np_graph
 }
@@ -113,14 +143,24 @@ np_graph.set = (value) => notebook.update(n => {
     n["np_graph"] = value;
     return n;
 });
-
-export const pc_graph = derived(notebook, $notebook => {
-    return $notebook.pc_graph
+// prev-next graph
+export const pn_graph = derived(notebook, $notebook => {
+    // reverse np_graph, which is map of list
+    const pn_graph = {};
+    // for prev in np_graph; for next in np_graph[prev]
+    for (const prev in $notebook.np_graph) {
+        for (const next of $notebook.np_graph[prev]) {
+            if (pn_graph[next] === undefined) {
+                pn_graph[next] = [];
+            }
+            pn_graph[next].push(prev);
+        }
+    }
+    return pn_graph;
 }
 );
-pc_graph.set = (value) => notebook.update(n => {
-    n["pc_graph"] = value;
-    return n;
+pn_graph.set = (value) => notebook.update(n => {
+    console.error("pn_graph is read-only");
 });
 
 
