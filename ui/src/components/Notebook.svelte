@@ -13,6 +13,7 @@
         heading_levels_inv,
         parent_less_cells,
     } from "../stores/notebook";
+    import { send_message } from "../stores/socket";
 
     function set_locs() {
         let _top = 1000;
@@ -69,7 +70,21 @@
                 }
             }
         }
-
+        for (let cell_index = 0; cell_index < $cells.length; cell_index++) {
+            send_message({
+                channel: "notebook",
+                method: "sync_cell_properties",
+                message: {
+                    cell_id: $cells[cell_index].id,
+                    sync: {
+                        top: $cells[cell_index].top,
+                        left: $cells[cell_index].left,
+                        height: $cells[cell_index].height,
+                        width: $cells[cell_index].width,
+                    },
+                },
+            });
+        }
         window.scrollTo(5000 - 400, 1000 - 200);
     }
 
@@ -124,6 +139,19 @@
                 {/each}
             {/if}
         {/each}
+        <!-- {#each $cells as cell}
+            {#if cell.type === "markdown"}
+                <MarkdownCell cell_id={cell.id} />
+            {/if}
+            {#if cell.type === "code"}
+                <CodeCell cell_id={cell.id} />
+            {/if}
+            {#if $np_graph[cell.id]}
+                {#each $np_graph[cell.id] as next_id}
+                    <Edges current_cell_id={cell.id} {next_id} />
+                {/each}
+            {/if}
+        {/each} -->
     {/if}
 </div>
 

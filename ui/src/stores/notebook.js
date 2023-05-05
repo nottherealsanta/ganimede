@@ -21,13 +21,8 @@ function createNotebookStore() {
         },
         new_code_cell: ({ new_cell, previous_cell_id, id_map, np_graph, pc_graph }) => {
             update(n => {
-                const previous_cell = n.cells[id_map[previous_cell_id]];
-                const previous_cell_index = n.cells.indexOf(previous_cell);
-                // set top, left for new cell
-                new_cell["top"] = previous_cell["top"] + previous_cell["height"] + 5;
-                new_cell["left"] = previous_cell["left"];
-                // insert new cell
-                n.cells.splice(previous_cell_index + 1, 0, new_cell);
+                // n.cells.splice(previous_cell_index + 1, 0, new_cell);
+                n.cells.push(new_cell);
 
                 // update maps
                 n["id_map"] = id_map;
@@ -36,8 +31,6 @@ function createNotebookStore() {
 
                 console.log(">n:", n);
                 return n;
-
-
             });
         },
         new_markdown_cell: ({ new_cell, previous_cell_id, id_map, np_graph, pc_graph }) => {
@@ -85,7 +78,7 @@ function createNotebookStore() {
             );
         },
         resize_ancestors: ({ cell_id }) => {
-            _resize_ancestors(cell_id);
+            // _resize_ancestors(cell_id);
         },
     };
 }
@@ -159,9 +152,9 @@ export const pn_graph = derived(notebook, $notebook => {
     return pn_graph;
 }
 );
-pn_graph.set = (value) => notebook.update(n => {
-    console.error("pn_graph is read-only");
-});
+// pn_graph.set = (value) => notebook.update(n => {
+//     console.error("pn_graph is read-only");
+// });
 
 
 export function get_heading_level(source) {
@@ -297,3 +290,21 @@ export const parent_less_cells = derived([heading_levels, notebook], ([$heading_
     return parent_less_cells;
 }
 );
+
+import { send_message } from "./socket.js";
+export function sync_cell_properties(cell_id) {
+    let cell = get(cells)[get(id_map)[cell_id]];
+    send_message({
+        channel: "notebook",
+        method: "sync_cell_properties",
+        message: {
+            cell_id: cell.id,
+            sync: {
+                top: cell.top,
+                left: cell.left,
+                height: cell.height,
+                width: cell.width,
+            },
+        },
+    });
+}

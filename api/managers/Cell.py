@@ -21,39 +21,36 @@ class Cell:
         height: int = 0,
         width: int = 0,
     ):
-        self._id = id if id else _generate_random_cell_id()
-        self._type = type
-        self._source = source
+        self.id = id if id else _generate_random_cell_id()
+        self.type = type
+        self.source = source
 
-        self._execution_count = execution_count
-        self._outputs = outputs
+        self.execution_count = execution_count
+        self.outputs = outputs
 
-        self._top = top
-        self._left = left
-        self._height = height
-        self._width = width
+        self.top = top
+        self.left = left
+        self.height = height
+        self.width = width
 
-        self._state = "idle"  # idle, running, queued, done
+        self.state = "idle"  # idle, running, queued, done
 
     def to_dict(self) -> dict:
-        return {k[1:]: v for k, v in self.__dict__.items()}
+        return {k: v for k, v in self.__dict__.items()}
 
     def _save(self) -> dict:
         return {
-            "cell_type": self._type,
-            "source": self._source,
+            "cell_type": self.type,
+            "source": self.source,
             "metadata": {
                 "gm": {
-                    "top": self._top,
-                    "left": self._left,
-                    "height": self._height,
-                    "width": self._width,
+                    "top": self.top,
+                    "left": self.left,
+                    "height": self.height,
+                    "width": self.width,
                 }
             },
         }
-
-    def __getattr__(self, __name: str) -> Any:
-        return self.__dict__[f"_{__name}"]
 
     @property
     def is_heading(self):

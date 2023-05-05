@@ -123,9 +123,9 @@
         editor.onDidChangeModelContent((e) => {
             max_columns = get_max_columns();
             // n_lines = editor._modelData.viewModel.getLineCount();
-            $notebook["cells"][$id_map[cell_id]].source = editor
-                .getValue()
-                .split("\n");
+            // $notebook["cells"][$id_map[cell_id]].source = editor
+            //     .getValue()
+            //     .split("\n");
         });
 
         n_lines = editor.getModel().getLineCount();

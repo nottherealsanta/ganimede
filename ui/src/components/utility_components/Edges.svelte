@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { TextAreaState } from "monaco-editor/esm/vs/editor/browser/controller/textAreaState";
-    import { cells, id_map } from "../../stores/notebook";
     export let current_cell_id;
     export let next_id;
+
+    import { cells, id_map } from "../../stores/notebook";
 
     $: c = $cells[$id_map[current_cell_id]];
     $: n = $cells[$id_map[next_id]];
@@ -88,9 +88,3 @@
         />
     </svg>
 </div>
-<!-- {#if hovering}
-    <div
-        class="absolute w-10 h-5 bg-neutral-500/30 pointer-events-none"
-        style="top: {_hover.y - 6}px; left: {_hover.x - 6}px;"
-    />
-{/if} -->

@@ -1,16 +1,24 @@
 <script>
-    import { onMount } from "svelte";
+    import { afterUpdate, onMount } from "svelte";
     import {
         cells,
         id_map,
         pc_graph,
         _resize_ancestors,
+        sync_cell_properties,
     } from "../stores/notebook";
 
     let div = null;
 
     export let cell_id;
     $: cell = $cells[$id_map[cell_id]];
+
+    onMount(() => {
+        console.log("cell mount: ", cell_id);
+        setTimeout(() => {
+            sync_cell_properties(cell_id);
+        }, 500);
+    });
 
     import { get_mouse_pos_on_cell } from "../utils/cell_utils.js";
     $: mouse_pos_on_cell = get_mouse_pos_on_cell(cell, $mouse_pos);
@@ -58,9 +66,11 @@
     }
     function drag_handle_mouseup(e) {
         dragging = false;
+        sync_cell_properties(cell_id);
     }
 
     import NewCellToolbar from "../components/cell_components/NewCellToolbar.svelte";
+    import { send_message } from "../stores/socket";
 </script>
 
 <div
@@ -98,6 +108,7 @@
                 style="top:{$mouse_pos.y - cell.top - 10}px; "
                 class="absolute bg-transparent w-5 h-7 -left-5 cursor-grab active:cursor-grabbing fill-neutral-500 dark:fill-neutral-400"
                 on:mousedown={drag_handle_mousedown}
+                on:mouseup={drag_handle_mouseup}
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -115,7 +126,4 @@
     {/if}
 </div>
 
-<svelte:window
-    on:mouseup={drag_handle_mouseup}
-    on:mousemove={drag_handle_mousemove}
-/>
+<svelte:window on:mousemove={drag_handle_mousemove} />

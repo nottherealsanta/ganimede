@@ -17,7 +17,7 @@ class Notebook:
         self,
         kernel: Kernel,
         comms: Comms,
-        notebook_path: str = Path(f"{getcwd()}/tests/test4.ipynb"),
+        notebook_path: str = Path(f"{getcwd()}/tests/test2.ipynb"),
     ):
         self.kernel = kernel
         self.comms = comms
@@ -345,10 +345,21 @@ class Notebook:
 
         new_cell = Cell(
             type="code",
-            source=[""],
+            source=[" "],
         )
 
-        self.cells.insert(self.id_map[previous_cell_id] + 1, new_cell)
+        #         new_cell["top"] = previous_cell["top"] + previous_cell["height"] + 5;
+        # new_cell["left"] = previous_cell["left"];
+
+        prev_cell = self.cells[self.id_map[previous_cell_id]]
+        new_cell.top = prev_cell.top + prev_cell.height + 5
+        new_cell.left = prev_cell.left
+
+        print(prev_cell.to_dict())
+        print(prev_cell.top)
+
+        # self.cells.insert(self.id_map[previous_cell_id] + 1, new_cell)
+        self.cells.append(new_cell)
 
         if previous_cell_id not in self.np_graph:
             self.np_graph[previous_cell_id] = [new_cell.id]
@@ -440,3 +451,8 @@ class Notebook:
                 },
             }
         )
+
+    async def sync_cell_properties(self, cell_id: str, sync: dict):
+        cell = self.cells[self.id_map[cell_id]]
+        for key in sync.keys():
+            setattr(cell, key, sync[key])
