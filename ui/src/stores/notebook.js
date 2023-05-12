@@ -78,7 +78,7 @@ function createNotebookStore() {
             );
         },
         resize_ancestors: ({ cell_id }) => {
-            // _resize_ancestors(cell_id);
+            _resize_ancestors(cell_id);
         },
     };
 }
@@ -225,6 +225,7 @@ function _find_ancestors(cell_id) {
 }
 
 export function _resize_ancestors(cell_id) {
+    console.log("resizing ancestors of ", cell_id);
     let ancestors = _find_ancestors(cell_id);
     // for parent in ancestors
     ancestors.forEach(parent_id => {
@@ -294,17 +295,53 @@ export const parent_less_cells = derived([heading_levels, notebook], ([$heading_
 import { send_message } from "./socket.js";
 export function sync_cell_properties(cell_id) {
     let cell = get(cells)[get(id_map)[cell_id]];
-    send_message({
-        channel: "notebook",
-        method: "sync_cell_properties",
-        message: {
-            cell_id: cell.id,
-            sync: {
-                top: cell.top,
-                left: cell.left,
-                height: cell.height,
-                width: cell.width,
+
+    let cells_to_be_synced = [];
+    cells_to_be_synced.push(cell_id);
+
+    // check if cell is a parent
+    if (get(pc_graph)[cell_id]) {
+        let children = [...get(pc_graph)[cell_id]];
+        for (let child of children) {
+            cells_to_be_synced.push(child);
+            if (get(pc_graph)[child]) {
+                children.push(...get(pc_graph)[child]);
+            }
+        }
+    }
+
+    // sync
+    for (let x of cells_to_be_synced) {
+        cell = get(cells)[get(id_map)[x]];
+        send_message({
+            channel: "notebook",
+            method: "sync_cell_properties",
+            message: {
+                cell_id: cell.id,
+                sync: {
+                    top: cell.top,
+                    left: cell.left,
+                    height: cell.height,
+                    width: cell.width,
+                },
             },
-        },
+        });
+    }
+
+}
+
+// HTML element store for each cell
+export const html_elements = derived([cells, id_map], ([$cells, $id_map]) => {
+    const html_elements = {};
+    if (!$cells) {
+        return html_elements;
+    }
+    $cells.forEach(cell => {
+        html_elements[cell.id] = null;
     });
+    return html_elements;
+}
+);
+html_elements.set = function (cell_id, element) {
+    this[cell_id] = element;
 }

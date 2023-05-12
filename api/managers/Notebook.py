@@ -17,7 +17,7 @@ class Notebook:
         self,
         kernel: Kernel,
         comms: Comms,
-        notebook_path: str = Path(f"{getcwd()}/tests/test2.ipynb"),
+        notebook_path: str = Path(f"{getcwd()}/tests/test1.ipynb"),
     ):
         self.kernel = kernel
         self.comms = comms
@@ -167,6 +167,7 @@ class Notebook:
                         self.cells[i].is_heading
                         and self.cells[i].heading_level
                         > self.cells[index].heading_level
+                        and len(self.pc_graph[self.cells[i].id]) > 0
                     ):
                         last_child_id = self.pc_graph[self.cells[i].id][-1]
                         last_child_idx = self.id_map[last_child_id]

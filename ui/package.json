@@ -36,6 +36,7 @@
     "@milkdown/transformer": "^7.2.1",
     "@types/marked": "^4.0.8",
     "ansi_up": "^5.2.1",
+    "dragselect": "^2.7.4",
     "marked": "^4.2.12",
     "monaco-editor": "^0.34.1",
     "sirv-cli": "^2.0.0",

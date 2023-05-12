@@ -3,6 +3,8 @@ body {
 	position: relative;
 	width: 100%;
 	height: 100%;
+	 /* Prevent the user selecting text */
+	user-select: none;
 }
 
 body {
@@ -189,10 +191,15 @@ h6 {
 	padding-top: 0.1rem;
 	padding-right: 0.5rem;
 	white-space: pre-wrap;
+	border-radius: 4px;
 }
 
 .ProseMirror pre {
 	white-space: pre-wrap;
+}
+
+.ProseMirror-focused {
+	outline: 1px solid rgb(73, 176, 249);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -257,5 +264,44 @@ h6 {
 	}
 	.dataframe thead tr th {
 		background-color: #333333;
+	}
+}
+
+/* selection  */
+
+.ds-selected {
+	outline: 2px solid rgb(73, 176, 249);
+	outline-offset: 1px;
+}
+.ds-selector{
+	outline: 1px solid rgb(73, 176, 249);
+	border-radius: 2px;
+}
+
+.ds-dropzone-ready {
+	outline: 2px solid rgb(119, 119, 119);
+	outline-offset: 2px;
+}
+
+.ds-dropzone-target{
+	/* animation of border flash */
+	animation: flash 0.25s infinite;
+	animation-iteration-count: 1;
+
+}
+@keyframes flash {
+	0% {
+		outline: 4px solid rgb(73, 176, 249);
+		outline-offset: 0px;
+	}
+
+	50% {
+		outline: 2px solid rgb(73, 176, 249);
+		outline-offset: 0px;
+	}
+
+	100% {
+		outline: 4px solid rgb(73, 176, 249);
+		outline-offset: 0px;
 	}
 }

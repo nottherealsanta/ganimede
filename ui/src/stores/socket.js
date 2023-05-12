@@ -39,7 +39,7 @@ export async function open_socket() {
 };
 
 export async function send_message({ channel, method, message }) {
-    console.log("send : ", { channel, method, message });
+    // console.log("send : ", { channel, method, message });
     socket.send(JSON.stringify({
         "channel": channel,
         "method": method,

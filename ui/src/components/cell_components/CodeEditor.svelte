@@ -123,17 +123,39 @@
         editor.onDidChangeModelContent((e) => {
             max_columns = get_max_columns();
             // n_lines = editor._modelData.viewModel.getLineCount();
-            // $notebook["cells"][$id_map[cell_id]].source = editor
-            //     .getValue()
-            //     .split("\n");
+            $notebook["cells"][$id_map[cell_id]].source = editor
+                .getValue()
+                .split("\n");
+            // add a new line of each item in source list
+            for (
+                let i = 0;
+                i < $notebook["cells"][$id_map[cell_id]].source.length - 1;
+                i++
+            ) {
+                $notebook["cells"][$id_map[cell_id]].source[i] += "\n";
+            }
         });
-
+        // on drag select
+        editor.mou;
         n_lines = editor.getModel().getLineCount();
         max_columns = get_max_columns();
 
         return () => {
             destroyed = true;
         };
+    });
+
+    let div = null;
+
+    onMount(() => {
+        if (div) {
+            div.addEventListener("mousedown", (e) => {
+                e.stopPropagation();
+            });
+            div.addEventListener("mouseup", (e) => {
+                e.stopPropagation();
+            });
+        }
     });
 </script>
 
@@ -160,9 +182,10 @@
 </style> -->
 
 <div
-    class="flex flex-1 overflow-hidden relative border rounded border-zinc-100 dark:border-neutral-800 bg-transparent align-middle"
+    class="cell-input flex flex-1 overflow-hidden relative border rounded border-zinc-100 dark:border-neutral-800 bg-transparent align-middle"
     style="height: {height}px; min-height: 25px; min-width: {width}px; width: 100%;"
     id="cell-input"
+    bind:this={div}
 >
     <div
         class="w-full h-full cursor-text"

@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
     import CodeCell from "./CodeCell.svelte";
     import MarkdownCell from "./MarkdownCell.svelte";
     import Edges from "./utility_components/Edges.svelte";
@@ -12,10 +12,11 @@
         heading_levels,
         heading_levels_inv,
         parent_less_cells,
+        html_elements,
     } from "../stores/notebook";
     import { send_message } from "../stores/socket";
 
-    function set_locs() {
+    function init_tlhw() {
         let _top = 1000;
         let _left = 5000;
         for (let cell_index = 0; cell_index < $cells.length; cell_index++) {
@@ -89,10 +90,87 @@
     }
 
     setTimeout(() => {
+        // if all cells are at 0 0 then init_tlhw
+        // TODO: this should be after all cells are loaded
         if ($cells.every((cell) => cell.top === 0 && cell.left === 0)) {
-            set_locs();
+            init_tlhw();
         }
-    }, 500);
+        // if window scroll is 0 0 then move to 5000-400, 1000-200
+        if (window.scrollX === 0 && window.scrollY === 0) {
+            window.scrollTo(5000 - 400, 1000 - 200);
+        }
+    }, 1500);
+
+    import DragSelect from "dragselect";
+    import { onMount } from "svelte";
+
+    let ds = null;
+    // drop_zone as list of pc _graph keys and respective html_eleemt
+    let drop_zones = [];
+
+    onMount(() => {
+        setTimeout(() => {
+            drop_zones = Object.keys($pc_graph).map((key) => {
+                return {
+                    id: key,
+                    element: $html_elements[key],
+                };
+            });
+            ds = new DragSelect({
+                selectables: document.getElementsByClassName("cell"),
+                useTransform: false,
+                dragAsBlock: true,
+                dropZones: drop_zones,
+                area: document.getElementById("canvas"),
+            });
+            ds.subscribe("dragmove", (callback_object) => {
+                if (callback_object.items.length > 0) {
+                    for (let item of callback_object.items) {
+                        let cell_id = item.getAttribute("cell_id");
+                        let top = item.style.top;
+                        let left = item.style.left;
+                        $cells[$id_map[cell_id]].top = parseInt(top);
+                        $cells[$id_map[cell_id]].left = parseInt(left);
+                    }
+                }
+            });
+            ds.subscribe("callback", (dropTarget) => {
+                console.log("Callback", dropTarget);
+                if (dropTarget?.itemsDropped?.length) {
+                    console.log(
+                        "Dropped",
+                        dropTarget.itemsDropped,
+                        "into",
+                        dropTarget.id
+                    );
+                }
+            });
+
+            // ds.subscribe("preelementselect", (obj) => {
+            //     console.log("preelementselect", obj);
+            //     if (obj.item.id == "tissue_selector") {
+            //         console.log("tissue_selector");
+
+            //         ds.addSelectables(
+            //             $html_elements[obj.item.getAttribute("cell_id")],
+            //             true
+            //         );
+            //     }
+            // });
+            // ds.subscribe("elementselect", (obj) => {
+            //     console.log("elementselect", obj);
+            //     if (obj.item.id == "tissue_selector") {
+            //         ds.removeSelection(obj.item, true);
+            //     }
+            // });
+            // ds.subscribe("elementunselect", (obj) => {
+            //     console.log("elementunselect", obj);
+            //     if (obj.item.id == "tissue") {
+            //         ds.removeSelectables(obj.item);
+            //     }
+            // });
+        }, 1000);
+    });
 </script>
 
 <div class="notebook">
@@ -104,7 +182,7 @@
                 {/if}
                 {#if $pc_graph[cell_id]}
                     {#each $pc_graph[cell_id] as child_id}
-                        {#if $cells[$id_map[child_id]].type === "markdown"}
+                        {#if $cells[$id_map[child_id]].type === "markdown" && !(child_id in $pc_graph)}
                             <MarkdownCell cell_id={child_id} />
                         {/if}
                         {#if $cells[$id_map[child_id]].type === "code"}
@@ -139,19 +217,6 @@
                 {/each}
             {/if}
         {/each}
-        <!-- {#each $cells as cell}
-            {#if cell.type === "markdown"}
-                <MarkdownCell cell_id={cell.id} />
-            {/if}
-            {#if cell.type === "code"}
-                <CodeCell cell_id={cell.id} />
-            {/if}
-            {#if $np_graph[cell.id]}
-                {#each $np_graph[cell.id] as next_id}
-                    <Edges current_cell_id={cell.id} {next_id} />
-                {/each}
-            {/if}
-        {/each} -->
     {/if}
 </div>
 

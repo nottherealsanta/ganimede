@@ -92,15 +92,20 @@
         }
     };
 
+    // import Selecto from "svelte-selecto";
+
     onMount(() => {
         open_socket();
         // TODO: check config for user-saved view-x, view-y, view-$zoom
         // window.scrollTo(5000, 5000);
     });
+
+    let x = 5000;
+    let y = 1000;
 </script>
 
 <div
-    class=" bg-zinc-100
+    class=" canvas bg-zinc-100
      dark:bg-neutral-800
      relative overflow-auto
      "
@@ -127,6 +132,32 @@
     {:then}
         <Notebook />
     {/await}
+    <!-- <div
+        class="cell w-10 h-10 bg-red-500 absolute user-select-none active:bg-blue-500"
+        style="top: {y}px; left: {x}px;"
+        draggable="true"
+        on:dragstart={(e) => {
+            console.log(e);
+        }}
+        on:dragend={(e) => {
+            console.log(e);
+        }}
+        on:drag={(e) => {
+            if (e.clientX !== 0 && e.clientY !== 0) {
+                (x = Math.floor(e.clientX / $zoom + window.scrollX / $zoom)),
+                    (y = Math.floor(
+                        e.clientY / $zoom + window.scrollY / $zoom
+                    ));
+            }
+        }}
+    >
+        test
+    </div> -->
+    <!-- <div
+        class="cell w-10 h-10 bg-red-500 absolute top-[1000px] left-[5100px] user-select-none active:bg-blue-500"
+    >
+        test
+    </div> -->
 </div>
 
 <div
@@ -157,3 +188,6 @@
         +
     </div>
 </div>
+
+<style>
+</style>

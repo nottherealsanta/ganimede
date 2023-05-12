@@ -4,12 +4,33 @@
         id_map,
         heading_levels,
         pc_graph,
+        sync_cell_properties,
+        _resize_ancestors,
+        pn_graph,
+        html_elements,
     } from "../stores/notebook";
 
-    let div = null;
+    let tissue_div = null;
+    let tissue_selector_div = null;
 
     export let cell_id;
     $: cell = $cells[$id_map[cell_id]];
+
+    import { onMount } from "svelte";
+    onMount(() => {
+        tissue_selector_div.setAttribute("cell_id", cell_id);
+        tissue_div.setAttribute("cell_id", cell_id);
+        $html_elements[cell_id] = tissue_div;
+
+        if (!(cell_id in $pc_graph) || $pc_graph[cell_id].length === 0) {
+            $cells[$id_map[cell_id]].height = 150;
+            $cells[$id_map[cell_id]].width = 250;
+        }
+
+        setTimeout(() => {
+            sync_cell_properties(cell_id);
+        }, 500);
+    });
 
     $: is_heading = $heading_levels[cell_id];
 
@@ -42,13 +63,10 @@
     };
 
     function resize_mousedown(e) {
-        if (
-            e.button === 0 &&
-            e.target.id === "tissue" &&
-            cell.type !== "code" &&
-            !dragging
-        ) {
+        if (e.button === 0 && e.target.id === "tissue") {
             e.preventDefault();
+            e.stopPropagation();
+
             resize_clicked = {
                 at: detect_cell_edge(cell, mouse_pos_on_cell),
                 x: mouse_pos_on_cell.x,
@@ -58,7 +76,6 @@
             let children = $pc_graph[cell_id];
             let x_bounds = [cell.left + cell.width, cell.left];
             let y_bounds = [cell.top + cell.height, cell.top];
-
             if (children) {
                 for (let child of children) {
                     let child_cell = $cells[$id_map[child]];
@@ -88,9 +105,9 @@
             // hover
             let cell_edge = detect_cell_edge(cell, mouse_pos_on_cell);
             if (cell_edge) {
-                div.style.cursor = cell_edge_to_cursor(cell_edge);
+                tissue_div.style.cursor = cell_edge_to_cursor(cell_edge);
             } else {
-                div.style.cursor = "default";
+                tissue_div.style.cursor = "default";
             }
         } else {
             // resize_clicked for resize
@@ -118,14 +135,20 @@
 
             $cells[$id_map[cell_id]] = cell;
         }
+        e.stopPropagation();
     }
 
     function resize_mouseup(e) {
-        resize_clicked = {
-            at: null,
-            x: 0,
-            y: 0,
-        };
+        if (e.button === 0 && resize_clicked.at !== null) {
+            e.preventDefault();
+            resize_clicked = {
+                at: null,
+                x: 0,
+                y: 0,
+            };
+            console.log("resize mouseup : ", cell_id);
+            sync_cell_properties(cell_id);
+        }
     }
 
     // drag handle
@@ -139,6 +162,7 @@
     };
     function drag_handle_mousedown(e) {
         if (e.button === 0) {
+            e.stopPropagation();
             e.preventDefault();
             dragging = true;
 
@@ -165,6 +189,7 @@
     }
     function drag_handle_mousemove(e) {
         if (dragging) {
+            e.stopPropagation();
             $cells[$id_map[cell_id]].top = $mouse_pos.y - dh_clicked.y;
             $cells[$id_map[cell_id]].left = $mouse_pos.x - dh_clicked.x;
 
@@ -176,15 +201,46 @@
             }
         }
     }
-    function drag_handle_mouseup(e) {
-        dragging = false;
 
-        // clear dh_clicked
-        dh_clicked = {
-            x: 0,
-            y: 0,
-            children: [],
-        };
+    function drag_handle_mouseup(e) {
+        if (dragging) {
+            dragging = false;
+
+            // snap to previous
+            let prev_cell_id = $pn_graph[cell_id];
+            let prev_cell = $cells[$id_map[prev_cell_id]];
+            if (prev_cell) {
+                let d = {
+                    x: cell.left,
+                    y: cell.top,
+                };
+
+                if (
+                    cell.top - (prev_cell.top + prev_cell.height) < 100 &&
+                    cell.left - prev_cell.left < 50 &&
+                    cell.left - prev_cell.left > -50
+                ) {
+                    cell.top = prev_cell.top + prev_cell.height + 5;
+                    cell.left = prev_cell.left;
+                    d.x = cell.left - d.x;
+                    d.y = cell.top - d.y;
+                    for (let child of dh_clicked.children) {
+                        let child_cell = $cells[$id_map[child.id]];
+                        child_cell.top += d.y;
+                        child_cell.left += d.x;
+                        $cells[$id_map[child.id]] = child_cell;
+                    }
+                }
+                $cells[$id_map[cell_id]] = cell;
+            }
+            // clear dh_clicked
+            dh_clicked = {
+                x: 0,
+                y: 0,
+                children: [],
+            };
+            sync_cell_properties(cell_id);
+        }
     }
 
     // mouse on tissue
@@ -197,6 +253,8 @@
     }
 
     import NewCellToolbar from "./cell_components/NewCellToolbar.svelte";
+    import CellToolbar from "./cell_components/CellToolbar.svelte";
+    import Drag from "./cell_components/Icons/drag.svelte";
 </script>
 
 <div
@@ -205,9 +263,9 @@
     height: {cell.height}px;
     width: {cell.width}px; 
     min-width: max-content;
-    opacity: {dragging ? 0.75 : 1};
+    {dragging ? 'border: 2px solid #49B0F9;' : ''}
     "
-    class="
+    class="tissue
     bg-gray-50/50 dark:bg-neutral-800/30
     pr-2
     absolute rounded-lg
@@ -217,18 +275,23 @@
     flex overflow-visible cursor-default
     "
     id="tissue"
-    bind:this={div}
-    on:mousedown={resize_mousedown}
+    bind:this={tissue_div}
     on:mouseover={mouse_on_tissue_enter}
     on:mouseleave={mouse_on_tissue_leave}
+    on:mousedown={resize_mousedown}
     on:focus={mouse_on_tissue_enter}
     on:blur={mouse_on_tissue_leave}
 >
     <!-- this inside div exists to get the height and width of the content -->
     <div class="flex flex-row">
-        <div class="w-2 h-full bg-gray-500 dark:bg-gray-300" />
         <div
-            style="height: fit-content; width: fit-content;"
+            style={dragging ? "background-color: #49B0F9;" : ""}
+            class=" w-2 h-full bg-gray-500 dark:bg-gray-300 rounded-tl-md rounded-bl-md"
+            bind:this={tissue_selector_div}
+            id="tissue_selector"
+        />
+        <div
+            style="height: fit-content; width: fit-content; "
             bind:clientHeight={inside_div_height}
             bind:clientWidth={inside_div_width}
         >
@@ -236,32 +299,26 @@
         </div>
     </div>
     <!-- drag handle -->
-    {#if (mouse_pos_on_cell && mouse_on_tissue) || is_mouse_inside_this_div(drag_handle, $mouse_pos) || dragging}
+    {#if mouse_pos_on_cell && mouse_on_tissue}
+        <CellToolbar {cell_id} />
         {#if $mouse_pos.y - cell.top > 0}
             <NewCellToolbar {cell_id} />
             <div
                 style="top:{$mouse_pos.y - cell.top - 10}px; "
-                class="absolute bg-transparent w-5 h-8 -left-5 cursor-grab active:cursor-grabbing fill-neutral-500 dark:fill-neutral-400"
+                class="absolute bg-transparent w-5 h-8 -left-4 cursor-grab active:cursor-grabbing fill-neutral-500 dark:fill-neutral-400"
                 bind:this={drag_handle}
                 on:mousedown={drag_handle_mousedown}
+                on:mouseup={drag_handle_mouseup}
             >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-4 text-gray-700"
-                    viewBox="0 0 20 20"
-                >
-                    <path
-                        d="M 4 2 a 1 1 0 0 0 0 3 A 1 1 0 0 0 4 2 z z z m 0 7 A 1 1 0 0 0 4 12 A 1 1 0 0 0 4 9 m 0 7 A 1 1 0 0 0 4 19 A 1 1 0 0 0 4 16 m 10 -14 A 1 1 0 0 0 14 5 A 1 1 0 0 0 14 2 m 0 7 A 1 1 0 0 0 14 12 A 1 1 0 0 0 14 9 m 0 7 A 1 1 0 0 0 14 19 A 1 1 0 0 0 14 16"
-                    />
-                </svg>
+                <Drag />
             </div>
         {/if}
     {/if}
 </div>
 
 <svelte:window
-    on:mouseup={resize_mouseup}
     on:mousemove={resize_mousemove}
-    on:mouseup={drag_handle_mouseup}
     on:mousemove={drag_handle_mousemove}
+    on:mouseup={resize_mouseup}
+    on:mouseup={drag_handle_mouseup}
 />
