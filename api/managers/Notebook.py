@@ -30,8 +30,6 @@ class Notebook:
 
         self.notebook_file = self._load_notebook()
 
-        if notebook_path is not None:
-            self.init_cells()
 
         # websocket message queue
         self.comms_queue = comms.channel_queues["notebook"]
@@ -39,6 +37,9 @@ class Notebook:
 
         self.run_queue = asyncio.Queue()
         asyncio.create_task(self.run_queue_loop())
+
+        if notebook_path is not None:
+            self.init_cells()
 
     @property
     def id_map(self):
@@ -81,7 +82,12 @@ class Notebook:
             }
         )
 
+        if "gm" not in self.notebook_file["metadata"] : 
+                self.init_tlhw()
+
     def init_cells(self):
+
+        # cell list
         for cell in self.notebook_file["cells"]:
             metadata = cell["metadata"] if "metadata" in cell else {}
             gm_metadata = metadata["gm"] if "gm" in metadata else {}
@@ -99,8 +105,15 @@ class Notebook:
                 )
             )
 
-        self._connect_cells()
+        # np_graph and pc_graph
+        notebook_metadata = self.notebook_file["metadata"]
+        if "gm" not in notebook_metadata:
+            self._connect_cells()
+        else:
+            self.np_graph = notebook_metadata["gm"]["np_graph"]
+            self.pc_graph = notebook_metadata["gm"]["pc_graph"]
 
+        # debug
         for cell in self.cells:
             log.debug(
                 f"""cell.id {cell.id}
@@ -457,3 +470,11 @@ class Notebook:
         cell = self.cells[self.id_map[cell_id]]
         for key in sync.keys():
             setattr(cell, key, sync[key])
+
+    def init_tlhw(self):
+        self.comms.send(
+            {
+                "channel": "notebook",
+                "method": "init_tlhw",
+            }
+        )

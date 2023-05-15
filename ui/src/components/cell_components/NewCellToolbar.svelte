@@ -67,9 +67,7 @@
 >
     {#if is_hover}
         <div
-            class="relative w-40 h-4 -bottom-0 flex flex-row justify-center items-center cursor-default
-            bg-white dark:bg-vs-dark rounded border border-gray-300 dark:border-neutral-700
-            overflow-clip fill-gray-600 dark:fill-gray-300 z-10"
+            class="relative w-40 h-4 -bottom-0 flex flex-row justify-center items-center cursor-default bg-white dark:bg-vs-dark rounded border border-gray-300 dark:border-neutral-700 overflow-clip fill-gray-700 dark:fill-gray-300 z-10"
             on:mouseleave={() => {
                 is_hover = false;
             }}
@@ -103,8 +101,7 @@
         </div>
     {:else}
         <div
-            class="absolute w-2 h-2 rounded-full bg-transparent flex justify-center items-center
-            cursor-pointer fill-neutral-400/75 dark:fill-neutral-300/75 stroke-neutral-400 dark:stroke-neutral-500 stroke-2"
+            class="absolute w-2 h-2 rounded-full bg-transparent flex justify-center items-center cursor-pointer fill-neutral-400 dark:fill-neutral-300/75 stroke-neutral-500 dark:stroke-neutral-500 stroke-2"
             id="new-cell-toolbar"
             on:click|stopPropagation={connector_click}
             on:keydown={() => {}}

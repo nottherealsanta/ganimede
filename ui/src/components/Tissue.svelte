@@ -23,6 +23,7 @@
         $html_elements[cell_id] = tissue_div;
 
         if (!(cell_id in $pc_graph) || $pc_graph[cell_id].length === 0) {
+            console.log("Adding cell to parent-less cells");
             $cells[$id_map[cell_id]].height = 150;
             $cells[$id_map[cell_id]].width = 250;
         }
@@ -270,7 +271,7 @@
     pr-2
     absolute rounded-lg
     border-l-2 border-r-2 border-t-2 border-b-2
-    border-gray-500 dark:border-gray-400
+    border-[#212529] dark:border-gray-400
     shadow-md shadow-zinc-300 dark:shadow-neutral-900/50
     flex overflow-visible cursor-default
     "
@@ -286,11 +287,12 @@
     <div class="flex flex-row">
         <div
             style={dragging ? "background-color: #49B0F9;" : ""}
-            class=" w-2 h-full bg-gray-500 dark:bg-gray-300 rounded-tl-md rounded-bl-md"
+            class=" w-2 h-full bg-[#212529] dark:bg-gray-300 rounded-tl-md rounded-bl-md"
             bind:this={tissue_selector_div}
             id="tissue_selector"
         />
         <div
+            class=""
             style="height: fit-content; width: fit-content; "
             bind:clientHeight={inside_div_height}
             bind:clientWidth={inside_div_width}

@@ -22,7 +22,7 @@
     }
 </script>
 
-<div class="w-full h-full flex justify-center items-center py-0.5 px-0.25">
+<div class="w-full h-full flex justify-center items-center py-0.5 px-0">
     {#if icon}
         <svelte:component this={icon} />
     {/if}

@@ -271,7 +271,7 @@ h6 {
 
 .ds-selected {
 	outline: 2px solid rgb(73, 176, 249);
-	outline-offset: 1px;
+	outline-offset: 0px;
 }
 .ds-selector{
 	outline: 1px solid rgb(73, 176, 249);
@@ -279,7 +279,7 @@ h6 {
 }
 
 .ds-dropzone-ready {
-	outline: 2px solid rgb(119, 119, 119);
+	outline: 2px solid rgb(162, 162, 162);
 	outline-offset: 2px;
 }
 

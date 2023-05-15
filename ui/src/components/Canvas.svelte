@@ -5,62 +5,9 @@
     import { onMount } from "svelte";
     let canvas_div = null;
 
-    // zoom
+    // middle mouse to pan
     import mouse_pos from "../stores/mouse.js";
 
-    let min_zoom = 0.6;
-    let max_zoom = 1.7;
-    let d_zoom = 0.1;
-
-    window.addEventListener(
-        "wheel",
-        function (e) {
-            if (e.ctrlKey) {
-                e.preventDefault();
-                e.stopImmediatePropagation();
-
-                if ($mouse_pos.x !== 0 && $mouse_pos.y !== 0) {
-                    // $zoom -= 0.01;
-                    $zoom -= Math.sign(e.deltaY) * d_zoom;
-                    $zoom = Math.round($zoom * 100) / 100;
-
-                    if ($zoom < min_zoom) {
-                        $zoom = min_zoom;
-                    } else if ($zoom >= min_zoom && $zoom <= max_zoom) {
-                        this.window.scrollBy({
-                            left: -$mouse_pos.x * d_zoom * Math.sign(e.deltaY),
-                            top: -$mouse_pos.y * d_zoom * Math.sign(e.deltaY),
-                            behavior: "instant",
-                        });
-                    } else if ($zoom > max_zoom) {
-                        $zoom = max_zoom;
-                    }
-                }
-            }
-        },
-        { passive: false }
-    );
-    function increase_zoom() {
-        $zoom += 0.1;
-        $zoom = Math.round($zoom * 100) / 100;
-        if ($zoom > max_zoom) {
-            $zoom = max_zoom;
-        } else {
-            window.scrollTo(window.scrollX + 500, window.scrollY + 100);
-        }
-    }
-
-    function decrease_zoom() {
-        $zoom -= 0.1;
-        $zoom = Math.round($zoom * 100) / 100;
-        if ($zoom < min_zoom) {
-            $zoom = min_zoom;
-        } else {
-            window.scrollTo(window.scrollX - 500, window.scrollY - 100);
-        }
-    }
-
-    // middle mouse to pan
     let moving = false;
     let clicked_x = 0;
     let clicked_y = 0;
@@ -100,8 +47,7 @@
         // window.scrollTo(5000, 5000);
     });
 
-    let x = 5000;
-    let y = 1000;
+    import ZoomToolBar from "../components/canvas_components/zoom.svelte";
 </script>
 
 <div
@@ -132,62 +78,6 @@
     {:then}
         <Notebook />
     {/await}
-    <!-- <div
-        class="cell w-10 h-10 bg-red-500 absolute user-select-none active:bg-blue-500"
-        style="top: {y}px; left: {x}px;"
-        draggable="true"
-        on:dragstart={(e) => {
-            console.log(e);
-        }}
-        on:dragend={(e) => {
-            console.log(e);
-        }}
-        on:drag={(e) => {
-            if (e.clientX !== 0 && e.clientY !== 0) {
-                (x = Math.floor(e.clientX / $zoom + window.scrollX / $zoom)),
-                    (y = Math.floor(
-                        e.clientY / $zoom + window.scrollY / $zoom
-                    ));
-            }
-        }}
-    >
-        test
-    </div> -->
-    <!-- <div
-        class="cell w-10 h-10 bg-red-500 absolute top-[1000px] left-[5100px] user-select-none active:bg-blue-500"
-    >
-        test
-    </div> -->
 </div>
 
-<div
-    id="zoom"
-    class="fixed flex flex-row bottom-5 w-[120px] h-8 left-5 p-[1px] bg-neutral-100 dark:bg-neutral-800
-    border rounded border-neutral-300 dark:border-neutral-700 justify-center align-middle pointer-events-auto"
->
-    <div
-        id="decrease_zoom"
-        class="font-bold px-0 cursor-pointer w-[35px] h-full flex justify-center items-center hover:bg-neutral-300/50"
-        on:click={decrease_zoom}
-        on:keydown={(e) => {}}
-    >
-        -
-    </div>
-
-    <div
-        class="font-bold border-x-1 border-neutral-300 dark:border-neutral-700 p-0 flex justify-center items-center w-[50px]"
-    >
-        {Math.round($zoom * 100)}%
-    </div>
-    <div
-        id="increase_zoom"
-        class="font-bold px-0 cursor-pointer w-[35px] h-full flex justify-center items-center hover:bg-neutral-300/50"
-        on:click={increase_zoom}
-        on:keydown={(e) => {}}
-    >
-        +
-    </div>
-</div>
-
-<style>
-</style>
+<ZoomToolBar />
