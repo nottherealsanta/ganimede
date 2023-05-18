@@ -48,7 +48,8 @@
         Math.abs(curr.left - next.left) + Math.max(curr.width, next.width);
     $: height = Math.abs(curr_anchor.y - next_anchor.y);
 
-    // $: next_top_over_curr = next_anchor.y < curr_anchor.y;
+
+    // path 
     $: if (next_anchor.y - 50 < curr_anchor.y) {
         top -= 25;
         height += 50;
@@ -62,23 +63,33 @@
         x: next_anchor.x - left,
         y: next_anchor.y - top,
     };
-
-    $: anchor_dis = Math.sqrt(
-        Math.pow(_curr_anchor.x - _next_anchor.x, 2) +
-            Math.pow(_curr_anchor.y - _next_anchor.y, 2)
-    );
-
-    // straight line or curve (if distance is too large)
     let path = "";
-    $: close =
-        curr.right > next.left &&
-        curr.left < next.right &&
-        next.top - curr.bottom < 20;
-
     $: path = `M ${_curr_anchor.x} ${_curr_anchor.y}
                 C ${_curr_anchor.x} ${_curr_anchor.y + 50}, 
                 ${_next_anchor.x} ${_next_anchor.y - 50}, 
                 ${_next_anchor.x} ${_next_anchor.y - 3}`;
+
+    // straight line or curve (if distance is too large)
+    // $: close =
+    //     curr.right > next.left &&
+    //     curr.left < next.right &&
+    //     next.top - curr.bottom < 20;
+
+    // use this logic instead 
+    // cell.top - (prev_cell.top + prev_cell.height) < 100 &&
+    //                 cell.left - prev_cell.left < 50 &&
+    //                 cell.left - prev_cell.left > -50
+
+    $: close = next.top - curr.bottom < 100 && next.left - curr.left < 50 && next.left - curr.left > -50;
+
+    // line should start from current bottom, current left + 25 and end at next top, next left + 25 
+    $: line = {
+        x1: curr.left + 25 - left,
+        y1: curr.bottom - top,
+        x2: next.left + 25 - left,
+        y2: next.top - top,
+    };
+
 </script>
 
 <div
@@ -94,7 +105,7 @@
     <svg
         height="100%"
         width="100%"
-        style="position: absolute; top: 0; left: 0;"
+        style="position: absolute; top: 0; left: 0; pointer-events: auto;"
     >
         <defs>
             <marker
@@ -121,42 +132,39 @@
             >
                 <path d="M0,-5L10,0L0,5" />
             </marker>
+            <marker
+                id="circle_marker"
+                viewBox="0 0 10 10"
+                refX="5"
+                refY="5"
+                markerWidth="5"
+                markerHeight="5"
+                orient="auto"
+                class="fill-neutral-500/30"
+            >
+                <circle cx="5" cy="5" r="3" />
+            </marker>
         </defs>
         <!-- downward facing arrow -->
         {#if !close}
             <path
                 d={path}
-                class="stroke-neutral-500 stroke-[2px] fill-transparent"
+                class="stroke-neutral-500 stroke-[2px] fill-transparent hover:stroke-neutral-800 hover:dark:stroke-neutral-200"
                 style={close ? "stroke-width: 2px;" : ""}
                 marker-end="url(#arrow_path)"
             />
         {:else}
             <line
-                x1={_curr_anchor.x}
-                y1={_curr_anchor.y}
-                x2={_next_anchor.x}
-                y2={_next_anchor.y}
-                class="stroke-neutral-500 stroke-[2px]"
+                x1={line.x1}
+                y1={line.y1}
+                x2={line.x2}
+                y2={line.y2}
+                class="stroke-neutral-500 stroke-[2px] fill-transparent hover:stroke-neutral-800 hover:dark:stroke-neutral-200"
                 stroke-dasharray="5,5"
                 stroke-opacity="0.5"
                 marker-end="url(#arrow_line)"
+                marker-start="url(#circle_marker)"
             />
         {/if}
-        <!-- <svg
-            x={_next_anchor.x - 6}
-            y={_next_anchor.y - 6}
-            width="12"
-            height="12"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            opacity={close ? 0.5 : 1}
-        >
-            <path
-                d="M 8 8 L 15 0 H 0 L 8 8 Z"
-                fill="currentColor"
-                class="fill-neutral-500 hover:fill-neutral-700"
-            />
-        </svg> -->
     </svg>
 </div>

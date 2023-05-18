@@ -18,8 +18,8 @@
 <div
     class="
     bg-transparent w-fit h-fit pt-0.5 pb-0.5 rounded-md fill-gray-600 dark:fill-gray-300
-    absolute flex flex-col justify-left items-center z-10"
-    style="right: -{is_tissue ? 29 : 27}px; top: -5px;"
+    absolute flex flex-row justify-left items-center z-10"
+    style="right: -1px; top: -28px;"
 >
     {#if is_tissue}
         <div class={button_class}><RunIcon /></div>

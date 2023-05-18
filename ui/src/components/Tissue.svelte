@@ -46,9 +46,9 @@
     }
 
     let inside_div_width = 0;
-    $: if (cell.width < inside_div_width) {
-        cell.width = inside_div_width + 10;
-    }
+    // $: if (cell.width < inside_div_width) {
+    //     cell.width = inside_div_width + 10;
+    // }
 
     // resize
     import {
@@ -64,12 +64,13 @@
     };
 
     function resize_mousedown(e) {
-        if (e.button === 0 && e.target.id === "tissue") {
+        let at = detect_cell_edge(cell, mouse_pos_on_cell);
+        if (e.button === 0 && at !== null) {
             e.preventDefault();
             e.stopPropagation();
 
             resize_clicked = {
-                at: detect_cell_edge(cell, mouse_pos_on_cell),
+                at: at,
                 x: mouse_pos_on_cell.x,
                 y: mouse_pos_on_cell.y,
             };
@@ -102,7 +103,7 @@
     }
 
     function resize_mousemove(e) {
-        if (resize_clicked.at === null && cell.type !== "code") {
+        if (resize_clicked.at === null) {
             // hover
             let cell_edge = detect_cell_edge(cell, mouse_pos_on_cell);
             if (cell_edge) {
@@ -133,7 +134,6 @@
                 cell.top = resize_clicked.y_bounds[0];
                 cell.height = resize_clicked.y_bounds[1] - cell.top;
             }
-
             $cells[$id_map[cell_id]] = cell;
         }
         e.stopPropagation();
@@ -154,46 +154,65 @@
 
     // drag handle
     let drag_handle = null;
-    import { is_mouse_inside_this_div } from "../utils/cell_utils.js";
     let dragging = false;
     let dh_clicked = {
         x: 0,
         y: 0,
         children: [],
     };
+
+    function get_drag_handle_clicked() {
+        return {
+            x: $mouse_pos.x - cell.left,
+            y: $mouse_pos.y - cell.top,
+            children: get_drag_handle_children(),
+        };
+    }
+
+    function get_drag_handle_children() {
+        let children = [];
+        if ($pc_graph[cell_id]) {
+            for (let child of $pc_graph[cell_id]) {
+                children.push({
+                    id: child,
+                    x: $mouse_pos.x - $cells[$id_map[child]].left,
+                    y: $mouse_pos.y - $cells[$id_map[child]].top,
+                });
+                children.push(...get_drag_handle_children_recursive(child));
+            }
+        }
+        return children;
+    }
+
+    function get_drag_handle_children_recursive(cell_id) {
+        let children = [];
+        if ($pc_graph[cell_id]) {
+            for (let child of $pc_graph[cell_id]) {
+                children.push({
+                    id: child,
+                    x: $mouse_pos.x - $cells[$id_map[child]].left,
+                    y: $mouse_pos.y - $cells[$id_map[child]].top,
+                });
+                children.push(...get_drag_handle_children_recursive(child));
+            }
+        }
+        return children;
+    }
+
     function drag_handle_mousedown(e) {
         if (e.button === 0) {
             e.stopPropagation();
             e.preventDefault();
             dragging = true;
-
-            dh_clicked = {
-                x: $mouse_pos.x - cell.left,
-                y: $mouse_pos.y - cell.top,
-                children: [],
-            };
-            if ($pc_graph[cell_id]) {
-                let children = [...$pc_graph[cell_id]]; // cp-val instead of cp-ref
-                for (let child of children) {
-                    dh_clicked.children.push({
-                        id: child,
-                        x: $mouse_pos.x - $cells[$id_map[child]].left,
-                        y: $mouse_pos.y - $cells[$id_map[child]].top,
-                    });
-
-                    if ($pc_graph[child]) {
-                        children.push(...$pc_graph[child]);
-                    }
-                }
-            }
+            dh_clicked = get_drag_handle_clicked();
         }
     }
+
     function drag_handle_mousemove(e) {
         if (dragging) {
             e.stopPropagation();
             $cells[$id_map[cell_id]].top = $mouse_pos.y - dh_clicked.y;
             $cells[$id_map[cell_id]].left = $mouse_pos.x - dh_clicked.x;
-
             for (let child of dh_clicked.children) {
                 let child_cell = $cells[$id_map[child.id]];
                 child_cell.top = $mouse_pos.y - child.y;
@@ -206,8 +225,6 @@
     function drag_handle_mouseup(e) {
         if (dragging) {
             dragging = false;
-
-            // snap to previous
             let prev_cell_id = $pn_graph[cell_id];
             let prev_cell = $cells[$id_map[prev_cell_id]];
             if (prev_cell) {
@@ -215,7 +232,6 @@
                     x: cell.left,
                     y: cell.top,
                 };
-
                 if (
                     cell.top - (prev_cell.top + prev_cell.height) < 100 &&
                     cell.left - prev_cell.left < 50 &&
@@ -234,7 +250,6 @@
                 }
                 $cells[$id_map[cell_id]] = cell;
             }
-            // clear dh_clicked
             dh_clicked = {
                 x: 0,
                 y: 0,
@@ -253,7 +268,7 @@
         mouse_on_tissue = false;
     }
 
-    import NewCellToolbar from "./cell_components/NewCellToolbar.svelte";
+    import NewCellToolbar from "./cell_components/new_cell_toolbar_components/NewCellToolbar.svelte";
     import CellToolbar from "./cell_components/CellToolbar.svelte";
     import Drag from "./cell_components/Icons/drag.svelte";
 </script>
@@ -266,34 +281,26 @@
     min-width: max-content;
     {dragging ? 'border: 2px solid #49B0F9;' : ''}
     "
-    class="tissue
-    bg-gray-50/50 dark:bg-neutral-800/30
-    pr-2
-    absolute rounded-lg
-    border-l-2 border-r-2 border-t-2 border-b-2
-    border-[#212529] dark:border-gray-400
-    shadow-md shadow-zinc-300 dark:shadow-neutral-900/50
-    flex overflow-visible cursor-default
-    "
+    class="tissue bg-gray-50/50 dark:bg-neutral-800/30 absolute rounded-md border-l-2 border-r-2 border-t-2 border-b-2 border-[#212529] dark:border-gray-400 shadow-md shadow-zinc-300 dark:shadow-neutral-900/50 flex overflow-visible cursor-default"
     id="tissue"
     bind:this={tissue_div}
-    on:mouseover={mouse_on_tissue_enter}
     on:mouseleave={mouse_on_tissue_leave}
+    on:mouseover={mouse_on_tissue_enter}
     on:mousedown={resize_mousedown}
     on:focus={mouse_on_tissue_enter}
     on:blur={mouse_on_tissue_leave}
 >
     <!-- this inside div exists to get the height and width of the content -->
-    <div class="flex flex-row">
+    <div class="flex flex-row w-full">
         <div
             style={dragging ? "background-color: #49B0F9;" : ""}
-            class=" w-2 h-full bg-[#212529] dark:bg-gray-300 rounded-tl-md rounded-bl-md"
+            class=" w-1 h-full bg-[#212529] dark:bg-gray-300 rounded-tl rounded-bl"
             bind:this={tissue_selector_div}
             id="tissue_selector"
         />
         <div
-            class=""
-            style="height: fit-content; width: fit-content; "
+            class="w-full bg-[#212529]"
+            style="height: fit-content;"
             bind:clientHeight={inside_div_height}
             bind:clientWidth={inside_div_width}
         >

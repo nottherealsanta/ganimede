@@ -34,12 +34,10 @@
 
 {#if is_heading}
     <Tissue {cell_id}>
-        <!-- <div style="min-width: 200px;"> -->
         <div
-            class="bg-gray-50 dark:bg-neutral-800 w-full h-fit m-1 rounded min-w-[200px] min-h-[25px] max-w-[616px]"
+            class="w-full h-fit my-0.5 mx-0.25 rounded min-w-[200px] min-h-[25px] max-w-[616px] text-white"
             use:editor
         />
-        <!-- </div> -->
     </Tissue>
 {:else}
     <Cell {cell_id}>

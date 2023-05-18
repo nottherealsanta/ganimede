@@ -12,9 +12,8 @@
     let clicked_x = 0;
     let clicked_y = 0;
     let mouseDown = function (e) {
-        // if left click
         if (
-            e.button === 1 &&
+            e.button === 1 && // if middle mouse button is pressed
             (e.target.id === "tissue" || e.target.id === "canvas")
         ) {
             moving = true;
@@ -27,10 +26,6 @@
     };
     let mouseMove = function (e) {
         if (moving) {
-            // window.scrollTo(
-            //     window.scrollX + clicked_x - $mouse_pos.x,
-            //     window.scrollY + clicked_y - $mouse_pos.y
-            // );
             window.scrollBy({
                 left: clicked_x - $mouse_pos.x,
                 top: clicked_y - $mouse_pos.y,
@@ -39,22 +34,15 @@
         }
     };
 
-    // import Selecto from "svelte-selecto";
-
     onMount(() => {
         open_socket();
-        // TODO: check config for user-saved view-x, view-y, view-$zoom
-        // window.scrollTo(5000, 5000);
     });
 
     import ZoomToolBar from "../components/canvas_components/zoom.svelte";
 </script>
 
 <div
-    class=" canvas bg-zinc-100
-     dark:bg-neutral-800
-     relative overflow-auto
-     "
+    class="canvas bg-zinc-100 dark:bg-neutral-800 relative overflow-auto"
     style="
         height: 10000px; 
         width: 10000px; 

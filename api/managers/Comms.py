@@ -8,7 +8,7 @@ log = logging.getLogger(__name__)
 
 class Comms:
     def __init__(self):
-        self.websocket = None
+        self.websocket: WebSocket 
         self.out_queue = Queue()
         self.channel_queues = {
             "comms": Queue(),

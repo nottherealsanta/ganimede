@@ -150,7 +150,7 @@ h3,
 h4,
 h5,
 h6 {
-	color: black;
+	color: rgb(255, 255, 255);
 	margin-block-start: 5px;
 	margin-block-end: 5px;
 }
@@ -199,7 +199,7 @@ h6 {
 }
 
 .ProseMirror-focused {
-	outline: 1px solid rgb(73, 176, 249);
+	outline: 0px solid rgb(73, 176, 249);
 }
 
 @media (prefers-color-scheme: dark) {

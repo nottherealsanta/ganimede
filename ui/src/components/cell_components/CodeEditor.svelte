@@ -26,7 +26,7 @@
     export let focus = false;
     let height = 0;
     let width = 0;
-    let max_width = 616;
+    let max_width = 1200;
     let min_min_width = 200;
 
     import { onMount } from "svelte";
@@ -36,7 +36,7 @@
     let max_columns = 0;
 
     $: n_lines = cell.source.length;
-    $: height = Math.ceil(n_lines * 21);
+    $: height = Math.ceil(n_lines * 19);
     // $: width = Math.ceil(max_columns * 8) + 50;
     $: width = Math.ceil(max_columns * 8) + 50;
     $: width = Math.min(width, max_width);
@@ -136,7 +136,7 @@
             }
         });
         // on drag select
-        editor.mou;
+        // editor.mou;
         n_lines = editor.getModel().getLineCount();
         max_columns = get_max_columns();
 
@@ -159,31 +159,11 @@
     });
 </script>
 
-<!-- <style>
-    .cell-input {
-        display: flex;
-        overflow: hidden;
-        float: top;
-        position: relative;
-        border: solid 1px rgba(0, 0, 0, 0.15);
-        border-radius: 4px;
-        background-color: transparent;
-        min-height: 25px;
-        min-width: 150px;
-        /* box-shadow: -1px 0px 2px 1px rgba(0, 0, 0, 0.048); */
-    }
-
-    .codeeditor {
-        width: 100%;
-        height: 100%;
-        cursor: text;
-        margin: 3px 0px 3px 0px;
-    }
-</style> -->
-
 <div
     class="cell-input flex flex-1 overflow-hidden relative border rounded border-zinc-100 dark:border-neutral-800 bg-transparent align-middle"
-    style="height: {height}px; min-height: 25px; min-width: {width}px; width: 100%;"
+    style="height: {height}px; min-height: 25px; min-width: {width}px; width: 100%; {focus
+        ? 'border-left: solid 2px rgba(73, 176, 249);'
+        : 'border-left: solid 2px rgba(73, 73, 73,0.1);'}"
     id="cell-input"
     bind:this={div}
 >

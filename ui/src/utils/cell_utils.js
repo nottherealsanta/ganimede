@@ -58,6 +58,8 @@ export function detect_cell_edge(cell, mouse_pos_on_cell, edge_size = 5) {
   } else if (y > height - edge_size) {
     return "bottom";
   }
+
+  return null;
 }
 
 export function cell_edge_to_cursor(edge) {

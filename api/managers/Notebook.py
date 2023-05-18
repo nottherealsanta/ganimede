@@ -17,7 +17,7 @@ class Notebook:
         self,
         kernel: Kernel,
         comms: Comms,
-        notebook_path: str = Path(f"{getcwd()}/tests/test1.ipynb"),
+        notebook_path: str = f"{getcwd()}/tests/test0.ipynb",
     ):
         self.kernel = kernel
         self.comms = comms
@@ -68,22 +68,24 @@ class Notebook:
         log.debug("get notebook")
         await self.kernel.start_kernel()
 
-        message = {
-            "cells": [cell.to_dict() for cell in self.cells],
-            "id_map": self.id_map,
-            "np_graph": self.np_graph,
-            "pc_graph": self.pc_graph,
-        }
-        self.comms.send(
-            {
-                "channel": "notebook",
-                "method": "set",
-                "message": message,
+        if self.notebook_file is not None:  # add check for None
+            message = {
+                "cells": [cell.to_dict() for cell in self.cells],
+                "id_map": self.id_map,
+                "np_graph": self.np_graph,
+                "pc_graph": self.pc_graph,
             }
-        )
+            self.comms.send(
+                {
+                    "channel": "notebook",
+                    "method": "set",
+                    "message": message,
+                }
+            )
 
-        if "gm" not in self.notebook_file["metadata"] : 
-                self.init_tlhw()
+            # TODO: band-aid, please fix
+            if "gm" not in self.notebook_file["metadata"] and self.cells[0].top == 0:
+                    self.init_tlhw()
 
     def init_cells(self):
 
