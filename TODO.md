@@ -1,0 +1,3 @@
+- execution count, grayed out cells if prev_exe_count > next_exe_count
+- auto format code
+- move cell (right menu / celltoolbar menu ) to another tissue (or tissue of tissue)

@@ -17,7 +17,7 @@ class Notebook:
         self,
         kernel: Kernel,
         comms: Comms,
-        notebook_path: str = f"{getcwd()}/tests/test0.ipynb",
+        notebook_path: str = f"{getcwd()}/tests/scaling_laws.ipynb",
     ):
         self.kernel = kernel
         self.comms = comms
@@ -25,7 +25,7 @@ class Notebook:
         log.debug(notebook_path)
 
         self.cells = []
-        self.np_graph = {}  # next-prev directed graph
+        self.np_graph = {}  # next-prev directed graph'
         self.pc_graph = {}  # parent-children directed graph
 
         self.notebook_file = self._load_notebook()
@@ -84,8 +84,8 @@ class Notebook:
             )
 
             # TODO: band-aid, please fix
-            if "gm" not in self.notebook_file["metadata"] and self.cells[0].top == 0:
-                    self.init_tlhw()
+            # if "gm" not in self.notebook_file["metadata"] and self.cells[0].top == 0:
+            #         self.init_tlhw()
 
     def init_cells(self):
 

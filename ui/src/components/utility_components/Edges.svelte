@@ -48,8 +48,7 @@
         Math.abs(curr.left - next.left) + Math.max(curr.width, next.width);
     $: height = Math.abs(curr_anchor.y - next_anchor.y);
 
-
-    // path 
+    // path
     $: if (next_anchor.y - 50 < curr_anchor.y) {
         top -= 25;
         height += 50;
@@ -75,21 +74,23 @@
     //     curr.left < next.right &&
     //     next.top - curr.bottom < 20;
 
-    // use this logic instead 
+    // use this logic instead
     // cell.top - (prev_cell.top + prev_cell.height) < 100 &&
     //                 cell.left - prev_cell.left < 50 &&
     //                 cell.left - prev_cell.left > -50
 
-    $: close = next.top - curr.bottom < 100 && next.left - curr.left < 50 && next.left - curr.left > -50;
+    $: close =
+        next.top - curr.bottom < 100 &&
+        next.left - curr.left < 50 &&
+        next.left - curr.left > -50;
 
-    // line should start from current bottom, current left + 25 and end at next top, next left + 25 
+    // line should start from current bottom, current left + 25 and end at next top, next left + 25
     $: line = {
         x1: curr.left + 25 - left,
         y1: curr.bottom - top,
         x2: next.left + 25 - left,
         y2: next.top - top,
     };
-
 </script>
 
 <div
@@ -105,7 +106,7 @@
     <svg
         height="100%"
         width="100%"
-        style="position: absolute; top: 0; left: 0; pointer-events: auto;"
+        style="position: absolute; top: 0; left: 0; "
     >
         <defs>
             <marker
@@ -116,7 +117,7 @@
                 markerWidth="4"
                 markerHeight="4"
                 orient="auto"
-                class="fill-neutral-500"
+                class="fill-neutral-500 dark:fill-neutral-200"
             >
                 <path d="M0,-5L10,0L0,5" />
             </marker>
@@ -128,7 +129,7 @@
                 markerWidth="4"
                 markerHeight="4"
                 orient="auto"
-                class="fill-neutral-500/30"
+                class="fill-neutral-500/30 dark:fill-neutral-200/30"
             >
                 <path d="M0,-5L10,0L0,5" />
             </marker>
@@ -140,7 +141,7 @@
                 markerWidth="5"
                 markerHeight="5"
                 orient="auto"
-                class="fill-neutral-500/30"
+                class="fill-neutral-500/30 dark:fill-neutral-200/30"
             >
                 <circle cx="5" cy="5" r="3" />
             </marker>

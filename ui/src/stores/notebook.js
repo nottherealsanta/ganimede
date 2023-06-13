@@ -367,7 +367,7 @@ export const parent_less_cells = derived([heading_levels, notebook], ([$heading_
         return parent_less_cells;
     }
     $notebook.cells.forEach(cell => {
-        if (_find_parent(cell.id) === null && !$heading_levels[cell.id]) {
+        if (_find_parent(cell.id) === null) {
             parent_less_cells.push(cell.id);
         }
     });

@@ -1,7 +1,7 @@
 import queue
 import asyncio
 
-from jupyter_client import AsyncKernelManager
+from jupyter_client.manager import AsyncKernelManager
 from starlette.responses import JSONResponse
 from rich import print
 
@@ -77,7 +77,7 @@ class Kernel:
     async def flush_io_pub(self):
         while True:
             try:
-                await self.kernel_client.get_iopub_msg(timeout=0.1)
+                await self.kernel_client.get_iopub_msg(timeout=0.1) 
             except queue.Empty:
                 log.debug("No more messages")
                 break

@@ -29,7 +29,7 @@
 
 <div
     class="flex items-start h-auto w-full justify-center align-stretch mt-1 overflow-y-auto"
-    style="max-width: 641px; max-height: 616px; 
+    style=" max-height: 616px; 
     min-height: {last_height}px; 
     {cell.state == 'queued' ? 'opacity: 0.5' : ''}"
     bind:clientHeight={height}

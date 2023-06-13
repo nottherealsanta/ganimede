@@ -7,7 +7,9 @@
     });
 </script>
 
-<script lang="ts">
+<script>
+    import { compute_rest_props } from "svelte/internal";
+
     import { config } from "../../stores/config";
     import { notebook, id_map } from "../../stores/notebook";
 
@@ -34,10 +36,11 @@
     let container;
     let editor;
     let max_columns = 0;
+    let div = null;
 
+    let n_lines = 0;
     $: n_lines = cell.source.length;
-    $: height = Math.ceil(n_lines * 19);
-    // $: width = Math.ceil(max_columns * 8) + 50;
+
     $: width = Math.ceil(max_columns * 8) + 50;
     $: width = Math.min(width, max_width);
     $: width = Math.max(width, min_min_width);
@@ -48,8 +51,9 @@
 
     function get_max_columns() {
         let max = 0;
-        for (let i = 0; i < editor.getModel().getLineCount(); i++) {
-            let column = editor.getModel().getLineMaxColumn(i + 1);
+        let source = $notebook["cells"][$id_map[cell_id]].source;
+        for (let i = 0; i < source.length; i++) {
+            let column = source[i].length;
             if (column > max) {
                 max = column;
             }
@@ -99,6 +103,7 @@
         folding: false,
         automaticLayout: true, // updates height when `value` changes
         wordWrap: "on",
+        wrappingStrategy: "advanced",
         wrappingColumn: 80,
         scrollbar: {
             vertical: "hidden",
@@ -106,12 +111,14 @@
             handleMouseWheel: false,
         },
         scrollBeyondLastLine: false,
+        overviewRulerLanes: 0,
     };
 
     let destroyed;
     onMount(() => {
         monaco = _monaco;
         editor = monaco.editor.create(container, monaco_config);
+        max_columns = get_max_columns();
 
         editor.onDidFocusEditorText(() => {
             focus = true;
@@ -122,32 +129,37 @@
 
         editor.onDidChangeModelContent((e) => {
             max_columns = get_max_columns();
-            // n_lines = editor._modelData.viewModel.getLineCount();
-            $notebook["cells"][$id_map[cell_id]].source = editor
+
+            $notebook.cells[$id_map[cell_id]].source = editor
                 .getValue()
-                .split("\n");
-            // add a new line of each item in source list
-            for (
-                let i = 0;
-                i < $notebook["cells"][$id_map[cell_id]].source.length - 1;
-                i++
-            ) {
-                $notebook["cells"][$id_map[cell_id]].source[i] += "\n";
-            }
+                .split("\n")
+                .map((line) => line + "\n");
         });
-        // on drag select
-        // editor.mou;
-        n_lines = editor.getModel().getLineCount();
-        max_columns = get_max_columns();
+
+        let ignoreEvent = false;
+        const updateHeight = () => {
+            const contentHeight = Math.min(1000, editor.getContentHeight());
+            if (container !== null) {
+                container.style.height = `${contentHeight}px`;
+                try {
+                    ignoreEvent = true;
+                    editor.layout({ width, height: contentHeight });
+                } finally {
+                    ignoreEvent = false;
+                }
+            }
+        };
+
+        editor.onDidContentSizeChange(updateHeight);
+        updateHeight();
 
         return () => {
             destroyed = true;
         };
     });
 
-    let div = null;
-
     onMount(() => {
+        // for dragSelect
         if (div) {
             div.addEventListener("mousedown", (e) => {
                 e.stopPropagation();
@@ -155,13 +167,16 @@
             div.addEventListener("mouseup", (e) => {
                 e.stopPropagation();
             });
+            div.addEventListener("click", () => {
+                editor.focus();
+            });
         }
     });
 </script>
 
 <div
-    class="cell-input flex flex-1 overflow-hidden relative border rounded border-zinc-100 dark:border-neutral-800 bg-transparent align-middle"
-    style="height: {height}px; min-height: 25px; min-width: {width}px; width: 100%; {focus
+    class="h-fit cell-input overflow-hidden relative border rounded border-zinc-100 dark:border-neutral-800 bg-transparent align-middle cursor-text"
+    style=" min-height: 25px; width:100%;        {focus
         ? 'border-left: solid 2px rgba(73, 176, 249);'
         : 'border-left: solid 2px rgba(73, 73, 73,0.1);'}"
     id="cell-input"
@@ -169,7 +184,7 @@
 >
     <div
         class="w-full h-full cursor-text"
-        style=" margin: 3px 0px 3px 0px;"
         bind:this={container}
+        style="width: {width}px"
     />
 </div>

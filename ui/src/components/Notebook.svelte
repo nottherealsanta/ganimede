@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
     import CodeCell from "./CodeCell.svelte";
     import MarkdownCell from "./MarkdownCell.svelte";
     import Edges from "./utility_components/Edges.svelte";
@@ -110,4 +110,33 @@
         display: flex;
         flex-direction: column;
     }
-</style>
+</style> -->
+
+<script>
+    import Cell from "./Cell.svelte";
+    import Edges from "./utility_components/Edges.svelte";
+
+    import {
+        cells,
+        id_map,
+        pc_graph,
+        np_graph,
+        parent_less_cells,
+    } from "../stores/notebook";
+    import Tissue from "./Tissue.svelte";
+</script>
+
+{#if $cells !== undefined}
+    {#each $parent_less_cells as cell_id}
+        {#if $cells[$id_map[cell_id]].type === "markdown" && cell_id in $pc_graph}
+            <Tissue {cell_id} />
+        {:else}
+            <Cell {cell_id} />
+        {/if}
+        {#if $np_graph[cell_id]}
+            {#each $np_graph[cell_id] as next_id}
+                <Edges current_cell_id={cell_id} {next_id} />
+            {/each}
+        {/if}
+    {/each}
+{/if}

@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
     import Cell from "./Cell.svelte";
     import Tissue from "./Tissue.svelte";
     import { id_map, cells } from "../stores/notebook";
@@ -6,7 +6,8 @@
     export let cell_id;
 
     $: cell = $cells[$id_map[cell_id]];
-    $: is_heading = cell.source[0].startsWith("#");
+    // $: is_heading = cell.source[0].startsWith("#");
+    $:is_heading = false;
 
     import { Editor, rootCtx, defaultValueCtx } from "@milkdown/core";
     import { commonmark } from "@milkdown/preset-commonmark";
@@ -49,4 +50,52 @@
             />
         </div>
     </Cell>
-{/if}
+{/if} -->
+
+<script>
+    import Cell from "./Cell.svelte";
+    import Tissue from "./Tissue.svelte";
+    import { id_map, cells } from "../stores/notebook";
+
+    export let cell_id;
+    export let is_tissue = false;
+
+    $: cell = $cells[$id_map[cell_id]];
+    // $: is_heading = cell.source[0].startsWith("#");
+    $: is_heading = false;
+
+    import { Editor, rootCtx, defaultValueCtx } from "@milkdown/core";
+    import { commonmark } from "@milkdown/preset-commonmark";
+    import { listener, listenerCtx } from "@milkdown/plugin-listener";
+
+    function editor(dom) {
+        Editor.make()
+            .config((ctx) => {
+                ctx.set(rootCtx, dom);
+                ctx.set(defaultValueCtx, cell.source.join(""));
+                const listener = ctx.get(listenerCtx);
+
+                listener.markdownUpdated((ctx, markdown, prevMarkdown) => {
+                    if (markdown !== prevMarkdown) {
+                        $cells[$id_map[cell_id]].source =
+                            markdown.split("\n\n");
+                    }
+                });
+            })
+            .use(listener)
+            .use(commonmark)
+            .create();
+    }
+</script>
+
+<div class="flex items-start w-fit h-auto justify-center align-middle">
+    {#if !is_tissue}
+        <div class="w-5 pointer-events-none" />
+    {/if}
+    <div
+        class="bg-white dark:bg-vs-dark w-fit h-fit rounded min-w-[200px] min-h-[25px] max-w-[616px] text-black dark:text-white border cursor-text"
+        on:mousedown={(e) => e.stopPropagation()}
+        style={is_tissue ? "background-color:transparent;" : ""}
+        use:editor
+    />
+</div>

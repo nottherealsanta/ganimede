@@ -142,6 +142,12 @@ button:focus {
 	opacity: 0.0;
 }
 
+/* TODO: fix band-aid */
+.view-line{
+	position: absolute;
+	width: 100%;
+}
+
 /* headings */
 
 h1,
@@ -150,9 +156,31 @@ h3,
 h4,
 h5,
 h6 {
-	color: rgb(255, 255, 255);
 	margin-block-start: 5px;
 	margin-block-end: 5px;
+}
+
+.tissue
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		color: rgb(0, 0, 0);
+	}
+
+@media (prefers-color-scheme: dark) {
+
+	.tissue
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		color: white;
+	}
 }
 
 .milkdown h1 {
@@ -192,6 +220,8 @@ h6 {
 	padding-right: 0.5rem;
 	white-space: pre-wrap;
 	border-radius: 4px;
+	border-left: 1px solid rgba(215, 215, 215, 0.183);
+
 }
 
 .ProseMirror pre {
@@ -199,20 +229,11 @@ h6 {
 }
 
 .ProseMirror-focused {
-	outline: 0px solid rgb(73, 176, 249);
+	/* outline: 0px solid rgb(73, 176, 249); */
+	border-left: 1px solid rgb(73, 176, 249);
 }
 
-@media (prefers-color-scheme: dark) {
 
-	h1,
-	h2,
-	h3,
-	h4,
-	h5,
-	h6 {
-		color: white;
-	}
-}
 
 
 /* outputs dataframe */
