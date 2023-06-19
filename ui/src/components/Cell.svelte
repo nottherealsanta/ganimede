@@ -139,7 +139,7 @@ min-width: max-content;
 </script>
 
 <div
-    class="bg-white w-fit h-fit dark:bg-vs-dark rounded-md border border-gray-300 dark:border-neutral-800 shadow-md shadow-zinc-300 dark:shadow-neutral-900/50 flex overflow-visible p-1 cursor-default"
+    class="bg-white w-fit h-fit dark:bg-vs-dark rounded-md border border-gray-300 dark:border-neutral-800 shadow-md shadow-zinc-300 dark:shadow-neutral-900/50 flex overflow-visible p-1 cursor-default pointer-events-none"
     bind:this={cell_div}
     style="
     top:{cell.top}px; left:{cell.left}px;

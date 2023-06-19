@@ -93,7 +93,7 @@
         <div class="w-5 pointer-events-none" />
     {/if}
     <div
-        class="bg-white dark:bg-vs-dark w-fit h-fit rounded min-w-[200px] min-h-[25px] max-w-[616px] text-black dark:text-white border cursor-text"
+        class="bg-white dark:bg-vs-dark w-fit h-fit min-w-[200px] min-h-[25px] max-w-[616px] text-black dark:text-white border rounded border-transparent cursor-text pointer-events-auto"
         on:mousedown={(e) => e.stopPropagation()}
         style={is_tissue ? "background-color:transparent;" : ""}
         use:editor

@@ -17,7 +17,7 @@ class Notebook:
         self,
         kernel: Kernel,
         comms: Comms,
-        notebook_path: str = f"{getcwd()}/tests/scaling_laws.ipynb",
+        notebook_path: str = f"{getcwd()}/tests/test1.ipynb",
     ):
         self.kernel = kernel
         self.comms = comms

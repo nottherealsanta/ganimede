@@ -39,6 +39,14 @@
     });
 
     import ZoomToolBar from "../components/canvas_components/zoom.svelte";
+
+    async function interrupt_kernel() {
+        send_message({
+            channel: "kernel",
+            method: "interrupt",
+            message: {},
+        });
+    }
 </script>
 
 <div
@@ -69,3 +77,17 @@
 </div>
 
 <ZoomToolBar />
+
+<div
+    class="fixed flex flex-row bottom-5 w-[500px] h-10 left-[300px] p-[4px] bg-neutral-100 dark:bg-neutral-800 border rounded border-neutral-300 dark:border-neutral-700 justify-left align-middle pointer-events-auto"
+>
+    <button
+        class="h-full w-8 flex align-middle justify-center items-center"
+        on:click={interrupt_kernel}
+        alt="Interrupt Kernel"
+    >
+        <svg width="10" height="10">
+            <rect width="10" height="10" class="fill-current text-gray-500" />
+        </svg>
+    </button>
+</div>

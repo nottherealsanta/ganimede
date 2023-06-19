@@ -37,7 +37,7 @@
     <div class="flex h-full w-6" style="margin-right:7px" />
     <div
         class="w-full h-auto bg-transparent px-1 pl-1 py-0.5 shadow-inner shadow-zinc-100/50 dark:shadow-vs-dark
-             border border-zinc-100 dark:border-neutral-800 rounded float-bottom mt-0.25 cursor-default"
+             border border-zinc-100 dark:border-neutral-800 rounded float-bottom mt-0.25 cursor-default pointer-events-auto"
     >
         {#if outputs}
             {#each outputs as output}

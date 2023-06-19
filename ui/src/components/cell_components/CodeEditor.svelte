@@ -8,23 +8,15 @@
 </script>
 
 <script>
-    import { compute_rest_props } from "svelte/internal";
-
     import { config } from "../../stores/config";
-    import { notebook, id_map } from "../../stores/notebook";
+    import { cells, id_map } from "../../stores/notebook";
 
     export let cell_id;
 
-    $: cell = $notebook["cells"][$id_map[cell_id]];
+    $: cell = $cells[$id_map[cell_id]];
 
-    let language = "";
-    $: if (cell) {
-        if (cell.cell_type === "markdown") {
-            language = "markdown";
-        } else {
-            language = "python";
-        }
-    }
+    let language = "python";
+
     export let focus = false;
     let height = 0;
     let width = 0;
@@ -44,14 +36,17 @@
     $: width = Math.ceil(max_columns * 8) + 50;
     $: width = Math.min(width, max_width);
     $: width = Math.max(width, min_min_width);
-    let value = "";
-    $: if ($notebook["cells"][$id_map[cell_id]].source !== "") {
-        value = $notebook["cells"][$id_map[cell_id]].source.join("");
+
+    $: value = $cells[$id_map[cell_id]].source.join("");
+    $: if (editor) {
+        if (editor.getValue() !== value) {
+            editor.setValue(value);
+        }
     }
 
     function get_max_columns() {
         let max = 0;
-        let source = $notebook["cells"][$id_map[cell_id]].source;
+        let source = cell.source;
         for (let i = 0; i < source.length; i++) {
             let column = source[i].length;
             if (column > max) {
@@ -84,7 +79,7 @@
         });
 
     // monaco config
-    $: monaco_config = {
+    let monaco_config = {
         value: value,
         language: language,
         theme: current_theme,
@@ -118,6 +113,9 @@
     onMount(() => {
         monaco = _monaco;
         editor = monaco.editor.create(container, monaco_config);
+
+        editor.setValue(value);
+
         max_columns = get_max_columns();
 
         editor.onDidFocusEditorText(() => {
@@ -130,10 +128,10 @@
         editor.onDidChangeModelContent((e) => {
             max_columns = get_max_columns();
 
-            $notebook.cells[$id_map[cell_id]].source = editor
+            $cells[$id_map[cell_id]].source = editor
                 .getValue()
                 .split("\n")
-                .map((line) => line + "\n");
+                .map((line) => (line ? line + "\n" : line));
         });
 
         let ignoreEvent = false;
@@ -175,7 +173,7 @@
 </script>
 
 <div
-    class="h-fit cell-input overflow-hidden relative border rounded border-zinc-100 dark:border-neutral-800 bg-transparent align-middle cursor-text"
+    class="h-fit cell-input overflow-hidden relative border rounded border-zinc-100 dark:border-neutral-800 bg-transparent align-middle cursor-text pointer-events-auto"
     style=" min-height: 25px; width:100%;        {focus
         ? 'border-left: solid 2px rgba(73, 176, 249);'
         : 'border-left: solid 2px rgba(73, 73, 73,0.1);'}"
