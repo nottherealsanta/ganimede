@@ -355,6 +355,7 @@
     $: cell = $cells[$id_map[cell_id]];
 
     onMount(() => {
+        console.log("tissue onmount, cell_id : ", cell_id, cell);
         tissue_div.setAttribute("cell_id", cell_id);
     });
 
@@ -501,12 +502,14 @@
     import PrimeButton from "./cell_components/PrimeButton.svelte";
 </script>
 
+<!-- top:{cell.top}px; left:{cell.left}px;  -->
 <div
     class="tissue flex flex-row h-fit bg-gray-50/50 dark:bg-neutral-800/30 rounded-md border-l-2 border-r-2 border-t-2 border-b-2 border-[#212529] dark:border-gray-400 shadow-md shadow-zinc-300 dark:shadow-neutral-900/50 overflow-visible cursor-default"
     style="
-    top:{cell.top}px; left:{cell.left}px; 
     {$cp_graph[cell_id] ? '' : 'position:absolute;'}
     {$cp_graph[cell_id] ? 'width:100%;' : 'width:fit-content;'}
+    {$cp_graph[cell_id] ? '' : 'top:' + cell.top + 'px;'}
+    {$cp_graph[cell_id] ? '' : 'left:' + cell.left + 'px;'}
     "
     on:mouseover={tissue_mouseenter}
     on:mouseout={tissue_mouseleave}
@@ -562,6 +565,7 @@
         </div>
     </div>
 </div>
+
 <svelte:window
     on:mousemove={drag_handle_mousemove}
     on:mouseup={drag_handle_mouseup}
