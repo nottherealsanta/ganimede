@@ -63,29 +63,6 @@
         $pc_graph[cell_id] = items.map((item) => item._id);
     }
 
-    // tissue mouse
-    import { mouse_on_tissues, dragging_cell_id } from "../stores/mouse.js";
-
-    $: if ($mouse_on_tissues[1]) {
-        if (
-            $mouse_on_tissues[1].getAttribute("cell_id") == cell_id &&
-            dragging_cell_id != null &&
-            items.filter((item) => item._id == $dragging_cell_id).length == 0
-        ) {
-            console.log(
-                "tissue",
-                cell_id,
-                $dragging_cell_id,
-                $mouse_on_tissues
-            );
-            items.push({
-                _id: $dragging_cell_id,
-                ...$cells[$id_map[$dragging_cell_id]],
-            });
-        }
-    }
-
-    // drag handle
     let dragging = false;
     let dh_clicked = {
         x: 0,
@@ -105,7 +82,6 @@
             e.preventDefault();
             dragging = true;
             dh_clicked = get_drag_handle_clicked();
-            $dragging_cell_id = cell_id;
         }
     }
 
@@ -147,7 +123,6 @@
                 y: 0,
             };
             sync_cell_properties(cell_id);
-            $dragging_cell_id = null;
         }
     }
 
@@ -186,15 +161,14 @@
         <!-- title -->
         <div
             class="flex flex-row bg-neutral-100/30 dark:bg-neutral-400/30 p-1 justify-start items-start cursor-grab active:cursor-grabbing"
-            on:mousedown={drag_handle_mousedown}
-            on:mouseup={drag_handle_mouseup}
         >
             <PrimeButton {cell_id} />
             <MarkdownCell {cell_id} is_tissue={true} />
         </div>
         <!-- dropzone list of children -->
+        <!-- list of children -->
         <div
-            class="dropzone pl-4 pt-2 pb-2 pr-2 h-full w-full"
+            class="pl-4 pt-2 pb-2 pr-2 h-full w-full"
             use:dndzone={{
                 items,
                 dropTargetStyle: {
@@ -205,7 +179,6 @@
             on:finalize={handleDndFinalize}
         >
             {#each items as item (item._id)}
-                <!-- get index of item -->
                 <div class="my-1">
                     {#if $pc_graph[item.id]}
                         <svelte:self cell_id={item.id} />
@@ -216,7 +189,6 @@
             {/each}
         </div>
     </div>
-    {cell_id}
 </div>
 
 <svelte:window
