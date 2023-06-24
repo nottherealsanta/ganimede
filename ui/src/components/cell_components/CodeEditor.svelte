@@ -37,10 +37,12 @@
     $: width = Math.min(width, max_width);
     $: width = Math.max(width, min_min_width);
 
-    $: value = $cells[$id_map[cell_id]].source.join("");
     $: if (editor) {
-        if (editor.getValue() !== value) {
-            editor.setValue(value);
+        if (editor.getValue() !== $cells[$id_map[cell_id]].source.join("")) {
+            $cells[$id_map[cell_id]].source = editor
+                .getValue()
+                .split("\n")
+                .map((line) => (line ? line + "\n" : line));
         }
     }
 
@@ -80,7 +82,7 @@
 
     // monaco config
     let monaco_config = {
-        value: value,
+        value: $cells[$id_map[cell_id]].source.join(""),
         language: language,
         theme: current_theme,
         minimap: {
@@ -114,7 +116,7 @@
         monaco = _monaco;
         editor = monaco.editor.create(container, monaco_config);
 
-        editor.setValue(value);
+        // editor.setValue(value);
 
         max_columns = get_max_columns();
 
@@ -128,10 +130,10 @@
         editor.onDidChangeModelContent((e) => {
             max_columns = get_max_columns();
 
-            $cells[$id_map[cell_id]].source = editor
-                .getValue()
-                .split("\n")
-                .map((line) => (line ? line + "\n" : line));
+            // $cells[$id_map[cell_id]].source = editor
+            //     .getValue()
+            //     .split("\n")
+            //     .map((line) => (line ? line + "\n" : line));
         });
 
         let ignoreEvent = false;

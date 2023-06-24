@@ -414,17 +414,7 @@ export function sync_cell_properties(cell_id) {
 }
 
 // HTML element store for each cell
-export const html_elements = derived([cells, id_map], ([$cells, $id_map]) => {
-    const html_elements = {};
-    if (!$cells) {
-        return html_elements;
-    }
-    $cells.forEach(cell => {
-        html_elements[cell.id] = null;
-    });
-    return html_elements;
-}
-);
+export const html_elements = writable({});
 html_elements.set = function (cell_id, element) {
     this[cell_id] = element;
 }

@@ -16,17 +16,17 @@
 
 {#if $cells !== undefined}
     {#each $cells.map((cell) => cell.id) as cell_id}
-        {#if !$cp_graph[cell_id]}
-            {#if $cells[$id_map[cell_id]].type === "markdown" && cell_id in $pc_graph}
-                <Tissue {cell_id} />
-            {:else}
-                <Cell {cell_id} />
-            {/if}
-            <!-- {#if $np_graph[cell_id]}
+        <!-- {#if !$cp_graph[cell_id]} -->
+        {#if $cells[$id_map[cell_id]].type === "markdown" && cell_id in $pc_graph}
+            <Tissue {cell_id} />
+        {:else}
+            <Cell {cell_id} />
+        {/if}
+        <!-- {#if $np_graph[cell_id]}
                 {#each $np_graph[cell_id] as next_id}
                     <Edges current_cell_id={cell_id} {next_id} />
                 {/each}
             {/if} -->
-        {/if}
+        <!-- {/if} -->
     {/each}
 {/if}
