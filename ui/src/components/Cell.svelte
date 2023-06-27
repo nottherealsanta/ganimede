@@ -26,6 +26,7 @@
     import mouse_pos from "../stores/mouse.js";
 
     let dragging = false;
+    let dragging_began = false;
     let dh_clicked = {
         x: 0,
         y: 0,
@@ -56,6 +57,7 @@
 
     function drag_mousemove(e) {
         if (dragging) {
+            dragging_began = true;
             e.preventDefault();
             e.stopPropagation();
 
@@ -64,6 +66,11 @@
                 x: $mouse_pos.x - dh_clicked.x,
                 y: $mouse_pos.y - dh_clicked.y,
             };
+
+            if (!$cp_graph[cell_id]) {
+                $cells[$id_map[cell_id]].top = $mouse_pos.y - dh_clicked.y;
+                $cells[$id_map[cell_id]].left = $mouse_pos.x - dh_clicked.x;
+            }
 
             // top of
             const elements_under = document.elementsFromPoint(
@@ -223,10 +230,7 @@
     }
 
     function drag_mouseup(e) {
-        if (dragging) {
-            dragging = false;
-            // TODO: move snap separetly
-
+        if (dragging && dragging_began) {
             dh_clicked = {
                 x: 0,
                 y: 0,
@@ -308,6 +312,8 @@
                 // remove from parent
                 let cell_parent = $cp_graph[cell_id];
 
+                // if cell is in some parent
+                // if there is any movement
                 if (cell_parent) {
                     let cell_loc = [...$pc_graph[cell_parent]].indexOf(cell_id);
 
@@ -333,7 +339,10 @@
 
             // sync
             // sync_cell_properties(cell_id);
+            console.log("dragging mouse up end");
         }
+        dragging_began = false;
+        dragging = false;
     }
 
     $: if (
@@ -359,23 +368,13 @@
             }
         } else {
             let prev_cell_id = [...$pc_graph[$cp_graph[cell_id]]][cell_loc - 1];
-            // if prev_cell_id is in pc_graph and its dragging then dont
-            if (prev_cell_id in $pc_graph) {
-                if (
-                    $html_elements[prev_cell_id].getAttribute("dragging") ===
-                    "false"
-                ) {
-                    let prev_cell = $cells[$id_map[prev_cell_id]];
-                    let top_pos = prev_cell.top + prev_cell.height + 5;
 
-                    if ($cells[$id_map[cell_id]].top !== top_pos) {
-                        $cells[$id_map[cell_id]].top = top_pos;
-                    }
-                    if ($cells[$id_map[cell_id]].left !== prev_cell.left) {
-                        $cells[$id_map[cell_id]].left = prev_cell.left;
-                    }
-                }
-            } else {
+            if (
+                (prev_cell_id in $pc_graph &&
+                    $html_elements[prev_cell_id].getAttribute("dragging") ===
+                        "false") ||
+                !(prev_cell_id in $pc_graph)
+            ) {
                 let prev_cell = $cells[$id_map[prev_cell_id]];
                 let top_pos = prev_cell.top + prev_cell.height + 5;
 
@@ -410,6 +409,7 @@
             <MarkdownCell {cell_id} />
         {/if}
     </div>
+    <!-- <NewCellToolbar {cell_id} /> -->
 </div>
 
 <svelte:window on:mousemove={drag_mousemove} on:mouseup={drag_mouseup} />

@@ -17,7 +17,7 @@ class Notebook:
         self,
         kernel: Kernel,
         comms: Comms,
-        notebook_path: str = f"{getcwd()}/tests/test1.ipynb",
+        notebook_path: str = f"{getcwd()}/tests/test0.ipynb",
     ):
         self.kernel = kernel
         self.comms = comms
@@ -356,6 +356,7 @@ class Notebook:
         return None
 
     async def new_code_cell(self, previous_cell_id: str):
+        # TODO: fix this
         log.debug(f"previous cell: {previous_cell_id}")
         log.debug(f"cells: {self.cells}")
 
@@ -367,35 +368,35 @@ class Notebook:
         #         new_cell["top"] = previous_cell["top"] + previous_cell["height"] + 5;
         # new_cell["left"] = previous_cell["left"];
 
-        prev_cell = self.cells[self.id_map[previous_cell_id]]
-        new_cell.top = prev_cell.top + prev_cell.height + 5
-        new_cell.left = prev_cell.left
+        # prev_cell = self.cells[self.id_map[previous_cell_id]]
+        # new_cell.top = prev_cell.top + prev_cell.height + 5
+        # new_cell.left = prev_cell.left
 
-        print(prev_cell.to_dict())
-        print(prev_cell.top)
+        # print(prev_cell.to_dict())
+        # print(prev_cell.top)
 
-        # self.cells.insert(self.id_map[previous_cell_id] + 1, new_cell)
-        self.cells.append(new_cell)
+        # # self.cells.insert(self.id_map[previous_cell_id] + 1, new_cell)
+        # self.cells.append(new_cell)
 
-        if previous_cell_id not in self.np_graph:
-            self.np_graph[previous_cell_id] = [new_cell.id]
-        else:
-            self.np_graph[previous_cell_id].append(new_cell.id)
+        # if previous_cell_id not in self.np_graph:
+        #     self.np_graph[previous_cell_id] = [new_cell.id]
+        # else:
+        #     self.np_graph[previous_cell_id].append(new_cell.id)
 
-        prev_parent = self._find_parent(previous_cell_id)
-        if prev_parent is not None:
-            if prev_parent not in self.pc_graph:
-                self.pc_graph[prev_parent] = [new_cell.id]
-            else:
-                self.pc_graph[prev_parent].append(new_cell.id)
+        # prev_parent = self._find_parent(previous_cell_id)
+        # if prev_parent is not None:
+        #     if prev_parent not in self.pc_graph:
+        #         self.pc_graph[prev_parent] = [new_cell.id]
+        #     else:
+        #         self.pc_graph[prev_parent].append(new_cell.id)
 
-        response = {
-            "new_cell": new_cell.to_dict(),
-            "previous_cell_id": previous_cell_id,
-            "id_map": self.id_map,
-            "np_graph": self.np_graph,
-            "pc_graph": self.pc_graph,
-        }
+        # response = {
+        #     "new_cell": new_cell.to_dict(),
+        #     "previous_cell_id": previous_cell_id,
+        #     "id_map": self.id_map,
+        #     "np_graph": self.np_graph,
+        #     "pc_graph": self.pc_graph,
+        # }
 
         log.debug(f"new cell: {new_cell.id}")
 
@@ -403,7 +404,7 @@ class Notebook:
             {
                 "channel": "notebook",
                 "method": "new_code_cell",
-                "message": response,
+                "message": {'test': 'test'},
             }
         )
 

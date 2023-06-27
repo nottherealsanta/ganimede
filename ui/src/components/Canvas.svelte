@@ -38,7 +38,7 @@
         open_socket();
     });
 
-    import ZoomToolBar from "../components/canvas_components/zoom.svelte";
+    // import ZoomToolBar from "../components/canvas_components/zoom.svelte";
 
     async function interrupt_kernel() {
         send_message({
@@ -76,7 +76,7 @@
     {/await}
 </div>
 
-<ZoomToolBar />
+<!-- <ZoomToolBar /> -->
 
 <div
     class="fixed flex flex-row bottom-5 w-[500px] h-10 left-[300px] p-[4px] bg-neutral-100 dark:bg-neutral-800 border rounded border-neutral-300 dark:border-neutral-700 justify-left align-middle pointer-events-auto"

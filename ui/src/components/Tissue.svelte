@@ -20,17 +20,18 @@
     let tissue_height = 0;
     let tissue_width = 0;
 
-    $: _children = $pc_graph[cell_id];
     // sum of clienteHeight of all children = tissue_height
-    $: tissue_height =
-        _children.reduce((acc, child_cell_id) => {
-            return acc + $cells[$id_map[child_cell_id]].height;
-        }, 0) + 35;
-    // max of clientWidth of all children = tissue_width
-    $: tissue_width =
-        _children.reduce((acc, child_cell_id) => {
-            return Math.max(acc, $cells[$id_map[child_cell_id]].width);
-        }, 0) + 50;
+    $: if ($pc_graph[cell_id]) {
+        tissue_height =
+            $pc_graph[cell_id].reduce((acc, child_cell_id) => {
+                return acc + $cells[$id_map[child_cell_id]].height;
+            }, 0) + 35;
+        // max of clientWidth of all children = tissue_width
+        tissue_width =
+            $pc_graph[cell_id].reduce((acc, child_cell_id) => {
+                return Math.max(acc, $cells[$id_map[child_cell_id]].width);
+            }, 0) + 50;
+    }
 
     onMount(() => {
         tissue_div.setAttribute("cell_id", cell_id);
@@ -186,7 +187,10 @@
             }
 
             // check if on tissue
-            if (dragzone_under) {
+            if (
+                dragzone_under &&
+                dragzone_under_tissue.getAttribute("cell_id") !== cell_id
+            ) {
                 let _bounding_rect = {
                     top:
                         dragzone_under.offsetTop +
@@ -381,14 +385,21 @@
             }
         } else {
             let prev_cell_id = [...$pc_graph[$cp_graph[cell_id]]][cell_loc - 1];
-            let prev_cell = $cells[$id_map[prev_cell_id]];
-            let top_pos = prev_cell.top + prev_cell.height + 5;
+            if (
+                (prev_cell_id in $pc_graph &&
+                    $html_elements[prev_cell_id].getAttribute("dragging") ===
+                        "false") ||
+                !(prev_cell_id in $pc_graph)
+            ) {
+                let prev_cell = $cells[$id_map[prev_cell_id]];
+                let top_pos = prev_cell.top + prev_cell.height + 5;
 
-            if ($cells[$id_map[cell_id]].top !== top_pos) {
-                $cells[$id_map[cell_id]].top = top_pos;
-            }
-            if ($cells[$id_map[cell_id]].left !== prev_cell.left) {
-                $cells[$id_map[cell_id]].left = prev_cell.left;
+                if ($cells[$id_map[cell_id]].top !== top_pos) {
+                    $cells[$id_map[cell_id]].top = top_pos;
+                }
+                if ($cells[$id_map[cell_id]].left !== prev_cell.left) {
+                    $cells[$id_map[cell_id]].left = prev_cell.left;
+                }
             }
         }
     }
@@ -440,6 +451,16 @@
         />
     </div>
 </div>
+
+<!-- {#if $pc_graph[cell_id]}
+    {#each $pc_graph[cell_id] as child_cell_id}
+        {#if $cells[$id_map[child_cell_id]].type === "markdown" && child_cell_id in $pc_graph}
+            <svelte:self cell_id={child_cell_id} />
+        {:else}
+            <Cell cell_id={child_cell_id} />
+        {/if}
+    {/each}
+{/if} -->
 
 <svelte:window
     on:mousemove={drag_handle_mousemove}
