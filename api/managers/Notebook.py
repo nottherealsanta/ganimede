@@ -175,7 +175,7 @@ class Notebook:
 
                     if len(children) > 0:
                         prev = children[-1]
-                        self.np_graph[self.cells[prev].id] = [self.cells[i].id]
+                        # self.np_graph[self.cells[prev].id] = [self.cells[i].id]
                     children.append(i)
 
                     if (
@@ -213,7 +213,7 @@ class Notebook:
                     y_id = self.pc_graph[self.cells[index].id][i + 1]
                     x_idx = self.id_map[x_id]
                     y_idx = self.id_map[y_id]
-                    self.np_graph[x_id] = [y_id]
+                    # self.np_graph[x_id] = [y_id]
 
         # connect the parent_less cells
         parent_less_cells = []

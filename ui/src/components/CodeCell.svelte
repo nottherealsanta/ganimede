@@ -1,5 +1,4 @@
 <script lang="ts">
-    import Cell from "./Cell.svelte";
     import { id_map, cells } from "../stores/notebook";
     import Outputs from "./cell_components/Outputs.svelte";
 

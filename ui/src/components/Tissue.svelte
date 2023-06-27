@@ -25,7 +25,7 @@
     $: tissue_height =
         _children.reduce((acc, child_cell_id) => {
             return acc + $cells[$id_map[child_cell_id]].height;
-        }, 0) + 25;
+        }, 0) + 35;
     // max of clientWidth of all children = tissue_width
     $: tissue_width =
         _children.reduce((acc, child_cell_id) => {
@@ -99,33 +99,38 @@
         }
     }
 
-    $: if ($pn_graph[cell_id] && !dragging) {
-        let prev_cell_id = $pn_graph[cell_id][0];
-        let prev_cell = $cells[$id_map[prev_cell_id]];
-        let top_pos = prev_cell.top + prev_cell.height + 5;
-
-        if ($cells[$id_map[cell_id]].top !== top_pos) {
-            $cells[$id_map[cell_id]].top = top_pos;
-        }
-        if ($cells[$id_map[cell_id]].left !== prev_cell.left) {
-            $cells[$id_map[cell_id]].left = prev_cell.left;
-        }
-    } else if (
+    $: if (
         $cp_graph[cell_id] &&
         $html_elements[$cp_graph[cell_id]] &&
         !dragging
     ) {
-        let parent_cell = $cells[$id_map[$cp_graph[cell_id]]];
-        let top_pos =
-            parent_cell.top +
-            $html_elements[$cp_graph[cell_id]].querySelector("#title")
-                .clientHeight;
-        let left_pos = parent_cell.left + 25 + 12;
-        if ($cells[$id_map[cell_id]].top !== top_pos) {
-            $cells[$id_map[cell_id]].top = top_pos;
-        }
-        if ($cells[$id_map[cell_id]].left !== left_pos) {
-            $cells[$id_map[cell_id]].left = left_pos;
+        // find loc of cell_id in $pc_graph[$cp_graph[cell_id]]
+        let cell_loc = [...$pc_graph[$cp_graph[cell_id]]].indexOf(cell_id);
+        if (cell_loc === 0) {
+            let parent_cell = $cells[$id_map[$cp_graph[cell_id]]];
+            let top_pos =
+                parent_cell.top +
+                $html_elements[$cp_graph[cell_id]].querySelector("#title")
+                    .clientHeight +
+                10;
+            let left_pos = parent_cell.left + 25 + 12;
+            if ($cells[$id_map[cell_id]].top !== top_pos) {
+                $cells[$id_map[cell_id]].top = top_pos;
+            }
+            if ($cells[$id_map[cell_id]].left !== left_pos) {
+                $cells[$id_map[cell_id]].left = left_pos;
+            }
+        } else {
+            let prev_cell_id = [...$pc_graph[$cp_graph[cell_id]]][cell_loc - 1];
+            let prev_cell = $cells[$id_map[prev_cell_id]];
+            let top_pos = prev_cell.top + prev_cell.height + 5;
+
+            if ($cells[$id_map[cell_id]].top !== top_pos) {
+                $cells[$id_map[cell_id]].top = top_pos;
+            }
+            if ($cells[$id_map[cell_id]].left !== prev_cell.left) {
+                $cells[$id_map[cell_id]].left = prev_cell.left;
+            }
         }
     }
 
@@ -135,7 +140,7 @@
 
 <!-- top:{cell.top}px; left:{cell.left}px;  -->
 <div
-    class="tissue absolute flex flex-row h-fit w-fit bg-gray-50/50 dark:bg-neutral-800/30 rounded-md border-l-2 border-r-2 border-t-2 border-b-2 border-[#212529] dark:border-gray-400 shadow-md shadow-zinc-300 dark:shadow-neutral-900/50 overflow-visible cursor-default"
+    class="tissue absolute flex flex-row h-fit w-fit bg-gray-50/10 dark:bg-neutral-800/10 rounded-md border-2 border-[#212529] dark:border-gray-200 shadow-md shadow-zinc-300 dark:shadow-neutral-900/50 overflow-visible cursor-default"
     style="
     top:{$cells[$id_map[cell_id]].top}px; 
     left:{$cells[$id_map[cell_id]].left}px;
@@ -146,8 +151,9 @@
 >
     <!-- drag handle (left) -->
     <div
-        class="flex bg-[#212529] dark:bg-neutral-400 w-2 fill-neutral-500 dark:fill-neutral-400"
+        class="w-[25px] pt-1 flex flex-col bg-transparent border-r-2 border-[#212529] dark:border-gray-200 fill-neutral-500 dark:fill-neutral-400 items-center justify-center"
     >
+        <PrimeButton {cell_id} />
         <div
             class="w-full h-full cursor-grab active:cursor-grabbing"
             on:mousedown={drag_handle_mousedown}
@@ -160,27 +166,18 @@
             class="flex flex-row bg-neutral-100/30 dark:bg-neutral-400/30 p-1 justify-start items-start cursor-grab active:cursor-grabbing"
             id="title"
         >
-            <PrimeButton {cell_id} />
             <MarkdownCell {cell_id} is_tissue={true} />
         </div>
 
         <div
-            class="bg-transparent"
-            style="width:{tissue_width}px; height:{tissue_height}px;"
+            id="dropzone"
+            class="dropzone bg-transparent border-t-2 border-[#212529] dark:border-gray-200"
+            style="width:{tissue_width}px; height:{tissue_height}px; 
+            min-width:{tissue_div
+                ? tissue_div.querySelector('#title').clientWidth
+                : 100}px;"
+            {cell_id}
         />
-
-        <!-- dropzone list of children -->
-        <!-- list of children -->
-
-        <!-- {#each $pc_graph[cell_id] as child_cell_id}
-            <div class="my-1">
-                {#if $pc_graph[child_cell_id]}
-                    <svelte:self cell_id={child_cell_id} />
-                {:else}
-                    <Cell cell_id={child_cell_id} />
-                {/if}
-            </div>
-        {/each} -->
     </div>
 </div>
 

@@ -193,6 +193,7 @@ pc_graph.set = (value) => notebook.update(n => {
     return n;
 });
 //child-parent graph
+
 export const cp_graph = derived(notebook, $notebook => {
     // reverse pc_graph, which is map of list 
     const cp_graph = {};
@@ -204,6 +205,9 @@ export const cp_graph = derived(notebook, $notebook => {
         }
     }
     return cp_graph;
+
+
+
 }
 );
 cp_graph.set = (value) => notebook.update(n => {
@@ -418,3 +422,6 @@ export const html_elements = writable({});
 html_elements.set = function (cell_id, element) {
     this[cell_id] = element;
 }
+
+// move cells 
+// export function move_cells(cell_ids, d_top, d_left) {

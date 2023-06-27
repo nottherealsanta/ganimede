@@ -53,8 +53,6 @@
 {/if} -->
 
 <script>
-    import Cell from "./Cell.svelte";
-    import Tissue from "./Tissue.svelte";
     import { id_map, cells } from "../stores/notebook";
 
     export let cell_id;
