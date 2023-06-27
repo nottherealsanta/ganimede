@@ -169,13 +169,16 @@
                 let _bounding_rect = {
                     top:
                         dragzone_under.offsetTop +
-                        dragzone_under_tissue.offsetTop,
+                        dragzone_under_tissue.offsetTop +
+                        2,
                     left:
                         dragzone_under.offsetLeft +
-                        dragzone_under_tissue.offsetLeft,
+                        dragzone_under_tissue.offsetLeft +
+                        2,
                     width: dragzone_under.getBoundingClientRect().width,
                     height: dragzone_under.getBoundingClientRect().height,
                 };
+                console.log(_bounding_rect);
 
                 if (dnd_box === null) {
                     dnd_box = document.createElement("div");
@@ -186,8 +189,9 @@
                         _bounding_rect.width.toString() + "px";
                     dnd_box.style.height =
                         _bounding_rect.height.toString() + "px";
-                    dnd_box.style.backgroundColor = "#00000000";
-                    dnd_box.style.border = "2px dotted #0088FF";
+                    dnd_box.style.backgroundColor = "#29BFFF11";
+                    dnd_box.style.border = "2px solid #29BFFF";
+                    dnd_box.style.borderRadius = "0px 0px 5px 0px";
                     dnd_box.style.pointerEvents = "none";
 
                     dnd_box.setAttribute(
@@ -274,20 +278,23 @@
                 // add to the end of the tissue/parent
                 let dnd_cell_id = dnd_box.getAttribute("cell_id");
 
-                // copy pc_graph - to enforce reactivity (`set` updates cp_graph)
-                let pc_graph_copy = JSON.parse(JSON.stringify($pc_graph));
+                // if dropped on the same parent, preserve order
+                if ($cp_graph[cell_id] !== dnd_cell_id) {
+                    // copy pc_graph - to enforce reactivity (`set` updates cp_graph)
+                    let pc_graph_copy = JSON.parse(JSON.stringify($pc_graph));
 
-                // remove cell from parent
-                pc_graph_copy[$cp_graph[cell_id]].splice(
-                    [...$pc_graph[$cp_graph[cell_id]]].indexOf(cell_id),
-                    1
-                );
+                    // remove cell from parent
+                    pc_graph_copy[$cp_graph[cell_id]].splice(
+                        [...$pc_graph[$cp_graph[cell_id]]].indexOf(cell_id),
+                        1
+                    );
 
-                // add to the end of the tissue/parent
-                pc_graph_copy[dnd_cell_id].push(cell_id);
+                    // add to the end of the tissue/parent
+                    pc_graph_copy[dnd_cell_id].push(cell_id);
 
-                // update pc_graph
-                pc_graph.set(pc_graph_copy);
+                    // update pc_graph
+                    pc_graph.set(pc_graph_copy);
+                }
             }
 
             if (dnd_line) {
@@ -360,9 +367,6 @@
             <MarkdownCell {cell_id} />
         {/if}
     </div>
-    <p class="absolute top-0 left-0 text-xs text-gray-500 dark:text-gray-400">
-        {cell_id}
-    </p>
 </div>
 
 <svelte:window on:mousemove={drag_mousemove} on:mouseup={drag_mouseup} />

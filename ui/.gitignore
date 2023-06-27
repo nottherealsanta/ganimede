@@ -3,3 +3,5 @@
 package-lock.json
 public/css/app.css
 .DS_Store
+
+/dist/

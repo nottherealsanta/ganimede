@@ -5,28 +5,23 @@
   "type": "module",
   "scripts": {
     "watch:tailwind": "npx postcss public/css/tailwind.css -o public/css/app.css -w",
-    "build": "rollup -c",
-    "dev": "concurrently \"rollup -c -w\" \"npm run watch:tailwind\"",
-    "start": "sirv public --no-clear --single --dev --port 5000 --host 0.0.0.0"
+    "build": "vite build",
+    "dev": "concurrently \"vite\" \"npm run watch:tailwind\"",
+    "start": "vite preview"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^24.0.0",
-    "@rollup/plugin-node-resolve": "^15.0.0",
-    "@rollup/plugin-terser": "^0.4.0",
+    "@sveltejs/vite-plugin-svelte": "^2.4.2",
     "autoprefixer": "^10.4.14",
     "concurrently": "^7.6.0",
     "postcss": "^8.4.21",
     "postcss-cli": "^10.1.0",
     "prettier": "^2.8.7",
     "prettier-plugin-tailwindcss": "^0.2.7",
-    "rollup": "^3.15.0",
-    "rollup-plugin-css-only": "^4.3.0",
-    "rollup-plugin-livereload": "^2.0.0",
-    "rollup-plugin-svelte": "^7.1.2",
     "svelte": "^3.55.0",
     "svelte-dnd-action": "^0.9.22",
     "svelte-preprocess": "^5.0.3",
-    "tailwindcss": "^3.2.7"
+    "tailwindcss": "^3.2.7",
+    "vite": "^4.3.9"
   },
   "dependencies": {
     "@milkdown/core": "^7.2.1",
@@ -41,7 +36,6 @@
     "dragselect": "^2.7.4",
     "marked": "^4.2.12",
     "monaco-editor": "^0.34.1",
-    "sirv-cli": "^2.0.0",
     "typescript": "^5.0.2"
   }
 }

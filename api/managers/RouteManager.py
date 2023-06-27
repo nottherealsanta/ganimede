@@ -13,16 +13,16 @@ class RouteManager:
 
     def default_route(self):
         async def index(request):
-            return FileResponse(f"{self.ui_dir}/public/index.html")
+            return FileResponse(f"{self.ui_dir}/index.html")
 
         async def global_css(request: Request):
             return FileResponse(f"{self.ui_dir}/public/global.css")
 
         async def bundle_js(request: Request):
-            return FileResponse(f"{self.ui_dir}/public/build/bundle.js")
+            return FileResponse(f"{self.ui_dir}/src/main.js")
 
         async def bundle_js_map(request: Request):
-            return FileResponse(f"{self.ui_dir}/public/build/bundle.js.map")
+            return FileResponse(f"{self.ui_dir}/src/App.svelte")
 
         async def bundle_css(request: Request):
             return FileResponse(f"{self.ui_dir}/public/build/bundle.css")
@@ -38,10 +38,10 @@ class RouteManager:
             "/global.css", global_css, methods=["GET"], name="global_css"
         )
         self.app.add_route(
-            "/build/bundle.js", bundle_js, methods=["GET"], name="bundle_js"
+            "/src/main.js", bundle_js, methods=["GET"], name="main_js"
         )
         self.app.add_route(
-            "/build/bundle.js.map", bundle_js_map, methods=["GET"], name="bundle_js_map"
+            "/src/App.svelte", bundle_js_map, methods=["GET"], name="bundle_js_map"
         )
         self.app.add_route(
             "/build/bundle.css", bundle_css, methods=["GET"], name="bundle_css"

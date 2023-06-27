@@ -4,6 +4,7 @@
     monaco_promise = import("./monaco.js");
     monaco_promise.then((mod) => {
         _monaco = mod.default;
+        console.log("monaco loaded");
     });
 </script>
 

@@ -531,9 +531,6 @@ video {
 .left-\[300px\] {
   left: 300px;
 }
-.top-0 {
-  top: 0px;
-}
 .z-10 {
   z-index: 10;
 }
@@ -1130,11 +1127,6 @@ h6 {
   .dark\:text-gray-200 {
     --tw-text-opacity: 1;
     color: rgb(229 231 235 / var(--tw-text-opacity));
-  }
-
-  .dark\:text-gray-400 {
-    --tw-text-opacity: 1;
-    color: rgb(156 163 175 / var(--tw-text-opacity));
   }
 
   .dark\:text-neutral-100 {
