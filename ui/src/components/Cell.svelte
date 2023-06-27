@@ -112,7 +112,7 @@
                     dnd_line.style.position = "absolute";
                     dnd_line.style.height = "3px";
                     dnd_line.style.borderRadius = "5px";
-                    dnd_line.style.backgroundColor = "#0088FF";
+                    dnd_line.style.backgroundColor = "#29BFFF";
 
                     dnd_line.style.left = _bounding_rect.left.toString() + "px";
                     dnd_line.style.width =
@@ -178,7 +178,6 @@
                     width: dragzone_under.getBoundingClientRect().width,
                     height: dragzone_under.getBoundingClientRect().height,
                 };
-                console.log(_bounding_rect);
 
                 if (dnd_box === null) {
                     dnd_box = document.createElement("div");
@@ -249,7 +248,11 @@
                 );
 
                 let cell_parent = $cp_graph[cell_id];
-                let cell_loc = [...$pc_graph[cell_parent]].indexOf(cell_id);
+                // let cell_loc = [...$pc_graph[cell_parent]].indexOf(cell_id);
+                // check if cell is in some parent
+                if (cell_parent) {
+                    var cell_loc = [...$pc_graph[cell_parent]].indexOf(cell_id);
+                }
 
                 // insert cell after dnd_cell_id
                 let position = dnd_line.getAttribute("position");
@@ -258,7 +261,9 @@
                 let pc_graph_copy = JSON.parse(JSON.stringify($pc_graph));
 
                 // remove cell from parent
-                pc_graph_copy[cell_parent].splice(cell_loc, 1);
+                if (cell_parent) {
+                    pc_graph_copy[cell_parent].splice(cell_loc, 1);
+                }
 
                 if (position === "bottom") {
                     // insert after dnd_cell_id
@@ -283,14 +288,34 @@
                     // copy pc_graph - to enforce reactivity (`set` updates cp_graph)
                     let pc_graph_copy = JSON.parse(JSON.stringify($pc_graph));
 
+                    let cell_parent = $cp_graph[cell_id];
+
                     // remove cell from parent
-                    pc_graph_copy[$cp_graph[cell_id]].splice(
-                        [...$pc_graph[$cp_graph[cell_id]]].indexOf(cell_id),
-                        1
-                    );
+                    if (cell_parent) {
+                        pc_graph_copy[cell_parent].splice(
+                            [...$pc_graph[cell_parent]].indexOf(cell_id),
+                            1
+                        );
+                    }
 
                     // add to the end of the tissue/parent
                     pc_graph_copy[dnd_cell_id].push(cell_id);
+
+                    // update pc_graph
+                    pc_graph.set(pc_graph_copy);
+                }
+            } else {
+                // remove from parent
+                let cell_parent = $cp_graph[cell_id];
+
+                if (cell_parent) {
+                    let cell_loc = [...$pc_graph[cell_parent]].indexOf(cell_id);
+
+                    // copy pc_graph - to enforce reactivity (`set` updates cp_graph)
+                    let pc_graph_copy = JSON.parse(JSON.stringify($pc_graph));
+
+                    // remove cell from parent
+                    pc_graph_copy[cell_parent].splice(cell_loc, 1);
 
                     // update pc_graph
                     pc_graph.set(pc_graph_copy);
@@ -313,8 +338,8 @@
 
     $: if (
         $cp_graph[cell_id] &&
-        $html_elements[$cp_graph[cell_id]] &&
-        !dragging
+        !dragging &&
+        $html_elements[$cp_graph[cell_id]]
     ) {
         // find loc of cell_id in $pc_graph[$cp_graph[cell_id]]
         let cell_loc = [...$pc_graph[$cp_graph[cell_id]]].indexOf(cell_id);
@@ -334,26 +359,44 @@
             }
         } else {
             let prev_cell_id = [...$pc_graph[$cp_graph[cell_id]]][cell_loc - 1];
-            let prev_cell = $cells[$id_map[prev_cell_id]];
-            let top_pos = prev_cell.top + prev_cell.height + 5;
+            // if prev_cell_id is in pc_graph and its dragging then dont
+            if (prev_cell_id in $pc_graph) {
+                if (
+                    $html_elements[prev_cell_id].getAttribute("dragging") ===
+                    "false"
+                ) {
+                    let prev_cell = $cells[$id_map[prev_cell_id]];
+                    let top_pos = prev_cell.top + prev_cell.height + 5;
 
-            if ($cells[$id_map[cell_id]].top !== top_pos) {
-                $cells[$id_map[cell_id]].top = top_pos;
-            }
-            if ($cells[$id_map[cell_id]].left !== prev_cell.left) {
-                $cells[$id_map[cell_id]].left = prev_cell.left;
+                    if ($cells[$id_map[cell_id]].top !== top_pos) {
+                        $cells[$id_map[cell_id]].top = top_pos;
+                    }
+                    if ($cells[$id_map[cell_id]].left !== prev_cell.left) {
+                        $cells[$id_map[cell_id]].left = prev_cell.left;
+                    }
+                }
+            } else {
+                let prev_cell = $cells[$id_map[prev_cell_id]];
+                let top_pos = prev_cell.top + prev_cell.height + 5;
+
+                if ($cells[$id_map[cell_id]].top !== top_pos) {
+                    $cells[$id_map[cell_id]].top = top_pos;
+                }
+                if ($cells[$id_map[cell_id]].left !== prev_cell.left) {
+                    $cells[$id_map[cell_id]].left = prev_cell.left;
+                }
             }
         }
     }
 </script>
 
 <div
-    class="cell bg-white absolute w-fit h-fit dark:bg-vs-dark rounded-md border border-gray-500 dark:border-gray-400 shadow-md shadow-zinc-300 dark:shadow-neutral-900/50 flex overflow-visible p-1 cursor-default"
+    class="cell bg-white absolute w-fit h-fit dark:bg-vs-dark rounded-md border border-gray-500 dark:border-gray-400 shadow-md shadow-zinc-300 dark:shadow-neutral-900/50 flex overflow-visible cursor-default"
     bind:this={cell_div}
     style="
     top: {drag_cell_pos.y ? drag_cell_pos.y : $cells[$id_map[cell_id]].top}px;
     left: {drag_cell_pos.x ? drag_cell_pos.x : $cells[$id_map[cell_id]].left}px;
-    z-index: {dragging ? 99 : 0};
+    z-index: {dragging ? 1000 : 0};
     "
     on:mousedown={drag_mousedown}
     on:mouseup={drag_mouseup}

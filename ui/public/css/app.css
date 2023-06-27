@@ -611,6 +611,12 @@ video {
 .h-full {
   height: 100%;
 }
+.h-\[100px\] {
+  height: 100px;
+}
+.h-1 {
+  height: 0.25rem;
+}
 .min-h-\[25px\] {
   min-height: 25px;
 }
@@ -656,6 +662,9 @@ video {
 }
 .w-full {
   width: 100%;
+}
+.w-\[30px\] {
+  width: 30px;
 }
 .min-w-\[200px\] {
   min-width: 200px;

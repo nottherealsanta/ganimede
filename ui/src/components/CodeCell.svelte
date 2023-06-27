@@ -12,12 +12,17 @@
     import PrimeButton from "./cell_components/PrimeButton.svelte";
 </script>
 
-<div>
-    <div class="flex items-start w-auto h-auto justify-start align-middle">
+<div class="flex flex-row p-1">
+    <div class="h-full w-fit pr-1">
         <PrimeButton {cell_id} />
-        <CodeEditor {cell_id} bind:focus />
     </div>
-    {#if cell.outputs.length > 0 || cell.state == "running"}
-        <Outputs {cell_id} />
-    {/if}
+    <div
+        class="flex flex-col items-start w-auto h-auto justify-start align-middle"
+    >
+        <CodeEditor {cell_id} bind:focus />
+
+        {#if cell.outputs.length > 0 || cell.state == "running"}
+            <Outputs {cell_id} />
+        {/if}
+    </div>
 </div>
