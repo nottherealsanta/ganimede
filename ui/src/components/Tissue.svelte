@@ -25,12 +25,12 @@
         tissue_height =
             $pc_graph[cell_id].reduce((acc, child_cell_id) => {
                 return acc + $cells[$id_map[child_cell_id]].height;
-            }, 0) + 35;
+            }, 0) + 50;
         // max of clientWidth of all children = tissue_width
         tissue_width =
             $pc_graph[cell_id].reduce((acc, child_cell_id) => {
                 return Math.max(acc, $cells[$id_map[child_cell_id]].width);
-            }, 0) + 50;
+            }, 0) + 40;
     }
 
     onMount(() => {
@@ -42,6 +42,8 @@
     });
 
     let dragging = false;
+    let dragging_began = false;
+
     let dh_clicked = {
         x: 0,
         y: 0,
@@ -73,6 +75,7 @@
     }
     function drag_handle_mousemove(e) {
         if (dragging) {
+            dragging_began = true;
             e.preventDefault();
             e.stopPropagation();
 
@@ -200,8 +203,8 @@
                         dragzone_under.offsetLeft +
                         dragzone_under_tissue.offsetLeft +
                         2,
-                    width: dragzone_under.getBoundingClientRect().width,
-                    height: dragzone_under.getBoundingClientRect().height,
+                    width: dragzone_under.getBoundingClientRect().width + 4,
+                    height: dragzone_under.getBoundingClientRect().height + 2,
                 };
 
                 if (dnd_box === null) {
@@ -248,8 +251,7 @@
     }
 
     function drag_handle_mouseup(e) {
-        if (dragging) {
-            dragging = false;
+        if (dragging && dragging_began) {
             // TODO: move snap separetly
 
             dh_clicked = {
@@ -360,6 +362,8 @@
             // sync
             // sync_cell_properties(cell_id);
         }
+        dragging = false;
+        dragging_began = false;
     }
 
     $: if (
@@ -392,7 +396,7 @@
                 !(prev_cell_id in $pc_graph)
             ) {
                 let prev_cell = $cells[$id_map[prev_cell_id]];
-                let top_pos = prev_cell.top + prev_cell.height + 5;
+                let top_pos = prev_cell.top + prev_cell.height + 10;
 
                 if ($cells[$id_map[cell_id]].top !== top_pos) {
                     $cells[$id_map[cell_id]].top = top_pos;
@@ -410,7 +414,7 @@
 
 <!-- top:{cell.top}px; left:{cell.left}px;  -->
 <div
-    class="tissue absolute flex flex-row h-fit w-fit bg-gray-50/10 dark:bg-neutral-800/10 rounded-md border-2 border-[#212529] dark:border-gray-200 shadow-md shadow-zinc-300 dark:shadow-neutral-900/50 overflow-visible cursor-default"
+    class="tissue absolute flex flex-row h-fit w-fit rounded-md border-2 border-oli-800 dark:border-oli-300 shadow-md shadow-zinc-300 dark:shadow-neutral-900/50 overflow-visible cursor-default"
     style="
     top: {$cells[$id_map[cell_id]].top}px;
     left: {$cells[$id_map[cell_id]].left}px;
@@ -422,7 +426,7 @@
 >
     <!-- drag handle (left) -->
     <div
-        class="w-[30px] pt-1 flex flex-col bg-transparent border-r-2 border-[#212529] dark:border-gray-200 fill-neutral-500 dark:fill-neutral-400 items-center justify-center"
+        class="w-[30px] pt-1 flex flex-col bg-oli-50 dark:bg-oli-700 rounded-tl-lg rounded-bl-lg border-r-2 border-oli-900 dark:border-oli-300 fill-neutral-500 dark:fill-neutral-400 items-center justify-center"
     >
         <PrimeButton {cell_id} />
         <div
@@ -434,7 +438,7 @@
     <div class="flex flex-col w-full h-full">
         <!-- title -->
         <div
-            class="flex flex-row bg-neutral-100/30 dark:bg-neutral-400/30 p-1 justify-start items-start cursor-grab active:cursor-grabbing"
+            class="flex flex-row bg-oli-50 dark:bg-oli-700 p-1 justify-start rounded items-start cursor-grab active:cursor-grabbing"
             id="title"
         >
             <MarkdownCell {cell_id} is_tissue={true} />
@@ -442,7 +446,7 @@
 
         <div
             id="dropzone"
-            class="dropzone bg-transparent border-t-2 border-[#212529] dark:border-gray-200"
+            class="dropzone bg-transparent border-t-2 border-oli-800 dark:border-oli-300"
             style="width:{tissue_width}px; height:{tissue_height}px; 
             min-width:{tissue_div
                 ? tissue_div.querySelector('#title').clientWidth
@@ -451,8 +455,8 @@
         />
     </div>
 </div>
-
-<!-- {#if $pc_graph[cell_id]}
+<!-- 
+{#if $pc_graph[cell_id]}
     {#each $pc_graph[cell_id] as child_cell_id}
         {#if $cells[$id_map[child_cell_id]].type === "markdown" && child_cell_id in $pc_graph}
             <svelte:self cell_id={child_cell_id} />

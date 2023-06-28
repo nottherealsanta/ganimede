@@ -11,7 +11,7 @@
 </script>
 
 <div
-    class="w-fit h-auto bg-transparent hover:bg-gray-100 dark:hover:bg-zinc-700 pl-1 pr-1 pt-0.5 pb-0.5 rounded whitespace-pre-line overflow-hidden text-xs select-text"
+    class="w-fit h-auto bg-transparent hover:bg-gray-100 dark:hover:bg-zinc-700 pl-1 pr-1 pt-0.5 pb-0.5 rounded whitespace-pre-line overflow-hidden text-xs select-text dark:text-white"
 >
     {output["text"].join(" ")}
 </div>

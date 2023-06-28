@@ -44,6 +44,7 @@
             e.stopPropagation();
             e.preventDefault();
             dragging = true;
+            dragging_began = false;
             dh_clicked = {
                 x: $mouse_pos.x - $cells[$id_map[cell_id]].left,
                 y: $mouse_pos.y - $cells[$id_map[cell_id]].top,
@@ -247,9 +248,20 @@
             if (dnd_line) {
                 let dnd_cell_id = dnd_line.getAttribute("cell_id");
                 let dnd_parent = $cp_graph[dnd_cell_id];
-                let dnd_cell_loc = [...$pc_graph[dnd_parent]].indexOf(
-                    dnd_cell_id
-                );
+                let dnd_cell_loc = null;
+                if (dnd_parent) {
+                    dnd_cell_loc = [...$pc_graph[dnd_parent]].indexOf(
+                        dnd_cell_id
+                    );
+                } else {
+                    dnd_cell_loc = {
+                        x: $cells[$id_map[dnd_cell_id]].left,
+                        y:
+                            $cells[$id_map[dnd_cell_id]].top +
+                            $cells[$id_map[dnd_cell_id]].height +
+                            10,
+                    };
+                }
 
                 let cell_parent = $cp_graph[cell_id];
                 // let cell_loc = [...$pc_graph[cell_parent]].indexOf(cell_id);
@@ -270,15 +282,31 @@
                 }
 
                 if (position === "bottom") {
-                    // insert after dnd_cell_id
-                    pc_graph_copy[dnd_parent].splice(
-                        dnd_cell_loc + 1,
-                        0,
-                        cell_id
-                    );
+                    if (dnd_parent) {
+                        // insert after dnd_cell_id
+                        pc_graph_copy[dnd_parent].splice(
+                            dnd_cell_loc + 1,
+                            0,
+                            cell_id
+                        );
+                    } else {
+                        // dragging onto a non-parent cell
+                        ($cells[$id_map[cell_id]].top = dnd_cell_loc.y),
+                            ($cells[$id_map[cell_id]].left = dnd_cell_loc.x);
+                    }
                 } else if (position === "top") {
-                    // insert before dnd_cell_id
-                    pc_graph_copy[dnd_parent].splice(dnd_cell_loc, 0, cell_id);
+                    if (dnd_parent) {
+                        // insert after dnd_cell_id
+                        pc_graph_copy[dnd_parent].splice(
+                            dnd_cell_loc,
+                            0,
+                            cell_id
+                        );
+                    } else {
+                        // dragging onto a non-parent cell
+                        ($cells[$id_map[cell_id]].top = dnd_cell_loc.y),
+                            ($cells[$id_map[cell_id]].left = dnd_cell_loc.x);
+                    }
                 }
 
                 // update pc_graph
@@ -313,7 +341,6 @@
                 let cell_parent = $cp_graph[cell_id];
 
                 // if cell is in some parent
-                // if there is any movement
                 if (cell_parent) {
                     let cell_loc = [...$pc_graph[cell_parent]].indexOf(cell_id);
 
@@ -339,7 +366,6 @@
 
             // sync
             // sync_cell_properties(cell_id);
-            console.log("dragging mouse up end");
         }
         dragging_began = false;
         dragging = false;
@@ -376,7 +402,7 @@
                 !(prev_cell_id in $pc_graph)
             ) {
                 let prev_cell = $cells[$id_map[prev_cell_id]];
-                let top_pos = prev_cell.top + prev_cell.height + 5;
+                let top_pos = prev_cell.top + prev_cell.height + 10;
 
                 if ($cells[$id_map[cell_id]].top !== top_pos) {
                     $cells[$id_map[cell_id]].top = top_pos;
@@ -387,15 +413,19 @@
             }
         }
     }
+
+    // NewCellToolbar
+    import NewCellToolbar from "../components/cell_components/new_cell_toolbar_components/NewCellToolbar.svelte";
 </script>
 
 <div
-    class="cell bg-white absolute w-fit h-fit dark:bg-vs-dark rounded-md border border-gray-500 dark:border-gray-400 shadow-md shadow-zinc-300 dark:shadow-neutral-900/50 flex overflow-visible cursor-default"
+    class="cell bg-oli dark:bg-oli-800 absolute w-fit h-fit rounded-md border border-oli-500 dark:border-oli-500 shadow-md shadow-oli-300 dark:shadow-neutral-900/50 flex overflow-visible cursor-default"
     bind:this={cell_div}
     style="
     top: {drag_cell_pos.y ? drag_cell_pos.y : $cells[$id_map[cell_id]].top}px;
     left: {drag_cell_pos.x ? drag_cell_pos.x : $cells[$id_map[cell_id]].left}px;
     z-index: {dragging ? 1000 : 0};
+    cursor: {dragging ? 'grabbing' : 'default'};
     "
     on:mousedown={drag_mousedown}
     on:mouseup={drag_mouseup}
@@ -409,7 +439,7 @@
             <MarkdownCell {cell_id} />
         {/if}
     </div>
-    <!-- <NewCellToolbar {cell_id} /> -->
+    <NewCellToolbar {cell_id} />
 </div>
 
 <svelte:window on:mousemove={drag_mousemove} on:mouseup={drag_mouseup} />

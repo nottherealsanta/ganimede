@@ -39,18 +39,11 @@
     });
 
     // import ZoomToolBar from "../components/canvas_components/zoom.svelte";
-
-    async function interrupt_kernel() {
-        send_message({
-            channel: "kernel",
-            method: "interrupt",
-            message: {},
-        });
-    }
+    import ToolbarCanvas from "./canvas_components/ToolbarCanvas.svelte";
 </script>
 
 <div
-    class="canvas bg-zinc-100 dark:bg-neutral-800 relative overflow-auto"
+    class="canvas bg-oli dark:bg-oli-800 relative overflow-auto"
     style="
         height: 10000px; 
         width: 10000px; 
@@ -58,7 +51,7 @@
         transform-origin: 0 0 ;
         background-image: radial-gradient(
             circle at 0px 0px,
-            rgb(126, 123, 119) 000 1px,
+            rgb(112, 112, 112) 000 1px,
             transparent 0
         );
         background-size: 25px 25px;
@@ -77,17 +70,4 @@
 </div>
 
 <!-- <ZoomToolBar /> -->
-
-<div
-    class="fixed flex flex-row bottom-5 w-[500px] h-10 left-[300px] p-[4px] bg-neutral-100 dark:bg-neutral-800 border rounded border-neutral-300 dark:border-neutral-700 justify-left align-middle pointer-events-auto"
->
-    <button
-        class="h-full w-8 flex align-middle justify-center items-center"
-        on:click={interrupt_kernel}
-        alt="Interrupt Kernel"
-    >
-        <svg width="10" height="10">
-            <rect width="10" height="10" class="fill-current text-gray-500" />
-        </svg>
-    </button>
-</div>
+<ToolbarCanvas />

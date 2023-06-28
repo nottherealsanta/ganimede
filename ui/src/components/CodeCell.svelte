@@ -12,8 +12,8 @@
     import PrimeButton from "./cell_components/PrimeButton.svelte";
 </script>
 
-<div class="flex flex-row p-1">
-    <div class="h-full w-fit pr-1">
+<div class="flex flex-row p-0.5">
+    <div class="flex h-full w-[30px] pt-0.5 pr-0.5 items-center justify-center">
         <PrimeButton {cell_id} />
     </div>
     <div

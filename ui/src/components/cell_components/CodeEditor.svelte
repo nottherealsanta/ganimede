@@ -176,10 +176,8 @@
 </script>
 
 <div
-    class="h-fit cell-input overflow-hidden relative border rounded border-zinc-100 dark:border-neutral-800 bg-transparent align-middle cursor-text pointer-events-auto"
-    style=" min-height: 25px; width:100%;        {focus
-        ? 'border-left: solid 2px rgba(73, 176, 249);'
-        : 'border-left: solid 2px rgba(73, 73, 73,0.1);'}"
+    class="h-fit dark:bg-vs-dark cell-input py-1 overflow-hidden relative border rounded border-zinc-300 dark:border-neutral-600 bg-transparent align-middle cursor-text pointer-events-auto"
+    style=" min-height: 25px; width:100%;        "
     id="cell-input"
     bind:this={div}
 >
