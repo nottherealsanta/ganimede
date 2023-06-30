@@ -196,7 +196,7 @@
                         _bounding_rect.width.toString() + "px";
                     dnd_box.style.height =
                         _bounding_rect.height.toString() + "px";
-                    dnd_box.style.backgroundColor = "#29BFFF11";
+                    dnd_box.style.backgroundColor = "#29BFFF09";
                     dnd_box.style.border = "2px solid #29BFFF";
                     dnd_box.style.borderRadius = "0px 0px 5px 0px";
                     dnd_box.style.pointerEvents = "none";
@@ -248,20 +248,6 @@
             if (dnd_line) {
                 let dnd_cell_id = dnd_line.getAttribute("cell_id");
                 let dnd_parent = $cp_graph[dnd_cell_id];
-                let dnd_cell_loc = null;
-                if (dnd_parent) {
-                    dnd_cell_loc = [...$pc_graph[dnd_parent]].indexOf(
-                        dnd_cell_id
-                    );
-                } else {
-                    dnd_cell_loc = {
-                        x: $cells[$id_map[dnd_cell_id]].left,
-                        y:
-                            $cells[$id_map[dnd_cell_id]].top +
-                            $cells[$id_map[dnd_cell_id]].height +
-                            10,
-                    };
-                }
 
                 let cell_parent = $cp_graph[cell_id];
                 // let cell_loc = [...$pc_graph[cell_parent]].indexOf(cell_id);
@@ -281,32 +267,31 @@
                     pc_graph_copy[cell_parent].splice(cell_loc, 1);
                 }
 
-                if (position === "bottom") {
-                    if (dnd_parent) {
-                        // insert after dnd_cell_id
-                        pc_graph_copy[dnd_parent].splice(
-                            dnd_cell_loc + 1,
-                            0,
-                            cell_id
-                        );
-                    } else {
-                        // dragging onto a non-parent cell
-                        ($cells[$id_map[cell_id]].top = dnd_cell_loc.y),
-                            ($cells[$id_map[cell_id]].left = dnd_cell_loc.x);
+                // add to next to dnd_cell_id
+                let dnd_cell_loc_pos;
+                if (dnd_parent) {
+                    if (position === "bottom") {
+                        dnd_cell_loc_pos =
+                            pc_graph_copy[dnd_parent].indexOf(dnd_cell_id) + 1;
+                    } else if (position === "top") {
+                        dnd_cell_loc_pos =
+                            pc_graph_copy[dnd_parent].indexOf(dnd_cell_id);
                     }
-                } else if (position === "top") {
-                    if (dnd_parent) {
-                        // insert after dnd_cell_id
-                        pc_graph_copy[dnd_parent].splice(
-                            dnd_cell_loc,
-                            0,
-                            cell_id
-                        );
-                    } else {
-                        // dragging onto a non-parent cell
-                        ($cells[$id_map[cell_id]].top = dnd_cell_loc.y),
-                            ($cells[$id_map[cell_id]].left = dnd_cell_loc.x);
-                    }
+                    pc_graph_copy[dnd_parent].splice(
+                        dnd_cell_loc_pos,
+                        0,
+                        cell_id
+                    );
+                } else {
+                    // dragging onto a non-parent cell
+                    // TODO: now only snaps to bottom, make it snap to top as well
+                    $cells[$id_map[cell_id]].left =
+                        $cells[$id_map[dnd_cell_id]].left;
+
+                    $cells[$id_map[cell_id]].top =
+                        $cells[$id_map[dnd_cell_id]].top +
+                        $cells[$id_map[dnd_cell_id]].height +
+                        10;
                 }
 
                 // update pc_graph
@@ -385,7 +370,7 @@
                 $html_elements[$cp_graph[cell_id]].querySelector("#title")
                     .clientHeight +
                 10;
-            let left_pos = parent_cell.left + 25 + 12;
+            let left_pos = parent_cell.left + 20;
             if ($cells[$id_map[cell_id]].top !== top_pos) {
                 $cells[$id_map[cell_id]].top = top_pos;
             }
@@ -424,8 +409,9 @@
     style="
     top: {drag_cell_pos.y ? drag_cell_pos.y : $cells[$id_map[cell_id]].top}px;
     left: {drag_cell_pos.x ? drag_cell_pos.x : $cells[$id_map[cell_id]].left}px;
-    z-index: {dragging ? 1000 : 0};
+    z-index: {dragging ? 9999 : 0};
     cursor: {dragging ? 'grabbing' : 'default'};
+    
     "
     on:mousedown={drag_mousedown}
     on:mouseup={drag_mouseup}
@@ -440,6 +426,12 @@
         {/if}
     </div>
     <NewCellToolbar {cell_id} />
+    <!-- <div
+        class="absolute top-0 left-0 w-full h-full"
+        style="pointer-events: none;"
+    >
+        {cell_id}
+    </div> -->
 </div>
 
 <svelte:window on:mousemove={drag_mousemove} on:mouseup={drag_mouseup} />

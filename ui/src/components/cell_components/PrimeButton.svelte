@@ -75,9 +75,9 @@
         {#if hover}
             <svg
                 viewBox="0 0 20 20"
-                fill="none"
+                fill="currentColor"
                 xmlns="http://www.w3.org/2000/svg"
-                stroke="black"
+                stroke="currentColor"
                 stroke-width="0.5"
             >
                 <rect x="6" y="6" width="7" height="7" />
@@ -110,9 +110,9 @@
         {#if hover}
             <svg
                 viewBox="0 0 20 20"
-                fill="none"
+                fill="currentColor"
                 xmlns="http://www.w3.org/2000/svg"
-                stroke="black"
+                stroke="currentColor"
                 stroke-width="0.5"
             >
                 <rect x="6" y="6" width="7" height="7" />

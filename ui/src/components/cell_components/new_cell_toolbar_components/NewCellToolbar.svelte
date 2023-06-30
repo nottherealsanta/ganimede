@@ -58,7 +58,7 @@
         </div>
     {:else}
         <div
-            class="absolute w-3 h-3 rounded-full bg-oli-50/50 dark:bg-oli-700/50 flex justify-center items-center cursor-pointer fill-oli-200 dark:fill-oli-500 stroke-oli-600/20 dark:stroke-oli-50/20 stroke-2"
+            class="absolute w-3 h-3 rounded-full bg-oli-50/50 dark:bg-oli-700/50 flex justify-center items-center cursor-pointer fill-oli-200 dark:fill-oli-500 stroke-oli-600/20 dark:stroke-oli-100/20 stroke-2"
             id="new-cell-toolbar"
             on:click|stopPropagation={connector_click}
             on:keydown={() => {}}

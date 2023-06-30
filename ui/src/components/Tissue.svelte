@@ -98,8 +98,10 @@
                     el.classList.contains("cell") &&
                     el.getAttribute("cell_id") !== cell_id
             )[0];
-            let tissue_under = elements_under.filter((el) =>
-                el.classList.contains("tissue")
+            let tissue_under = elements_under.filter(
+                (el) =>
+                    el.classList.contains("tissue") &&
+                    el.getAttribute("cell_id") !== cell_id
             )[0];
             const dragzone_under = elements_under.filter((el) =>
                 el.classList.contains("dropzone")
@@ -249,7 +251,6 @@
             }
         }
     }
-
     function drag_handle_mouseup(e) {
         if (dragging && dragging_began) {
             // TODO: move snap separetly
@@ -294,16 +295,31 @@
                     pc_graph_copy[cell_parent].splice(cell_loc, 1);
                 }
 
-                if (position === "bottom") {
-                    // insert after dnd_cell_id
+                // add to next to dnd_cell_id
+                let dnd_cell_loc_pos;
+                if (dnd_parent) {
+                    if (position === "bottom") {
+                        dnd_cell_loc_pos =
+                            pc_graph_copy[dnd_parent].indexOf(dnd_cell_id) + 1;
+                    } else if (position === "top") {
+                        dnd_cell_loc_pos =
+                            pc_graph_copy[dnd_parent].indexOf(dnd_cell_id);
+                    }
                     pc_graph_copy[dnd_parent].splice(
-                        dnd_cell_loc + 1,
+                        dnd_cell_loc_pos,
                         0,
                         cell_id
                     );
-                } else if (position === "top") {
-                    // insert before dnd_cell_id
-                    pc_graph_copy[dnd_parent].splice(dnd_cell_loc, 0, cell_id);
+                } else {
+                    // dragging onto a non-parent cell
+                    // TODO: now only snaps to bottom, make it snap to top as well
+                    $cells[$id_map[cell_id]].left =
+                        $cells[$id_map[dnd_cell_id]].left;
+
+                    $cells[$id_map[cell_id]].top =
+                        $cells[$id_map[dnd_cell_id]].top +
+                        $cells[$id_map[dnd_cell_id]].height +
+                        10;
                 }
 
                 // update pc_graph
@@ -380,7 +396,7 @@
                 $html_elements[$cp_graph[cell_id]].querySelector("#title")
                     .clientHeight +
                 10;
-            let left_pos = parent_cell.left + 25 + 12;
+            let left_pos = parent_cell.left + 10;
             if ($cells[$id_map[cell_id]].top !== top_pos) {
                 $cells[$id_map[cell_id]].top = top_pos;
             }
@@ -414,7 +430,7 @@
 
 <!-- top:{cell.top}px; left:{cell.left}px;  -->
 <div
-    class="tissue absolute flex flex-row h-fit w-fit rounded-md border-2 border-oli-800 dark:border-oli-300 shadow-md shadow-zinc-300 dark:shadow-neutral-900/50 overflow-visible cursor-default"
+    class="tissue absolute flex flex-row h-fit w-fit rounded-md border-2 border-oli-800 dark:border-oli-400 shadow-md shadow-zinc-300 dark:shadow-neutral-900/50 overflow-visible cursor-default"
     style="
     top: {$cells[$id_map[cell_id]].top}px;
     left: {$cells[$id_map[cell_id]].left}px;
@@ -426,9 +442,8 @@
 >
     <!-- drag handle (left) -->
     <div
-        class="w-[30px] pt-1 flex flex-col bg-oli-50 dark:bg-oli-700 rounded-tl-lg rounded-bl-lg border-r-2 border-oli-900 dark:border-oli-300 fill-neutral-500 dark:fill-neutral-400 items-center justify-center"
+        class="w-[10px] pt-1 flex flex-col bg-oli-50 dark:bg-oli-600 rounded-tl-lg rounded-bl-lg border-r-2 border-oli-900 dark:border-oli-400 fill-neutral-500 dark:fill-neutral-400 items-center justify-center"
     >
-        <PrimeButton {cell_id} />
         <div
             class="w-full h-full cursor-grab active:cursor-grabbing"
             on:mousedown={drag_handle_mousedown}
@@ -438,15 +453,16 @@
     <div class="flex flex-col w-full h-full">
         <!-- title -->
         <div
-            class="flex flex-row bg-oli-50 dark:bg-oli-700 p-1 justify-start rounded items-start cursor-grab active:cursor-grabbing"
+            class="flex flex-row bg-oli-50 dark:bg-oli-700 p-1 items-center justify-center rounded cursor-grab active:cursor-grabbing"
             id="title"
         >
+            <PrimeButton {cell_id} />
             <MarkdownCell {cell_id} is_tissue={true} />
         </div>
 
         <div
             id="dropzone"
-            class="dropzone bg-transparent border-t-2 border-oli-800 dark:border-oli-300"
+            class="dropzone bg-transparent border-t-2 border-oli-800 dark:border-oli-400"
             style="width:{tissue_width}px; height:{tissue_height}px; 
             min-width:{tissue_div
                 ? tissue_div.querySelector('#title').clientWidth
@@ -454,9 +470,15 @@
             {cell_id}
         />
     </div>
+    <!-- <div
+        class="absolute top-0 left-0 w-full h-full"
+        style="pointer-events: none;"
+    >
+        {cell_id}
+    </div> -->
 </div>
-<!-- 
-{#if $pc_graph[cell_id]}
+
+<!-- {#if $pc_graph[cell_id]}
     {#each $pc_graph[cell_id] as child_cell_id}
         {#if $cells[$id_map[child_cell_id]].type === "markdown" && child_cell_id in $pc_graph}
             <svelte:self cell_id={child_cell_id} />

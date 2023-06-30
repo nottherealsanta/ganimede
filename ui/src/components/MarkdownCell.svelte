@@ -42,7 +42,7 @@
     {/if}
     <div
         class="{is_tissue ? 'w-full h-full' : 'w-fit h-fit'} 
-        bg-oli dark:bg-vs-dark w-fit h-fit min-w-[200px] min-h-[25px] max-w-[616px] text-black dark:text-white border-l-2 border-black dark:border-white cursor-text pointer-events-auto"
+        bg-oli dark:bg-vs-dark w-fit h-fit min-w-[200px] min-h-[25px] max-w-[616px] text-oli-800 dark:text-oli-200 border-l-2 border-black dark:border-white cursor-text pointer-events-auto"
         on:mousedown={(e) => e.stopPropagation()}
         style={is_tissue ? "background-color:transparent;" : ""}
         use:editor
