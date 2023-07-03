@@ -33,7 +33,7 @@
                 $cells[$id_map[cell_id]].left = left;
             }
         }
-        window.scrollTo(4500, 4800);
+        window.scrollTo(4900, 4900);
     }
 
     // wait for $cell to be defined
@@ -105,7 +105,6 @@
         pc_graph_topological_ordering = topological_sort(
             JSON.parse(JSON.stringify($pc_graph))
         );
-        // console.log(pc_graph_topological_ordering);
     }
 </script>
 

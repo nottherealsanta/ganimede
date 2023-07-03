@@ -11,14 +11,14 @@
 </script>
 
 <div
-    class="fixed flex flex-row self-center top-2 items-center w-[500px] h-8 pl-6 bg-oli dark:bg-neutral-800 border rounded-full border-neutral-300 dark:border-neutral-700 justify-left align-middle pointer-events-auto"
+    class="opacity-40 hover:opacity-100 fixed flex flex-row self-center top-2 align-center items-center w-[500px] h-8 pl-6 bg-oli dark:bg-neutral-800 border rounded-full border-neutral-300 dark:border-neutral-700 justify-left align-middle pointer-events-auto"
     style="
     left: 50%;
     transform: translate(-50%, 50%);
     "
 >
     <button
-        class="h-6 w-6 flex align-middle justify-center items-center self-center hover:bg-oli-600/10 active:bg-neutral-200/20 rounded-sm border border-oli-100 dark:border-oli-800 text-oli-400 dark:hover:bg-oli-600 dark:hover:text-white dark:active:bg-oli-600 dark:active:text-oli"
+        class="h-fit w-fit m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-600/50 active:bg-neutral-200/20 rounded-sm border border-oli-100 dark:border-oli-800 text-oli-400 dark:hover:bg-oli-600 dark:hover:text-white dark:active:bg-oli-600 dark:active:text-oli"
         on:click={interrupt_kernel}
         alt="Interrupt Kernel"
     >

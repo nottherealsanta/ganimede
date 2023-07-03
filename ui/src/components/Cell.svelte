@@ -369,8 +369,8 @@
                 parent_cell.top +
                 $html_elements[$cp_graph[cell_id]].querySelector("#title")
                     .clientHeight +
-                10;
-            let left_pos = parent_cell.left + 20;
+                7;
+            let left_pos = parent_cell.left + 15;
             if ($cells[$id_map[cell_id]].top !== top_pos) {
                 $cells[$id_map[cell_id]].top = top_pos;
             }
@@ -387,7 +387,7 @@
                 !(prev_cell_id in $pc_graph)
             ) {
                 let prev_cell = $cells[$id_map[prev_cell_id]];
-                let top_pos = prev_cell.top + prev_cell.height + 10;
+                let top_pos = prev_cell.top + prev_cell.height + 8;
 
                 if ($cells[$id_map[cell_id]].top !== top_pos) {
                     $cells[$id_map[cell_id]].top = top_pos;
@@ -404,7 +404,7 @@
 </script>
 
 <div
-    class="cell bg-oli dark:bg-oli-800 absolute w-fit h-fit rounded-md border border-oli-500 dark:border-oli-500 shadow-md shadow-oli-300 dark:shadow-neutral-900/50 flex overflow-visible cursor-default"
+    class="cell rounded-sm bg-oli dark:bg-oli-800 absolute w-fit h-fit border border-oli-300 dark:border-oli-500 shadow-md shadow-oli-200/50 dark:shadow-neutral-900/50 flex overflow-visible cursor-default"
     bind:this={cell_div}
     style="
     top: {drag_cell_pos.y ? drag_cell_pos.y : $cells[$id_map[cell_id]].top}px;

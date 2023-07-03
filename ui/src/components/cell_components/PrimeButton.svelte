@@ -40,7 +40,7 @@
 </script>
 
 <div
-    class="flex flex-none bg-transparent hover:bg-neutral-100 dark:hover:bg-neutral-800 active:bg-neutral-200 dark:active:bg-neutral-700 w-6 h-6 p-0 m-0 border border-radius border-zinc-800/10 dark:border-neutral-500 rounded items-center justify-center stroke-black dark:stroke-white fill-black dark:fill-white cursor-pointer pointer-events-auto"
+    class="flex flex-none bg-transparent hover:bg-oli-100 dark:hover:bg-oli-800 active:bg-oli-200 dark:active:bg-oli-700 w-6 h-6 p-0 m-0 border border-radius border-zinc-800/10 dark:border-oli-500 rounded-sm items-center justify-center stroke-black dark:stroke-white fill-black dark:fill-white cursor-pointer pointer-events-auto"
     on:mousedown|stopPropagation={(e) => {
         primary_button_click();
     }}
@@ -110,7 +110,7 @@
         {#if hover}
             <svg
                 viewBox="0 0 20 20"
-                fill="currentColor"
+                fill="none"
                 xmlns="http://www.w3.org/2000/svg"
                 stroke="currentColor"
                 stroke-width="0.5"

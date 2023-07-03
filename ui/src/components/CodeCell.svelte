@@ -13,13 +13,19 @@
 </script>
 
 <div class="flex flex-row p-0.5">
-    <div class="flex h-full w-[30px] pt-0.5 pr-0.5 items-center justify-center">
+    <div class="flex h-full w-fit pt-0.25 pr-0.5 items-center justify-center">
         <PrimeButton {cell_id} />
     </div>
     <div
         class="flex flex-col items-start w-auto h-auto justify-start align-middle"
     >
         <CodeEditor {cell_id} bind:focus />
+
+        <div
+            class="flex h-2 w-fit ml-auto text-[9px] text-neutral-400 dark:text-neutral-500 italic"
+        >
+            <div class="h-full w-fit flex items-center">python</div>
+        </div>
 
         {#if cell.outputs.length > 0 || cell.state == "running"}
             <Outputs {cell_id} />

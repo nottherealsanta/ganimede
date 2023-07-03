@@ -28,7 +28,7 @@
 </script>
 
 <div
-    class="flex items-start h-auto w-full justify-center align-stretch overflow-y-auto pt-0.5 pointer-events-none"
+    class="flex bg-blue-50/20 items-start h-auto w-full justify-center align-stretch overflow-y-auto pt-0.5 pointer-events-none"
     style=" max-height: 616px; 
     min-height: {last_height}px; 
     {cell.state == 'queued' ? 'opacity: 0.5' : ''}
@@ -39,7 +39,7 @@
     <!-- <div class="flex h-full w-6" style="margin-right:7px" /> -->
     <div
         class="w-full h-auto bg-transparent px-1 pl-[6px] py-0.5 shadow-inner shadow-oli-100/50 dark:shadow-vs-dark
-             border border-oli-200 dark:border-neutral-600 rounded float-bottom mt-0.25 cursor-default pointer-events-auto select-text"
+             border border-oli-200 dark:border-neutral-600 rounded-sm float-bottom mt-0.25 cursor-default pointer-events-auto select-text"
     >
         {#if outputs}
             {#each outputs as output}

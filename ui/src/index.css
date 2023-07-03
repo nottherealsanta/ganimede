@@ -160,8 +160,8 @@ h3,
 h4,
 h5,
 h6 {
-	margin-block-start: 5px;
-	margin-block-end: 5px;
+	margin-block-start: 0px;
+	margin-block-end: 0px;
 }
 
 

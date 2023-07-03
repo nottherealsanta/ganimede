@@ -16,7 +16,7 @@ class RouteManager:
             return FileResponse(f"{self.ui_dir}/index.html")
 
         async def global_css(request: Request):
-            return FileResponse(f"{self.ui_dir}/public/global.css")
+            return FileResponse(f"{self.ui_dir}/src/index.css")
 
         async def bundle_js(request: Request):
             return FileResponse(f"{self.ui_dir}/src/main.js")
@@ -35,7 +35,7 @@ class RouteManager:
 
         self.app.add_route("/", index, methods=["GET"], name="index")
         self.app.add_route(
-            "/global.css", global_css, methods=["GET"], name="global_css"
+            "/src/index.css", global_css, methods=["GET"], name="global_css"
         )
         self.app.add_route(
             "/src/main.js", bundle_js, methods=["GET"], name="main_js"

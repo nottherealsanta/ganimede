@@ -21,16 +21,17 @@
     let tissue_width = 0;
 
     // sum of clienteHeight of all children = tissue_height
-    $: if ($pc_graph[cell_id]) {
-        tissue_height =
-            $pc_graph[cell_id].reduce((acc, child_cell_id) => {
-                return acc + $cells[$id_map[child_cell_id]].height;
-            }, 0) + 50;
+    $: if ($pc_graph[cell_id] && $html_elements[cell_id]) {
+        tissue_height = $pc_graph[cell_id].reduce((acc, child_cell_id) => {
+            return acc + $html_elements[child_cell_id].clientHeight + 15;
+        }, 0);
         // max of clientWidth of all children = tissue_width
-        tissue_width =
-            $pc_graph[cell_id].reduce((acc, child_cell_id) => {
-                return Math.max(acc, $cells[$id_map[child_cell_id]].width);
-            }, 0) + 40;
+        tissue_width = $pc_graph[cell_id].reduce((acc, child_cell_id) => {
+            return Math.max(
+                acc,
+                $html_elements[child_cell_id].clientWidth + 20
+            );
+        }, 0);
     }
 
     onMount(() => {
@@ -110,6 +111,7 @@
                 ? dragzone_under.parentNode.parentNode
                 : undefined;
 
+            // if elements_under has dragzone that's cellid = cell_id
             if (cell_under == undefined && tissue_under !== undefined) {
                 if (
                     (dragzone_under !== undefined &&
@@ -120,6 +122,17 @@
                     if (tissue_under.getAttribute("cell_id") !== cell_id) {
                         cell_under = tissue_under;
                     }
+                }
+            }
+            // when moving fast, the tissue might want to be next to it's children
+            if (cell_under !== undefined) {
+                if (
+                    $pc_graph[cell_id] &&
+                    $pc_graph[cell_id].includes(
+                        cell_under.getAttribute("cell_id")
+                    )
+                ) {
+                    cell_under = undefined;
                 }
             }
 
@@ -273,9 +286,6 @@
             if (dnd_line) {
                 let dnd_cell_id = dnd_line.getAttribute("cell_id");
                 let dnd_parent = $cp_graph[dnd_cell_id];
-                let dnd_cell_loc = [...$pc_graph[dnd_parent]].indexOf(
-                    dnd_cell_id
-                );
 
                 let cell_parent = $cp_graph[cell_id];
                 // let cell_loc = [...$pc_graph[cell_parent]].indexOf(cell_id);
@@ -395,8 +405,8 @@
                 parent_cell.top +
                 $html_elements[$cp_graph[cell_id]].querySelector("#title")
                     .clientHeight +
-                10;
-            let left_pos = parent_cell.left + 10;
+                7;
+            let left_pos = parent_cell.left + 15;
             if ($cells[$id_map[cell_id]].top !== top_pos) {
                 $cells[$id_map[cell_id]].top = top_pos;
             }
@@ -412,7 +422,7 @@
                 !(prev_cell_id in $pc_graph)
             ) {
                 let prev_cell = $cells[$id_map[prev_cell_id]];
-                let top_pos = prev_cell.top + prev_cell.height + 10;
+                let top_pos = prev_cell.top + prev_cell.height + 8;
 
                 if ($cells[$id_map[cell_id]].top !== top_pos) {
                     $cells[$id_map[cell_id]].top = top_pos;
@@ -430,7 +440,7 @@
 
 <!-- top:{cell.top}px; left:{cell.left}px;  -->
 <div
-    class="tissue absolute flex flex-row h-fit w-fit rounded-md border-2 border-oli-800 dark:border-oli-400 shadow-md shadow-zinc-300 dark:shadow-neutral-900/50 overflow-visible cursor-default"
+    class="tissue absolute flex flex-row h-fit w-fit m-0 rounded border-2 border-oli-300 dark:border-oli-500 shadow-md shadow-zinc-300 dark:shadow-neutral-900/50 overflow-visible cursor-default"
     style="
     top: {$cells[$id_map[cell_id]].top}px;
     left: {$cells[$id_map[cell_id]].left}px;
@@ -442,7 +452,7 @@
 >
     <!-- drag handle (left) -->
     <div
-        class="w-[10px] pt-1 flex flex-col bg-oli-50 dark:bg-oli-600 rounded-tl-lg rounded-bl-lg border-r-2 border-oli-900 dark:border-oli-400 fill-neutral-500 dark:fill-neutral-400 items-center justify-center"
+        class="w-[10px] pt-1 flex flex-col bg-oli-50 dark:bg-oli-600 border-r-2 border-oli-300 dark:border-oli-500 items-center justify-center"
     >
         <div
             class="w-full h-full cursor-grab active:cursor-grabbing"
@@ -453,7 +463,7 @@
     <div class="flex flex-col w-full h-full">
         <!-- title -->
         <div
-            class="flex flex-row bg-oli-50 dark:bg-oli-700 p-1 items-center justify-center rounded cursor-grab active:cursor-grabbing"
+            class="flex flex-row bg-oli-50/90 dark:bg-oli-700 border-b-2 border-oli-300 dark:border-oli-500 pl-1 items-center justify-center rounded cursor-grab active:cursor-grabbing"
             id="title"
         >
             <PrimeButton {cell_id} />
@@ -462,11 +472,12 @@
 
         <div
             id="dropzone"
-            class="dropzone bg-transparent border-t-2 border-oli-800 dark:border-oli-400"
+            class="dropzone bg-oli-100/10 dark:bg-oli-700/10"
             style="width:{tissue_width}px; height:{tissue_height}px; 
             min-width:{tissue_div
                 ? tissue_div.querySelector('#title').clientWidth
-                : 100}px;"
+                : 100}px;
+            min-height:50px;"
             {cell_id}
         />
     </div>

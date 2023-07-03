@@ -34,15 +34,16 @@
 
 <div
     class="{is_tissue
-        ? 'w-full'
-        : 'w-fit'} flex flex-row items-start h-auto justify-left align-middle p-1"
+        ? 'w-full p-0.5'
+        : 'w-fit p-1'} flex flex-row items-start h-auto justify-left align-middle"
 >
     {#if !is_tissue}
         <div class="w-[25px] h-full pointer-events-none bg-oli-50" />
     {/if}
     <div
-        class="{is_tissue ? 'w-full h-full' : 'w-fit h-fit'} 
-        bg-oli dark:bg-vs-dark w-fit h-fit min-w-[200px] min-h-[25px] max-w-[616px] text-oli-800 dark:text-oli-200 border-l-2 border-black dark:border-white cursor-text pointer-events-auto"
+        class="{is_tissue
+            ? 'w-full h-full'
+            : 'w-fit h-fit'} bg-oli dark:bg-vs-dark w-fit h-fit min-w-[200px] min-h-[25px] max-w-[616px] text-oli-800 dark:text-oli-200 border-l-1 border-black dark:border-white cursor-text pointer-events-auto"
         on:mousedown={(e) => e.stopPropagation()}
         style={is_tissue ? "background-color:transparent;" : ""}
         use:editor

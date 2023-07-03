@@ -1,5 +1,6 @@
 module.exports = {
-  content: ['./src/**/*.{html,js,svelte,ts}'],
+  mode: 'jit',
+  content: ["./index.html", './src/**/*.{html,js,svelte,ts}'],
   theme: {
     extend: {
       colors: {
@@ -23,4 +24,5 @@ module.exports = {
     },
     plugins: []
   }
+
 }

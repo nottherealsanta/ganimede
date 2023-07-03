@@ -12,7 +12,7 @@
 </script>
 
 <div
-    class="flex w-fit h-fit hover:bg-gray-100 dark:hover:bg-neutral-700 rounded"
+    class="flex w-fit h-fit max-w-3xl hover:bg-gray-100 dark:hover:bg-neutral-700 rounded"
 >
     <img src={image.src} alt="output" />
 </div>

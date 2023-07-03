@@ -1,16 +1,20 @@
 <script context="module">
-    let monaco_promise;
-    let _monaco;
-    monaco_promise = import("./monaco.js");
-    monaco_promise.then((mod) => {
-        _monaco = mod.default;
-        console.log("monaco loaded");
-    });
+    // let monaco_promise;
+    // let _monaco;
+    // monaco_promise = import("./monaco.js");
+    // monaco_promise.then((mod) => {
+    //     _monaco = mod.default;
+    //     console.log("monaco loaded");
+    // });
 </script>
 
 <script>
+    import { onMount } from "svelte";
+
     import { config } from "../../stores/config";
     import { cells, id_map } from "../../stores/notebook";
+
+    import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
 
     export let cell_id;
 
@@ -24,7 +28,6 @@
     let max_width = 1200;
     let min_min_width = 200;
 
-    import { onMount } from "svelte";
     let monaco;
     let container;
     let editor;
@@ -113,8 +116,16 @@
     };
 
     let destroyed;
-    onMount(() => {
-        monaco = _monaco;
+    onMount(async () => {
+        self.MonacoEnvironment = {
+            getWorker: function (_moduleId, label) {
+                return new editorWorker();
+            },
+        };
+
+        monaco = await import("monaco-editor");
+
+        // monaco = _monaco;
         editor = monaco.editor.create(container, monaco_config);
 
         // editor.setValue(value);
@@ -176,7 +187,7 @@
 </script>
 
 <div
-    class="h-fit dark:bg-vs-dark cell-input py-1 overflow-hidden relative border rounded border-zinc-300 dark:border-neutral-600 bg-transparent align-middle cursor-text pointer-events-auto"
+    class="h-fit dark:bg-vs-dark cell-input py-0.5 overflow-hidden relative border rounded-sm border-zinc-300 dark:border-neutral-600 bg-transparent align-middle cursor-text pointer-events-auto"
     style=" min-height: 25px; width:100%;        "
     id="cell-input"
     bind:this={div}
