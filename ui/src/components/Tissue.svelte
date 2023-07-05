@@ -17,23 +17,6 @@
     export let cell_id;
     let tissue_div = null;
 
-    let tissue_height = 0;
-    let tissue_width = 0;
-
-    // sum of clienteHeight of all children = tissue_height
-    $: if ($pc_graph[cell_id] && $html_elements[cell_id]) {
-        tissue_height = $pc_graph[cell_id].reduce((acc, child_cell_id) => {
-            return acc + $html_elements[child_cell_id].clientHeight + 15;
-        }, 0);
-        // max of clientWidth of all children = tissue_width
-        tissue_width = $pc_graph[cell_id].reduce((acc, child_cell_id) => {
-            return Math.max(
-                acc,
-                $html_elements[child_cell_id].clientWidth + 20
-            );
-        }, 0);
-    }
-
     onMount(() => {
         tissue_div.setAttribute("cell_id", cell_id);
         $html_elements[cell_id] = tissue_div;
@@ -405,8 +388,8 @@
                 parent_cell.top +
                 $html_elements[$cp_graph[cell_id]].querySelector("#title")
                     .clientHeight +
-                7;
-            let left_pos = parent_cell.left + 15;
+                6;
+            let left_pos = parent_cell.left + 9;
             if ($cells[$id_map[cell_id]].top !== top_pos) {
                 $cells[$id_map[cell_id]].top = top_pos;
             }
@@ -434,13 +417,28 @@
         }
     }
 
+    let tissue_height = 0;
+    let tissue_width = 0;
+
+    // sum of clienteHeight of all children = tissue_height
+    $: if ($pc_graph[cell_id] && $html_elements[cell_id]) {
+        tissue_height = $pc_graph[cell_id].reduce((acc, child_cell_id) => {
+            return acc + $html_elements[child_cell_id].clientHeight + 8;
+        }, 0);
+        // max of clientWidth of all children = tissue_width
+        tissue_width = $pc_graph[cell_id].reduce((acc, child_cell_id) => {
+            return Math.max(acc, $html_elements[child_cell_id].clientWidth + 7);
+        }, 0);
+    }
+
     import MarkdownCell from "./MarkdownCell.svelte";
     import PrimeButton from "./cell_components/PrimeButton.svelte";
+    import NewCellToolbar from "../components/cell_components/new_cell_toolbar_components/NewCellToolbar.svelte";
 </script>
 
 <!-- top:{cell.top}px; left:{cell.left}px;  -->
 <div
-    class="tissue absolute flex flex-row h-fit w-fit m-0 rounded border-2 border-oli-300 dark:border-oli-500 shadow-md shadow-zinc-300 dark:shadow-neutral-900/50 overflow-visible cursor-default"
+    class="tissue absolute flex flex-row h-fit w-fit m-0 rounded border border-oli-300 dark:border-oli-500 shadow-md shadow-zinc-300 dark:shadow-neutral-900/50 overflow-visible cursor-default"
     style="
     top: {$cells[$id_map[cell_id]].top}px;
     left: {$cells[$id_map[cell_id]].left}px;
@@ -452,7 +450,7 @@
 >
     <!-- drag handle (left) -->
     <div
-        class="w-[10px] pt-1 flex flex-col bg-oli-50 dark:bg-oli-600 border-r-2 border-oli-300 dark:border-oli-500 items-center justify-center"
+        class="w-[7px] pt-1 flex flex-col rounded-l bg-oli-100 dark:bg-oli-600 border-r border-oli-300 dark:border-oli-500 items-center justify-center"
     >
         <div
             class="w-full h-full cursor-grab active:cursor-grabbing"
@@ -463,8 +461,10 @@
     <div class="flex flex-col w-full h-full">
         <!-- title -->
         <div
-            class="flex flex-row bg-oli-50/90 dark:bg-oli-700 border-b-2 border-oli-300 dark:border-oli-500 pl-1 items-center justify-center rounded cursor-grab active:cursor-grabbing"
+            class="flex flex-row bg-oli-100 dark:bg-oli-700 rounded-tr border-b border-oli-300 dark:border-oli-500 pl-1 items-center justify-center cursor-grab active:cursor-grabbing"
             id="title"
+            on:mousedown={drag_handle_mousedown}
+            on:mouseup={drag_handle_mouseup}
         >
             <PrimeButton {cell_id} />
             <MarkdownCell {cell_id} is_tissue={true} />
@@ -472,7 +472,7 @@
 
         <div
             id="dropzone"
-            class="dropzone bg-oli-100/10 dark:bg-oli-700/10"
+            class="dropzone bg-oli-50/30 dark:bg-oli-700/10"
             style="width:{tissue_width}px; height:{tissue_height}px; 
             min-width:{tissue_div
                 ? tissue_div.querySelector('#title').clientWidth
@@ -481,6 +481,9 @@
             {cell_id}
         />
     </div>
+    {#if !$cp_graph[cell_id]}
+        <NewCellToolbar {cell_id} />
+    {/if}
     <!-- <div
         class="absolute top-0 left-0 w-full h-full"
         style="pointer-events: none;"

@@ -24,7 +24,6 @@ export async function open_socket() {
             socket = null;
         }
         socket.onmessage = function (event) {
-            console.log("received : ", JSON.parse(event.data));
             let data = JSON.parse(event.data);
             let channel = data["channel"];
             let method = data["method"];

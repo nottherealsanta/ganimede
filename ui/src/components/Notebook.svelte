@@ -119,5 +119,10 @@
         {:else}
             <Tissue {cell_id} />
         {/if}
+        {#if $np_graph[cell_id]}
+            {#each $np_graph[cell_id] as next_id}
+                <Edges current_cell_id={cell_id} {next_id} />
+            {/each}
+        {/if}
     {/each}
 {/if}

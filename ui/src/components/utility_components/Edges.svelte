@@ -114,10 +114,10 @@
                 viewBox="0 -5 10 10"
                 refX="5"
                 refY="0"
-                markerWidth="4"
-                markerHeight="4"
+                markerWidth="5"
+                markerHeight="5"
                 orient="auto"
-                class="fill-neutral-500 dark:fill-neutral-200"
+                class="fill-oli-300 dark:fill-oli-200"
             >
                 <path d="M0,-5L10,0L0,5" />
             </marker>
@@ -129,7 +129,7 @@
                 markerWidth="4"
                 markerHeight="4"
                 orient="auto"
-                class="fill-neutral-500/30 dark:fill-neutral-200/30"
+                class="fill-oli-400/30 dark:fill-oli-200/30"
             >
                 <path d="M0,-5L10,0L0,5" />
             </marker>
@@ -141,7 +141,7 @@
                 markerWidth="5"
                 markerHeight="5"
                 orient="auto"
-                class="fill-neutral-500/30 dark:fill-neutral-200/30"
+                class="fill-oli-400/30 dark:fill-oli-200/30"
             >
                 <circle cx="5" cy="5" r="3" />
             </marker>
@@ -150,7 +150,7 @@
         {#if !close}
             <path
                 d={path}
-                class="stroke-neutral-500 stroke-[2px] fill-transparent hover:stroke-neutral-800 hover:dark:stroke-neutral-200"
+                class="stroke-oli-300 stroke-[2px] fill-transparent hover:stroke-neutral-800 hover:dark:stroke-neutral-200"
                 style={close ? "stroke-width: 2px;" : ""}
                 marker-end="url(#arrow_path)"
             />

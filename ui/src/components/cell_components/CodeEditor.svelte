@@ -187,7 +187,7 @@
 </script>
 
 <div
-    class="h-fit dark:bg-vs-dark cell-input py-0.5 overflow-hidden relative border rounded-sm border-zinc-300 dark:border-neutral-600 bg-transparent align-middle cursor-text pointer-events-auto"
+    class="h-fit bg-white rounded-t cell-input py-0.5 overflow-hidden relative align-middle cursor-text pointer-events-auto"
     style=" min-height: 25px; width:100%;        "
     id="cell-input"
     bind:this={div}

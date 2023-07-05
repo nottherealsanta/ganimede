@@ -2,7 +2,6 @@
     export let cell_id;
 
     import { id_map, cells } from "../../../stores/notebook";
-    $: cell = $cells[$id_map[cell_id]];
 
     function connector_click(e) {
         e.preventDefault();
@@ -45,15 +44,15 @@
 >
     {#if is_hover}
         <div
-            class="relative w-40 h-4 -bottom-0 flex flex-row justify-center items-center cursor-default bg-oli dark:bg-vs-dark rounded border border-gray-300 dark:border-neutral-700 overflow-clip fill-gray-700 dark:fill-gray-300"
+            class="relative w-fit h-4 bottom-2 flex flex-row justify-center items-center cursor-default bg-oli dark:bg-vs-dark rounded-md border border-oli-300 dark:border-neutral-700 overflow-clip fill-oli-600 dark:fill-gray-300"
             on:mouseleave={() => {
                 is_hover = false;
             }}
         >
-            <ToolbarSlot on:click={new_code_cell}><Python /></ToolbarSlot>
-            <ToolbarSlot on:click={new_markdown_cell}><Markdown /></ToolbarSlot>
-            <ToolbarSlot><Connector /></ToolbarSlot>
             <ToolbarSlot><Disconnect /></ToolbarSlot>
+            <ToolbarSlot on:click={new_code_cell}><Python /></ToolbarSlot>
+            <ToolbarSlot><Connector /></ToolbarSlot>
+            <ToolbarSlot on:click={new_markdown_cell}><Markdown /></ToolbarSlot>
             <ToolbarSlot><NewCellMenu /></ToolbarSlot>
         </div>
     {:else}

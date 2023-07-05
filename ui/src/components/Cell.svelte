@@ -369,8 +369,8 @@
                 parent_cell.top +
                 $html_elements[$cp_graph[cell_id]].querySelector("#title")
                     .clientHeight +
-                7;
-            let left_pos = parent_cell.left + 15;
+                6;
+            let left_pos = parent_cell.left + 9;
             if ($cells[$id_map[cell_id]].top !== top_pos) {
                 $cells[$id_map[cell_id]].top = top_pos;
             }
@@ -404,7 +404,7 @@
 </script>
 
 <div
-    class="cell rounded-sm bg-oli dark:bg-oli-800 absolute w-fit h-fit border border-oli-300 dark:border-oli-500 shadow-md shadow-oli-200/50 dark:shadow-neutral-900/50 flex overflow-visible cursor-default"
+    class="cell rounded bg-oli-50 border border-oli-200 absolute w-fit h-fit flex overflow-visible"
     bind:this={cell_div}
     style="
     top: {drag_cell_pos.y ? drag_cell_pos.y : $cells[$id_map[cell_id]].top}px;
@@ -425,13 +425,10 @@
             <MarkdownCell {cell_id} />
         {/if}
     </div>
-    <NewCellToolbar {cell_id} />
-    <!-- <div
-        class="absolute top-0 left-0 w-full h-full"
-        style="pointer-events: none;"
-    >
-        {cell_id}
-    </div> -->
+
+    {#if !$cp_graph[cell_id]}
+        <NewCellToolbar {cell_id} />
+    {/if}
 </div>
 
 <svelte:window on:mousemove={drag_mousemove} on:mouseup={drag_mouseup} />

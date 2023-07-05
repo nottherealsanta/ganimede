@@ -12,20 +12,25 @@
     import PrimeButton from "./cell_components/PrimeButton.svelte";
 </script>
 
-<div class="flex flex-row p-0.5">
-    <div class="flex h-full w-fit pt-0.25 pr-0.5 items-center justify-center">
+<div class="flex flex-col min-w-[250px]">
+    <div class="flex h-fit w-full p-0.25 cursor-grab active:cursor-grabbing">
         <PrimeButton {cell_id} />
+        <div
+            class="absolute left-1/2 transform -translate-x-1/2 -top-0.5 text-oli-200"
+        >
+            :::
+        </div>
     </div>
     <div
-        class="flex flex-col items-start w-auto h-auto justify-start align-middle"
+        class="flex flex-col items-start w-auto h-auto rounded p-0.25 border-t-2 border-r border-l border-b border-oli-200/60 justify-start align-middle"
     >
         <CodeEditor {cell_id} bind:focus />
 
-        <div
+        <!-- <div
             class="flex h-2 w-fit ml-auto text-[9px] text-neutral-400 dark:text-neutral-500 italic"
         >
             <div class="h-full w-fit flex items-center">python</div>
-        </div>
+        </div> -->
 
         {#if cell.outputs.length > 0 || cell.state == "running"}
             <Outputs {cell_id} />
