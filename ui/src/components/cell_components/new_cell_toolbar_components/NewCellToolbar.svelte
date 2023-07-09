@@ -30,8 +30,11 @@
         });
     }
 
-    async function new_code_cell() {
-        sendMessage("new_code_cell", "code");
+    async function new_code_cell(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        console.log("new code cell", e);
+        // sendMessage("new_code_cell", "code");
     }
 
     async function new_markdown_cell() {
@@ -40,11 +43,12 @@
 </script>
 
 <div
-    class="newcelltoolbar absolute -bottom-0 left-0 w-full h-0 flex justify-center items-center"
+    class="newcelltoolbar absolute -bottom-2 left-[25px] w-fit h-hit flex justify-center items-center"
 >
     {#if is_hover}
         <div
-            class="relative w-fit h-4 bottom-2 flex flex-row justify-center items-center cursor-default bg-oli dark:bg-vs-dark rounded-md border border-oli-300 dark:border-neutral-700 overflow-clip fill-oli-600 dark:fill-gray-300"
+            class="relative w-full h-5 z-50 -bottom-1 flex flex-row justify-center items-center cursor-default bg-oli dark:bg-oli-700 rounded border border-oli-300 dark:border-neutral-700 overflow-clip fill-oli-600 dark:fill-gray-300"
+            style="transform: translateX(-46%); "
             on:mouseleave={() => {
                 is_hover = false;
             }}
@@ -57,7 +61,7 @@
         </div>
     {:else}
         <div
-            class="absolute w-3 h-3 rounded-full bg-oli-50/50 dark:bg-oli-700/50 flex justify-center items-center cursor-pointer fill-oli-200 dark:fill-oli-500 stroke-oli-600/20 dark:stroke-oli-100/20 stroke-2"
+            class="w-3 h-3 rounded-full bg-oli-100 dark:bg-oli-700 flex justify-center items-center cursor-pointer stroke-oli-300 dark:stroke-oli-400 stroke-2"
             id="new-cell-toolbar"
             on:click|stopPropagation={connector_click}
             on:keydown={() => {}}

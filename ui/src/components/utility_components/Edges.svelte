@@ -54,19 +54,19 @@
         height += 50;
     }
 
-    $: _curr_anchor = {
-        x: curr_anchor.x - left,
-        y: curr_anchor.y - top,
-    };
-    $: _next_anchor = {
-        x: next_anchor.x - left,
-        y: next_anchor.y - top,
-    };
+    // $: _curr_anchor = {
+    //     x: curr_anchor.x - left,
+    //     y: curr_anchor.y - top,
+    // };
+    // $: _next_anchor = {
+    //     x: next_anchor.x - left,
+    //     y: next_anchor.y - top,
+    // };
     let path = "";
-    $: path = `M ${_curr_anchor.x} ${_curr_anchor.y}
-                C ${_curr_anchor.x} ${_curr_anchor.y + 50}, 
-                ${_next_anchor.x} ${_next_anchor.y - 50}, 
-                ${_next_anchor.x} ${_next_anchor.y - 3}`;
+    $: path = `M ${curr.left + 32 - left} ${curr.bottom - top + 5}
+                C ${curr.left + 32 - left} ${curr.bottom - top + 50}, 
+                ${next.left + 25 - left} ${next.top - top - 50}, 
+                ${next.left + 25 - left} ${next.top - top - 5}`;
 
     // straight line or curve (if distance is too large)
     // $: close =
@@ -86,10 +86,10 @@
 
     // line should start from current bottom, current left + 25 and end at next top, next left + 25
     $: line = {
-        x1: curr.left + 25 - left,
-        y1: curr.bottom - top,
-        x2: next.left + 25 - left,
-        y2: next.top - top,
+        x1: curr.left + 32 - left,
+        y1: curr.bottom - top + 5,
+        x2: next.left + 32 - left,
+        y2: next.top - top - 5,
     };
 </script>
 
@@ -114,8 +114,8 @@
                 viewBox="0 -5 10 10"
                 refX="5"
                 refY="0"
-                markerWidth="5"
-                markerHeight="5"
+                markerWidth="4"
+                markerHeight="4"
                 orient="auto"
                 class="fill-oli-300 dark:fill-oli-200"
             >
@@ -126,8 +126,8 @@
                 viewBox="0 -5 10 10"
                 refX="5"
                 refY="0"
-                markerWidth="4"
-                markerHeight="4"
+                markerWidth="3"
+                markerHeight="3"
                 orient="auto"
                 class="fill-oli-400/30 dark:fill-oli-200/30"
             >
@@ -164,7 +164,6 @@
                 stroke-dasharray="5,5"
                 stroke-opacity="0.5"
                 marker-end="url(#arrow_line)"
-                marker-start="url(#circle_marker)"
             />
         {/if}
     </svg>

@@ -164,7 +164,7 @@ class Notebook:
                         and self.cells[i].heading_level
                         == self.cells[index].heading_level
                     ):
-                        self.np_graph[self.cells[index].id] = [self.cells[i].id]
+                        # self.np_graph[self.cells[index].id] = [self.cells[i].id]
                         break
                     if (
                         self.cells[i].is_heading

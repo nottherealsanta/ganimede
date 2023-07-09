@@ -52,6 +52,7 @@ function createNotebookStore() {
 
             });
         },
+
         clear_outputs: ({ cell_id }) => {
             update(n => {
                 const cell = n.cells[get(id_map)[cell_id]];

@@ -10,13 +10,18 @@
     $: cell = $cells[$id_map[cell_id]];
     let height = 0;
     let last_height = 0;
+    let width = 0;
+    let last_width = 0;
     $: if (cell.state == "queued") {
         last_height = height;
+        last_width = width;
     } else if (cell.state == "idle") {
         last_height = 0;
+        last_width = 0;
     }
     onMount(() => {
         last_height = height;
+        last_width = width;
     });
 
     // output components
@@ -28,18 +33,20 @@
 </script>
 
 <div
-    class="flex bg-nilam rounded-b items-start h-auto w-full justify-center align-stretch overflow-y-auto pointer-events-none"
+    class="flex bg-nilam dark:bg-nilam-dark rounded-b items-start h-auto w-full justify-center align-stretch overflow-y-auto pointer-events-none"
     style=" max-height: 616px; 
-    min-height: {last_height}px; 
-    {cell.state == 'queued' ? 'opacity: 0.5' : ''}
-    "
+        min-height: {last_height}px; 
+        {cell.state == 'queued' ? 'opacity: 0.5' : ''}
+        min-width: {last_width}px;
+        "
     bind:clientHeight={height}
+    bind:clientWidth={width}
     on:mousedown|stopPropagation={() => {}}
 >
     <!-- <div class="flex h-full w-6" style="margin-right:7px" /> -->
     <div
-        class="w-full h-auto bg-oli-50/30 px-1 pl-[6px] py-0.5
-             border-t-2 border-oli-100 dark:border-neutral-600 rounded-sm float-bottom mt-0.25 cursor-default pointer-events-auto select-text"
+        class="w-full h-auto px-1 pl-[6px] py-0.5
+                 border-t-2 border-oli-100 dark:border-neutral-600 rounded-sm float-bottom mt-0.25 cursor-default pointer-events-auto select-text"
     >
         {#if outputs}
             {#each outputs as output}

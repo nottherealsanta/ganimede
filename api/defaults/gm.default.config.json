@@ -1,7 +1,7 @@
 {
     "monaco": {
         "fontSize": 12,
-        "lineNumbers": "off"
+        "lineNumbers": "on"
     },
     "outputs": {
         "fontSize": 14

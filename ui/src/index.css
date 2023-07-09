@@ -202,7 +202,7 @@ h6 {
 	padding-right: 0.5rem;
 	white-space: pre-wrap;
 	border-radius: 4px;
-	border-left: 1px solid rgba(215, 215, 215, 0.183);
+	/* border-left: 1px solid rgba(215, 215, 215, 0.183); */
 
 }
 
@@ -212,7 +212,7 @@ h6 {
 
 .ProseMirror-focused {
 	/* outline: 0px solid rgb(73, 176, 249); */
-	border-left: 1px solid rgb(73, 176, 249);
+	border-left: 1px solid rgb(198, 164, 28);
 }
 
 

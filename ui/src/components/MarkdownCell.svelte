@@ -1,12 +1,12 @@
 <script>
-    import { id_map, cells } from "../stores/notebook";
+    import { id_map, cells, pc_graph } from "../stores/notebook";
 
     export let cell_id;
     export let is_tissue = false;
 
     $: cell = $cells[$id_map[cell_id]];
     // $: is_heading = cell.source[0].startsWith("#");
-    $: is_heading = false;
+    // $: is_heading = false;
 
     import { Editor, rootCtx, defaultValueCtx } from "@milkdown/core";
     import { commonmark } from "@milkdown/preset-commonmark";
@@ -30,20 +30,24 @@
             .use(commonmark)
             .create();
     }
+
+    import DeleteButton from "./cell_components/DeleteButton.svelte";
+    import Drag from "../components/cell_components/Icons/drag.svelte";
+    import MenuButton from "./cell_components/MenuButton.svelte";
+    let is_hover = false;
 </script>
 
 <div
-    class="{is_tissue
-        ? 'w-full p-0.5'
-        : 'w-fit p-1'} flex flex-row items-start h-auto justify-left align-middle"
+    class="w-fitflex flex-col items-start h-auto align-left"
+    on:mouseenter={() => {
+        is_hover = true;
+    }}
+    on:mouseleave={() => {
+        is_hover = false;
+    }}
 >
-    {#if !is_tissue}
-        <div class="w-[25px] h-full pointer-events-none bg-oli-50" />
-    {/if}
     <div
-        class="{is_tissue
-            ? 'w-full h-full'
-            : 'w-fit h-fit'} bg-oli dark:bg-vs-dark w-fit h-fit min-w-[200px] min-h-[25px] max-w-[616px] text-oli-800 dark:text-oli-200 border-l-1 border-black dark:border-white cursor-text pointer-events-auto"
+        class="'w-fit bg-oli dark:bg-vs-dark w-fit h-fit min-w-[200px] min-h-[25px] max-w-[616px] text-oli-800 dark:text-oli-200 cursor-text pointer-events-auto"
         on:mousedown={(e) => e.stopPropagation()}
         style={is_tissue ? "background-color:transparent;" : ""}
         use:editor

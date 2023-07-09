@@ -120,7 +120,7 @@
                     dnd_line.style.position = "absolute";
                     dnd_line.style.height = "3px";
                     dnd_line.style.borderRadius = "5px";
-                    dnd_line.style.backgroundColor = "#29BFFF";
+                    dnd_line.style.backgroundColor = "#29B0F8";
 
                     dnd_line.style.left = _bounding_rect.left.toString() + "px";
                     dnd_line.style.width =
@@ -175,16 +175,10 @@
             // check if on tissue
             if (dragzone_under) {
                 let _bounding_rect = {
-                    top:
-                        dragzone_under.offsetTop +
-                        dragzone_under_tissue.offsetTop +
-                        2,
-                    left:
-                        dragzone_under.offsetLeft +
-                        dragzone_under_tissue.offsetLeft +
-                        2,
-                    width: dragzone_under.getBoundingClientRect().width,
-                    height: dragzone_under.getBoundingClientRect().height,
+                    top: tissue_under.offsetTop,
+                    left: tissue_under.offsetLeft,
+                    width: tissue_under.getBoundingClientRect().width,
+                    height: tissue_under.getBoundingClientRect().height,
                 };
 
                 if (dnd_box === null) {
@@ -196,9 +190,9 @@
                         _bounding_rect.width.toString() + "px";
                     dnd_box.style.height =
                         _bounding_rect.height.toString() + "px";
-                    dnd_box.style.backgroundColor = "#29BFFF09";
-                    dnd_box.style.border = "2px solid #29BFFF";
-                    dnd_box.style.borderRadius = "0px 0px 5px 0px";
+                    dnd_box.style.backgroundColor = "#29B0F809";
+                    dnd_box.style.border = "3px solid #29B0F8";
+                    dnd_box.style.borderRadius = "5px";
                     dnd_box.style.pointerEvents = "none";
 
                     dnd_box.setAttribute(
@@ -369,8 +363,8 @@
                 parent_cell.top +
                 $html_elements[$cp_graph[cell_id]].querySelector("#title")
                     .clientHeight +
-                6;
-            let left_pos = parent_cell.left + 9;
+                35;
+            let left_pos = parent_cell.left + 10;
             if ($cells[$id_map[cell_id]].top !== top_pos) {
                 $cells[$id_map[cell_id]].top = top_pos;
             }
@@ -387,7 +381,7 @@
                 !(prev_cell_id in $pc_graph)
             ) {
                 let prev_cell = $cells[$id_map[prev_cell_id]];
-                let top_pos = prev_cell.top + prev_cell.height + 8;
+                let top_pos = prev_cell.top + prev_cell.height + 11;
 
                 if ($cells[$id_map[cell_id]].top !== top_pos) {
                     $cells[$id_map[cell_id]].top = top_pos;
@@ -401,23 +395,36 @@
 
     // NewCellToolbar
     import NewCellToolbar from "../components/cell_components/new_cell_toolbar_components/NewCellToolbar.svelte";
+    import CellToolbar from "./cell_components/CellToolbar.svelte";
+
+    let is_hover = false;
 </script>
 
 <div
-    class="cell rounded bg-oli-50 border border-oli-200 absolute w-fit h-fit flex overflow-visible"
+    class="cell rounded-sm bg-oli-50 dark:bg-oli-700 border border-oli-200 dark:border-oli-500 absolute w-fit h-fit flex flex-col overflow-visible drop-shadow active:drop-shadow-md"
     bind:this={cell_div}
     style="
     top: {drag_cell_pos.y ? drag_cell_pos.y : $cells[$id_map[cell_id]].top}px;
     left: {drag_cell_pos.x ? drag_cell_pos.x : $cells[$id_map[cell_id]].left}px;
     z-index: {dragging ? 9999 : 0};
     cursor: {dragging ? 'grabbing' : 'default'};
-    
+    border-color: {dragging ? '#29B0F8' : ''};
+    border-width: {dragging ? '2px' : ''};
+    border-radius: {dragging ? '5px' : ''};
     "
     on:mousedown={drag_mousedown}
     on:mouseup={drag_mouseup}
     bind:clientHeight={$cells[$id_map[cell_id]].height}
     bind:clientWidth={$cells[$id_map[cell_id]].width}
+    on:mouseenter={() => {
+        is_hover = true;
+    }}
+    on:mouseleave={() => {
+        is_hover = false;
+    }}
 >
+    <CellToolbar {cell_id} {is_hover} />
+
     <div style="height: fit-content; width: fit-content;">
         {#if $cells[$id_map[cell_id]].type === "code"}
             <CodeCell {cell_id} />
@@ -426,9 +433,13 @@
         {/if}
     </div>
 
-    {#if !$cp_graph[cell_id]}
-        <NewCellToolbar {cell_id} />
-    {/if}
+    <NewCellToolbar {cell_id} />
+    <!-- <div
+        class="absolute top-0 left-0 w-full h-full"
+        style="pointer-events: none;"
+    >
+        {cell_id}
+    </div> -->
 </div>
 
 <svelte:window on:mousemove={drag_mousemove} on:mouseup={drag_mouseup} />

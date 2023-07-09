@@ -19,7 +19,8 @@ module.exports = {
           800: '#1C1C1C',
           900: '#131313'
         },
-        'nilam': "#F6F8FA"
+        'nilam': "#F6F8FA",
+        'nilam-dark': "#191A1C"
       },
 
     },

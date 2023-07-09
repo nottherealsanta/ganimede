@@ -32,6 +32,12 @@ class RouteManager:
 
         async def favicon(request: Request):
             return FileResponse(f"{self.ui_dir}/public/favicon.png")
+        
+        async def monaco_codicon(request: Request):
+            return FileResponse(f"{self.ui_dir}/public/codicon.ttf")
+        
+        # async def moncao_editor_worker(request: Request):
+        #     return FileResponse(f"/Users/srajan/repos/ganimede/ui/node_modules/monaco-editor/esm/vs/editor/editor.worker.js")
 
         self.app.add_route("/", index, methods=["GET"], name="index")
         self.app.add_route(
@@ -50,6 +56,8 @@ class RouteManager:
             "/css/app.css", tailwind_app_css, methods=["GET"], name="tailwind_app_css"
         )
         self.app.add_route("/favicon.png", favicon, methods=["GET"], name="favicon")
+        self.app.add_route("/codicon.ttf", monaco_codicon, methods=["GET"], name="monaco_codicon")
+        # self.app.add_route("/monaco-editor/esm/vs/editor/editor.worker.js", moncao_editor_worker, methods=["GET"], name="moncao_editor_worker")
 
     def add_route(self, route_path, route_function, methods, name):
         self.app.add_route(route_path, route_function, methods=methods, name=name)

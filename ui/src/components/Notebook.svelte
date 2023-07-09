@@ -45,84 +45,59 @@
         setTimeout(align_parent_less_cells, 1000);
     }
 
-    function topological_sort(digraph) {
-        // digraph is a dictionary:
-        //   key: a node
-        // value: a set of adjacent neighboring nodes
-
-        // construct a dictionary mapping nodes to their
-        // indegrees
-        let indegrees = {};
-        for (let node in digraph) {
-            indegrees[node] = 0;
-        }
-        for (let node in digraph) {
-            for (let neighbor of digraph[node]) {
-                indegrees[neighbor] += 1;
-            }
-        }
-
-        // track nodes with no incoming edges
-        let nodes_with_no_incoming_edges = [];
-        for (let node in digraph) {
-            if (indegrees[node] === 0) {
-                nodes_with_no_incoming_edges.push(node);
-            }
-        }
-
-        // initially, no nodes in our ordering
-        let topological_ordering = [];
-
-        // as long as there are nodes with no incoming edges
-        // that can be added to the ordering
-        while (nodes_with_no_incoming_edges.length > 0) {
-            // add one of those nodes to the ordering
-            let node = nodes_with_no_incoming_edges.pop();
-            topological_ordering.push(node);
-
-            // decrement the indegree of that node's neighbors
-            for (let neighbor of digraph[node]) {
-                indegrees[neighbor] -= 1;
-                if (indegrees[neighbor] === 0) {
-                    nodes_with_no_incoming_edges.push(neighbor);
+    // reorder $cells to render parent first then children
+    // parent child realtionship is adjancency list: $pc_graph
+    let render_order = [];
+    $: if ($cells !== undefined) {
+        render_order = JSON.parse(JSON.stringify($cells)).map(
+            (cell) => cell.id
+        );
+        // console.log("before", render_order);
+        // reorder to render parent first then children
+        const visited = new Set();
+        const stack = [];
+        const topologicalSort = (cell_id) => {
+            visited.add(cell_id);
+            if ($pc_graph[cell_id]) {
+                for (let child_id of $pc_graph[cell_id]) {
+                    if (!visited.has(child_id)) {
+                        topologicalSort(child_id);
+                    }
                 }
             }
+            stack.push(cell_id);
+        };
+        for (let cell_id of render_order) {
+            if (!visited.has(cell_id)) {
+                topologicalSort(cell_id);
+            }
         }
 
-        // we've run out of nodes with no incoming edges
-        // did we add all the nodes or find a cycle?
-        if (topological_ordering.length === Object.keys(digraph).length) {
-            return topological_ordering; // got them all
-        } else {
-            throw new Error(
-                "Graph has a cycle! No topological ordering exists."
-            );
-        }
+        render_order = stack.reverse();
+        // render_order.reverse();
+        // console.log("after", render_order);
+        // console.log("pc_graph", $pc_graph);
     }
-
-    let pc_graph_topological_ordering = [];
-    $: if ($pc_graph) {
-        pc_graph_topological_ordering = topological_sort(
-            JSON.parse(JSON.stringify($pc_graph))
-        );
-    }
+    // sort
 </script>
 
 {#if $cells !== undefined}
-    <!-- {#each pc_graph_topological_ordering as cell_id}
-        <Tissue {cell_id} />
-    {/each} -->
+    {#each [1, 2, 3, 4, 5, 6] as level}
+        {#each $heading_levels_inv[level] as cell_id}
+            <Tissue {cell_id} />
+        {/each}
+    {/each}
 
     {#each $cells.map((cell) => cell.id) as cell_id}
         {#if !($cells[$id_map[cell_id]].type === "markdown" && cell_id in $pc_graph)}
             <Cell {cell_id} />
-        {:else}
-            <Tissue {cell_id} />
         {/if}
-        {#if $np_graph[cell_id]}
+        {#if $np_graph[cell_id] && !$cp_graph[cell_id]}
             {#each $np_graph[cell_id] as next_id}
                 <Edges current_cell_id={cell_id} {next_id} />
             {/each}
         {/if}
     {/each}
+
+    <!-- {@debug render_order} -->
 {/if}

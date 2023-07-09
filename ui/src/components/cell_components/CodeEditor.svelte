@@ -6,6 +6,13 @@
     //     _monaco = mod.default;
     //     console.log("monaco loaded");
     // });
+
+    self.MonacoEnvironment = {
+        getWorker: function (_moduleId, label) {
+            // console.log("getWorker", _moduleId, label);
+            return new editorWorker();
+        },
+    };
 </script>
 
 <script>
@@ -41,14 +48,14 @@
     $: width = Math.min(width, max_width);
     $: width = Math.max(width, min_min_width);
 
-    $: if (editor) {
-        if (editor.getValue() !== $cells[$id_map[cell_id]].source.join("")) {
-            $cells[$id_map[cell_id]].source = editor
-                .getValue()
-                .split("\n")
-                .map((line) => (line ? line + "\n" : line));
-        }
-    }
+    // $: if (editor) {
+    //     if (editor.getValue() !== $cells[$id_map[cell_id]].source.join("")) {
+    //         $cells[$id_map[cell_id]].source = editor
+    //             .getValue()
+    //             .split("\n")
+    //             .map((line) => (line ? line + "\n" : line));
+    //     }
+    // }
 
     function get_max_columns() {
         let max = 0;
@@ -95,13 +102,13 @@
         overviewRulerBorder: false,
         overviewRulerLanes: 0,
         renderLineHighlight: "none",
-        lineNumbers: config.monaco.lineNumbers,
+        lineNumbers: "on",
         fontSize: config.monaco.fontSize,
         fontFamily: "Fira Code, monospace",
         glyphMargin: false,
-        lineNumbersMinChars: 1,
+        lineNumbersMinChars: 2,
         lineDecorationsWidth: 0,
-        folding: false,
+        folding: true,
         automaticLayout: true, // updates height when `value` changes
         wordWrap: "on",
         wrappingStrategy: "advanced",
@@ -116,16 +123,9 @@
     };
 
     let destroyed;
-    onMount(async () => {
-        self.MonacoEnvironment = {
-            getWorker: function (_moduleId, label) {
-                return new editorWorker();
-            },
-        };
 
+    const mount_monaco = async () => {
         monaco = await import("monaco-editor");
-
-        // monaco = _monaco;
         editor = monaco.editor.create(container, monaco_config);
 
         // editor.setValue(value);
@@ -141,7 +141,10 @@
 
         editor.onDidChangeModelContent((e) => {
             max_columns = get_max_columns();
-
+            const text = editor.getValue();
+            $cells[$id_map[cell_id]].source = text
+                .split("\n")
+                .map((line) => (line ? line + "\n" : line));
             // $cells[$id_map[cell_id]].source = editor
             //     .getValue()
             //     .split("\n")
@@ -168,9 +171,10 @@
         return () => {
             destroyed = true;
         };
-    });
+    };
 
     onMount(() => {
+        mount_monaco();
         // for dragSelect
         if (div) {
             div.addEventListener("mousedown", (e) => {
@@ -187,7 +191,7 @@
 </script>
 
 <div
-    class="h-fit bg-white rounded-t cell-input py-0.5 overflow-hidden relative align-middle cursor-text pointer-events-auto"
+    class="h-fit bg-oli dark:bg-[#1E1E1E] rounded-t cell-input py-0.5 overflow-hidden relative align-middle cursor-text pointer-events-auto"
     style=" min-height: 25px; width:100%;        "
     id="cell-input"
     bind:this={div}
