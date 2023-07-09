@@ -57,6 +57,7 @@ class RouteManager:
         )
         self.app.add_route("/favicon.png", favicon, methods=["GET"], name="favicon")
         self.app.add_route("/codicon.ttf", monaco_codicon, methods=["GET"], name="monaco_codicon")
+        self.app.add_route("/node_modules/monaco-editor/esm/vs/base/browser/ui/codicons/codicon/codicon.ttf", monaco_codicon, methods=["GET"], name="monaco_codicon")
         # self.app.add_route("/monaco-editor/esm/vs/editor/editor.worker.js", moncao_editor_worker, methods=["GET"], name="moncao_editor_worker")
 
     def add_route(self, route_path, route_function, methods, name):
