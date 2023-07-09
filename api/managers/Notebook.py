@@ -17,7 +17,7 @@ class Notebook:
         self,
         kernel: Kernel,
         comms: Comms,
-        notebook_path: str = f"{getcwd()}/tests/test0.ipynb",
+        notebook_path: str = f"{getcwd()}/tests/unlearning-CIFAR10.ipynb",
     ):
         self.kernel = kernel
         self.comms = comms

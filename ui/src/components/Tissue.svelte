@@ -461,7 +461,7 @@
     style="
     top: {$cells[$id_map[cell_id]].top}px;
     left: {$cells[$id_map[cell_id]].left}px;
-    z-index: {dragging ? 1000 : 0};
+    z-index: {dragging ? 1000 : 0};rea
     border-color: {dragging ? '#29B0F8' : ''};
     border-width: {dragging ? '2px' : ''};
     border-radius: {dragging ? '5px' : ''};
@@ -486,7 +486,7 @@
     <!-- title -->
     <div class="flex flex-col h-fit w-fit">
         <div
-            class="flex flex-row h-10 w-full bg-oli dark:bg-oli-800 border-y border-oli-300 dark:border-oli-400 p-1 items-center"
+            class="flex flex-row h-fit w-full bg-oli dark:bg-oli-800 border-y border-oli-300 dark:border-oli-400 p-1 items-center"
             id="title"
         >
             <MarkdownCell {cell_id} />
