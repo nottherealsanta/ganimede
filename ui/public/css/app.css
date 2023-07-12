@@ -580,9 +580,6 @@ video {
 .hidden {
   display: none;
 }
-.h-10 {
-  height: 2.5rem;
-}
 .h-2 {
   height: 0.5rem;
 }
@@ -901,6 +898,9 @@ video {
 }
 .pl-1 {
   padding-left: 0.25rem;
+}
+.pl-2 {
+  padding-left: 0.5rem;
 }
 .pl-6 {
   padding-left: 1.5rem;

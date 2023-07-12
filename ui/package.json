@@ -31,12 +31,12 @@
     "@milkdown/preset-commonmark": "^7.2.1",
     "@milkdown/prose": "^7.2.1",
     "@milkdown/transformer": "^7.2.1",
-    "@shopify/draggable": "^1.0.0-beta.8",
     "@types/marked": "^4.0.8",
     "ansi_up": "^5.2.1",
     "dragselect": "^2.7.4",
     "marked": "^4.2.12",
     "monaco-editor": "^0.34.1",
-    "typescript": "^5.0.2"
+    "typescript": "^5.0.2",
+    "y-websocket": "^1.5.0"
   }
 }

@@ -34,8 +34,27 @@
         }
     };
 
+    import * as Y from "yjs";
+    import { WebsocketProvider } from "y-websocket";
     onMount(() => {
         open_socket();
+
+        const doc = new Y.Doc();
+        const wsProvider = new WebsocketProvider(
+            "ws://localhost:1234",
+            "g-y-room",
+            doc
+        );
+
+        wsProvider.on("status", (event) => {
+            console.log("yjs connection status: ", event.status); // logs "connected" or "disconnected"
+            console.log("doc", doc);
+        });
+
+        const testing_key = doc.getMap("map");
+        testing_key.observe((event) => {
+            console.log("testing_key changed", event, testing_key.toJSON());
+        });
     });
 
     // import ZoomToolBar from "../components/canvas_components/zoom.svelte";

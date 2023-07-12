@@ -4,8 +4,12 @@
 #
 #    pip-compile
 #
+aiosqlite==0.19.0
+    # via ypy-websocket
 anyio==3.6.2
-    # via starlette
+    # via
+    #   starlette
+    #   ypy-websocket
 appnope==0.1.3
     # via
     #   ipykernel
@@ -129,4 +133,8 @@ uvicorn==0.20.0
 wcwidth==0.2.6
     # via prompt-toolkit
 websockets==10.4
+    # via -r requirements.in
+y-py==0.6.0
+    # via ypy-websocket
+ypy-websocket==0.12.1
     # via -r requirements.in

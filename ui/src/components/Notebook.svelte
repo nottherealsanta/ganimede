@@ -85,17 +85,17 @@
     {#each [1, 2, 3, 4, 5, 6] as level}
         {#each $heading_levels_inv[level] as cell_id}
             <Tissue {cell_id} />
+            {#if $np_graph[cell_id] && !$cp_graph[cell_id]}
+                {#each $np_graph[cell_id] as next_id}
+                    <Edges current_cell_id={cell_id} {next_id} />
+                {/each}
+            {/if}
         {/each}
     {/each}
 
     {#each $cells.map((cell) => cell.id) as cell_id}
         {#if !($cells[$id_map[cell_id]].type === "markdown" && cell_id in $pc_graph)}
             <Cell {cell_id} />
-        {/if}
-        {#if $np_graph[cell_id] && !$cp_graph[cell_id]}
-            {#each $np_graph[cell_id] as next_id}
-                <Edges current_cell_id={cell_id} {next_id} />
-            {/each}
         {/if}
     {/each}
 
