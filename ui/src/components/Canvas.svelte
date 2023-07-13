@@ -36,7 +36,7 @@
 
     import * as Y from "yjs";
     import { WebsocketProvider } from "y-websocket";
-    onMount(() => {
+    onMount(async () => {
         open_socket();
 
         const doc = new Y.Doc();
@@ -51,10 +51,17 @@
             console.log("doc", doc);
         });
 
-        const testing_key = doc.getMap("map");
-        testing_key.observe((event) => {
-            console.log("testing_key changed", event, testing_key.toJSON());
+        const test_map = doc.getMap("map");
+        test_map.observe((event) => {
+            console.log("test_map changed", event, test_map.toJSON());
         });
+
+        // test_map.set("testing_key", "value");
+        // for loop
+        for (let i = 0; i < 10; i++) {
+            test_map.set("testing_key", i);
+            await new Promise((r) => setTimeout(r, 1000));
+        }
     });
 
     // import ZoomToolBar from "../components/canvas_components/zoom.svelte";

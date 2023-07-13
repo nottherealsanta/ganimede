@@ -5,5 +5,5 @@ black==23.1.0
 ipykernel==6.20.2
 uvicorn==0.20.0
 rich==13.2.0
-websockets==10.4
+websockets==11.0.3
 ypy-websocket==0.12.1

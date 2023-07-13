@@ -132,7 +132,7 @@ uvicorn==0.20.0
     # via -r requirements.in
 wcwidth==0.2.6
     # via prompt-toolkit
-websockets==10.4
+websockets==11.0.3
     # via -r requirements.in
 y-py==0.6.0
     # via ypy-websocket

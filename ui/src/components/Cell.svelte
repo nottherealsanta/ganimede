@@ -409,8 +409,8 @@
     z-index: {dragging ? 9999 : 0};
     cursor: {dragging ? 'grabbing' : 'default'};
     border-color: {dragging ? '#29B0F8' : ''};
-    border-width: {dragging ? '2px' : ''};
-    border-radius: {dragging ? '5px' : ''};
+    border-radius: {dragging ? '2px' : ''};
+    box-shadow: {dragging ? '0px 0px 2px 2px #29B0F844' : ''};
     "
     on:mousedown={drag_mousedown}
     on:mouseup={drag_mouseup}

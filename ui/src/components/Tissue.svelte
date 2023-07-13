@@ -461,10 +461,9 @@
     style="
     top: {$cells[$id_map[cell_id]].top}px;
     left: {$cells[$id_map[cell_id]].left}px;
-    z-index: {dragging ? 1000 : 0};rea
     border-color: {dragging ? '#29B0F8' : ''};
-    border-width: {dragging ? '2px' : ''};
-    border-radius: {dragging ? '5px' : ''};
+    box-shadow: {dragging ? '0px 0px 2px 2px #29B0F844' : ''};
+
     "
     bind:this={tissue_div}
     bind:clientHeight={$cells[$id_map[cell_id]].height}
@@ -494,7 +493,7 @@
 
         <div
             id="dropzone"
-            class="dropzone bg-oli-50/70 dark:bg-oli-700/50"
+            class="dropzone bg-oli-50/70 dark:bg-oli-700/50 rounded-b"
             style="width:{tissue_width}px; height:{tissue_height}px; 
             min-width:{tissue_div
                 ? tissue_div.querySelector('#title').clientWidth
