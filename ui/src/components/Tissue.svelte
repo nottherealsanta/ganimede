@@ -4,7 +4,6 @@
         id_map,
         pc_graph,
         sync_cell_properties,
-        _resize_ancestors,
         pn_graph,
         cp_graph,
         html_elements,

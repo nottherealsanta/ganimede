@@ -39,36 +39,36 @@ async def on_startup():
     route_manager = RouteManager(app)
 
     comms = Comms()
+    
+    # yapp server
+    loop.create_task(server_task())
+    # yapp client
+    await asyncio.sleep(0.5) # wait for server to start
+    websocket = await connect("ws://localhost:1234/g-y-room")
+    websocket_provider = WebsocketProvider(ydoc, websocket, log=log)
+    task = asyncio.create_task(websocket_provider.start())
+    await websocket_provider.started.wait()
 
     config_handler = ConfigHandler()
     route_manager.add_route("/config", config_handler.get, ["GET"], "config")
 
     kernel = Kernel(comms)
 
-    notebook = Notebook(kernel, comms)
+    notebook = Notebook(kernel, comms, ydoc)
 
     # websocket route
     route_manager.add_websocket_route("/", comms.endpoint, "ws")
 
-    # yapp server
-    loop.create_task(server_task())
 
-    # yapp client
-    await asyncio.sleep(1)
-    websocket = await connect("ws://localhost:1234/g-y-room")
-    websocket_provider = WebsocketProvider(ydoc, websocket, log=log)
 
-    task = asyncio.create_task(websocket_provider.start())
-    await websocket_provider.started.wait()
+#     ymap = ydoc.get_map("map")
+#     ymap.observe(test_observer)
+#     with ydoc.begin_transaction() as t:
+#         ymap.set(t, "testing_key", "testing_value")
 
-    ymap = ydoc.get_map("map")
-    ymap.observe(test_observer)
-    with ydoc.begin_transaction() as t:
-        ymap.set(t, "testing_key", "testing_value")
-
-def test_observer(event):
-    print("---------")
-    print(event)
+# def test_observer(event):
+#     print("---------")
+#     print(event)
 
 async def server_task():
     async with (

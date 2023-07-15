@@ -4,6 +4,7 @@ import asyncio
 import queue
 import logging
 from pathlib import Path
+import y_py as Y
 
 from managers.Kernel import Kernel
 from managers.Comms import Comms
@@ -17,10 +18,12 @@ class Notebook:
         self,
         kernel: Kernel,
         comms: Comms,
+        ydoc: Y.YDoc,
         notebook_path: str = f"{getcwd()}/tests/test2.ipynb",
     ):
         self.kernel = kernel
         self.comms = comms
+        self.ydoc = ydoc
         self.notebook_path = notebook_path
         log.debug(notebook_path)
 
@@ -65,7 +68,7 @@ class Notebook:
                 await getattr(self, method)()
 
     async def get(self):
-        log.debug("get notebook")
+        log.info("GET notebook")
         await self.kernel.start_kernel()
 
         if self.notebook_file is not None:  # add check for None

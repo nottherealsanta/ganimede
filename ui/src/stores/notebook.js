@@ -245,6 +245,12 @@ export const pn_graph = derived(notebook, $notebook => {
 // });
 
 
+
+/**
+ * Returns the heading level of a markdown cell's source.
+ * @param {string} source - The source of the markdown cell.
+ * @returns {number|null} - The heading level of the markdown cell, or null if it is not a heading.
+ */
 export function get_heading_level(source) {
     // get markdown heading_level from source
     const heading_level = source[0].match(/#+/g);
@@ -255,6 +261,11 @@ export function get_heading_level(source) {
     return null;
 }
 
+
+/**
+ * A Svelte derived store that returns an object mapping markdown cell IDs to their heading levels.
+ * @type {import('svelte/store').Readable<{[id: string]: number|null}>}
+ */
 export const heading_levels = derived(notebook, $notebook => {
     const heading_levels = {};
     if (!$notebook.cells) {
@@ -266,9 +277,13 @@ export const heading_levels = derived(notebook, $notebook => {
         }
     });
     return heading_levels;
-}
-);
+});
 
+
+/**
+ * A Svelte derived store that returns an object mapping heading levels to an array of markdown cell IDs with that heading level.
+ * @type {import('svelte/store').Readable<{[level: number]: string[]}>}
+ */
 export const heading_levels_inv = derived(heading_levels, $heading_levels => {
     const heading_levels_inv = {
         1: [],
@@ -284,9 +299,15 @@ export const heading_levels_inv = derived(heading_levels, $heading_levels => {
         }
     });
     return heading_levels_inv;
-}
-);
+});
 
+
+
+/**
+ * Finds the parent of a given cell ID in the notebook's parent-child graph.
+ * @param {string} cell_id - The ID of the cell to find the parent of.
+ * @returns {string|null} - The ID of the parent cell, or null if the cell has no parent.
+ */
 function _find_parent(cell_id) {
     // find parent of cell_id
     let parent_id = null;
@@ -295,74 +316,8 @@ function _find_parent(cell_id) {
         if (children.includes(cell_id)) {
             parent_id = parent;
         }
-    }
-    );
+    });
     return parent_id;
-}
-
-function _find_ancestors(cell_id) {
-    // find ancestors of cell_id
-    const ancestors = [];
-    let parent_id = _find_parent(cell_id);
-    while (parent_id) {
-        ancestors.push(parent_id);
-        parent_id = _find_parent(parent_id);
-    }
-    return ancestors;
-
-}
-
-export function _resize_ancestors(cell_id) {
-    console.log("resizing ancestors of ", cell_id);
-    let ancestors = _find_ancestors(cell_id);
-    // for parent in ancestors
-    ancestors.forEach(parent_id => {
-        let children = get(pc_graph)[parent_id];
-        let parent_cell = get(cells)[get(id_map)[parent_id]];
-
-        let x_bounds = [parent_cell.left + parent_cell.width, parent_cell.left];
-        let y_bounds = [parent_cell.top + parent_cell.height, parent_cell.top];
-
-        for (let child of children) {
-            let child_cell = get(cells)[get(id_map)[child]];
-            x_bounds[0] = Math.min(x_bounds[0], child_cell.left);
-            x_bounds[1] = Math.max(
-                x_bounds[1],
-                child_cell.left + child_cell.width
-            );
-            y_bounds[0] = Math.min(y_bounds[0], child_cell.top);
-            y_bounds[1] = Math.max(
-                y_bounds[1],
-                child_cell.top + child_cell.height
-            );
-        }
-        x_bounds[0] -= 25;
-        x_bounds[1] += 25;
-        y_bounds[1] += 25;
-
-        // bound
-        if (parent_cell.left + parent_cell.width < x_bounds[1]) {
-            parent_cell.width = x_bounds[1] - parent_cell.left;
-        }
-        if (parent_cell.left > x_bounds[0]) {
-            parent_cell.left = x_bounds[0];
-            parent_cell.width = x_bounds[1] - parent_cell.left;
-        }
-        if (parent_cell.top + parent_cell.height < y_bounds[1]) {
-            parent_cell.height = y_bounds[1] - parent_cell.top;
-        }
-        if (parent_cell.top > y_bounds[0]) {
-            parent_cell.top = y_bounds[0];
-            parent_cell.height = y_bounds[1] - parent_cell.top;
-        }
-        notebook.update(n => {
-            n.cells[get(id_map)[parent_id]] = parent_cell;
-            return n;
-        }
-        );
-
-    }
-    );
 }
 
 
