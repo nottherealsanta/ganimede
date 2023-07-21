@@ -1,15 +1,6 @@
 <script context="module">
-    // let monaco_promise;
-    // let _monaco;
-    // monaco_promise = import("./monaco.js");
-    // monaco_promise.then((mod) => {
-    //     _monaco = mod.default;
-    //     console.log("monaco loaded");
-    // });
-
     self.MonacoEnvironment = {
         getWorker: function (_moduleId, label) {
-            // console.log("getWorker", _moduleId, label);
             return new editorWorker();
         },
     };
@@ -19,21 +10,21 @@
     import { onMount } from "svelte";
 
     import { config } from "../../stores/config";
-    import { cells, id_map } from "../../stores/notebook";
+    import { MonacoBinding } from "y-monaco";
 
     import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
 
-    export let cell_id;
+    export let cell;
 
-    $: cell = $cells[$id_map[cell_id]];
+    let source = cell.source;
 
     let language = "python";
 
     export let focus = false;
     let height = 0;
     let width = 0;
-    let max_width = 1200;
-    let min_min_width = 200;
+    let max_width = 800;
+    let min_min_width = 250;
 
     let monaco;
     let container;
@@ -42,26 +33,17 @@
     let div = null;
 
     let n_lines = 0;
-    $: n_lines = cell.source.length;
+    $: n_lines = source.toString().length;
 
-    $: width = Math.ceil(max_columns * 8) + 50;
+    $: width = Math.ceil(max_columns * 8) + 40;
     $: width = Math.min(width, max_width);
     $: width = Math.max(width, min_min_width);
 
-    // $: if (editor) {
-    //     if (editor.getValue() !== $cells[$id_map[cell_id]].source.join("")) {
-    //         $cells[$id_map[cell_id]].source = editor
-    //             .getValue()
-    //             .split("\n")
-    //             .map((line) => (line ? line + "\n" : line));
-    //     }
-    // }
-
     function get_max_columns() {
         let max = 0;
-        let source = cell.source;
-        for (let i = 0; i < source.length; i++) {
-            let column = source[i].length;
+        let _source = source.toString().split("\n");
+        for (let i = 0; i < _source.length; i++) {
+            let column = _source[i].length;
             if (column > max) {
                 max = column;
             }
@@ -93,7 +75,7 @@
 
     // monaco config
     let monaco_config = {
-        value: $cells[$id_map[cell_id]].source.join(""),
+        value: "",
         language: language,
         theme: current_theme,
         minimap: {
@@ -141,14 +123,6 @@
 
         editor.onDidChangeModelContent((e) => {
             max_columns = get_max_columns();
-            const text = editor.getValue();
-            $cells[$id_map[cell_id]].source = text
-                .split("\n")
-                .map((line) => (line ? line + "\n" : line));
-            // $cells[$id_map[cell_id]].source = editor
-            //     .getValue()
-            //     .split("\n")
-            //     .map((line) => (line ? line + "\n" : line));
         });
 
         let ignoreEvent = false;
@@ -167,6 +141,13 @@
 
         editor.onDidContentSizeChange(updateHeight);
         updateHeight();
+
+        // y-monaco
+        const monacoBinding = new MonacoBinding(
+            source,
+            editor.getModel(),
+            new Set([editor])
+        ); // TODO: add awareness
 
         return () => {
             destroyed = true;
@@ -191,8 +172,8 @@
 </script>
 
 <div
-    class="h-fit bg-oli dark:bg-[#1E1E1E] rounded-t cell-input py-0.5 pl-2 overflow-hidden relative align-middle cursor-text pointer-events-auto"
-    style=" min-height: 25px; width:100%;        "
+    class="h-fit bg-oli dark:bg-[#1E1E1E] cell-input py-0.5 pl-2 overflow-hidden relative align-middle cursor-text pointer-events-auto"
+    style=" min-height: 25px; width:100%;"
     id="cell-input"
     bind:this={div}
 >

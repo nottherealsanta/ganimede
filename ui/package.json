@@ -27,6 +27,7 @@
   "dependencies": {
     "@milkdown/core": "^7.2.1",
     "@milkdown/ctx": "^7.2.1",
+    "@milkdown/plugin-collab": "^7.2.4",
     "@milkdown/plugin-listener": "^7.2.1",
     "@milkdown/preset-commonmark": "^7.2.1",
     "@milkdown/prose": "^7.2.1",
@@ -37,6 +38,10 @@
     "marked": "^4.2.12",
     "monaco-editor": "^0.34.1",
     "typescript": "^5.0.2",
-    "y-websocket": "^1.5.0"
+    "y-monaco": "^0.1.4",
+    "y-prosemirror": "^1.2.1",
+    "y-protocols": "^1.0.5",
+    "y-websocket": "^1.5.0",
+    "yjs": "^13.6.6"
   }
 }

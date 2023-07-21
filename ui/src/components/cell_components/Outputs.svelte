@@ -1,13 +1,12 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    export let cell_id;
-    import { cells, id_map } from "../../stores/notebook";
+    // import { cells, id_map } from "../../stores/notebook";
 
+    export let cell;
     // outputs
-    $: outputs = $cells[$id_map[cell_id]].outputs;
+    $: outputs = cell.outputs.toJSON();
 
     // last heights
-    $: cell = $cells[$id_map[cell_id]];
     let height = 0;
     let last_height = 0;
     let width = 0;

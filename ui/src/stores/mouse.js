@@ -8,10 +8,10 @@ export default readable({ x: 0, y: 0 }, (set) => {
 	function move(event) {
 
 		set({
-			// x: Math.floor(event.clientX / get(zoom) + window.scrollX / get(zoom)),
-			// y: Math.floor(event.clientY / get(zoom) + window.scrollY / get(zoom))
-			x: Math.floor(event.clientX + window.scrollX),
-			y: Math.floor(event.clientY + window.scrollY)
+			x: Math.floor(event.clientX / get(zoom) + window.scrollX / get(zoom)),
+			y: Math.floor(event.clientY / get(zoom) + window.scrollY / get(zoom))
+			// x: Math.floor(event.clientX + window.scrollX),
+			// y: Math.floor(event.clientY + window.scrollY)
 		});
 	}
 

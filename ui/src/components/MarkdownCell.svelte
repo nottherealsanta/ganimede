@@ -1,55 +1,209 @@
 <script>
-    import { id_map, cells, pc_graph } from "../stores/notebook";
+    import { onMount } from "svelte";
 
-    export let cell_id;
-    export let is_tissue = false;
+    import { config } from "../stores/config";
+    import { MonacoBinding } from "y-monaco";
 
-    $: cell = $cells[$id_map[cell_id]];
-    // $: is_heading = cell.source[0].startsWith("#");
-    // $: is_heading = false;
+    import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
 
-    import { Editor, rootCtx, defaultValueCtx } from "@milkdown/core";
-    import { commonmark } from "@milkdown/preset-commonmark";
-    import { listener, listenerCtx } from "@milkdown/plugin-listener";
+    export let cell;
 
-    function editor(dom) {
-        Editor.make()
-            .config((ctx) => {
-                ctx.set(rootCtx, dom);
-                ctx.set(defaultValueCtx, cell.source.join(""));
-                const listener = ctx.get(listenerCtx);
+    let language = "markdown";
 
-                listener.markdownUpdated((ctx, markdown, prevMarkdown) => {
-                    if (markdown !== prevMarkdown) {
-                        $cells[$id_map[cell_id]].source =
-                            markdown.split("\n\n");
-                    }
-                });
-            })
-            .use(listener)
-            .use(commonmark)
-            .create();
+    $: source = cell.source.toString();
+
+    cell.source.observe(() => {
+        source = cell.source.toString();
+    });
+
+    export let focus = false;
+    let height = 0;
+    let width = 0;
+    let max_width = 800;
+    let min_min_width = 250;
+
+    let monaco;
+    let container;
+    let editor;
+    let max_columns = 0;
+    let div = null;
+
+    let n_lines = 0;
+    $: n_lines = cell.source.toString().length;
+
+    $: width = Math.ceil(max_columns * 8) + 40;
+    $: width = Math.min(width, max_width);
+    $: width = Math.max(width, min_min_width);
+
+    function get_max_columns() {
+        let max = 0;
+        let _source = cell.source.toString().split("\n");
+        for (let i = 0; i < _source.length; i++) {
+            let column = _source[i].length;
+            if (column > max) {
+                max = column;
+            }
+        }
+        return max;
     }
 
-    import DeleteButton from "./cell_components/DeleteButton.svelte";
-    import Drag from "../components/cell_components/Icons/drag.svelte";
-    import MenuButton from "./cell_components/MenuButton.svelte";
-    let is_hover = false;
+    // dark-light mode
+    let theme = {
+        dark: "vs-dark",
+        light: "vs",
+    };
+    // -- current theme
+    let current_theme = window.matchMedia("(prefers-color-scheme: dark)")
+        .matches
+        ? theme.dark
+        : theme.light;
+    // -- watch for dark mode changes
+    window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .addEventListener("change", (event) => {
+            // TODO: if theme is not set in config, then auto change;
+            if (event.matches) {
+                monaco.editor.setTheme(theme.dark);
+            } else {
+                monaco.editor.setTheme(theme.light);
+            }
+        });
+
+    // monaco config
+    let monaco_config = {
+        value: "",
+        language: language,
+        theme: current_theme,
+        minimap: {
+            enabled: false,
+        },
+        overviewRulerBorder: false,
+        overviewRulerLanes: 0,
+        renderLineHighlight: "none",
+        lineNumbers: "off",
+        fontSize: config.monaco.fontSize,
+        fontFamily: "Fira Code, monospace",
+        glyphMargin: false,
+        lineNumbersMinChars: 0,
+        lineDecorationsWidth: 0,
+        folding: false,
+        automaticLayout: true, // updates height when `value` changes
+        wordWrap: "on",
+        wrappingStrategy: "advanced",
+        wrappingColumn: 80,
+        scrollbar: {
+            vertical: "hidden",
+            horizontal: "hidden",
+            handleMouseWheel: false,
+        },
+        scrollBeyondLastLine: false,
+        overviewRulerLanes: 0,
+    };
+
+    let destroyed;
+
+    const mount_monaco = async () => {
+        monaco = await import("monaco-editor");
+        editor = monaco.editor.create(container, monaco_config);
+
+        // editor.setValue(value);
+
+        max_columns = get_max_columns();
+
+        editor.onDidFocusEditorText(() => {
+            focus = true;
+        });
+        editor.onDidBlurEditorText(() => {
+            focus = false;
+        });
+
+        editor.onDidChangeModelContent((e) => {
+            max_columns = get_max_columns();
+        });
+
+        let ignoreEvent = false;
+        const updateHeight = () => {
+            const contentHeight = Math.min(1000, editor.getContentHeight());
+            if (container !== null) {
+                container.style.height = `${contentHeight}px`;
+                try {
+                    ignoreEvent = true;
+                    editor.layout({ width, height: contentHeight });
+                } finally {
+                    ignoreEvent = false;
+                }
+            }
+        };
+
+        editor.onDidContentSizeChange(updateHeight);
+        updateHeight();
+
+        // y-monaco
+        const monacoBinding = new MonacoBinding(
+            cell.source,
+            editor.getModel(),
+            new Set([editor])
+        ); // TODO: add awareness
+
+        return () => {
+            destroyed = true;
+        };
+    };
+
+    onMount(() => {
+        mount_monaco();
+        if (div) {
+            div.addEventListener("mousedown", (e) => {
+                e.stopPropagation();
+            });
+            div.addEventListener("mouseup", (e) => {
+                e.stopPropagation();
+            });
+            div.addEventListener("click", () => {
+                if (focus === false) {
+                    editor.focus();
+                    setTimeout(() => {
+                        editor.focus();
+                    }, 100);
+                    const position = {
+                        lineNumber: editor.getModel().getLineCount(),
+                        column:
+                            editor
+                                .getModel()
+                                .getLineContent(
+                                    editor.getModel().getLineCount()
+                                ).length + 1,
+                    };
+                    editor.setPosition(position, true);
+                }
+                focus = true;
+            });
+        }
+    });
+
+    import { marked } from "marked";
 </script>
 
 <div
-    class="w-fitflex flex-col items-start h-auto align-left"
-    on:mouseenter={() => {
-        is_hover = true;
-    }}
-    on:mouseleave={() => {
-        is_hover = false;
-    }}
+    class="h-fit bg-oli dark:bg-[#1E1E1E] rounded-t cell-input py-0.5 pl-0.5 overflow-hidden relative align-middle cursor-text pointer-events-auto"
+    style="min-width: min-content; width: {width}px"
+    id="cell-input"
+    bind:this={div}
 >
     <div
-        class="'w-fit bg-oli dark:bg-vs-dark w-fit h-fit min-w-[200px] min-h-[25px] max-w-[616px] text-oli-800 dark:text-oli-200 cursor-text pointer-events-auto"
-        on:mousedown={(e) => e.stopPropagation()}
-        style={is_tissue ? "background-color:transparent;" : ""}
-        use:editor
+        class="w-full h-fit px-1 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded"
+        style="display: {focus ? 'none' : 'block'};"
+    >
+        {#if editor}
+            {@html marked(source)}
+        {/if}
+    </div>
+    <div
+        class="w-full cursor-text"
+        bind:this={container}
+        style="
+        width: {width}px; 
+        display: {focus ? 'block' : 'none'};
+        background-color: {focus ? 'bg-oli' : 'bg-transparent'}"
     />
 </div>

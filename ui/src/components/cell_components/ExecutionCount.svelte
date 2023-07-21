@@ -1,9 +1,9 @@
 <script>
     export let cell_id;
 
-    import { cells, id_map } from "../../stores/notebook";
+    import { cells } from "../../stores/_notebook";
 
-    $: cell = $cells[$id_map[cell_id]];
+    $: cell = $cells[cell_id];
     let execution_count;
     $: if (cell) {
         if (cell.execution_count === null) {

@@ -1,8 +1,6 @@
 <script>
-    export let cell_id;
-
-    import { id_map, cells, notebook } from "../../stores/notebook";
-    $: cell = $cells[$id_map[cell_id]];
+    import { cells } from "../../stores/_notebook";
+    export let cell;
 
     let hover = false;
     // let execution_count;
@@ -18,24 +16,25 @@
     // run
     import { send_message } from "../../stores/socket";
     async function primary_button_click() {
-        let state = $cells[$id_map[cell_id]].state;
-        if (state === "idle") {
-            send_message({
-                channel: "notebook",
-                method: "queue_cell",
-                message: {
-                    cell_id: cell_id,
-                    code: cell.source,
-                },
-            });
-        }
-        if (state === "queued" || state === "running") {
-            send_message({
-                channel: "notebook",
-                method: "interrupt_kernel",
-                message: {},
-            });
-        }
+        // let state = cell.state;
+        // if (state === "idle") {
+        //     send_message({
+        //         channel: "notebook",
+        //         method: "queue_cell",
+        //         message: {
+        //             cell_id: cell_id,
+        //             code: cell.source,
+        //         },
+        //     });
+        // }
+        // if (state === "queued" || state === "running") {
+        //     send_message({
+        //         channel: "notebook",
+        //         method: "interrupt_kernel",
+        //         message: {},
+        //     });
+        // }
+        console.log("primary_button_click", cell.id);
     }
 </script>
 
@@ -53,7 +52,7 @@
     }}
     bind:this={div}
 >
-    {#if $cells[$id_map[cell_id]].state == "idle"}
+    {#if cell.state == "idle"}
         <!-- {#if hover} -->
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -71,7 +70,7 @@
         <!-- {:else}
             <div class="font-mono text-[11px]">{execution_count}</div>
         {/if} -->
-    {:else if $cells[$id_map[cell_id]].state == "queued"}
+    {:else if cell.state == "queued"}
         {#if hover}
             <svg
                 viewBox="0 0 20 20"
@@ -106,7 +105,7 @@
                 </path>
             </svg>
         {/if}
-    {:else if $cells[$id_map[cell_id]].state == "running"}
+    {:else if cell.state == "running"}
         {#if hover}
             <svg
                 viewBox="0 0 20 20"

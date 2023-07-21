@@ -5,22 +5,101 @@
     let cell_div;
 
     import {
-        id_map,
-        cells,
         cp_graph,
-        pn_graph,
-        np_graph,
         html_elements,
+        ydoc,
         pc_graph,
-    } from "../stores/notebook";
+    } from "../stores/_notebook";
 
     onMount(() => {
         cell_div.setAttribute("cell_id", cell_id);
         $html_elements[cell_id] = cell_div;
+        $html_elements[cell_id].setAttribute("dragging", "false");
+    });
+
+    let cell = {
+        // cell should have dragging, while dragging all yjs' undomanager stops capturing changes
+        ycell: ydoc.getMap(cell_id),
+
+        get id() {
+            return this.ycell.get("id");
+        },
+        get type() {
+            return this.ycell.get("type");
+        },
+        get source() {
+            return this.ycell.get("source");
+        },
+        get execution_count() {
+            return this.ycell.get("execution_count");
+        },
+        get outputs() {
+            return this.ycell.get("outputs");
+        },
+        get top() {
+            return this.ycell.get("top");
+        },
+        get left() {
+            return this.ycell.get("left");
+        },
+        get width() {
+            return this.ycell.get("width");
+        },
+        get height() {
+            return this.ycell.get("height");
+        },
+        get collapsed() {
+            return this.ycell.get("collapsed");
+        },
+        get state() {
+            return this.ycell.get("state");
+        },
+
+        set id(value) {
+            console.error("ID is read-only");
+        },
+        set type(value) {
+            this.ycell.set("type", value);
+        },
+        set source(value) {
+            this.ycell.set("source", value);
+        },
+        set execution_count(value) {
+            console.error("Execution count is read-only");
+        },
+        set outputs(value) {
+            console.error("Outputs is read-only");
+        },
+        set top(value) {
+            this.ycell.set("top", value);
+        },
+        set left(value) {
+            this.ycell.set("left", value);
+        },
+        set width(value) {
+            this.ycell.set("width", value);
+        },
+        set height(value) {
+            this.ycell.set("height", value);
+        },
+        set collapsed(value) {
+            this.ycell.set("collapsed", value);
+        },
+        set state(value) {
+            console.error("State is read-only");
+        },
+    };
+
+    cell.ycell.observe((yevent) => {
+        cell = cell; // force reactivity
     });
 
     import CodeCell from "./CodeCell.svelte";
     import MarkdownCell from "./MarkdownCell.svelte";
+
+    function get_cell(id) {
+        return ydoc.getMap(id).toJSON();
+    }
 
     // dragging
     import mouse_pos from "../stores/mouse.js";
@@ -46,13 +125,15 @@
             dragging = true;
             dragging_began = false;
             dh_clicked = {
-                x: $mouse_pos.x - $cells[$id_map[cell_id]].left,
-                y: $mouse_pos.y - $cells[$id_map[cell_id]].top,
+                x: $mouse_pos.x - cell.left,
+                y: $mouse_pos.y - cell.top,
             };
             drag_cell_pos = {
-                x: $cells[$id_map[cell_id]].left,
-                y: $cells[$id_map[cell_id]].top,
+                x: cell.left,
+                y: cell.top,
             };
+        $html_elements[cell_id].setAttribute("dragging", "true");
+
         }
     }
 
@@ -69,8 +150,8 @@
             };
 
             if (!$cp_graph[cell_id]) {
-                $cells[$id_map[cell_id]].top = $mouse_pos.y - dh_clicked.y;
-                $cells[$id_map[cell_id]].left = $mouse_pos.x - dh_clicked.x;
+                cell.top = $mouse_pos.y - dh_clicked.y;
+                cell.left = $mouse_pos.x - dh_clicked.x;
             }
 
             // top of
@@ -90,15 +171,15 @@
                 el.classList.contains("dropzone")
             )[0];
             const dragzone_under_tissue = dragzone_under
-                ? dragzone_under.parentNode.parentNode
+                ? dragzone_under.parentNode
                 : undefined;
-
+                
             if (cell_under == undefined && tissue_under !== undefined) {
                 if (
                     (dragzone_under !== undefined &&
                         dragzone_under.getAttribute("cell_id") !==
                             tissue_under.getAttribute("cell_id")) ||
-                    dragzone_under == undefined
+                    dragzone_under === undefined
                 ) {
                     cell_under = tissue_under;
                 }
@@ -107,18 +188,19 @@
             // check if on cell
             if (cell_under) {
                 let _bounding_rect = {
-                    top: cell_under.offsetTop,
+                    top: cell_under.offsetTop - 4,
                     left: cell_under.offsetLeft,
                     width: cell_under.getBoundingClientRect().width,
                     height: cell_under.getBoundingClientRect().height,
                     bottom:
                         cell_under.offsetTop +
-                        cell_under.getBoundingClientRect().height,
+                        cell_under.getBoundingClientRect().height +
+                        4,
                 };
                 if (dnd_line === null) {
                     dnd_line = document.createElement("div");
                     dnd_line.style.position = "absolute";
-                    dnd_line.style.height = "3px";
+                    dnd_line.style.height = "2px";
                     dnd_line.style.borderRadius = "5px";
                     dnd_line.style.backgroundColor = "#29B0F8";
 
@@ -175,10 +257,12 @@
             // check if on tissue
             if (dragzone_under) {
                 let _bounding_rect = {
-                    top: tissue_under.offsetTop,
-                    left: tissue_under.offsetLeft,
-                    width: tissue_under.getBoundingClientRect().width,
-                    height: tissue_under.getBoundingClientRect().height,
+                    top:
+                        dragzone_under.getBoundingClientRect().top +
+                        2,
+                    left: dragzone_under_tissue.getBoundingClientRect().left,
+                    width: dragzone_under.getBoundingClientRect().width + 2,
+                    height: dragzone_under.getBoundingClientRect().height + 2,
                 };
 
                 if (dnd_box === null) {
@@ -190,16 +274,17 @@
                         _bounding_rect.width.toString() + "px";
                     dnd_box.style.height =
                         _bounding_rect.height.toString() + "px";
-                    dnd_box.style.backgroundColor = "#29B0F809";
-                    dnd_box.style.border = "3px solid #29B0F8";
+                    dnd_box.style.backgroundColor = "#689DB909";
+                    dnd_box.style.border = "2px solid #689DB9";
                     dnd_box.style.borderRadius = "5px";
                     dnd_box.style.pointerEvents = "none";
+                    dragzone_under.style.border = "2px solid #689DB9";
+                    dragzone_under.style.backgroundColor = "#689DB909";
 
                     dnd_box.setAttribute(
                         "cell_id",
                         dragzone_under.getAttribute("cell_id")
                     );
-
                     document.body.appendChild(dnd_box);
                 }
 
@@ -231,8 +316,8 @@
                 y: 0,
             };
 
-            $cells[$id_map[cell_id]].top = drag_cell_pos.y;
-            $cells[$id_map[cell_id]].left = drag_cell_pos.x;
+            cell.top = drag_cell_pos.y;
+            cell.left = drag_cell_pos.x;
 
             drag_cell_pos = {
                 x: null,
@@ -279,12 +364,14 @@
                 } else {
                     // dragging onto a non-parent cell
                     // TODO: now only snaps to bottom, make it snap to top as well
-                    $cells[$id_map[cell_id]].left =
-                        $cells[$id_map[dnd_cell_id]].left;
+                    // cell.left = $cells[dnd_cell_id].left;
+                    cell.left = get_cell(dnd_cell_id).left;
 
-                    $cells[$id_map[cell_id]].top =
-                        $cells[$id_map[dnd_cell_id]].top +
-                        $cells[$id_map[dnd_cell_id]].height +
+                    cell.top =
+                        // $cells[dnd_cell_id].top +
+                        // $cells[dnd_cell_id].height +
+                        get_cell(dnd_cell_id).top +
+                        get_cell(dnd_cell_id).height +
                         10;
                 }
 
@@ -348,6 +435,37 @@
         }
         dragging_began = false;
         dragging = false;
+        $html_elements[cell_id].setAttribute("dragging", "false");
+    }
+
+    // ---------- Parent and previous cell
+
+    let yparent_cell;
+    $: if ($cp_graph[cell_id]) {
+        yparent_cell = ydoc.getMap($cp_graph[cell_id]);
+    }
+    let parent_cell;
+    $: if (yparent_cell) {
+        parent_cell = yparent_cell.toJSON();
+        yparent_cell.observe((yevent) => {
+            parent_cell = yparent_cell.toJSON();
+        });
+    }
+
+    let yprev_cell;
+    $: if ($cp_graph[cell_id]) {
+        yprev_cell = ydoc.getMap(
+            [...$pc_graph[$cp_graph[cell_id]]][
+                [...$pc_graph[$cp_graph[cell_id]]].indexOf(cell_id) - 1
+            ]
+        );
+    }
+    let prev_cell;
+    $: if (yprev_cell) {
+        prev_cell = yprev_cell.toJSON();
+        yprev_cell.observe((yevent) => {
+            prev_cell = yprev_cell.toJSON();
+        });
     }
 
     $: if (
@@ -356,44 +474,48 @@
         $html_elements[$cp_graph[cell_id]]
     ) {
         // find loc of cell_id in $pc_graph[$cp_graph[cell_id]]
-        let cell_loc = [...$pc_graph[$cp_graph[cell_id]]].indexOf(cell_id);
-        if (cell_loc === 0) {
-            let parent_cell = $cells[$id_map[$cp_graph[cell_id]]];
+        let cell_list_loc = [...$pc_graph[$cp_graph[cell_id]]].indexOf(cell_id);
+        if (cell_list_loc === 0) {
+            // let parent_cell = $cells[$cp_graph[cell_id]];
             let top_pos =
                 parent_cell.top +
                 $html_elements[$cp_graph[cell_id]].querySelector("#title")
                     .clientHeight +
                 35;
-            let left_pos = parent_cell.left + 10;
-            if ($cells[$id_map[cell_id]].top !== top_pos) {
-                $cells[$id_map[cell_id]].top = top_pos;
+            let left_pos = parent_cell.left + 15;
+            if (cell.top !== top_pos) {
+                cell.top = top_pos;
             }
-            if ($cells[$id_map[cell_id]].left !== left_pos) {
-                $cells[$id_map[cell_id]].left = left_pos;
+            if (cell.left !== left_pos) {
+                cell.left = left_pos;
             }
         } else {
-            let prev_cell_id = [...$pc_graph[$cp_graph[cell_id]]][cell_loc - 1];
-
+            let prev_cell_id = [...$pc_graph[$cp_graph[cell_id]]][
+                cell_list_loc - 1
+            ];
+            // console.log("cell_id:", cell_id);
+            // console.log("prev_cell_id:", prev_cell_id);
             if (
                 (prev_cell_id in $pc_graph &&
                     $html_elements[prev_cell_id].getAttribute("dragging") ===
                         "false") ||
                 !(prev_cell_id in $pc_graph)
             ) {
-                let prev_cell = $cells[$id_map[prev_cell_id]];
+                // let prev_cell = $cells[prev_cell_id];
                 let top_pos = prev_cell.top + prev_cell.height + 11;
 
-                if ($cells[$id_map[cell_id]].top !== top_pos) {
-                    $cells[$id_map[cell_id]].top = top_pos;
+                if (cell.top !== top_pos) {
+                    cell.top = top_pos;
                 }
-                if ($cells[$id_map[cell_id]].left !== prev_cell.left) {
-                    $cells[$id_map[cell_id]].left = prev_cell.left;
+                if (cell.left !== prev_cell.left) {
+                    cell.left = prev_cell.left;
                 }
             }
         }
     }
 
-    // NewCellToolbar
+    // ---------- Components
+
     import NewCellToolbar from "../components/cell_components/new_cell_toolbar_components/NewCellToolbar.svelte";
     import CellToolbar from "./cell_components/CellToolbar.svelte";
 
@@ -404,18 +526,17 @@
     class="cell rounded-sm bg-oli-50 dark:bg-oli-700 border border-oli-200 dark:border-oli-500 absolute w-fit h-fit flex flex-col overflow-visible drop-shadow active:drop-shadow-md"
     bind:this={cell_div}
     style="
-    top: {drag_cell_pos.y ? drag_cell_pos.y : $cells[$id_map[cell_id]].top}px;
-    left: {drag_cell_pos.x ? drag_cell_pos.x : $cells[$id_map[cell_id]].left}px;
-    z-index: {dragging ? 9999 : 0};
-    cursor: {dragging ? 'grabbing' : 'default'};
-    border-color: {dragging ? '#29B0F8' : ''};
-    border-radius: {dragging ? '2px' : ''};
-    box-shadow: {dragging ? '0px 0px 2px 2px #29B0F844' : ''};
-    "
+        top: {drag_cell_pos.y ? drag_cell_pos.y : cell.top}px;
+        left: {drag_cell_pos.x ? drag_cell_pos.x : cell.left}px;
+        z-index: {dragging ? 9999 : 0};
+        cursor: {dragging ? 'grabbing' : 'default'};
+        border-color: {dragging ? '#29B0F8' : ''};
+        border-radius: {dragging ? '2px' : ''};
+        "
     on:mousedown={drag_mousedown}
     on:mouseup={drag_mouseup}
-    bind:clientHeight={$cells[$id_map[cell_id]].height}
-    bind:clientWidth={$cells[$id_map[cell_id]].width}
+    bind:clientHeight={cell.height}
+    bind:clientWidth={cell.width}
     on:mouseenter={() => {
         is_hover = true;
     }}
@@ -423,23 +544,35 @@
         is_hover = false;
     }}
 >
-    <CellToolbar {cell_id} {is_hover} />
-
+    <CellToolbar {cell} {is_hover} />
     <div style="height: fit-content; width: fit-content;">
-        {#if $cells[$id_map[cell_id]].type === "code"}
-            <CodeCell {cell_id} />
-        {:else if $cells[$id_map[cell_id]].type === "markdown"}
-            <MarkdownCell {cell_id} />
+        {#if cell.type === "code"}
+            <CodeCell {cell} />
+        {:else if cell.type === "markdown"}
+            <MarkdownCell {cell} />
         {/if}
     </div>
 
-    <NewCellToolbar {cell_id} />
-    <!-- <div
-        class="absolute top-0 left-0 w-full h-full"
+    <!-- <NewCellToolbar {cell_id} /> -->
+    <div
+        class="absolute bottom-0 right-0 w-fit h-fit text-gray-500 text-[9px] dark:text-gray-400"
         style="pointer-events: none;"
     >
         {cell_id}
-    </div> -->
+        {cell.top}, {cell.left}
+        {#if $html_elements[cell_id]}
+            {$html_elements[cell_id].clientWidth} x
+            {$html_elements[cell_id].clientHeight}
+        {/if}
+    </div>
+    {#if cell_id in $pc_graph}
+        <div
+            id="dropzone"
+            class="dropzone bg-oli-100 dark:bg-oli-700/50 rounded-b"
+            style="height:100px; width:100%"
+            {cell_id}
+        />
+    {/if}
 </div>
 
 <svelte:window on:mousemove={drag_mousemove} on:mouseup={drag_mouseup} />

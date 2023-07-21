@@ -1,6 +1,4 @@
 <script>
-    export let cell_id;
-
     import RunIcon from "../cell_components/Icons/run.svelte";
     import DeleteIcon from "../cell_components/Icons/delete.svelte";
     import PlusIcon from "../cell_components/Icons/plus.svelte";
@@ -13,25 +11,27 @@
     import Drag from "../cell_components/Icons/drag.svelte";
     import MenuButton from "../cell_components/MenuButton.svelte";
 
-    import { id_map, cells, pc_graph } from "../../stores/notebook";
+    import { cells, pc_graph } from "../../stores/_notebook";
 
-    $: cell = $cells[$id_map[cell_id]];
+    export let cell;
 
     export let is_hover = false;
 </script>
 
-<div class="flex h-fit w-full p-0.5 cursor-grab active:cursor-grabbing">
-    {#if $cells[$id_map[cell_id]].type === "code" || cell_id in $pc_graph}
-        <PrimeButton {cell_id} />
-        <ExecutionCount {cell_id} />
+<div
+    class="bg-oli-50 dark:bg-oli-600 flex h-fit w-full p-0.5 cursor-grab active:cursor-grabbing"
+>
+    {#if cell.type === "code" || cell.id in $pc_graph}
+        <PrimeButton {cell} />
+        <!-- <ExecutionCount {cell} /> -->
     {:else}
         <div class="h-5 w-5" />
     {/if}
     {#if is_hover}
         <Drag />
         <div class="flex flex-row ml-auto">
-            <DeleteButton {cell_id} />
-            <MenuButton {cell_id} />
+            <!-- <DeleteButton {cell} />
+            <MenuButton {cell} /> -->
         </div>
     {/if}
 </div>

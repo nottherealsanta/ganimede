@@ -34,16 +34,20 @@
         }
     };
 
+    $: console.log("zoom:", $zoom);
+
     onMount(async () => {
         open_socket();
+       
     });
 
     // import ZoomToolBar from "../components/canvas_components/zoom.svelte";
     import ToolbarCanvas from "./canvas_components/ToolbarCanvas.svelte";
+    
 </script>
 
 <div
-    class="canvas bg-oli dark:bg-oli-800 relative overflow-auto"
+    class="canvas bg-oli-50 dark:bg-oli-800 relative overflow-auto"
     style="
         height: 10000px; 
         width: 10000px; 

@@ -165,32 +165,32 @@ h6 {
 }
 
 
-.milkdown h1 {
+h1 {
 	font-size: x-large;
 	font-weight: 700;
 }
 
-.milkdown h2 {
+h2 {
 	font-size: large;
 	font-weight: 700;
 }
 
-.milkdown h3 {
+h3 {
 	font-size: medium;
 	font-weight: 700;
 }
 
-.milkdown h4 {
+h4 {
 	font-size: small;
 	font-weight: 700;
 }
 
-.milkdown h5 {
+h5 {
 	font-size: x-small;
 	font-weight: 700;
 }
 
-.milkdown h6 {
+h6 {
 	font-size: xx-small;
 	font-weight: 700;
 }

@@ -59,21 +59,10 @@ async def on_startup():
     # websocket route
     route_manager.add_websocket_route("/", comms.endpoint, "ws")
 
-
-
-#     ymap = ydoc.get_map("map")
-#     ymap.observe(test_observer)
-#     with ydoc.begin_transaction() as t:
-#         ymap.set(t, "testing_key", "testing_value")
-
-# def test_observer(event):
-#     print("---------")
-#     print(event)
-
 async def server_task():
     async with (
-        WebsocketServer() as websocket_server,
-        serve(websocket_server.serve, "localhost", 1234),
+        WebsocketServer(log=log) as websocket_server,
+        serve(websocket_server.serve, "localhost", 1234, close_timeout=1),
     ):
         await asyncio.Future()  # run forever
 
