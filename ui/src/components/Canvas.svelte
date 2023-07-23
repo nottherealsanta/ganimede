@@ -1,6 +1,5 @@
 <script>
     import Notebook from "./Notebook.svelte";
-    import { zoom } from "../stores/zoom";
     import { socket, open_socket, send_message } from "../stores/socket";
     import { onMount } from "svelte";
     let canvas_div = null;
@@ -34,7 +33,16 @@
         }
     };
 
-    $: console.log("zoom:", $zoom);
+    // ---------- zoom
+    import { zoom, set_zoom } from "../stores/zoom";
+
+    //// add event listeners
+    onMount(() => {
+        window.addEventListener("wheel", (event) => {
+            set_zoom(event);
+        }, { passive: false });
+    });
+
 
     onMount(async () => {
         open_socket();

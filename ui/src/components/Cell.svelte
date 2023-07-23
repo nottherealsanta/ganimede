@@ -9,6 +9,7 @@
         html_elements,
         ydoc,
         pc_graph,
+        cells
     } from "../stores/_notebook";
 
     onMount(() => {
@@ -115,8 +116,8 @@
         y: null,
     };
 
-    let dnd_line = null;
-    let dnd_box = null;
+    let selected_dragzone = null;
+    let dragover_cell = null;
 
     function drag_mousedown(e) {
         if (e.button === 0) {
@@ -136,7 +137,6 @@
 
         }
     }
-
     function drag_mousemove(e) {
         if (dragging) {
             dragging_began = true;
@@ -173,13 +173,12 @@
             const dragzone_under_tissue = dragzone_under
                 ? dragzone_under.parentNode
                 : undefined;
-                
+            
             if (cell_under == undefined && tissue_under !== undefined) {
                 if (
                     (dragzone_under !== undefined &&
                         dragzone_under.getAttribute("cell_id") !==
-                            tissue_under.getAttribute("cell_id")) ||
-                    dragzone_under === undefined
+                            tissue_under.getAttribute("cell_id"))
                 ) {
                     cell_under = tissue_under;
                 }
@@ -187,6 +186,7 @@
 
             // check if on cell
             if (cell_under) {
+                dragover_cell = cell_under;
                 let _bounding_rect = {
                     top: cell_under.offsetTop - 4,
                     left: cell_under.offsetLeft,
@@ -197,118 +197,67 @@
                         cell_under.getBoundingClientRect().height +
                         4,
                 };
-                if (dnd_line === null) {
-                    dnd_line = document.createElement("div");
-                    dnd_line.style.position = "absolute";
-                    dnd_line.style.height = "2px";
-                    dnd_line.style.borderRadius = "5px";
-                    dnd_line.style.backgroundColor = "#29B0F8";
-
-                    dnd_line.style.left = _bounding_rect.left.toString() + "px";
-                    dnd_line.style.width =
-                        _bounding_rect.width.toString() + "px";
-
-                    dnd_line.setAttribute(
-                        "cell_id",
-                        cell_under.getAttribute("cell_id")
-                    );
-                    document.body.appendChild(dnd_line);
-                }
 
                 // if mouse is on bottom/top half of cell
-                if (dnd_line) {
+                if (dragover_cell) {
                     if (
                         $mouse_pos.y >
                         _bounding_rect.top + _bounding_rect.height / 2
                     ) {
                         // draw pointer on bottom
-                        dnd_line.style.top =
-                            _bounding_rect.bottom.toString() + "px";
-                        dnd_line.setAttribute("position", "bottom");
+                        dragover_cell.style.borderTop = "";
+                        dragover_cell.style.borderBottom = "2px solid #29B0F8";
+                        dragover_cell.setAttribute("position", "bottom");
                     } else {
                         // draw pointer on top
-                        dnd_line.style.top =
-                            _bounding_rect.top.toString() + "px";
-                        dnd_line.setAttribute("position", "top");
+                        dragover_cell.style.borderTop = "2px solid #29B0F8";
+                        dragover_cell.style.borderBottom = "";
+                        dragover_cell.setAttribute("position", "top");
                     }
                 }
 
                 // if moved to another cell
                 if (
-                    dnd_line &&
-                    dnd_line.getAttribute("cell_id") !==
+                    dragover_cell &&
+                    dragover_cell.getAttribute("cell_id") !==
                         cell_under.getAttribute("cell_id")
                 ) {
-                    // if node in document.body then remove
-                    if (dnd_line.parentNode === document.body) {
-                        document.body.removeChild(dnd_line);
-                    }
-                    dnd_line = null;
+                   dragover_cell.style.borderTop = "";
+                    dragover_cell.style.borderBottom = "";
+                    dragover_cell = null;
                 }
             }
+
             // if mouse_on_cell is null
-            if (cell_under === undefined) {
-                if (dnd_line) {
-                    document.body.removeChild(dnd_line);
-                    dnd_line = null;
-                }
+            if (cell_under === undefined && dragover_cell) {
+                dragover_cell.style.borderTop = "";
+                dragover_cell.style.borderBottom = "";
+                dragover_cell = null;
             }
 
             // check if on tissue
             if (dragzone_under) {
-                let _bounding_rect = {
-                    top:
-                        dragzone_under.getBoundingClientRect().top +
-                        2,
-                    left: dragzone_under_tissue.getBoundingClientRect().left,
-                    width: dragzone_under.getBoundingClientRect().width + 2,
-                    height: dragzone_under.getBoundingClientRect().height + 2,
-                };
-
-                if (dnd_box === null) {
-                    dnd_box = document.createElement("div");
-                    dnd_box.style.position = "absolute";
-                    dnd_box.style.top = _bounding_rect.top.toString() + "px";
-                    dnd_box.style.left = _bounding_rect.left.toString() + "px";
-                    dnd_box.style.width =
-                        _bounding_rect.width.toString() + "px";
-                    dnd_box.style.height =
-                        _bounding_rect.height.toString() + "px";
-                    dnd_box.style.backgroundColor = "#689DB909";
-                    dnd_box.style.border = "2px solid #689DB9";
-                    dnd_box.style.borderRadius = "5px";
-                    dnd_box.style.pointerEvents = "none";
-                    dragzone_under.style.border = "2px solid #689DB9";
-                    dragzone_under.style.backgroundColor = "#689DB909";
-
-                    dnd_box.setAttribute(
-                        "cell_id",
-                        dragzone_under.getAttribute("cell_id")
-                    );
-                    document.body.appendChild(dnd_box);
-                }
 
                 // if moved to another tissue
-                if (
-                    dnd_box &&
-                    dnd_box.getAttribute("cell_id") !==
-                        dragzone_under.getAttribute("cell_id")
-                ) {
-                    // if node in document.body then remove
-                    if (dnd_box.parentNode === document.body) {
-                        document.body.removeChild(dnd_box);
-                    }
-                    dnd_box = null;
+                if (selected_dragzone && 
+                selected_dragzone.getAttribute("cell_id") !== cell_id) {
+                    selected_dragzone.style.border = "";
+                    selected_dragzone.style.backgroundColor = "";
                 }
+                // set styles
+                dragzone_under.style.border = "2px solid #689DB9";
+                dragzone_under.style.backgroundColor = "#689DB909";
+                selected_dragzone = dragzone_under;
+
             } else if (dragzone_under === undefined) {
-                if (dnd_box) {
-                    document.body.removeChild(dnd_box);
-                    dnd_box = null;
+                if (selected_dragzone) {
+                    selected_dragzone.style.border = "";
+                    selected_dragzone.style.backgroundColor = "";
+                    selected_dragzone = null;
                 }
             }
         }
     }
-
     function drag_mouseup(e) {
         if (dragging && dragging_began) {
             dh_clicked = {
@@ -324,8 +273,8 @@
                 y: null,
             };
 
-            if (dnd_line) {
-                let dnd_cell_id = dnd_line.getAttribute("cell_id");
+            if (dragover_cell) {
+                let dnd_cell_id = dragover_cell.getAttribute("cell_id");
                 let dnd_parent = $cp_graph[dnd_cell_id];
 
                 let cell_parent = $cp_graph[cell_id];
@@ -336,7 +285,7 @@
                 }
 
                 // insert cell after dnd_cell_id
-                let position = dnd_line.getAttribute("position");
+                let position = dragover_cell.getAttribute("position");
 
                 // copy pc_graph - to enforce reactivity (`set` updates cp_graph)
                 let pc_graph_copy = JSON.parse(JSON.stringify($pc_graph));
@@ -377,9 +326,10 @@
 
                 // update pc_graph
                 pc_graph.set(pc_graph_copy);
-            } else if (dnd_box) {
+
+            } else if (selected_dragzone) {
                 // add to the end of the tissue/parent
-                let dnd_cell_id = dnd_box.getAttribute("cell_id");
+                let dnd_cell_id = selected_dragzone.getAttribute("cell_id");
 
                 // if dropped on the same parent, preserve order
                 if ($cp_graph[cell_id] !== dnd_cell_id) {
@@ -421,13 +371,16 @@
                 }
             }
 
-            if (dnd_line) {
-                document.body.removeChild(dnd_line);
-                dnd_line = null;
+
+            if (dragover_cell){
+                dragover_cell.style.borderTop = "";
+                dragover_cell.style.borderBottom = "";
+                dragover_cell = null;
             }
-            if (dnd_box) {
-                document.body.removeChild(dnd_box);
-                dnd_box = null;
+            if (selected_dragzone) {
+                selected_dragzone.style.border = "";
+                selected_dragzone.style.backgroundColor = "";
+                selected_dragzone = null;
             }
 
             // sync
@@ -514,6 +467,17 @@
         }
     }
 
+    // ---------- reactive z-index
+    let z_index;
+    $: if (cell_div){ 
+        if(!($cp_graph[cell_id])){
+        cell_div.style.zIndex = 1;
+        z_index = 1;
+    } else {
+        cell_div.style.zIndex = $html_elements[$cp_graph[cell_id]].style.zIndex + 1;
+        z_index = $html_elements[$cp_graph[cell_id]].style.zIndex + 1;
+    }}
+
     // ---------- Components
 
     import NewCellToolbar from "../components/cell_components/new_cell_toolbar_components/NewCellToolbar.svelte";
@@ -528,10 +492,11 @@
     style="
         top: {drag_cell_pos.y ? drag_cell_pos.y : cell.top}px;
         left: {drag_cell_pos.x ? drag_cell_pos.x : cell.left}px;
-        z-index: {dragging ? 9999 : 0};
+        z-index: {dragging ? 9999 : z_index};
         cursor: {dragging ? 'grabbing' : 'default'};
         border-color: {dragging ? '#29B0F8' : ''};
         border-radius: {dragging ? '2px' : ''};
+        opacity: {dragging ? '0.75' : '1'};
         "
     on:mousedown={drag_mousedown}
     on:mouseup={drag_mouseup}
@@ -554,6 +519,7 @@
     </div>
 
     <!-- <NewCellToolbar {cell_id} /> -->
+    <!-- debug -->
     <div
         class="absolute bottom-0 right-0 w-fit h-fit text-gray-500 text-[9px] dark:text-gray-400"
         style="pointer-events: none;"
@@ -565,14 +531,7 @@
             {$html_elements[cell_id].clientHeight}
         {/if}
     </div>
-    {#if cell_id in $pc_graph}
-        <div
-            id="dropzone"
-            class="dropzone bg-oli-100 dark:bg-oli-700/50 rounded-b"
-            style="height:100px; width:100%"
-            {cell_id}
-        />
-    {/if}
+    
 </div>
 
 <svelte:window on:mousemove={drag_mousemove} on:mouseup={drag_mouseup} />

@@ -32,48 +32,21 @@ export const cells = writable(ycells.toJSON());
 
 ycells.observe((event) => {
     // TODO: optimize this
-    console.log("ycells changed", event, ycells.toJSON());
-    cells.set(ycells.toJSON());
-});
-
-
-// NP graph
-
-const ynp_graph = ydoc.getMap('np_graph');
-export const np_graph = writable(ynp_graph.toJSON());
-
-ynp_graph.observe((event) => {
-    // TODO: optimize this
-    console.log("np_graph changed", event, ynp_graph.toJSON());
-    np_graph.set(ynp_graph.toJSON());
-});
-
-np_graph.subscribe((value) => {
-    console.log("np_graph changed", value);
-}
-);
-export const pn_graph = derived(np_graph, $np_graph => {
-    // reverse np_graph, which is map of list
-    const pn_graph = {};
-    for (const prev in $np_graph) {
-        for (const next of $np_graph[prev]) {
-            if (pn_graph[next] === undefined) {
-                pn_graph[next] = [];
-            }
-            pn_graph[next].push(prev);
-        }
+    if (!event.transaction.local) {
+        cells.set(ycells.toJSON());
     }
-    return pn_graph;
-}
-);
-pn_graph.set = (value) => np_graph.update(n => {
-    console.error("pn_graph is read-only");
-}
-);
+});
 
+
+cells.subscribe((value) => {
+    // sync ycells with cells
+    for (const key in value) {
+        ycells.insert(parseInt(key), [value[key]]);
+    }
+});
 
 //  PC graph
-const ypc_graph = ydoc.getMap('pc_graph');
+export const ypc_graph = ydoc.getMap('pc_graph');
 export const pc_graph = writable(new Map());
 
 ypc_graph.observe((event) => {
@@ -84,6 +57,7 @@ ypc_graph.observe((event) => {
 });
 
 pc_graph.subscribe((value) => {
+
     for (const key in value) {
         ypc_graph.set(key, value[key]);
     }
@@ -91,7 +65,7 @@ pc_graph.subscribe((value) => {
 );
 
 export const cp_graph = derived(pc_graph, $pc_graph => {
-    // reverse np_graph, which is map of list
+    // reverse pc_graph, which is map of list
     const cp_graph = {};
     for (const parent in $pc_graph) {
         for (const child of $pc_graph[parent]) {
@@ -99,9 +73,42 @@ export const cp_graph = derived(pc_graph, $pc_graph => {
         }
     }
     return cp_graph;
-}
-);
+});
 cp_graph.set = (value) => pc_graph.update(n => {
     console.error("cp_graph is read-only");
+});
+
+// NP graph
+
+const ynp_graph = ydoc.getMap('np_graph');
+export const np_graph = writable(ynp_graph.toJSON());
+
+ynp_graph.observe((event) => {
+    // TODO: optimize this
+    if (!event.transaction.local) {
+        np_graph.set(ynp_graph.toJSON());
+    }
+});
+
+np_graph.subscribe((value) => {
+    for (const key in value) {
+        ynp_graph.set(key, value[key]);
+    }
 }
 );
+
+export const pn_graph = derived(np_graph, $np_graph => {
+    // reverse np_graph, which is map of list
+    const pn_graph = {};
+    for (const parent in $np_graph) {
+        for (const child of $np_graph[parent]) {
+            pn_graph[child] = parent;
+        }
+    }
+    return pn_graph;
+});
+
+pn_graph.set = (value) => np_graph.update(n => {
+    console.error("pn_graph is read-only");
+});
+

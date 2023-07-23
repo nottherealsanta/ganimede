@@ -21,7 +21,7 @@ class Notebook:
         kernel: Kernel,
         comms: Comms,
         ydoc: Y.YDoc,
-        notebook_path: str = f"{getcwd()}/tests/unlearning-CIFAR10.ipynb",
+        notebook_path: str = f"{getcwd()}/tests/test4.ipynb",
     ):
         self.kernel = kernel
         self.comms = comms
@@ -93,24 +93,6 @@ class Notebook:
             #         self.init_tlhw()
 
     def init_cells(self):
-
-        # cell list
-        # for cell in self.notebook_file["cells"]:
-        #     metadata = cell["metadata"] if "metadata" in cell else {}
-        #     gm_metadata = metadata["gm"] if "gm" in metadata else {}
-
-        #     self.cells.append(
-        #         Cell(
-        #             id=None,
-        #             type=cell["cell_type"],
-        #             source=cell["source"],
-        #             execution_count=cell["execution_count"]
-        #             if "execution_count" in cell
-        #             else None,
-        #             outputs=cell["outputs"] if "outputs" in cell else [],
-        #             **gm_metadata,
-        #         )
-        #     )
         
         ## y
         self.ycells = self.ydoc.get_array("cells")
@@ -141,9 +123,6 @@ class Notebook:
                 # ycells 
                 self.ycells.append(t, id)
 
-
-
-
         # np_graph and pc_graph
         notebook_metadata = self.notebook_file["metadata"]
         if "gm" not in notebook_metadata:
@@ -165,18 +144,7 @@ class Notebook:
         log.info(f"np_graph:{self.np_graph}")
         log.info(f"pc_graph:{self.pc_graph}")
 
-        # # debug
-        # for cell in self.cells:
-        #     log.debug(
-        #         f"""cell.id {cell.id}
-        #     cell.type {cell.type}
-        #     cell.source \n{"".join(cell.source)}
-        #     cell['is_heading'] {cell['is_heading']}
-        #     cell['heading_level'] {cell['heading_level']}
-        #     """
-        #     )
-        # log.debug(f"np_graph {self.np_graph}")
-        # log.debug(f"pc_graph {self.pc_graph}")
+
 
 
 
@@ -206,7 +174,7 @@ class Notebook:
             cells.append({
                 "id": id,
                 "is_heading": source.startswith("#") and cell.get("type") == "markdown",
-                "heading_level": source.split("/n")[0].count("#"),
+                "heading_level": source.split("/n")[0].count("#") if source.startswith("#") and cell.get("type") == "markdown" else None,
             })
             cell_list.append(i)
 
@@ -224,22 +192,12 @@ class Notebook:
                     if (
                         cells[i]['is_heading']
                         and cells[i]['heading_level']
-                        == cells[index]['heading_level']
-                    ):
-                        # self.np_graph[cells[index].id] = [cells[i].id]
-                        break
-                    if (
-                        cells[i]['is_heading']
-                        and cells[i]['heading_level']
-                        < cells[index]['heading_level']
+                        <= cells[index]['heading_level']
                     ):
                         break
 
-                    if len(children) > 0:
-                        prev = children[-1]
-                        # self.np_graph[cells[prev].id] = [cells[i].id]
                     children.append(i)
-
+                    
                     if (
                         cells[i]['is_heading']
                         and cells[i]['heading_level']
@@ -249,51 +207,48 @@ class Notebook:
                         last_child_id = self.pc_graph[cells[i]['id']][-1]
                         last_child_idx = [i for i, cell in enumerate(cells) if cell['id'] == last_child_id][0]
 
+                        # while last_child is a heading and has children
+                        # last_child = that heading's last child
                         while (
-                            cells[last_child_idx]['id'] in self.pc_graph
+                            cells[last_child_idx]['is_heading']
                             and len(self.pc_graph[cells[last_child_idx]['id']]) > 0
-                        ):  
-                            print( cells[cells[i]['id']])
-                            last_child_id = self.pc_graph[
-                                cells[cells[i]['id']]['id']
-                            ][-1]
-                            last_child_idx = self.id_map[last_child_id]
+                        ):
+                            last_child_id = self.pc_graph[cells[last_child_idx]['id']][-1]
+                            last_child_idx = [i for i, cell in enumerate(cells) if cell['id'] == last_child_id][0]
+                       
 
                         i = last_child_idx + 1
 
                         continue
-
+                    
                     i += 1
-
                 for child in children:
                     if cells[index]['id'] not in self.pc_graph:
                         self.pc_graph[cells[index]['id']] = []
                     self.pc_graph[cells[index]['id']].append(cells[child]['id'])
 
-                # log.debug(self.pc_graph)
-                # for i in range(0, len(self.pc_graph[cells[index]['id']]) - 1):
-                #     x_id = self.pc_graph[cells[index]['id']][i]
-                #     y_id = self.pc_graph[cells[index]['id']][i + 1]
-                #     x_idx = [i for i, cell in enumerate(cells) if cell['id'] == x_id][0]
-                #     y_idx = [i for i, cell in enumerate(cells) if cell['id'] == y_id][0]
-                #     self.np_graph[x_id] = [y_id]
-
         # connect the parent_less cells
         parent_less_cells = []
         for i, cell in enumerate(cells):
-            if cell['id'] not in self.pc_graph:
+            if cell['heading_level'] is 1:
+                parent_less_cells.append(cell['id'])
+            elif cell['id'] not in self.pc_graph:
                 for x in self.pc_graph.keys():
                     if cell['id'] in self.pc_graph[x]:
                         break
                 else:
                     parent_less_cells.append(cell['id'])
+            
 
         log.info(f"parent_less_cells: {parent_less_cells}")
         for i, cell_id in enumerate(parent_less_cells):
-            idx = [i for i, cell in enumerate(cells) if cell['id'] == cell_id][0]
-            if idx < len(cells) - 1:
-                self.np_graph[cell_id] = [cells[idx + 1]['id']]
+            if i < len(parent_less_cells) - 1:
+                self.np_graph[cell_id] = [parent_less_cells[i + 1]]
 
+                # debug
+        for cell in cells:
+            log.info(cell)
+            
     async def queue_cell(self, cell_id: str, code: list[str]):
         log.debug(f"queue_cell: {cell_id}")
         self.run_queue.put_nowait((cell_id, code))

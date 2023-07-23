@@ -1,18 +1,39 @@
-<script lang="ts">
+<script >
     import { onMount } from "svelte";
 
     export let current_cell_id;
     export let next_id;
 
-    import { cells, id_map } from "../../stores/notebook";
-    import Markdown from "../cell_components/Icons/markdown.svelte";
+    // import { cells, id_map } from "../../stores/notebook";
+    import { ydoc } from "../../stores/_notebook";
 
-    $: c = $cells[$id_map[current_cell_id]];
-    $: n = $cells[$id_map[next_id]];
+    // $: c = $cells[$id_map[current_cell_id]];
+    // $: n = $cells[$id_map[next_id]];
 
-    onMount(() => {
-        c = $cells[$id_map[current_cell_id]];
-        n = $cells[$id_map[next_id]];
+    // onMount(() => {
+    //     c = $cells[$id_map[current_cell_id]];
+    //     n = $cells[$id_map[next_id]];
+    // });
+    
+    let c = {
+        left: 0,
+        top: 0,
+        width: 0,
+        height: 0,
+    };
+    
+    let n = {
+        left: 0,
+        top: 0,
+        width: 0,
+        height: 0,
+    };
+    
+    ydoc.getMap(current_cell_id).observe((event) => {
+        c = event.target.toJSON();
+    });
+    ydoc.getMap(next_id).observe((event) => {
+        n = event.target.toJSON();
     });
 
     function get_box(x) {
