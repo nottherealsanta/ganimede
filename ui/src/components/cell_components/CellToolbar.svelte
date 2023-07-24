@@ -19,7 +19,7 @@
 </script>
 
 <div
-    class="bg-oli-50 dark:bg-oli-600 flex h-fit w-full p-0.5 cursor-grab active:cursor-grabbing"
+    class="bg-oli-50 dark:bg-oli-600 rounded-t flex h-fit w-full p-0.5  border-b border-oli-200 dark:border-oli-600  cursor-grab active:cursor-grabbing"
 >
     {#if cell.type === "code" || cell.id in $pc_graph}
         <PrimeButton {cell} />
@@ -30,8 +30,8 @@
     {#if is_hover}
         <Drag />
         <div class="flex flex-row ml-auto">
-            <!-- <DeleteButton {cell} />
-            <MenuButton {cell} /> -->
+            <DeleteButton {cell} />
+            <MenuButton {cell} />
         </div>
     {/if}
 </div>

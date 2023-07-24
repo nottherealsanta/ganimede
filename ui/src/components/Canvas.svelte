@@ -12,7 +12,7 @@
     let clicked_y = 0;
     let mouseDown = function (e) {
         if (
-            e.button === 1 && // if middle mouse button is pressed
+            e.button === 0 && // if middle mouse button is pressed
             (e.target.id === "tissue" || e.target.id === "canvas")
         ) {
             moving = true;
@@ -55,10 +55,10 @@
 </script>
 
 <div
-    class="canvas bg-oli-50 dark:bg-oli-800 relative overflow-auto"
+    class="canvas bg-oli dark:bg-oli-800 relative overflow-auto"
     style="
-        height: 10000px; 
-        width: 10000px; 
+        height: 20000px; 
+        width: 20000px; 
         transform: scale({$zoom}); 
         transform-origin: 0 0 ;
         background-image: radial-gradient(
@@ -66,7 +66,7 @@
             rgb(112, 112, 112) 000 1px,
             transparent 0
         );
-        background-size: 25px 25px;
+        background-size: 15px 15px;
     "
     id="canvas"
     on:mousemove={mouseMove}

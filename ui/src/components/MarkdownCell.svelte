@@ -185,13 +185,13 @@
 </script>
 
 <div
-    class="h-fit bg-oli dark:bg-[#1E1E1E] rounded-t cell-input py-0.5 pl-0.5 overflow-hidden relative align-middle cursor-text pointer-events-auto"
+    class="h-fit bg-oli dark:bg-[#1E1E1E] rounded cell-input py-0.5 pl-0.5 overflow-hidden relative align-middle cursor-text pointer-events-auto"
     style="min-width: min-content; width: {width}px"
     id="cell-input"
     bind:this={div}
 >
     <div
-        class="w-full h-fit px-1 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded"
+        class="w-full h-fit px-1 rounded"
         style="display: {focus ? 'none' : 'block'};"
     >
         {#if editor}

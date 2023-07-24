@@ -206,11 +206,11 @@
                     ) {
                         // draw pointer on bottom
                         dragover_cell.style.borderTop = "";
-                        dragover_cell.style.borderBottom = "2px solid #29B0F8";
+                        dragover_cell.style.borderBottom = "4px solid #29B0F8";
                         dragover_cell.setAttribute("position", "bottom");
                     } else {
                         // draw pointer on top
-                        dragover_cell.style.borderTop = "2px solid #29B0F8";
+                        dragover_cell.style.borderTop = "4px solid #29B0F8";
                         dragover_cell.style.borderBottom = "";
                         dragover_cell.setAttribute("position", "top");
                     }
@@ -487,7 +487,7 @@
 </script>
 
 <div
-    class="cell rounded-sm bg-oli-50 dark:bg-oli-700 border border-oli-200 dark:border-oli-500 absolute w-fit h-fit flex flex-col overflow-visible drop-shadow active:drop-shadow-md"
+    class="cell rounded bg-transparent border border-oli-500 dark:border-oli-200 absolute w-fit h-fit flex flex-col overflow-visible drop-shadow active:drop-shadow-md"
     bind:this={cell_div}
     style="
         top: {drag_cell_pos.y ? drag_cell_pos.y : cell.top}px;
@@ -495,7 +495,6 @@
         z-index: {dragging ? 9999 : z_index};
         cursor: {dragging ? 'grabbing' : 'default'};
         border-color: {dragging ? '#29B0F8' : ''};
-        border-radius: {dragging ? '2px' : ''};
         opacity: {dragging ? '0.75' : '1'};
         "
     on:mousedown={drag_mousedown}
@@ -520,7 +519,7 @@
 
     <!-- <NewCellToolbar {cell_id} /> -->
     <!-- debug -->
-    <div
+    <!-- <div
         class="absolute bottom-0 right-0 w-fit h-fit text-gray-500 text-[9px] dark:text-gray-400"
         style="pointer-events: none;"
     >
@@ -530,7 +529,7 @@
             {$html_elements[cell_id].clientWidth} x
             {$html_elements[cell_id].clientHeight}
         {/if}
-    </div>
+    </div> -->
     
 </div>
 

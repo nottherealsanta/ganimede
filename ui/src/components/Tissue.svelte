@@ -528,19 +528,20 @@
     // ---------- Components
     import NewCellToolbar from "../components/cell_components/new_cell_toolbar_components/NewCellToolbar.svelte";
     import CellToolbar from "./cell_components/CellToolbar.svelte";
+    import TissueToolbar from "./cell_components/TissueToolbar.svelte";
     import Cell from "./Cell.svelte";
 
     let is_hover = false;
 </script>
 
 <div
-    class="tissue rounded bg-transparent border-2 border-l-[6px] border-oli-200 dark:border-oli-500 absolute w-fit h-fit flex flex-col overflow-visible drop-shadow active:drop-shadow-md"
+    class="tissue rounded bg-transparent border-2 border-l-[6px] border-oli-500 dark:border-oli-200 absolute w-fit h-fit flex flex-col overflow-visible drop-shadow active:drop-shadow-md"
     bind:this={cell_div}
     style="
         top: {drag_cell_pos.y ? drag_cell_pos.y : cell.top}px;
         left: {drag_cell_pos.x ? drag_cell_pos.x : cell.left}px;
         cursor: {dragging ? 'grabbing' : 'default'};
-        border-color: {dragging ? '#29B0F8' : ''};
+        border-color: {dragging ? '#195DC5' : ''};
         opacity: {dragging ? '0.75' : '1'};
         "
     on:mousedown={drag_mousedown}
@@ -554,7 +555,7 @@
         is_hover = false;
     }}
 >
-    <CellToolbar {cell} {is_hover} />
+    <TissueToolbar {cell} {is_hover} />
     <div class="bg-oli dark:bg-oli-800 h-fit w-full flex" id="title">
         {#if cell.type === "code"}
             <CodeCell {cell} />
@@ -566,9 +567,10 @@
     <!-- <NewCellToolbar {cell_id} /> -->
 
     <!-- dropzone -->
-    <div class="dropzone bg-oli border-t-2 border-oli-200" {cell_id}>
+    <div class="dropzone bg-oli dark:bg-oli-800 border-t-2 border-oli-500 dark:border-oli-200" 
+    {cell_id}>
         <div
-            class=" bg-oli/80 dark:bg-oli-700/50 pointer-events-none"
+            class=" bg-transparent pointer-events-none"
             style="width:{dropzone_width}px; height:{dropzone_height}px;"
             {cell_id}
             on:mousedown={(event) => {
@@ -578,7 +580,7 @@
     </div>
 
     <!-- debug -->
-    <div
+    <!-- <div
         class="absolute bottom-0 right-0 w-fit h-fit text-gray-500 text-[9px] dark:text-gray-400"
         style="pointer-events: none;"
     >
@@ -589,17 +591,7 @@
             {$html_elements[cell_id].clientHeight}
             -- {dropzone_width}
         {/if}
-    </div>
+    </div> -->
 </div>
 
 <svelte:window on:mousemove={drag_mousemove} on:mouseup={drag_mouseup} />
-
-<!-- {#if cell_id in $pc_graph}
-    {#each $pc_graph[cell_id] as child_cell_id}
-        {#if cell_id in $pc_graph}
-            <svelte:self cell_id={child_cell_id} />
-        {:else}
-            <Cell cell_id={child_cell_id} />
-        {/if}
-    {/each}
-{/if} -->

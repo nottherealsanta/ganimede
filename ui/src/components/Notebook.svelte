@@ -15,7 +15,7 @@
     }
 
     function align_parent_less_cells() {
-        let top = 5000;
+        let top = 1000;
         let left = 5000;
         for (let cell_id of $cells) {
             if ($cp_graph[cell_id]) {
@@ -25,7 +25,13 @@
             top += $html_elements[cell_id].offsetHeight + 10;
             get_cell(cell_id).set("left", left);
         }
-        window.scrollTo(4900, 4900)
+        // window.scrollTo(4900, 1000)
+        // scroll to the first cell
+        window.scrollTo({
+            top: get_cell($cells[0]).get("top") - 100,
+            left: get_cell($cells[0]).get("left") - window.innerWidth / 2,
+            behavior: "smooth",
+        });
         // 
     }
 
@@ -34,10 +40,11 @@
     $: if ($cells !== undefined && $html_elements !== undefined && !aligned ) {
         aligned = true;
         // call align_parent_less_cells() after 1 second
-        if (!(get_cell($cells[0]).get("top") === 0)){
-        
-        setTimeout(align_parent_less_cells, 1000);
+        console.log("get_cell($cells[0]).get",get_cell($cells[0]).get("top"))
+        if (get_cell($cells[0]).get("top") === null || get_cell($cells[0]).get("top") === undefined) {
+            setTimeout(align_parent_less_cells, 1000);
         }
+        
     }
     
 

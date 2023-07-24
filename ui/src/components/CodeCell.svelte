@@ -27,7 +27,7 @@
     }}
 >
     <div
-        class="flex flex-col items-start w-auto h-auto rounded p-0.25 border-t border-oli-200 dark:border-oli-600 justify-start align-middle"
+        class="flex flex-col items-start w-auto h-auto rounded p-0.25justify-start align-middle"
     >
         <CodeEditor {cell} bind:focus />
         <!-- 

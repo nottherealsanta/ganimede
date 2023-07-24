@@ -1,7 +1,7 @@
 <script>
-    export let cell_id;
+    export let cell;
     async function click() {
-        console.log(cell_id);
+        console.log(cell);
     }
 </script>
 
