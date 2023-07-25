@@ -1,6 +1,6 @@
 # Ganimede
 
-Re-thinking Computational Notebooks.
+Next Computational Notebooks.
 
     - Canvas: build the flow of code in 2D space
     - Auto cell commit: every run of a cell is auto-checkpointed
