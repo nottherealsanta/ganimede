@@ -55,7 +55,7 @@
 </script>
 
 <div
-    class="canvas bg-oli dark:bg-oli-800 relative overflow-auto"
+    class="canvas bg-oli dark:bg-oli-700 relative overflow-auto"
     style="
         height: 20000px; 
         width: 20000px; 

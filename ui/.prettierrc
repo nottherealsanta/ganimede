@@ -1,10 +1,8 @@
 {
-  "tabWidth": 4,
+  "tabWidth": 2,
   "useTabs": false,
   "plugins": [
-    "prettier-plugin-svelte",
-    "prettier-plugin-organize-imports",
-    "prettier-plugin-tailwindcss" 
+    "prettier-plugin-svelte"
   ],
   "pluginSearchDirs": false
 }

@@ -1,495 +1,478 @@
 <script>
-    import { onMount } from "svelte";
+  import { onMount } from "svelte";
 
-    export let cell_id;
-    let cell_div;
+  export let cell_id;
+  let cell_div;
 
-    import {
-        cp_graph,
-        html_elements,
-        ydoc,
-        pc_graph,
-        cells
-    } from "../stores/_notebook";
+  import {
+    cp_graph,
+    html_elements,
+    ydoc,
+    pc_graph,
+    cells,
+  } from "../stores/_notebook";
 
-    onMount(() => {
-        cell_div.setAttribute("cell_id", cell_id);
-        $html_elements[cell_id] = cell_div;
-        $html_elements[cell_id].setAttribute("dragging", "false");
-    });
+  onMount(() => {
+    cell_div.setAttribute("cell_id", cell_id);
+    $html_elements[cell_id] = cell_div;
+    $html_elements[cell_id].setAttribute("dragging", "false");
+  });
 
-    let cell = {
-        // cell should have dragging, while dragging all yjs' undomanager stops capturing changes
-        ycell: ydoc.getMap(cell_id),
+  let cell = {
+    // cell should have dragging, while dragging all yjs' undomanager stops capturing changes
+    ycell: ydoc.getMap(cell_id),
 
-        get id() {
-            return this.ycell.get("id");
-        },
-        get type() {
-            return this.ycell.get("type");
-        },
-        get source() {
-            return this.ycell.get("source");
-        },
-        get execution_count() {
-            return this.ycell.get("execution_count");
-        },
-        get outputs() {
-            return this.ycell.get("outputs");
-        },
-        get top() {
-            return this.ycell.get("top");
-        },
-        get left() {
-            return this.ycell.get("left");
-        },
-        get width() {
-            return this.ycell.get("width");
-        },
-        get height() {
-            return this.ycell.get("height");
-        },
-        get collapsed() {
-            return this.ycell.get("collapsed");
-        },
-        get state() {
-            return this.ycell.get("state");
-        },
+    get id() {
+      return this.ycell.get("id");
+    },
+    get type() {
+      return this.ycell.get("type");
+    },
+    get source() {
+      return this.ycell.get("source");
+    },
+    get execution_count() {
+      return this.ycell.get("execution_count");
+    },
+    get outputs() {
+      return this.ycell.get("outputs");
+    },
+    get top() {
+      return this.ycell.get("top");
+    },
+    get left() {
+      return this.ycell.get("left");
+    },
+    get width() {
+      return this.ycell.get("width");
+    },
+    get height() {
+      return this.ycell.get("height");
+    },
+    get collapsed() {
+      return this.ycell.get("collapsed");
+    },
+    get state() {
+      return this.ycell.get("state");
+    },
 
-        set id(value) {
-            console.error("ID is read-only");
-        },
-        set type(value) {
-            this.ycell.set("type", value);
-        },
-        set source(value) {
-            this.ycell.set("source", value);
-        },
-        set execution_count(value) {
-            console.error("Execution count is read-only");
-        },
-        set outputs(value) {
-            console.error("Outputs is read-only");
-        },
-        set top(value) {
-            this.ycell.set("top", value);
-        },
-        set left(value) {
-            this.ycell.set("left", value);
-        },
-        set width(value) {
-            this.ycell.set("width", value);
-        },
-        set height(value) {
-            this.ycell.set("height", value);
-        },
-        set collapsed(value) {
-            this.ycell.set("collapsed", value);
-        },
-        set state(value) {
-            console.error("State is read-only");
-        },
-    };
+    set id(value) {
+      console.error("ID is read-only");
+    },
+    set type(value) {
+      this.ycell.set("type", value);
+    },
+    set source(value) {
+      this.ycell.set("source", value);
+    },
+    set execution_count(value) {
+      console.error("Execution count is read-only");
+    },
+    set outputs(value) {
+      console.error("Outputs is read-only");
+    },
+    set top(value) {
+      this.ycell.set("top", value);
+    },
+    set left(value) {
+      this.ycell.set("left", value);
+    },
+    set width(value) {
+      this.ycell.set("width", value);
+    },
+    set height(value) {
+      this.ycell.set("height", value);
+    },
+    set collapsed(value) {
+      this.ycell.set("collapsed", value);
+    },
+    set state(value) {
+      console.error("State is read-only");
+    },
+  };
 
-    cell.ycell.observe((yevent) => {
-        cell = cell; // force reactivity
-    });
+  cell.ycell.observe((yevent) => {
+    cell = cell; // force reactivity
+  });
 
-    import CodeCell from "./CodeCell.svelte";
-    import MarkdownCell from "./MarkdownCell.svelte";
+  import CodeCell from "./CodeCell.svelte";
+  import MarkdownCell from "./MarkdownCell.svelte";
 
-    function get_cell(id) {
-        return ydoc.getMap(id).toJSON();
+  function get_cell(id) {
+    return ydoc.getMap(id).toJSON();
+  }
+
+  // dragging
+  import mouse_pos from "../stores/mouse.js";
+
+  let dragging = false;
+  let dragging_began = false;
+  let dh_clicked = {
+    x: 0,
+    y: 0,
+  };
+  let drag_cell_pos = {
+    x: null,
+    y: null,
+  };
+
+  let selected_dragzone = null;
+  let dragover_cell = null;
+
+  function drag_mousedown(e) {
+    if (e.button === 0) {
+      e.stopPropagation();
+      e.preventDefault();
+      dragging = true;
+      dragging_began = false;
+      dh_clicked = {
+        x: $mouse_pos.x - cell.left,
+        y: $mouse_pos.y - cell.top,
+      };
+      drag_cell_pos = {
+        x: cell.left,
+        y: cell.top,
+      };
+      $html_elements[cell_id].setAttribute("dragging", "true");
     }
+  }
+  function drag_mousemove(e) {
+    if (dragging) {
+      dragging_began = true;
+      e.preventDefault();
+      e.stopPropagation();
 
-    // dragging
-    import mouse_pos from "../stores/mouse.js";
+      // set cell position while dragging
+      drag_cell_pos = {
+        x: $mouse_pos.x - dh_clicked.x,
+        y: $mouse_pos.y - dh_clicked.y,
+      };
 
-    let dragging = false;
-    let dragging_began = false;
-    let dh_clicked = {
+      if (!$cp_graph[cell_id]) {
+        cell.top = $mouse_pos.y - dh_clicked.y;
+        cell.left = $mouse_pos.x - dh_clicked.x;
+      }
+
+      // top of
+      const elements_under = document.elementsFromPoint(e.clientX, e.clientY);
+      let cell_under = elements_under.filter(
+        (el) =>
+          el.classList.contains("cell") &&
+          el.getAttribute("cell_id") !== cell_id,
+      )[0];
+      let tissue_under = elements_under.filter((el) =>
+        el.classList.contains("tissue"),
+      )[0];
+      const dragzone_under = elements_under.filter((el) =>
+        el.classList.contains("dropzone"),
+      )[0];
+      const dragzone_under_tissue = dragzone_under
+        ? dragzone_under.parentNode
+        : undefined;
+
+      if (cell_under == undefined && tissue_under !== undefined) {
+        if (
+          dragzone_under !== undefined &&
+          dragzone_under.getAttribute("cell_id") !==
+            tissue_under.getAttribute("cell_id")
+        ) {
+          cell_under = tissue_under;
+        }
+      }
+
+      // check if on cell
+      if (cell_under) {
+        dragover_cell = cell_under;
+        let _bounding_rect = {
+          top: cell_under.offsetTop - 4,
+          left: cell_under.offsetLeft,
+          width: cell_under.getBoundingClientRect().width,
+          height: cell_under.getBoundingClientRect().height,
+          bottom:
+            cell_under.offsetTop +
+            cell_under.getBoundingClientRect().height +
+            4,
+        };
+
+        // if mouse is on bottom/top half of cell
+        if (dragover_cell) {
+          if ($mouse_pos.y > _bounding_rect.top + _bounding_rect.height / 2) {
+            // draw pointer on bottom
+            dragover_cell.style.borderTop = "";
+            dragover_cell.style.borderBottom = "4px solid #29B0F8";
+            dragover_cell.setAttribute("position", "bottom");
+          } else {
+            // draw pointer on top
+            dragover_cell.style.borderTop = "4px solid #29B0F8";
+            dragover_cell.style.borderBottom = "";
+            dragover_cell.setAttribute("position", "top");
+          }
+        }
+
+        // if moved to another cell
+        if (
+          dragover_cell &&
+          dragover_cell.getAttribute("cell_id") !==
+            cell_under.getAttribute("cell_id")
+        ) {
+          dragover_cell.style.borderTop = "";
+          dragover_cell.style.borderBottom = "";
+          dragover_cell = null;
+        }
+      }
+
+      // if mouse_on_cell is null
+      if (cell_under === undefined && dragover_cell) {
+        dragover_cell.style.borderTop = "";
+        dragover_cell.style.borderBottom = "";
+        dragover_cell = null;
+      }
+
+      // check if on tissue
+      if (dragzone_under) {
+        // if moved to another tissue
+        if (
+          selected_dragzone &&
+          selected_dragzone.getAttribute("cell_id") !== cell_id
+        ) {
+          selected_dragzone.style.border = "";
+          selected_dragzone.style.backgroundColor = "";
+        }
+        // set styles
+        dragzone_under.style.border = "2px solid #689DB9";
+        dragzone_under.style.backgroundColor = "#689DB909";
+        selected_dragzone = dragzone_under;
+      } else if (dragzone_under === undefined) {
+        if (selected_dragzone) {
+          selected_dragzone.style.border = "";
+          selected_dragzone.style.backgroundColor = "";
+          selected_dragzone = null;
+        }
+      }
+    }
+  }
+  function drag_mouseup(e) {
+    if (dragging && dragging_began) {
+      dh_clicked = {
         x: 0,
         y: 0,
-    };
-    let drag_cell_pos = {
+      };
+
+      cell.top = drag_cell_pos.y;
+      cell.left = drag_cell_pos.x;
+
+      drag_cell_pos = {
         x: null,
         y: null,
-    };
+      };
 
-    let selected_dragzone = null;
-    let dragover_cell = null;
+      if (dragover_cell) {
+        let dnd_cell_id = dragover_cell.getAttribute("cell_id");
+        let dnd_parent = $cp_graph[dnd_cell_id];
 
-    function drag_mousedown(e) {
-        if (e.button === 0) {
-            e.stopPropagation();
-            e.preventDefault();
-            dragging = true;
-            dragging_began = false;
-            dh_clicked = {
-                x: $mouse_pos.x - cell.left,
-                y: $mouse_pos.y - cell.top,
-            };
-            drag_cell_pos = {
-                x: cell.left,
-                y: cell.top,
-            };
-        $html_elements[cell_id].setAttribute("dragging", "true");
-
+        let cell_parent = $cp_graph[cell_id];
+        // let cell_loc = [...$pc_graph[cell_parent]].indexOf(cell_id);
+        // check if cell is in some parent
+        if (cell_parent) {
+          var cell_loc = [...$pc_graph[cell_parent]].indexOf(cell_id);
         }
-    }
-    function drag_mousemove(e) {
-        if (dragging) {
-            dragging_began = true;
-            e.preventDefault();
-            e.stopPropagation();
 
-            // set cell position while dragging
-            drag_cell_pos = {
-                x: $mouse_pos.x - dh_clicked.x,
-                y: $mouse_pos.y - dh_clicked.y,
-            };
+        // insert cell after dnd_cell_id
+        let position = dragover_cell.getAttribute("position");
 
-            if (!$cp_graph[cell_id]) {
-                cell.top = $mouse_pos.y - dh_clicked.y;
-                cell.left = $mouse_pos.x - dh_clicked.x;
-            }
+        // copy pc_graph - to enforce reactivity (`set` updates cp_graph)
+        let pc_graph_copy = JSON.parse(JSON.stringify($pc_graph));
 
-            // top of
-            const elements_under = document.elementsFromPoint(
-                e.clientX,
-                e.clientY
-            );
-            let cell_under = elements_under.filter(
-                (el) =>
-                    el.classList.contains("cell") &&
-                    el.getAttribute("cell_id") !== cell_id
-            )[0];
-            let tissue_under = elements_under.filter((el) =>
-                el.classList.contains("tissue")
-            )[0];
-            const dragzone_under = elements_under.filter((el) =>
-                el.classList.contains("dropzone")
-            )[0];
-            const dragzone_under_tissue = dragzone_under
-                ? dragzone_under.parentNode
-                : undefined;
-            
-            if (cell_under == undefined && tissue_under !== undefined) {
-                if (
-                    (dragzone_under !== undefined &&
-                        dragzone_under.getAttribute("cell_id") !==
-                            tissue_under.getAttribute("cell_id"))
-                ) {
-                    cell_under = tissue_under;
-                }
-            }
-
-            // check if on cell
-            if (cell_under) {
-                dragover_cell = cell_under;
-                let _bounding_rect = {
-                    top: cell_under.offsetTop - 4,
-                    left: cell_under.offsetLeft,
-                    width: cell_under.getBoundingClientRect().width,
-                    height: cell_under.getBoundingClientRect().height,
-                    bottom:
-                        cell_under.offsetTop +
-                        cell_under.getBoundingClientRect().height +
-                        4,
-                };
-
-                // if mouse is on bottom/top half of cell
-                if (dragover_cell) {
-                    if (
-                        $mouse_pos.y >
-                        _bounding_rect.top + _bounding_rect.height / 2
-                    ) {
-                        // draw pointer on bottom
-                        dragover_cell.style.borderTop = "";
-                        dragover_cell.style.borderBottom = "4px solid #29B0F8";
-                        dragover_cell.setAttribute("position", "bottom");
-                    } else {
-                        // draw pointer on top
-                        dragover_cell.style.borderTop = "4px solid #29B0F8";
-                        dragover_cell.style.borderBottom = "";
-                        dragover_cell.setAttribute("position", "top");
-                    }
-                }
-
-                // if moved to another cell
-                if (
-                    dragover_cell &&
-                    dragover_cell.getAttribute("cell_id") !==
-                        cell_under.getAttribute("cell_id")
-                ) {
-                   dragover_cell.style.borderTop = "";
-                    dragover_cell.style.borderBottom = "";
-                    dragover_cell = null;
-                }
-            }
-
-            // if mouse_on_cell is null
-            if (cell_under === undefined && dragover_cell) {
-                dragover_cell.style.borderTop = "";
-                dragover_cell.style.borderBottom = "";
-                dragover_cell = null;
-            }
-
-            // check if on tissue
-            if (dragzone_under) {
-
-                // if moved to another tissue
-                if (selected_dragzone && 
-                selected_dragzone.getAttribute("cell_id") !== cell_id) {
-                    selected_dragzone.style.border = "";
-                    selected_dragzone.style.backgroundColor = "";
-                }
-                // set styles
-                dragzone_under.style.border = "2px solid #689DB9";
-                dragzone_under.style.backgroundColor = "#689DB909";
-                selected_dragzone = dragzone_under;
-
-            } else if (dragzone_under === undefined) {
-                if (selected_dragzone) {
-                    selected_dragzone.style.border = "";
-                    selected_dragzone.style.backgroundColor = "";
-                    selected_dragzone = null;
-                }
-            }
+        // remove cell from parent
+        if (cell_parent) {
+          pc_graph_copy[cell_parent].splice(cell_loc, 1);
         }
-    }
-    function drag_mouseup(e) {
-        if (dragging && dragging_began) {
-            dh_clicked = {
-                x: 0,
-                y: 0,
-            };
 
-            cell.top = drag_cell_pos.y;
-            cell.left = drag_cell_pos.x;
-
-            drag_cell_pos = {
-                x: null,
-                y: null,
-            };
-
-            if (dragover_cell) {
-                let dnd_cell_id = dragover_cell.getAttribute("cell_id");
-                let dnd_parent = $cp_graph[dnd_cell_id];
-
-                let cell_parent = $cp_graph[cell_id];
-                // let cell_loc = [...$pc_graph[cell_parent]].indexOf(cell_id);
-                // check if cell is in some parent
-                if (cell_parent) {
-                    var cell_loc = [...$pc_graph[cell_parent]].indexOf(cell_id);
-                }
-
-                // insert cell after dnd_cell_id
-                let position = dragover_cell.getAttribute("position");
-
-                // copy pc_graph - to enforce reactivity (`set` updates cp_graph)
-                let pc_graph_copy = JSON.parse(JSON.stringify($pc_graph));
-
-                // remove cell from parent
-                if (cell_parent) {
-                    pc_graph_copy[cell_parent].splice(cell_loc, 1);
-                }
-
-                // add to next to dnd_cell_id
-                let dnd_cell_loc_pos;
-                if (dnd_parent) {
-                    if (position === "bottom") {
-                        dnd_cell_loc_pos =
-                            pc_graph_copy[dnd_parent].indexOf(dnd_cell_id) + 1;
-                    } else if (position === "top") {
-                        dnd_cell_loc_pos =
-                            pc_graph_copy[dnd_parent].indexOf(dnd_cell_id);
-                    }
-                    pc_graph_copy[dnd_parent].splice(
-                        dnd_cell_loc_pos,
-                        0,
-                        cell_id
-                    );
-                } else {
-                    // dragging onto a non-parent cell
-                    // TODO: now only snaps to bottom, make it snap to top as well
-                    // cell.left = $cells[dnd_cell_id].left;
-                    cell.left = get_cell(dnd_cell_id).left;
-
-                    cell.top =
-                        // $cells[dnd_cell_id].top +
-                        // $cells[dnd_cell_id].height +
-                        get_cell(dnd_cell_id).top +
-                        get_cell(dnd_cell_id).height +
-                        10;
-                }
-
-                // update pc_graph
-                pc_graph.set(pc_graph_copy);
-
-            } else if (selected_dragzone) {
-                // add to the end of the tissue/parent
-                let dnd_cell_id = selected_dragzone.getAttribute("cell_id");
-
-                // if dropped on the same parent, preserve order
-                if ($cp_graph[cell_id] !== dnd_cell_id) {
-                    // copy pc_graph - to enforce reactivity (`set` updates cp_graph)
-                    let pc_graph_copy = JSON.parse(JSON.stringify($pc_graph));
-
-                    let cell_parent = $cp_graph[cell_id];
-
-                    // remove cell from parent
-                    if (cell_parent) {
-                        pc_graph_copy[cell_parent].splice(
-                            [...$pc_graph[cell_parent]].indexOf(cell_id),
-                            1
-                        );
-                    }
-
-                    // add to the end of the tissue/parent
-                    pc_graph_copy[dnd_cell_id].push(cell_id);
-
-                    // update pc_graph
-                    pc_graph.set(pc_graph_copy);
-                }
-            } else {
-                // remove from parent
-                let cell_parent = $cp_graph[cell_id];
-
-                // if cell is in some parent
-                if (cell_parent) {
-                    let cell_loc = [...$pc_graph[cell_parent]].indexOf(cell_id);
-
-                    // copy pc_graph - to enforce reactivity (`set` updates cp_graph)
-                    let pc_graph_copy = JSON.parse(JSON.stringify($pc_graph));
-
-                    // remove cell from parent
-                    pc_graph_copy[cell_parent].splice(cell_loc, 1);
-
-                    // update pc_graph
-                    pc_graph.set(pc_graph_copy);
-                }
-            }
-
-
-            if (dragover_cell){
-                dragover_cell.style.borderTop = "";
-                dragover_cell.style.borderBottom = "";
-                dragover_cell = null;
-            }
-            if (selected_dragzone) {
-                selected_dragzone.style.border = "";
-                selected_dragzone.style.backgroundColor = "";
-                selected_dragzone = null;
-            }
-
-            // sync
-            // sync_cell_properties(cell_id);
-        }
-        dragging_began = false;
-        dragging = false;
-        $html_elements[cell_id].setAttribute("dragging", "false");
-    }
-
-    // ---------- Parent and previous cell
-
-    let yparent_cell;
-    $: if ($cp_graph[cell_id]) {
-        yparent_cell = ydoc.getMap($cp_graph[cell_id]);
-    }
-    let parent_cell;
-    $: if (yparent_cell) {
-        parent_cell = yparent_cell.toJSON();
-        yparent_cell.observe((yevent) => {
-            parent_cell = yparent_cell.toJSON();
-        });
-    }
-
-    let yprev_cell;
-    $: if ($cp_graph[cell_id]) {
-        yprev_cell = ydoc.getMap(
-            [...$pc_graph[$cp_graph[cell_id]]][
-                [...$pc_graph[$cp_graph[cell_id]]].indexOf(cell_id) - 1
-            ]
-        );
-    }
-    let prev_cell;
-    $: if (yprev_cell) {
-        prev_cell = yprev_cell.toJSON();
-        yprev_cell.observe((yevent) => {
-            prev_cell = yprev_cell.toJSON();
-        });
-    }
-
-    $: if (
-        $cp_graph[cell_id] &&
-        !dragging &&
-        $html_elements[$cp_graph[cell_id]]
-    ) {
-        // find loc of cell_id in $pc_graph[$cp_graph[cell_id]]
-        let cell_list_loc = [...$pc_graph[$cp_graph[cell_id]]].indexOf(cell_id);
-        if (cell_list_loc === 0) {
-            // let parent_cell = $cells[$cp_graph[cell_id]];
-            let top_pos =
-                parent_cell.top +
-                $html_elements[$cp_graph[cell_id]].querySelector("#title")
-                    .clientHeight +
-                35;
-            let left_pos = parent_cell.left + 15;
-            if (cell.top !== top_pos) {
-                cell.top = top_pos;
-            }
-            if (cell.left !== left_pos) {
-                cell.left = left_pos;
-            }
+        // add to next to dnd_cell_id
+        let dnd_cell_loc_pos;
+        if (dnd_parent) {
+          if (position === "bottom") {
+            dnd_cell_loc_pos =
+              pc_graph_copy[dnd_parent].indexOf(dnd_cell_id) + 1;
+          } else if (position === "top") {
+            dnd_cell_loc_pos = pc_graph_copy[dnd_parent].indexOf(dnd_cell_id);
+          }
+          pc_graph_copy[dnd_parent].splice(dnd_cell_loc_pos, 0, cell_id);
         } else {
-            let prev_cell_id = [...$pc_graph[$cp_graph[cell_id]]][
-                cell_list_loc - 1
-            ];
-            // console.log("cell_id:", cell_id);
-            // console.log("prev_cell_id:", prev_cell_id);
-            if (
-                (prev_cell_id in $pc_graph &&
-                    $html_elements[prev_cell_id].getAttribute("dragging") ===
-                        "false") ||
-                !(prev_cell_id in $pc_graph)
-            ) {
-                // let prev_cell = $cells[prev_cell_id];
-                let top_pos = prev_cell.top + prev_cell.height + 11;
+          // dragging onto a non-parent cell
+          // TODO: now only snaps to bottom, make it snap to top as well
+          // cell.left = $cells[dnd_cell_id].left;
+          cell.left = get_cell(dnd_cell_id).left;
 
-                if (cell.top !== top_pos) {
-                    cell.top = top_pos;
-                }
-                if (cell.left !== prev_cell.left) {
-                    cell.left = prev_cell.left;
-                }
-            }
+          cell.top =
+            // $cells[dnd_cell_id].top +
+            // $cells[dnd_cell_id].height +
+            get_cell(dnd_cell_id).top + get_cell(dnd_cell_id).height + 10;
         }
+
+        // update pc_graph
+        pc_graph.set(pc_graph_copy);
+      } else if (selected_dragzone) {
+        // add to the end of the tissue/parent
+        let dnd_cell_id = selected_dragzone.getAttribute("cell_id");
+
+        // if dropped on the same parent, preserve order
+        if ($cp_graph[cell_id] !== dnd_cell_id) {
+          // copy pc_graph - to enforce reactivity (`set` updates cp_graph)
+          let pc_graph_copy = JSON.parse(JSON.stringify($pc_graph));
+
+          let cell_parent = $cp_graph[cell_id];
+
+          // remove cell from parent
+          if (cell_parent) {
+            pc_graph_copy[cell_parent].splice(
+              [...$pc_graph[cell_parent]].indexOf(cell_id),
+              1,
+            );
+          }
+
+          // add to the end of the tissue/parent
+          pc_graph_copy[dnd_cell_id].push(cell_id);
+
+          // update pc_graph
+          pc_graph.set(pc_graph_copy);
+        }
+      } else {
+        // remove from parent
+        let cell_parent = $cp_graph[cell_id];
+
+        // if cell is in some parent
+        if (cell_parent) {
+          let cell_loc = [...$pc_graph[cell_parent]].indexOf(cell_id);
+
+          // copy pc_graph - to enforce reactivity (`set` updates cp_graph)
+          let pc_graph_copy = JSON.parse(JSON.stringify($pc_graph));
+
+          // remove cell from parent
+          pc_graph_copy[cell_parent].splice(cell_loc, 1);
+
+          // update pc_graph
+          pc_graph.set(pc_graph_copy);
+        }
+      }
+
+      if (dragover_cell) {
+        dragover_cell.style.borderTop = "";
+        dragover_cell.style.borderBottom = "";
+        dragover_cell = null;
+      }
+      if (selected_dragzone) {
+        selected_dragzone.style.border = "";
+        selected_dragzone.style.backgroundColor = "";
+        selected_dragzone = null;
+      }
+
+      // sync
+      // sync_cell_properties(cell_id);
     }
+    dragging_began = false;
+    dragging = false;
+    $html_elements[cell_id].setAttribute("dragging", "false");
+  }
 
-    // ---------- reactive z-index
-    let z_index;
-    $: if (cell_div){ 
-        if(!($cp_graph[cell_id])){
-        cell_div.style.zIndex = 1;
-        z_index = 1;
+  // ---------- Parent and previous cell
+
+  let yparent_cell;
+  $: if ($cp_graph[cell_id]) {
+    yparent_cell = ydoc.getMap($cp_graph[cell_id]);
+  }
+  let parent_cell;
+  $: if (yparent_cell) {
+    parent_cell = yparent_cell.toJSON();
+    yparent_cell.observe((yevent) => {
+      parent_cell = yparent_cell.toJSON();
+    });
+  }
+
+  let yprev_cell;
+  $: if ($cp_graph[cell_id]) {
+    yprev_cell = ydoc.getMap(
+      [...$pc_graph[$cp_graph[cell_id]]][
+        [...$pc_graph[$cp_graph[cell_id]]].indexOf(cell_id) - 1
+      ],
+    );
+  }
+  let prev_cell;
+  $: if (yprev_cell) {
+    prev_cell = yprev_cell.toJSON();
+    yprev_cell.observe((yevent) => {
+      prev_cell = yprev_cell.toJSON();
+    });
+  }
+
+  $: if (
+    $cp_graph[cell_id] &&
+    !dragging &&
+    $html_elements[$cp_graph[cell_id]]
+  ) {
+    // find loc of cell_id in $pc_graph[$cp_graph[cell_id]]
+    let cell_list_loc = [...$pc_graph[$cp_graph[cell_id]]].indexOf(cell_id);
+    if (cell_list_loc === 0) {
+      // let parent_cell = $cells[$cp_graph[cell_id]];
+      let top_pos =
+        parent_cell.top +
+        $html_elements[$cp_graph[cell_id]].querySelector("#title")
+          .clientHeight +
+        35;
+      let left_pos = parent_cell.left + 15;
+      if (cell.top !== top_pos) {
+        cell.top = top_pos;
+      }
+      if (cell.left !== left_pos) {
+        cell.left = left_pos;
+      }
     } else {
-        cell_div.style.zIndex = $html_elements[$cp_graph[cell_id]].style.zIndex + 1;
-        z_index = $html_elements[$cp_graph[cell_id]].style.zIndex + 1;
-    }}
+      let prev_cell_id = [...$pc_graph[$cp_graph[cell_id]]][cell_list_loc - 1];
+      // console.log("cell_id:", cell_id);
+      // console.log("prev_cell_id:", prev_cell_id);
+      if (
+        (prev_cell_id in $pc_graph &&
+          $html_elements[prev_cell_id].getAttribute("dragging") === "false") ||
+        !(prev_cell_id in $pc_graph)
+      ) {
+        // let prev_cell = $cells[prev_cell_id];
+        let top_pos = prev_cell.top + prev_cell.height + 11;
 
-    // ---------- Components
+        if (cell.top !== top_pos) {
+          cell.top = top_pos;
+        }
+        if (cell.left !== prev_cell.left) {
+          cell.left = prev_cell.left;
+        }
+      }
+    }
+  }
 
-    import NewCellToolbar from "../components/cell_components/new_cell_toolbar_components/NewCellToolbar.svelte";
-    import CellToolbar from "./cell_components/CellToolbar.svelte";
+  // ---------- reactive z-index
+  let z_index;
+  $: if (cell_div) {
+    if (!$cp_graph[cell_id]) {
+      cell_div.style.zIndex = 1;
+      z_index = 1;
+    } else {
+      cell_div.style.zIndex =
+        $html_elements[$cp_graph[cell_id]].style.zIndex + 1;
+      z_index = $html_elements[$cp_graph[cell_id]].style.zIndex + 1;
+    }
+  }
 
-    let is_hover = false;
+  // ---------- Components
+
+  import NewCellToolbar from "../components/cell_components/new_cell_toolbar_components/NewCellToolbar.svelte";
+  import CellToolbar from "./cell_components/CellToolbar.svelte";
+
+  let is_hover = false;
 </script>
 
 <div
-    class="cell rounded bg-transparent border border-oli-500 dark:border-oli-200 absolute w-fit h-fit flex flex-col overflow-visible drop-shadow active:drop-shadow-md"
-    bind:this={cell_div}
-    style="
+  class="cell rounded bg-transparent border-2 border-oli-500 dark:border-oli-300 absolute w-fit h-fit flex flex-col overflow-visible drop-shadow active:drop-shadow-md"
+  bind:this={cell_div}
+  style="
         top: {drag_cell_pos.y ? drag_cell_pos.y : cell.top}px;
         left: {drag_cell_pos.x ? drag_cell_pos.x : cell.left}px;
         z-index: {dragging ? 9999 : z_index};
@@ -497,29 +480,29 @@
         border-color: {dragging ? '#29B0F8' : ''};
         opacity: {dragging ? '0.75' : '1'};
         "
-    on:mousedown={drag_mousedown}
-    on:mouseup={drag_mouseup}
-    bind:clientHeight={cell.height}
-    bind:clientWidth={cell.width}
-    on:mouseenter={() => {
-        is_hover = true;
-    }}
-    on:mouseleave={() => {
-        is_hover = false;
-    }}
+  on:mousedown={drag_mousedown}
+  on:mouseup={drag_mouseup}
+  bind:clientHeight={cell.height}
+  bind:clientWidth={cell.width}
+  on:mouseenter={() => {
+    is_hover = true;
+  }}
+  on:mouseleave={() => {
+    is_hover = false;
+  }}
 >
-    <CellToolbar {cell} {is_hover} />
-    <div style="height: fit-content; width: fit-content;">
-        {#if cell.type === "code"}
-            <CodeCell {cell} />
-        {:else if cell.type === "markdown"}
-            <MarkdownCell {cell} />
-        {/if}
-    </div>
+  <CellToolbar {cell} {is_hover} />
+  <div style="height: fit-content; width: fit-content;">
+    {#if cell.type === "code"}
+      <CodeCell {cell} />
+    {:else if cell.type === "markdown"}
+      <MarkdownCell {cell} />
+    {/if}
+  </div>
 
-    <!-- <NewCellToolbar {cell_id} /> -->
-    <!-- debug -->
-    <!-- <div
+  <NewCellToolbar {cell} />
+  <!-- debug -->
+  <!-- <div
         class="absolute bottom-0 right-0 w-fit h-fit text-gray-500 text-[9px] dark:text-gray-400"
         style="pointer-events: none;"
     >
@@ -530,7 +513,6 @@
             {$html_elements[cell_id].clientHeight}
         {/if}
     </div> -->
-    
 </div>
 
 <svelte:window on:mousemove={drag_mousemove} on:mouseup={drag_mouseup} />

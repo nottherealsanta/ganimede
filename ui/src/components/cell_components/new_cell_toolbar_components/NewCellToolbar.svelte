@@ -1,7 +1,5 @@
-<script lang="ts">
-    export let cell_id;
-
-    import { id_map, cells } from "../../../stores/notebook";
+<script >
+    export let cell;
 
     function connector_click(e) {
         e.preventDefault();
@@ -20,15 +18,15 @@
     import NewCellMenu from "../Icons/newCellMenu.svelte";
     import { send_message } from "../../../stores/socket";
 
-    function sendMessage(method, cellType) {
-        send_message({
-            channel: "notebook",
-            method,
-            message: {
-                previous_cell_id: cell_id,
-            },
-        });
-    }
+    // function sendMessage(method, cellType) {
+    //     send_message({
+    //         channel: "notebook",
+    //         method,
+    //         message: {
+    //             previous_cell_id: cell_id,
+    //         },
+    //     });
+    // }
 
     async function new_code_cell(e) {
         e.stopPropagation();
@@ -38,17 +36,24 @@
     }
 
     async function new_markdown_cell() {
-        sendMessage("new_markdown_cell", "markdown");
+        // sendMessage("new_markdown_cell", "markdown");
+        console.log("new markdown cell", cell.id);
+    }
+
+    function toggle_hover() {
+        is_hover = !is_hover;
     }
 </script>
 
 <div
-    class="newcelltoolbar absolute -bottom-2 left-[25px] w-fit h-hit flex justify-center items-center"
->
+    class="newcelltoolbar absolute -bottom-2  w-full h-hit flex justify-center items-center"
+    on:mouseenter={() => {
+        is_hover = true;
+    }}
+    >
     {#if is_hover}
         <div
-            class="relative w-full h-5 z-50 -bottom-1 flex flex-row justify-center items-center cursor-default bg-oli dark:bg-oli-700 rounded border border-oli-300 dark:border-neutral-700 overflow-clip fill-oli-600 dark:fill-gray-300"
-            style="transform: translateX(-46%); "
+            class="relative w-fit h-5 z-50 -bottom-1 flex flex-row justify-center items-center cursor-default bg-oli dark:bg-oli-700 rounded border border-oli-300 dark:border-neutral-700 overflow-clip fill-oli-600 dark:fill-gray-300"
             on:mouseleave={() => {
                 is_hover = false;
             }}
@@ -65,9 +70,7 @@
             id="new-cell-toolbar"
             on:click|stopPropagation={connector_click}
             on:keydown={() => {}}
-            on:mouseenter={() => {
-                is_hover = true;
-            }}
+           
         >
             <Connector />
         </div>

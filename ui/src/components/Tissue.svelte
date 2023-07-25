@@ -535,7 +535,7 @@
 </script>
 
 <div
-    class="tissue rounded bg-transparent border-2 border-l-[6px] border-oli-500 dark:border-oli-200 absolute w-fit h-fit flex flex-col overflow-visible drop-shadow active:drop-shadow-md"
+    class="tissue rounded bg-transparent border-2 border-l-[6px] border-oli-500 dark:border-oli-300 absolute w-fit h-fit flex flex-col overflow-visible drop-shadow active:drop-shadow-md"
     bind:this={cell_div}
     style="
         top: {drag_cell_pos.y ? drag_cell_pos.y : cell.top}px;
@@ -567,7 +567,7 @@
     <!-- <NewCellToolbar {cell_id} /> -->
 
     <!-- dropzone -->
-    <div class="dropzone bg-oli dark:bg-oli-800 border-t-2 border-oli-500 dark:border-oli-200" 
+    <div class="dropzone bg-oli dark:bg-oli-700 border-t-2 border-oli-500 dark:border-oli-300" 
     {cell_id}>
         <div
             class=" bg-transparent pointer-events-none"
