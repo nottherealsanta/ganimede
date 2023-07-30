@@ -1,6 +1,6 @@
 import queue
 import asyncio
-
+import y_py as Y
 from jupyter_client.manager import AsyncKernelManager
 from starlette.responses import JSONResponse
 from rich import print
@@ -13,13 +13,15 @@ log = logging.getLogger(__name__)
 
 
 class Kernel:
-    def __init__(self, comms: Comms):
+    def __init__(self, comms: Comms, ydoc: Y.YDoc) -> None:
         log.debug("Initializing Kernel")
         self.kernel_manager = AsyncKernelManager()
         self.kernel_client = None
         self.run_queue = asyncio.Queue()
 
-        self._busy = False
+        self.ydoc = ydoc
+        self.ykernel = ydoc.get_map("kernel")
+        self._busy = False # TODO: change this to status
 
         self.comms_queue = comms.channel_queues["kernel"]
 
@@ -44,6 +46,8 @@ class Kernel:
     @busy.setter
     def busy(self, value):
         self._busy = value
+        with self.ydoc.begin_transaction() as t:
+            self.ykernel.set(t, "busy", value)
 
     def __del__(self) -> None:
         log.debug("Shutting down kernel")
@@ -107,7 +111,7 @@ class Kernel:
         return output
 
     async def execute(self, code: str, msg_queue: asyncio.Queue):
-        log.debug(f"executing: {code}")
+        log.info(f"executing: {code}")
 
         if self.kernel_client is None:
             log.debug("Kernel not started")
@@ -117,7 +121,6 @@ class Kernel:
         await self.flush_io_pub()
 
         async def execute_code(code: str) -> None:
-            code = "\n".join(code)
             self.kernel_client.execute(code)
             client_execute_reply = await self.kernel_client.get_shell_msg()
             log.debug(f"client_execute_reply: {client_execute_reply}")
@@ -144,7 +147,6 @@ class Kernel:
             while self.busy:
                 try:
                     msg = await self.kernel_client.get_iopub_msg(timeout=1)
-
                     #
                     # msg_type is only available non-outputs
                     #
@@ -166,6 +168,7 @@ class Kernel:
                     log.debug(f"+msg_queue size: {msg_queue.qsize()}")
                 except queue.Empty:
                     log.debug("msg_queue empty")
+                    self.busy = False
                     pass
 
         loop = asyncio.get_event_loop()

@@ -38,12 +38,12 @@ ycells.observe((event) => {
 });
 
 
-cells.subscribe((value) => {
-    // sync ycells with cells
-    for (const key in value) {
-        ycells.insert(parseInt(key), [value[key]]);
-    }
-});
+// cells.subscribe((value) => {
+//     // sync ycells with cells
+//     for (const key in value) {
+//         ycells.insert(parseInt(key), [value[key]]);
+//     }
+// });
 
 //  PC graph
 export const ypc_graph = ydoc.getMap('pc_graph');
@@ -112,3 +112,17 @@ pn_graph.set = (value) => np_graph.update(n => {
     console.error("pn_graph is read-only");
 });
 
+// New cell
+
+function generateRandomCellId(idLength = 8) {
+    const nBytes = Math.max(Math.floor(idLength * 3 / 4), 1);
+    const randomBytes = new Uint8Array(nBytes);
+    window.crypto.getRandomValues(randomBytes);
+    const base64 = btoa(String.fromCharCode.apply(null, randomBytes));
+    return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+export function create_cell(type, top, left) {
+    let cell_id = generateRandomCellId();
+    console.log("create cell", cell_id);
+}

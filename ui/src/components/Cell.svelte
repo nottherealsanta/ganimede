@@ -470,7 +470,8 @@
 </script>
 
 <div
-  class="cell rounded bg-transparent border-2 border-oli-500 dark:border-oli-300 absolute w-fit h-fit flex flex-col overflow-visible drop-shadow active:drop-shadow-md"
+  class="cell rounded bg-transparent border border-oli-500 dark:border-oli-300 absolute w-fit h-fit flex flex-col overflow-visible
+  {dragging ? 'drop-shadow-xl' : 'drop-shadow'} "
   bind:this={cell_div}
   style="
         top: {drag_cell_pos.y ? drag_cell_pos.y : cell.top}px;
@@ -480,8 +481,6 @@
         border-color: {dragging ? '#29B0F8' : ''};
         opacity: {dragging ? '0.75' : '1'};
         "
-  on:mousedown={drag_mousedown}
-  on:mouseup={drag_mouseup}
   bind:clientHeight={cell.height}
   bind:clientWidth={cell.width}
   on:mouseenter={() => {
@@ -491,7 +490,12 @@
     is_hover = false;
   }}
 >
-  <CellToolbar {cell} {is_hover} />
+  <CellToolbar
+    {cell}
+    {is_hover}
+    on:mousedown={drag_mousedown}
+    on:mouseup={drag_mouseup}
+  />
   <div style="height: fit-content; width: fit-content;">
     {#if cell.type === "code"}
       <CodeCell {cell} />
@@ -502,17 +506,18 @@
 
   <NewCellToolbar {cell} />
   <!-- debug -->
-  <!-- <div
-        class="absolute bottom-0 right-0 w-fit h-fit text-gray-500 text-[9px] dark:text-gray-400"
-        style="pointer-events: none;"
-    >
-        {cell_id}
-        {cell.top}, {cell.left}
-        {#if $html_elements[cell_id]}
-            {$html_elements[cell_id].clientWidth} x
-            {$html_elements[cell_id].clientHeight}
-        {/if}
-    </div> -->
+  <div
+    class="absolute bottom-0 right-0 w-fit h-fit text-gray-500 text-[9px] dark:text-gray-400"
+    style="pointer-events: none;"
+  >
+    {cell_id}
+    {cell.top}, {cell.left}
+    {#if $html_elements[cell_id]}
+      {$html_elements[cell_id].clientWidth} x
+      {$html_elements[cell_id].clientHeight}
+    {/if}
+    drag: {drag_cell_pos.x}
+  </div>
 </div>
 
 <svelte:window on:mousemove={drag_mousemove} on:mouseup={drag_mouseup} />

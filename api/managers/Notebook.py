@@ -21,7 +21,7 @@ class Notebook:
         kernel: Kernel,
         comms: Comms,
         ydoc: Y.YDoc,
-        notebook_path: str = f"{getcwd()}/tests/unlearning-CIFAR10.ipynb",
+        notebook_path: str = f"{getcwd()}/tests/test2.ipynb",
     ):
         self.kernel = kernel
         self.comms = comms
@@ -71,22 +71,22 @@ class Notebook:
 
     async def get(self):
         log.info("GET notebook")
-        await self.kernel.start_kernel()
+        # await self.kernel.start_kernel()
 
-        if self.notebook_file is not None:  # add check for None
-            message = {
-                "cells": [cell.to_dict() for cell in self.cells],
-                "id_map": self.id_map,
-                "np_graph": self.np_graph,
-                "pc_graph": self.pc_graph,
-            }
-            self.comms.send(
-                {
-                    "channel": "notebook",
-                    "method": "set",
-                    "message": message,
-                }
-            )
+        # if self.notebook_file is not None:  # add check for None
+            # message = {
+            #     "cells": [cell.to_dict() for cell in self.cells],
+            #     "id_map": self.id_map,
+            #     "np_graph": self.np_graph,
+            #     "pc_graph": self.pc_graph,
+            # }
+            # self.comms.send(
+            #     {
+            #         "channel": "notebook",
+            #         "method": "set",
+            #         "message": message,
+            #     }
+            # )
 
             # TODO: band-aid, please fix
             # if "gm" not in self.notebook_file["metadata"] and self.cells[0].top == 0:
@@ -108,7 +108,7 @@ class Notebook:
             ycell = self.ydoc.get_map(id)
             with self.ydoc.begin_transaction() as t:
                 ycell.set(t, "id", id)
-                ycell.set(t, "type", cell["cell_type"])
+                ycell.set(t, "type", cell["cell_type"]) # code, markdown
                 ycell.set(t, "source", source)
                 ycell.set(t, "execution_count", cell["execution_count"] if "execution_count" in cell else None)
                 ycell.set(t, "outputs", outputs)
@@ -272,52 +272,19 @@ class Notebook:
             self._change_cell_state(cell_id, "idle")
 
     def _clear_outputs(self, cell_id: str):
-        self.cells[self.id_map[cell_id]].outputs = []
-        self.comms.send(
-            {
-                "channel": "notebook",
-                "method": "clear_outputs",
-                "message": {
-                    "cell_id": cell_id,
-                },
-            }
-        )
+        with self.ydoc.begin_transaction() as t:
+            self.ydoc.get_map(cell_id).set(t, "outputs", Y.YArray([]))
 
     def _change_cell_state(self, cell_id: str, state: str):
-        self.cells[self.id_map[cell_id]].state = state
-        self.comms.send(
-            {
-                "channel": "notebook",
-                "method": "change_cell_state",
-                "message": {
-                    "cell_id": cell_id,
-                    "state": state,
-                },
-            }
-        )
+        with self.ydoc.begin_transaction() as t:
+            self.ydoc.get_map(cell_id).set(t, "state", state)
 
     def _set_execution_count(self, cell_id: str, execution_count: int):
-        self.cells[self.id_map[cell_id]].execution_count = execution_count
-        self.comms.send(
-            {
-                "channel": "notebook",
-                "method": "set_execution_count",
-                "message": {
-                    "cell_id": cell_id,
-                    "execution_count": execution_count,
-                },
-            }
-        )
+        with self.ydoc.begin_transaction() as t:
+            self.ydoc.get_map(cell_id).set(t, "execution_count", execution_count)
 
     async def run(self, cell_id: str, code: list[str]):
         msg_queue = asyncio.Queue()
-
-        # set code to cell
-        cell_index = self.id_map[cell_id]
-        self.cells[cell_index].source = code
-        self.cells[cell_index].outputs = []
-
-        log.debug(f"code: {code}")
 
         loop = asyncio.get_event_loop()
 
@@ -356,18 +323,8 @@ class Notebook:
                 if msg["output_type"] == "error":
                     await self.empty_run_queue()
 
-                self.cells[cell_index].outputs.append(msg)
-                message = {
-                    "cell_id": cell_id,
-                    "output": msg,
-                }
-                self.comms.send(
-                    {
-                        "channel": "notebook",
-                        "method": "append_output",
-                        "message": message,
-                    }
-                )
+                with self.ydoc.begin_transaction() as t:
+                    self.ydoc.get_map(cell_id).get("outputs").append(t, msg)
 
     def _find_parent(self, cell_id: str):
         for key in self.pc_graph.keys():

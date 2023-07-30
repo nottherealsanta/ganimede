@@ -54,12 +54,13 @@ export function zoom_in() {
         z += 0.25;
         if (z > max_zoom) {
             z = max_zoom;
+        } else {
+            window.scrollBy({
+                left: window.innerWidth,
+                top: window.innerHeight * 0.5,
+                behavior: "instant",
+            });
         }
-        window.scrollBy({
-            left: window.innerWidth,
-            top: window.innerHeight * 0.5,
-            behavior: "instant",
-        });
         return z;
     });
 }
@@ -68,12 +69,13 @@ export function zoom_out() {
         z -= 0.25;
         if (z < min_zoom) {
             z = min_zoom;
+        } else {
+            window.scrollBy({
+                left: -window.innerWidth,
+                top: -window.innerHeight * 0.5,
+                behavior: "instant",
+            });
         }
-        window.scrollBy({
-            left: -window.innerWidth,
-            top: -window.innerHeight * 0.5,
-            behavior: "instant",
-        });
         return z;
     });
 }

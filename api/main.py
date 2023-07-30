@@ -52,7 +52,7 @@ async def on_startup():
     config_handler = ConfigHandler()
     route_manager.add_route("/config", config_handler.get, ["GET"], "config")
 
-    kernel = Kernel(comms)
+    kernel = Kernel(comms, ydoc)
 
     notebook = Notebook(kernel, comms, ydoc)
 
