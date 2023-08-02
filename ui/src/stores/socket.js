@@ -1,5 +1,5 @@
 // import { writable } from "svelte/store";
-import { notebook } from "./notebook";
+// import { notebook } from "./notebook";
 
 export let socket = null;
 
@@ -30,7 +30,7 @@ export async function open_socket() {
             let message = data["message"];
 
             if (channel === "notebook") {
-                notebook[method](message);
+                // notebook[method](message);
             }
 
         };

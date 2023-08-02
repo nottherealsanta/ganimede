@@ -27,14 +27,14 @@ websocket_provider.on("status", event => {
 
 
 
-const ycells = ydoc.getArray('cells');
-export const cells = writable(ycells.toJSON());
+export const ycells = ydoc.getArray('cells');
+// export const cells = writable(ycells.toJSON());
 
 ycells.observe((event) => {
     // TODO: optimize this
-    if (!event.transaction.local) {
-        cells.set(ycells.toJSON());
-    }
+    // if (!event.transaction.local) {
+    //     cells.set(ycells.toJSON());
+    // }
 });
 
 
@@ -49,20 +49,12 @@ ycells.observe((event) => {
 export const ypc_graph = ydoc.getMap('pc_graph');
 export const pc_graph = writable(new Map());
 
-ypc_graph.observe((event) => {
+ypc_graph.observeDeep((event) => {
     // TODO: optimize this
-    if (!event.transaction.local) {
-        pc_graph.set(ypc_graph.toJSON());
-    }
+    pc_graph.set(ypc_graph.toJSON());
 });
 
-pc_graph.subscribe((value) => {
 
-    for (const key in value) {
-        ypc_graph.set(key, value[key]);
-    }
-}
-);
 
 export const cp_graph = derived(pc_graph, $pc_graph => {
     // reverse pc_graph, which is map of list
@@ -80,7 +72,7 @@ cp_graph.set = (value) => pc_graph.update(n => {
 
 // NP graph
 
-const ynp_graph = ydoc.getMap('np_graph');
+export const ynp_graph = ydoc.getMap('np_graph');
 export const np_graph = writable(ynp_graph.toJSON());
 
 ynp_graph.observe((event) => {
@@ -122,7 +114,49 @@ function generateRandomCellId(idLength = 8) {
     return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
-export function create_cell(type, top, left) {
+export function create_cell(type, from_cell = null) {
+
     let cell_id = generateRandomCellId();
-    console.log("create cell", cell_id);
+    let ycell = ydoc.getMap(cell_id);
+
+    ycell.set('id', cell_id);
+    ycell.set('type', type);
+    ycell.set('source', new Y.Text());
+    ycell.set('execution_count', null);
+    ycell.set('outputs', new Y.Array());
+
+    ycell.set('width', null);
+    ycell.set('height', null);
+    ycell.set('collapsed', null);
+    ycell.set('state', 'idle');
+
+    let parent = get(cp_graph)[from_cell.id];
+    if (parent) {
+        console.log("parent: ", ypc_graph.get(parent).toJSON());
+        // has parent
+        let index = ypc_graph.get(parent).toJSON().indexOf(from_cell.id);
+        ypc_graph.get(parent).insert(index + 1, [cell_id]);
+
+        ycell.set('top', null);
+        ycell.set('left', null);
+
+        console.log("parent: ", ypc_graph.get(parent).toJSON());
+
+
+    } else {
+        // no parent
+        ycell.set('top', from_cell.top + from_cell.height + 10);
+        ycell.set('left', from_cell.left);
+        // set np_graph
+        if (!ynp_graph.get(from_cell.id)) {
+            let x = new Y.Array();
+            x.push([cell_id]);
+            ynp_graph.set(from_cell.id, x);
+        } else {
+            ynp_graph.get(from_cell.id).push(cell_id);
+        }
+        console.log("ynp_graph: ", ynp_graph.toJSON());
+    }
+
+    ycells.push([cell_id]);
 }

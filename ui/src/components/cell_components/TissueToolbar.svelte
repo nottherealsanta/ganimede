@@ -5,7 +5,7 @@
 
   import Drag from "../cell_components/Icons/drag.svelte";
   import MenuButton from "../cell_components/MenuButton.svelte";
-  import { cells, pc_graph } from "../../stores/_notebook";
+  import { pc_graph } from "../../stores/_notebook";
 
   export let cell;
 
@@ -26,8 +26,8 @@
   {#if is_hover}
     <Drag />
     <div class="flex flex-row ml-auto">
-      <DeleteButton {cell} />
       <MenuButton {cell} />
+      <DeleteButton {cell} />
     </div>
   {/if}
 </div>

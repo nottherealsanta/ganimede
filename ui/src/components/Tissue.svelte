@@ -9,7 +9,6 @@
     html_elements,
     ydoc,
     pc_graph,
-    cells,
     ypc_graph,
   } from "../stores/_notebook";
 
@@ -433,8 +432,8 @@
         parent_cell.top +
         $html_elements[$cp_graph[cell_id]].querySelector("#title")
           .clientHeight +
-        35;
-      let left_pos = parent_cell.left + 15;
+        34;
+      let left_pos = parent_cell.left + 12;
       if (cell.top !== top_pos) {
         cell.top = top_pos;
       }
@@ -462,7 +461,7 @@
   }
 
   // ---------- reactive width and height
-
+  // TODO: This should be from html_element
   let children_w_h = {};
   $: if ($pc_graph[cell_id]) {
     $pc_graph[cell_id]
@@ -490,18 +489,24 @@
       }, {});
   }
 
+  // $: console.log("ypc_graph.get(cell_id): ", ypc_graph.get(cell_id));
+  // $: if (ypc_graph.get(cell_id)) {
+  //   console.log("ypc_graph.get(cell_id): ", ypc_graph.get(cell_id).toJSON());
+  //   ypc_graph.get(cell_id).observe((yevent) => {
+  //     console.log("ypc_graph changed: ", cell_id);
+  //   });
+  // } TODO: actullay use only ypc instead of pc
+
   $: dropzone_height = children_w_h
     ? Object.values(children_w_h).reduce((acc, child) => {
         return acc + child.height + 10;
-      }, 0) + 15
+      }, 0) + 8
     : 0;
-  // $: dropzone_height = hh;
   $: dropzone_width = children_w_h
     ? Object.values(children_w_h).reduce((acc, child) => {
         return Math.max(acc, child.width + 20);
       }, 0)
     : 0;
-  // $: dropzone_width = ww;
 
   // ---------- reactive z-index
   $: if (cell_div) {
@@ -523,7 +528,7 @@
 </script>
 
 <div
-  class="tissue rounded-r rounded-tl bg-transparent border-2 border-l-[6px] border-oli-500 dark:border-oli-300 absolute w-fit h-fit flex flex-col overflow-visible drop-shadow active:drop-shadow-md"
+  class="tissue rounded-r rounded-tl bg-transparent border-2 border-l-[2px] border-oli-500 dark:border-oli-300 absolute w-fit h-fit flex flex-col overflow-visible drop-shadow active:drop-shadow-md"
   bind:this={cell_div}
   style="
         top: {drag_cell_pos.y ? drag_cell_pos.y : cell.top}px;
@@ -544,7 +549,9 @@
   }}
 >
   <TissueToolbar {cell} {is_hover} />
-  <div class="bg-oli dark:bg-oli-800 h-fit w-full flex" id="title">
+
+  <!-- title -->
+  <div class="bg-oli dark:bg-[#262626] h-fit w-full flex" id="title">
     {#if cell.type === "code"}
       <CodeCell {cell} />
     {:else if cell.type === "markdown"}

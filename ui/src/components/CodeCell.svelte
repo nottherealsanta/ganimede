@@ -1,18 +1,10 @@
 <script>
-  import { cells } from "../stores/_notebook";
   import Outputs from "./cell_components/Outputs.svelte";
 
   export let cell;
 
   import CodeEditor from "./cell_components/CodeEditor.svelte";
   let focus;
-
-  import PrimeButton from "./cell_components/PrimeButton.svelte";
-  import DeleteButton from "./cell_components/DeleteButton.svelte";
-  import ExecutionCount from "./cell_components/ExecutionCount.svelte";
-
-  import Drag from "../components/cell_components/Icons/drag.svelte";
-  import MenuButton from "./cell_components/MenuButton.svelte";
 
   let is_hover = false;
 
@@ -69,7 +61,7 @@
 
     {#if is_hover}
       <button
-        class="absolute h-4 w-4 top-7 -left-[11px] bg-oli-50/50 dark:bg-oli-500/50 rounded border-0 p-0 stroke-oli-500 dark:stroke-oli-200"
+        class="absolute h-4 w-4 top-7 -left-[8px] bg-oli-50/50 dark:bg-oli-500/50 rounded border-0 p-0 stroke-oli-500 dark:stroke-oli-200"
         on:click={toggle_input_collapsed}
       >
         <svg
@@ -110,7 +102,7 @@
 
         {#if is_hover}
           <button
-            class="absolute h-4 w-4 top-1 -left-[11px] bg-oli-50/50 dark:bg-oli-500/50 rounded border-0 p-0 stroke-oli-500 dark:stroke-oli-200"
+            class="absolute h-4 w-4 top-1 -left-[8px] bg-oli-50/50 dark:bg-oli-500/50 rounded border-0 p-0 stroke-oli-500 dark:stroke-oli-200"
             on:click={toggle_output_collapsed}
           >
             <svg

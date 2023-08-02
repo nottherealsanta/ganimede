@@ -20,11 +20,7 @@
   import { create_cell } from "../../../stores/_notebook.js";
 
   async function new_code_cell(e) {
-    // e.stopPropagation();
-    // e.preventDefault();
-    // console.log("new code cell", e);
-    // // sendMessage("new_code_cell", "code");
-    create_cell("code");
+    create_cell("code", cell);
   }
 
   async function new_markdown_cell() {
@@ -60,7 +56,7 @@
   /> -->
   {#if is_hover}
     <div
-      class="absolute w-fit h-[19px] z-auto -top-[10px] flex flex-row cursor-default bg-oli dark:bg-oli-700 rounded border border-oli-500 dark:border-oli-300 overflow-clip fill-oli-500 dark:fill-gray-300 stroke-oli-500 dark:stroke-oli-400 stroke"
+      class="absolute w-fit h-[19px] z-auto -top-[10px] flex flex-row drop-shadow-md cursor-default bg-oli dark:bg-oli-700 rounded border border-oli-500 dark:border-oli-300 overflow-clip fill-oli-500 dark:fill-gray-300 stroke-oli-500 dark:stroke-oli-400 stroke"
       on:mousedown|stopPropagation={() => {}}
     >
       <!-- <ToolbarSlot><Disconnect /></ToolbarSlot> -->
@@ -71,7 +67,7 @@
     </div>
   {:else}
     <div
-      class="absolute w-3 h-5 -top-[10px] ml-[25px] rounded-full flex items-center justify-center bg-transparent cursor-pointer stroke-oli-500 dark:stroke-oli-200 stroke-2 fill-oli-50 dark:fill-oli-500"
+      class="absolute w-3 h-5 -top-[10px] left-[25px] rounded-full flex items-center justify-center bg-transparent cursor-pointer stroke-oli-500 dark:stroke-oli-200 stroke-2 fill-oli-50 dark:fill-oli-500"
       id="new-cell-toolbar"
       on:click|stopPropagation={connector_click}
       on:keydown={() => {}}

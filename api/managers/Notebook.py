@@ -21,7 +21,7 @@ class Notebook:
         kernel: Kernel,
         comms: Comms,
         ydoc: Y.YDoc,
-        notebook_path: str = f"{getcwd()}/tests/test2.ipynb",
+        notebook_path: str = f"{getcwd()}/tests/test4.ipynb",
     ):
         self.kernel = kernel
         self.comms = comms
@@ -34,7 +34,6 @@ class Notebook:
         self.pc_graph = {}  # parent-children directed graph
 
         self.notebook_file = self._load_notebook()
-
 
         # websocket message queue
         self.comms_queue = comms.channel_queues["notebook"]
@@ -74,26 +73,25 @@ class Notebook:
         # await self.kernel.start_kernel()
 
         # if self.notebook_file is not None:  # add check for None
-            # message = {
-            #     "cells": [cell.to_dict() for cell in self.cells],
-            #     "id_map": self.id_map,
-            #     "np_graph": self.np_graph,
-            #     "pc_graph": self.pc_graph,
-            # }
-            # self.comms.send(
-            #     {
-            #         "channel": "notebook",
-            #         "method": "set",
-            #         "message": message,
-            #     }
-            # )
+        # message = {
+        #     "cells": [cell.to_dict() for cell in self.cells],
+        #     "id_map": self.id_map,
+        #     "np_graph": self.np_graph,
+        #     "pc_graph": self.pc_graph,
+        # }
+        # self.comms.send(
+        #     {
+        #         "channel": "notebook",
+        #         "method": "set",
+        #         "message": message,
+        #     }
+        # )
 
-            # TODO: band-aid, please fix
-            # if "gm" not in self.notebook_file["metadata"] and self.cells[0].top == 0:
-            #         self.init_tlhw()
+        # TODO: band-aid, please fix
+        # if "gm" not in self.notebook_file["metadata"] and self.cells[0].top == 0:
+        #         self.init_tlhw()
 
     def init_cells(self):
-        
         ## y
         self.ycells = self.ydoc.get_array("cells")
         ### set from file
@@ -101,26 +99,42 @@ class Notebook:
             gm_metadata = cell["metadata"]["gm"] if "gm" in cell["metadata"] else {}
             id = cell["id"] if "id" in cell else _generate_random_cell_id()
             source = Y.YText(("".join(cell["source"])))
-            outputs = Y.YArray(
-                cell["outputs"] if "outputs" in cell else []
-            )
+            outputs = Y.YArray(cell["outputs"] if "outputs" in cell else [])
 
             ycell = self.ydoc.get_map(id)
             with self.ydoc.begin_transaction() as t:
                 ycell.set(t, "id", id)
-                ycell.set(t, "type", cell["cell_type"]) # code, markdown
+                ycell.set(t, "type", cell["cell_type"])  # code, markdown
                 ycell.set(t, "source", source)
-                ycell.set(t, "execution_count", cell["execution_count"] if "execution_count" in cell else None)
+                ycell.set(
+                    t,
+                    "execution_count",
+                    cell["execution_count"] if "execution_count" in cell else None,
+                )
                 ycell.set(t, "outputs", outputs)
                 # gm
-                ycell.set(t, "top", gm_metadata["top"] if "top" in gm_metadata else None)
-                ycell.set(t, "left", gm_metadata["left"] if "left" in gm_metadata else None)
-                ycell.set(t, "height", gm_metadata["height"] if "height" in gm_metadata else None)
-                ycell.set(t, "width", gm_metadata["width"] if "width" in gm_metadata else None)
-                ycell.set(t, "collapsed", gm_metadata["collapsed"] if "collapsed" in gm_metadata else None) # i, o, b, h
-                ycell.set(t, "state", "idle") # idle, running, queued, done
-                
-                # ycells 
+                ycell.set(
+                    t, "top", gm_metadata["top"] if "top" in gm_metadata else None
+                )
+                ycell.set(
+                    t, "left", gm_metadata["left"] if "left" in gm_metadata else None
+                )
+                ycell.set(
+                    t,
+                    "height",
+                    gm_metadata["height"] if "height" in gm_metadata else None,
+                )
+                ycell.set(
+                    t, "width", gm_metadata["width"] if "width" in gm_metadata else None
+                )
+                ycell.set(
+                    t,
+                    "collapsed",
+                    gm_metadata["collapsed"] if "collapsed" in gm_metadata else None,
+                )  # i, o, b, h
+                ycell.set(t, "state", "idle")  # idle, running, queued, done
+
+                # ycells
                 self.ycells.append(t, id)
 
         # np_graph and pc_graph
@@ -137,16 +151,16 @@ class Notebook:
         ### set from file
         with self.ydoc.begin_transaction() as t:
             for id in self.np_graph.keys():
-                self.ynp_graph.set(t, id, Y.YArray(self.np_graph[id]))
+                nexts = Y.YArray(self.np_graph[id])
+                self.ynp_graph.set(t, id, nexts)
             for id in self.pc_graph.keys():
-                self.ypc_graph.set(t, id, Y.YArray(self.pc_graph[id]))
+                children = Y.YArray(self.pc_graph[id])
+                self.ypc_graph.set(t, id, children)
 
         log.info(f"np_graph:{self.np_graph}")
         log.info(f"pc_graph:{self.pc_graph}")
-
-
-
-
+        log.info(f"ynp_graph:{self.ynp_graph}")
+        log.info(f"ypc_graph:{self.ypc_graph}")
 
     def _connect_cells(self):
         """
@@ -169,13 +183,20 @@ class Notebook:
             source = cell.get("source").__str__()
             id = cell.get("id").__str__()
             if source.startswith("#") and cell.get("type") == "markdown":
-                hlevel_map[source.split("/n")[0].count("#")].append(i) # TODO: this should be first n consecutive chars
+                hlevel_map[source.split("/n")[0].count("#")].append(
+                    i
+                )  # TODO: this should be first n consecutive chars
                 self.pc_graph[id] = []
-            cells.append({
-                "id": id,
-                "is_heading": source.startswith("#") and cell.get("type") == "markdown",
-                "heading_level": source.split("/n")[0].count("#") if source.startswith("#") and cell.get("type") == "markdown" else None,
-            })
+            cells.append(
+                {
+                    "id": id,
+                    "is_heading": source.startswith("#")
+                    and cell.get("type") == "markdown",
+                    "heading_level": source.split("/n")[0].count("#")
+                    if source.startswith("#") and cell.get("type") == "markdown"
+                    else None,
+                }
+            )
             cell_list.append(i)
 
         log.info(f"hlevel_map: {hlevel_map}")
@@ -190,55 +211,61 @@ class Notebook:
                 children = []
                 while i < len(cell_list):
                     if (
-                        cells[i]['is_heading']
-                        and cells[i]['heading_level']
-                        <= cells[index]['heading_level']
+                        cells[i]["is_heading"]
+                        and cells[i]["heading_level"] <= cells[index]["heading_level"]
                     ):
                         break
 
                     children.append(i)
-                    
+
                     if (
-                        cells[i]['is_heading']
-                        and cells[i]['heading_level']
-                        > cells[index]['heading_level']
-                        and len(self.pc_graph[cells[i]['id']]) > 0
+                        cells[i]["is_heading"]
+                        and cells[i]["heading_level"] > cells[index]["heading_level"]
+                        and len(self.pc_graph[cells[i]["id"]]) > 0
                     ):
-                        last_child_id = self.pc_graph[cells[i]['id']][-1]
-                        last_child_idx = [i for i, cell in enumerate(cells) if cell['id'] == last_child_id][0]
+                        last_child_id = self.pc_graph[cells[i]["id"]][-1]
+                        last_child_idx = [
+                            i
+                            for i, cell in enumerate(cells)
+                            if cell["id"] == last_child_id
+                        ][0]
 
                         # while last_child is a heading and has children
                         # last_child = that heading's last child
                         while (
-                            cells[last_child_idx]['is_heading']
-                            and len(self.pc_graph[cells[last_child_idx]['id']]) > 0
+                            cells[last_child_idx]["is_heading"]
+                            and len(self.pc_graph[cells[last_child_idx]["id"]]) > 0
                         ):
-                            last_child_id = self.pc_graph[cells[last_child_idx]['id']][-1]
-                            last_child_idx = [i for i, cell in enumerate(cells) if cell['id'] == last_child_id][0]
-                       
+                            last_child_id = self.pc_graph[cells[last_child_idx]["id"]][
+                                -1
+                            ]
+                            last_child_idx = [
+                                i
+                                for i, cell in enumerate(cells)
+                                if cell["id"] == last_child_id
+                            ][0]
 
                         i = last_child_idx + 1
 
                         continue
-                    
+
                     i += 1
                 for child in children:
-                    if cells[index]['id'] not in self.pc_graph:
-                        self.pc_graph[cells[index]['id']] = []
-                    self.pc_graph[cells[index]['id']].append(cells[child]['id'])
+                    if cells[index]["id"] not in self.pc_graph:
+                        self.pc_graph[cells[index]["id"]] = []
+                    self.pc_graph[cells[index]["id"]].append(cells[child]["id"])
 
         # connect the parent_less cells
         parent_less_cells = []
         for i, cell in enumerate(cells):
-            if cell['heading_level'] is 1:
-                parent_less_cells.append(cell['id'])
-            elif cell['id'] not in self.pc_graph:
+            if cell["heading_level"] is 1:
+                parent_less_cells.append(cell["id"])
+            elif cell["id"] not in self.pc_graph:
                 for x in self.pc_graph.keys():
-                    if cell['id'] in self.pc_graph[x]:
+                    if cell["id"] in self.pc_graph[x]:
                         break
                 else:
-                    parent_less_cells.append(cell['id'])
-            
+                    parent_less_cells.append(cell["id"])
 
         log.info(f"parent_less_cells: {parent_less_cells}")
         for i, cell_id in enumerate(parent_less_cells):
@@ -248,7 +275,7 @@ class Notebook:
                 # debug
         for cell in cells:
             log.info(cell)
-            
+
     async def queue_cell(self, cell_id: str, code: list[str]):
         log.debug(f"queue_cell: {cell_id}")
         self.run_queue.put_nowait((cell_id, code))
@@ -381,7 +408,7 @@ class Notebook:
             {
                 "channel": "notebook",
                 "method": "new_code_cell",
-                "message": {'test': 'test'},
+                "message": {"test": "test"},
             }
         )
 
@@ -458,6 +485,7 @@ class Notebook:
                 "method": "init_tlhw",
             }
         )
+
 
 def _generate_random_cell_id(id_length: int = 8) -> str:
     n_bytes = max(id_length * 3 // 4, 1)

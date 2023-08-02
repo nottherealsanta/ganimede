@@ -60,6 +60,7 @@
   let current_theme = window.matchMedia("(prefers-color-scheme: dark)").matches
     ? theme.dark
     : theme.light;
+  console.log("current_theme", current_theme);
   // -- watch for dark mode changes
   window
     .matchMedia("(prefers-color-scheme: dark)")
@@ -108,19 +109,19 @@
   const mount_monaco = async () => {
     monaco = await import("monaco-editor");
 
-    editor = monaco.editor.create(container, monaco_config);
-
     // --- import theme
     import("monaco-themes/themes/Active4D.json").then((data) => {
       monaco.editor.defineTheme("light-theme", data);
+      monaco.editor.setTheme("light-theme");
     });
     import("monaco-themes/themes/Github dark.json").then((data) => {
       monaco.editor.defineTheme("dark-theme", data);
+      // monaco.editor.setTheme("dark-theme");
     });
 
+    editor = monaco.editor.create(container, monaco_config);
+
     // --- set theme
-    monaco.editor.setTheme(current_theme);
-    console.log("current_theme", current_theme);
 
     max_columns = get_max_columns();
 

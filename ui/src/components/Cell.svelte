@@ -4,13 +4,7 @@
   export let cell_id;
   let cell_div;
 
-  import {
-    cp_graph,
-    html_elements,
-    ydoc,
-    pc_graph,
-    cells,
-  } from "../stores/_notebook";
+  import { cp_graph, html_elements, ydoc, pc_graph } from "../stores/_notebook";
 
   onMount(() => {
     cell_div.setAttribute("cell_id", cell_id);
@@ -418,8 +412,8 @@
         parent_cell.top +
         $html_elements[$cp_graph[cell_id]].querySelector("#title")
           .clientHeight +
-        35;
-      let left_pos = parent_cell.left + 15;
+        34;
+      let left_pos = parent_cell.left + 12;
       if (cell.top !== top_pos) {
         cell.top = top_pos;
       }
@@ -506,7 +500,7 @@
 
   <NewCellToolbar {cell} />
   <!-- debug -->
-  <div
+  <!-- <div
     class="absolute bottom-0 right-0 w-fit h-fit text-gray-500 text-[9px] dark:text-gray-400"
     style="pointer-events: none;"
   >
@@ -517,7 +511,7 @@
       {$html_elements[cell_id].clientHeight}
     {/if}
     drag: {drag_cell_pos.x}
-  </div>
+  </div> -->
 </div>
 
 <svelte:window on:mousemove={drag_mousemove} on:mouseup={drag_mouseup} />
