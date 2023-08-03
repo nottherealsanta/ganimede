@@ -59,7 +59,7 @@
   });
 
   let np_graph = ynp_graph.toJSON();
-  ynp_graph.observe((event) => {
+  ynp_graph.observeDeep((event) => {
     np_graph = ynp_graph.toJSON();
   });
 </script>

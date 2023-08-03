@@ -2,7 +2,7 @@
   export let current_cell_id;
   export let next_id;
 
-  import { ydoc } from "../../stores/_notebook";
+  import { ydoc, ynp_graph } from "../../stores/_notebook";
 
   let c = ydoc.getMap(current_cell_id).toJSON();
 
@@ -88,6 +88,20 @@
       x: $mouse_pos.x,
       y: $mouse_pos.y,
     };
+  }
+
+  function delete_edge() {
+    console.log("delete_edge");
+    console.log(
+      "ynp_graph.get(current_cell_id)",
+      ynp_graph.get(current_cell_id),
+    );
+    const ynp_graph_array = ynp_graph.get(current_cell_id);
+    console.log("ynp_graph_array", ynp_graph_array.toJSON());
+    let _index = ynp_graph_array.toJSON().indexOf(next_id);
+    console.log("_index", _index);
+    ynp_graph_array.delete(_index);
+    console.log("ynp_graph_array", ynp_graph_array.toJSON());
   }
 </script>
 
@@ -198,6 +212,8 @@
       class="bg-oli hover:bg-oli-100 active:bg-red-200 rounded-lg cursor-pointer"
       viewBox="0 0 24 24"
       fill="none"
+      on:click={delete_edge}
+      on:keydown={delete_edge}
       xmlns="http://www.w3.org/2000/svg"
       ><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g
         id="SVGRepo_tracerCarrier"

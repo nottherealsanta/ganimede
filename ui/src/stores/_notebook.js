@@ -75,19 +75,21 @@ cp_graph.set = (value) => pc_graph.update(n => {
 export const ynp_graph = ydoc.getMap('np_graph');
 export const np_graph = writable(ynp_graph.toJSON());
 
-ynp_graph.observe((event) => {
+ynp_graph.observeDeep((event) => {
     // TODO: optimize this
-    if (!event.transaction.local) {
-        np_graph.set(ynp_graph.toJSON());
-    }
+    // if (!event.transaction.local) {
+    np_graph.set(ynp_graph.toJSON());
+    console.log(">>ynp_graph: ", ynp_graph.toJSON());
+    console.log(">>np_graph: ", get(np_graph));
+    // }
 });
 
-np_graph.subscribe((value) => {
-    for (const key in value) {
-        ynp_graph.set(key, value[key]);
-    }
-}
-);
+// np_graph.subscribe((value) => {
+//     for (const key in value) {
+//         ynp_graph.set(key, value[key]);
+//     }
+// }
+// );
 
 export const pn_graph = derived(np_graph, $np_graph => {
     // reverse np_graph, which is map of list
@@ -132,16 +134,11 @@ export function create_cell(type, from_cell = null) {
 
     let parent = get(cp_graph)[from_cell.id];
     if (parent) {
-        console.log("parent: ", ypc_graph.get(parent).toJSON());
         // has parent
         let index = ypc_graph.get(parent).toJSON().indexOf(from_cell.id);
         ypc_graph.get(parent).insert(index + 1, [cell_id]);
-
         ycell.set('top', null);
         ycell.set('left', null);
-
-        console.log("parent: ", ypc_graph.get(parent).toJSON());
-
 
     } else {
         // no parent

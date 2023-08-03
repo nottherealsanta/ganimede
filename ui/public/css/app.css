@@ -612,6 +612,12 @@ video {
 .left-\[23px\] {
   left: 23px;
 }
+.left-0 {
+  left: 0px;
+}
+.top-0 {
+  top: 0px;
+}
 .z-50 {
   z-index: 50;
 }
@@ -931,6 +937,13 @@ video {
 }
 .bg-oli\/10 {
   background-color: rgb(255 255 255 / 0.1);
+}
+.bg-red-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(252 165 165 / var(--tw-bg-opacity));
+}
+.bg-red-300\/10 {
+  background-color: rgb(252 165 165 / 0.1);
 }
 .fill-black {
   fill: #000;
