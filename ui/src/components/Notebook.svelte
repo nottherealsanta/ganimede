@@ -62,6 +62,7 @@
   ynp_graph.observeDeep((event) => {
     np_graph = ynp_graph.toJSON();
   });
+  $: np_graph = np_graph;
 </script>
 
 {#each cells as cell_id}
@@ -70,6 +71,9 @@
   {:else}
     <Tissue {cell_id} />
   {/if}
+{/each}
+
+{#each cells as cell_id}
   {#if np_graph[cell_id]}
     {#each np_graph[cell_id] as next_id}
       <Edges current_cell_id={cell_id} {next_id} />

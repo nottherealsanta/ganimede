@@ -28,6 +28,11 @@
     console.log("new markdown cell", cell.id);
   }
 
+  $: has_parent = $cp_graph[cell.id] === undefined;
+
+  // ---- canvas div
+  let canvas_div = null;
+
   // ---- next prev dragging
   import mouse_pos from "../../../stores/mouse.js";
   import { cp_graph, ynp_graph } from "../../../stores/_notebook.js";
@@ -48,7 +53,9 @@
       "class",
       "absolute bg-transparent w-full h-full top-0 left-0 z-50 pointer-events-none",
     );
-    document.body.appendChild(drag_line);
+    drag_line.setAttribute("style", "z-index: 9999;");
+    canvas_div = document.getElementById("canvas");
+    canvas_div.appendChild(drag_line);
   }
   function drag_mousemove(e) {
     if (!dragging) {
@@ -85,11 +92,12 @@
         drag_on_element.style.height = first_parent_less.offsetHeight + "px";
         drag_on_element.style.backgroundColor = "#29B0F822";
         drag_on_element.style.border = "2px solid #29B0F8";
+        drag_on_element.style.zIndex = "9999";
         drag_on_element.setAttribute(
           "cell_id",
           first_parent_less.getAttribute("cell_id"),
         );
-        document.body.appendChild(drag_on_element);
+        canvas_div.appendChild(drag_on_element);
       } else {
         drag_on_element.style.top = first_parent_less.offsetTop + "px";
         drag_on_element.style.left = first_parent_less.offsetLeft + "px";
@@ -98,7 +106,7 @@
       }
     } else {
       if (drag_on_element !== null) {
-        document.body.removeChild(drag_on_element);
+        canvas_div.removeChild(drag_on_element);
         drag_on_element = null;
       }
     }
@@ -111,7 +119,9 @@
         x2=${drag_end_pos.x}
         y2=${drag_end_pos.y}
         stroke="#29B0F8"
-        stroke-width="3"
+        stroke-width="2"
+        stroke-dasharray="8 4"
+        stroke-dashoffset="0"
       />
     `;
   }
@@ -131,13 +141,13 @@
           ynp_graph.get(cell.id).push([next_cell_id]);
         }
 
-        document.body.removeChild(drag_on_element);
+        canvas_div.removeChild(drag_on_element);
         drag_on_element = null;
       }
       drag_start_pos = { x: null, y: null };
       drag_end_pos = { x: null, y: null };
       if (drag_line !== null) {
-        document.body.removeChild(drag_line);
+        canvas_div.removeChild(drag_line);
         drag_line = null;
       }
     }
@@ -161,13 +171,17 @@
     >
       <!-- <ToolbarSlot><Disconnect /></ToolbarSlot> -->
       <ToolbarSlot on:click={new_code_cell}><Python /></ToolbarSlot>
-      <Connector on:mousedown={drag_mousedown} on:mouseup={drag_mouseup} />
+      {#if has_parent}
+        <Connector on:mousedown={drag_mousedown} on:mouseup={drag_mouseup} />
+      {:else}
+        <ToolbarSlot></ToolbarSlot>
+      {/if}
       <ToolbarSlot on:click={new_markdown_cell}><Markdown /></ToolbarSlot>
       <!-- <ToolbarSlot><NewCellMenu /></ToolbarSlot> -->
     </div>
   {:else}
     <div
-      class="absolute w-3 h-5 -top-[10px] left-[25px] rounded-full flex items-center justify-center bg-transparent cursor-pointer stroke-oli-500 dark:stroke-oli-200 stroke-2 fill-oli-50 dark:fill-oli-500"
+      class="absolute w-3 h-5 -top-[10px] left-[25px] rounded-full flex items-center justify-center bg-transparent cursor-pointer stroke-oli-400 dark:stroke-oli-200 stroke-2 fill-oli-50 dark:fill-oli-500"
       id="new-cell-toolbar"
       on:click|stopPropagation={connector_click}
       on:keydown={() => {}}

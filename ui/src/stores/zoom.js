@@ -15,9 +15,9 @@ import { writable, get } from "svelte/store";
 import mouse_pos from "./mouse";
 
 export let zoom = writable(1);
-const d_zoom = 0.05;
+const d_zoom = 0.025;
 const max_zoom = 1.7;
-const min_zoom = 0.50;
+const min_zoom = 0.25;
 
 export function set_zoom(e) {
     if (e.ctrlKey || e.metaKey) {
@@ -26,7 +26,7 @@ export function set_zoom(e) {
 
         zoom.update((z) => {
             z -= Math.sign(e.deltaY) * d_zoom;
-            // z = Math.round(z * 100) / 100;
+            z = Math.round(z * 1000) / 1000; // avoids snapping at min and max zoom
             // clip zoom
             if (z < min_zoom) {
                 z = min_zoom;
@@ -51,30 +51,31 @@ export function set_zoom(e) {
 
 export function zoom_in() {
     zoom.update((z) => {
-        z += 0.25;
+        z += 0.15;
         if (z > max_zoom) {
             z = max_zoom;
         } else {
-            window.scrollBy({
-                left: window.innerWidth,
-                top: window.innerHeight * 0.5,
-                behavior: "instant",
-            });
+            // window.scrollBy({
+            //     left: -window.innerWidth * d_zoom,
+            //     top: -window.innerHeight * d_zoom,
+            //     behavior: "instant",
+            // });
         }
+        console.log(window.scrollX, window.scrollY)
         return z;
     });
 }
 export function zoom_out() {
     zoom.update((z) => {
-        z -= 0.25;
+        z -= 0.15;
         if (z < min_zoom) {
             z = min_zoom;
         } else {
-            window.scrollBy({
-                left: -window.innerWidth,
-                top: -window.innerHeight * 0.5,
-                behavior: "instant",
-            });
+            // window.scrollBy({
+            //     left: window.innerWidth * d_zoom,
+            //     top: window.innerHeight * d_zoom,
+            //     behavior: "instant",
+            // });
         }
         return z;
     });

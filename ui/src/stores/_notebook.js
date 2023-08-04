@@ -51,6 +51,7 @@ export const pc_graph = writable(new Map());
 
 ypc_graph.observeDeep((event) => {
     // TODO: optimize this
+    console.log(">>ypc_graph: ", ypc_graph.toJSON());
     pc_graph.set(ypc_graph.toJSON());
 });
 

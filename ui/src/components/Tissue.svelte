@@ -142,14 +142,14 @@
       e.preventDefault();
       e.stopPropagation();
 
-      cell.top = $mouse_pos.y - dh_clicked.y;
-      cell.left = $mouse_pos.x - dh_clicked.x;
-
       // set cell position while dragging
       drag_cell_pos = {
         x: $mouse_pos.x - dh_clicked.x,
         y: $mouse_pos.y - dh_clicked.y,
       };
+
+      cell.top = $mouse_pos.y - dh_clicked.y;
+      cell.left = $mouse_pos.x - dh_clicked.x;
 
       // top of
       const elements_under = document.elementsFromPoint(e.clientX, e.clientY);
@@ -285,89 +285,56 @@
       if (dragover_cell) {
         let dnd_cell_id = dragover_cell.getAttribute("cell_id");
         let dnd_parent = $cp_graph[dnd_cell_id];
-
         let cell_parent = $cp_graph[cell_id];
-        // let cell_loc = [...$pc_graph[cell_parent]].indexOf(cell_id);
-        // check if cell is in some parent
-        if (cell_parent) {
-          var cell_loc = [...$pc_graph[cell_parent]].indexOf(cell_id);
-        }
-
-        // insert cell after dnd_cell_id
-        let position = dragover_cell.getAttribute("position");
-
-        // copy pc_graph - to enforce reactivity (`set` updates cp_graph)
-        let pc_graph_copy = JSON.parse(JSON.stringify($pc_graph));
 
         // remove cell from parent
         if (cell_parent) {
-          pc_graph_copy[cell_parent].splice(cell_loc, 1);
+          let cell_parent_yarray = ypc_graph.get(cell_parent);
+          var cell_loc = cell_parent_yarray.toJSON().indexOf(cell_id);
+          cell_parent_yarray.delete(cell_loc, 1);
         }
 
         // add to next to dnd_cell_id
-        let dnd_cell_loc_pos;
         if (dnd_parent) {
-          if (position === "bottom") {
-            dnd_cell_loc_pos =
-              pc_graph_copy[dnd_parent].indexOf(dnd_cell_id) + 1;
-          } else if (position === "top") {
-            dnd_cell_loc_pos = pc_graph_copy[dnd_parent].indexOf(dnd_cell_id);
+          let dnd_parent_yarray = ypc_graph.get(dnd_parent);
+          let dnd_cell_loc_pos = dnd_parent_yarray
+            .toJSON()
+            .indexOf(dnd_cell_id);
+          if (dragover_cell.getAttribute("position") === "bottom") {
+            dnd_cell_loc_pos += 1;
           }
-          pc_graph_copy[dnd_parent].splice(dnd_cell_loc_pos, 0, cell_id);
+          dnd_parent_yarray.insert(dnd_cell_loc_pos, [cell_id]);
         } else {
+          // dragging onto a non-parent cell
+          // TODO: now only snaps to bottom, make it snap to top as well
           cell.left = get_cell(dnd_cell_id).left;
-          if (position === "bottom") {
-            cell.top =
-              get_cell(dnd_cell_id).top + get_cell(dnd_cell_id).height + 10;
-          } else if (position === "top") {
-            cell.top = get_cell(dnd_cell_id).top - cell.height - 10;
-          }
+          cell.top =
+            get_cell(dnd_cell_id).top + get_cell(dnd_cell_id).height + 10;
         }
-
-        // update pc_graph
-        pc_graph.set(pc_graph_copy);
       } else if (selected_dragzone) {
         // add to the end of the tissue/parent
         let dnd_cell_id = selected_dragzone.getAttribute("cell_id");
 
         // if dropped on the same parent, preserve order
         if ($cp_graph[cell_id] !== dnd_cell_id) {
-          // copy pc_graph - to enforce reactivity (`set` updates cp_graph)
-          let pc_graph_copy = JSON.parse(JSON.stringify($pc_graph));
-
           let cell_parent = $cp_graph[cell_id];
 
           // remove cell from parent
           if (cell_parent) {
-            pc_graph_copy[cell_parent].splice(
-              [...$pc_graph[cell_parent]].indexOf(cell_id),
-              1,
-            );
+            let cell_loc = ypc_graph.get(cell_parent).toJSON().indexOf(cell_id);
+            ypc_graph.get(cell_parent).delete(cell_loc, 1);
           }
 
-          // add to the end of the tissue/parent
-          pc_graph_copy[dnd_cell_id].push(cell_id);
-
-          // update pc_graph
-          pc_graph.set(pc_graph_copy);
+          ypc_graph.get(dnd_cell_id).push([cell_id]);
         }
       } else {
-        // dropped on canvas
         // remove from parent
         let cell_parent = $cp_graph[cell_id];
 
         // if cell is in some parent
         if (cell_parent) {
-          let cell_loc = [...$pc_graph[cell_parent]].indexOf(cell_id);
-
-          // copy pc_graph - to enforce reactivity (`set` updates cp_graph)
-          let pc_graph_copy = JSON.parse(JSON.stringify($pc_graph));
-
-          // remove cell from parent
-          pc_graph_copy[cell_parent].splice(cell_loc, 1);
-
-          // update pc_graph
-          pc_graph.set(pc_graph_copy);
+          let cell_loc = ypc_graph.get(cell_parent).toJSON().indexOf(cell_id);
+          ypc_graph.get(cell_parent).delete(cell_loc, 1);
         }
       }
 
@@ -380,9 +347,6 @@
         selected_dragzone.style.border = "";
         selected_dragzone.style.backgroundColor = "";
       }
-
-      // sync
-      // sync_cell_properties(cell_id);
     }
     dragging_began = false;
     dragging = false;
@@ -406,8 +370,8 @@
   let yprev_cell;
   $: if ($cp_graph[cell_id]) {
     yprev_cell = ydoc.getMap(
-      [...$pc_graph[$cp_graph[cell_id]]][
-        [...$pc_graph[$cp_graph[cell_id]]].indexOf(cell_id) - 1
+      ypc_graph.get($cp_graph[cell_id]).toJSON()[
+        ypc_graph.get($cp_graph[cell_id]).toJSON().indexOf(cell_id) - 1
       ],
     );
   }
@@ -424,10 +388,11 @@
     !dragging &&
     $html_elements[$cp_graph[cell_id]]
   ) {
-    // find loc of cell_id in $pc_graph[$cp_graph[cell_id]]
-    let cell_list_loc = [...$pc_graph[$cp_graph[cell_id]]].indexOf(cell_id);
+    let cell_list_loc = ypc_graph
+      .get($cp_graph[cell_id])
+      .toJSON()
+      .indexOf(cell_id);
     if (cell_list_loc === 0) {
-      // let parent_cell = $cells[$cp_graph[cell_id]];
       let top_pos =
         parent_cell.top +
         $html_elements[$cp_graph[cell_id]].querySelector("#title")
@@ -441,13 +406,10 @@
         cell.left = left_pos;
       }
     } else {
-      let prev_cell_id = [...$pc_graph[$cp_graph[cell_id]]][cell_list_loc - 1];
-      if (
-        (prev_cell_id in $pc_graph &&
-          $html_elements[prev_cell_id].getAttribute("dragging") === "false") ||
-        !(prev_cell_id in $pc_graph)
-      ) {
-        // let prev_cell = $cells[prev_cell_id];
+      let prev_cell_id = ypc_graph.get($cp_graph[cell_id]).toJSON()[
+        cell_list_loc - 1
+      ];
+      if ($html_elements[prev_cell_id].getAttribute("dragging") === "false") {
         let top_pos = prev_cell.top + prev_cell.height + 11;
 
         if (cell.top !== top_pos) {
@@ -500,7 +462,7 @@
   $: dropzone_height = children_w_h
     ? Object.values(children_w_h).reduce((acc, child) => {
         return acc + child.height + 10;
-      }, 0) + 8
+      }, 0) + 15
     : 0;
   $: dropzone_width = children_w_h
     ? Object.values(children_w_h).reduce((acc, child) => {
@@ -528,7 +490,9 @@
 </script>
 
 <div
-  class="tissue rounded-r rounded-tl bg-transparent border-2 border-l-[2px] border-oli-500 dark:border-oli-300 absolute w-fit h-fit flex flex-col overflow-visible drop-shadow active:drop-shadow-md"
+  class="tissue rounded-r rounded-tl bg-transparent border-2 border-l-[2px] border-oli-400 dark:border-oli-300 absolute w-fit h-fit flex flex-col overflow-visible {dragging
+    ? 'drop-shadow-2xl'
+    : 'drop-shadow-lg'} "
   bind:this={cell_div}
   style="
         top: {drag_cell_pos.y ? drag_cell_pos.y : cell.top}px;
@@ -563,7 +527,7 @@
 
   <!-- dropzone -->
   <div
-    class="dropzone rounded-br bg-oli dark:bg-oli-700 border-t-2 border-oli-500 dark:border-oli-300"
+    class="dropzone rounded-br bg-oli dark:bg-oli-700 border-t-2 border-oli-400 dark:border-oli-300"
     {cell_id}
   >
     <div
@@ -577,7 +541,7 @@
   </div>
   <NewCellToolbar {cell} />
   <!-- debug -->
-  <div
+  <!-- <div
     class="absolute bottom-0 right-0 w-fit h-fit text-gray-500 text-[9px] dark:text-gray-400"
     style="pointer-events: none;"
   >
@@ -587,7 +551,8 @@
       {$html_elements[cell_id].clientWidth} x
       {$html_elements[cell_id].clientHeight}
     {/if}
-  </div>
+    {dragging}
+  </div> -->
 </div>
 
 <svelte:window on:mousemove={drag_mousemove} on:mouseup={drag_mouseup} />

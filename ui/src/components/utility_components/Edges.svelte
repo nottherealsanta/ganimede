@@ -4,9 +4,9 @@
 
   import { ydoc, ynp_graph } from "../../stores/_notebook";
 
-  let c = ydoc.getMap(current_cell_id).toJSON();
+  $: c = ydoc.getMap(current_cell_id).toJSON();
 
-  let n = ydoc.getMap(next_id).toJSON();
+  $: n = ydoc.getMap(next_id).toJSON();
 
   ydoc.getMap(current_cell_id).observe((event) => {
     c = event.target.toJSON();
@@ -81,8 +81,6 @@
     y: 0,
   };
   function edge_mouse_down() {
-    console.log("edge_mouse_down");
-    console.log("mouse_pos", $mouse_pos);
     show_edge_toolbar = true;
     edge_toolbar_pos = {
       x: $mouse_pos.x,
@@ -92,29 +90,28 @@
 
   function delete_edge() {
     console.log("delete_edge");
-    console.log(
-      "ynp_graph.get(current_cell_id)",
-      ynp_graph.get(current_cell_id),
-    );
+    show_edge_toolbar = false;
     const ynp_graph_array = ynp_graph.get(current_cell_id);
-    console.log("ynp_graph_array", ynp_graph_array.toJSON());
     let _index = ynp_graph_array.toJSON().indexOf(next_id);
-    console.log("_index", _index);
     ynp_graph_array.delete(_index);
-    console.log("ynp_graph_array", ynp_graph_array.toJSON());
   }
 </script>
 
 <div
-  class="bg-transparent"
+  class="bg-transparent z-[9998]"
   id="edge"
   style="
     position: absolute; 
     top: {top}px; left: {left}px; 
     width: {width}px; height: {height}px; 
-    border-radius: 0.25rem; "
+    pointer-events: none;
+    "
 >
-  <svg height="100%" width="100%" style="position: absolute; top: 0; left: 0; ">
+  <svg
+    height="100%"
+    width="100%"
+    style="position: absolute; top: 0; left: 0; pointer-events: none;"
+  >
     <defs>
       <marker
         id="arrow_path"
@@ -156,7 +153,7 @@
     {#if !close}
       <path
         d={path}
-        class="stroke-oli-500 dark:stroke-oli-200 stroke-[2px] fill-transparent active:stroke-sky-400 hover:stroke-oli-400"
+        class="stroke-oli-500 dark:stroke-oli-200 stroke-[2px] fill-transparent active:stroke-sky-400 hover:stroke-oli-400 pointer-events-auto"
         style={close ? "stroke-width: 2px;" : ""}
         marker-end="url(#arrow_path)"
         on:mousedown={edge_mouse_down}
@@ -178,7 +175,7 @@
 
 {#if show_edge_toolbar}
   <div
-    class="h-6 w-fit bg-oli rounded-lg absolute flex drop-shadow-md border border-oli-200 dark:border-oli-200"
+    class="h-6 w-fit z-[9999] bg-oli rounded-lg absolute flex drop-shadow-md border border-oli-200 dark:border-oli-200"
     style="top: {edge_toolbar_pos.y}px; left: {edge_toolbar_pos.x}px; transform: translate(-50%, -50%);"
     on:mouseleave={() => (show_edge_toolbar = false)}
   >
