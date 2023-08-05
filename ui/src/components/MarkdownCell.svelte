@@ -49,7 +49,7 @@
 
   // dark-light mode
   let theme = {
-    dark: "dark-theme",
+    dark: "vs-dark",
     light: "light-theme",
   };
   // -- current theme
@@ -110,12 +110,9 @@
     import("monaco-themes/themes/Active4D.json").then((data) => {
       monaco.editor.defineTheme("light-theme", data);
     });
-    import("monaco-themes/themes/Github dark.json").then((data) => {
-      monaco.editor.defineTheme("dark-theme", data);
-    });
 
     // --- set theme
-    monaco.editor.setTheme(current_theme);
+    monaco.editor.setTheme("light-theme");
 
     max_columns = get_max_columns();
 
@@ -160,6 +157,9 @@
   };
 
   onMount(() => {
+    current_theme = window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? theme.dark
+      : theme.light;
     mount_monaco();
     if (div) {
       div.addEventListener("mousedown", (e) => {
@@ -191,7 +191,7 @@
 </script>
 
 <div
-  class="h-fit bg-oli dark:bg-oli-700 rounded cell-input py-0.5 pl-1 overflow-hidden relative align-middle cursor-text pointer-events-auto"
+  class="h-fit bg-oli dark:bg-oli-800 rounded cell-input py-0.5 pl-1 overflow-hidden relative align-middle cursor-text pointer-events-auto"
   style="min-width: min-content; width: {width}px"
   id="cell-input"
   bind:this={div}

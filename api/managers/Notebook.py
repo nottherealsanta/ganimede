@@ -21,7 +21,7 @@ class Notebook:
         kernel: Kernel,
         comms: Comms,
         ydoc: Y.YDoc,
-        notebook_path: str = f"{getcwd()}/tests/test8.ipynb",
+        notebook_path: str = f"{getcwd()}/tests/test4.ipynb",
     ):
         self.kernel = kernel
         self.comms = comms

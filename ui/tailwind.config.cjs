@@ -20,9 +20,15 @@ module.exports = {
           900: '#131313'
         },
         'nilam': "#F6F8FA",
-        'nilam-dark': "#191A1C"
+        'nilam-dark': "#232629"
       },
-
+      dropShadow: {
+        'sm-dark': '0 1px 2px rgba(0, 0, 0, 0.5)',
+        'md-dark': '0 4px 6px rgba(0, 0, 0, 0.5)',
+        'lg-dark': '0 10px 15px rgba(0, 0, 0, 0.5)',
+        'xl-dark': '0 20px 25px rgba(0, 0, 0, 0.5)',
+        '2xl-dark': '0 25px 50px rgba(0, 0, 0, 0.5)',
+      },
     },
     plugins: []
   }

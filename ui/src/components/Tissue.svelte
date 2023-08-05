@@ -490,9 +490,10 @@
 </script>
 
 <div
-  class="tissue rounded-r rounded-tl bg-transparent border-2 border-l-[2px] border-oli-400 dark:border-oli-300 absolute w-fit h-fit flex flex-col overflow-visible {dragging
-    ? 'drop-shadow-2xl'
-    : 'drop-shadow-lg'} "
+  class="tissue rounded-r rounded-tl bg-transparent border-2 border-l-[2px] border-oli-400 dark:border-oli-400 absolute w-fit h-fit flex flex-col overflow-visible
+  {dragging ? 'drop-shadow-2xl dark:drop-shadow-2xl-dark' : ''}
+  {!$cp_graph[cell_id] ? 'drop-shadow-lg dark:drop-shadow-lg-dark' : ''}
+  "
   bind:this={cell_div}
   style="
         top: {drag_cell_pos.y ? drag_cell_pos.y : cell.top}px;
@@ -515,7 +516,7 @@
   <TissueToolbar {cell} {is_hover} />
 
   <!-- title -->
-  <div class="bg-oli dark:bg-[#262626] h-fit w-full flex" id="title">
+  <div class="bg-oli dark:bg-oli-800 h-fit w-full flex" id="title">
     {#if cell.type === "code"}
       <CodeCell {cell} />
     {:else if cell.type === "markdown"}
@@ -527,7 +528,7 @@
 
   <!-- dropzone -->
   <div
-    class="dropzone rounded-br bg-oli dark:bg-oli-700 border-t-2 border-oli-400 dark:border-oli-300"
+    class="dropzone rounded-br bg-oli dark:bg-oli-800 border-t-2 border-oli-400 dark:border-oli-400"
     {cell_id}
   >
     <div

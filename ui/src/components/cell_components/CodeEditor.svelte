@@ -53,7 +53,7 @@
 
   // dark-light mode
   let theme = {
-    dark: "dark-theme",
+    dark: "vs-dark",
     light: "light-theme",
   };
   // -- current theme
@@ -112,12 +112,9 @@
     // --- import theme
     import("monaco-themes/themes/Active4D.json").then((data) => {
       monaco.editor.defineTheme("light-theme", data);
-      monaco.editor.setTheme("light-theme");
     });
-    import("monaco-themes/themes/Github dark.json").then((data) => {
-      monaco.editor.defineTheme("dark-theme", data);
-      // monaco.editor.setTheme("dark-theme");
-    });
+
+    monaco.editor.setTheme("light-theme");
 
     editor = monaco.editor.create(container, monaco_config);
 
@@ -166,6 +163,9 @@
   };
 
   onMount(() => {
+    current_theme = window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? theme.dark
+      : theme.light;
     mount_monaco();
     // for dragSelect
     if (div) {
@@ -183,7 +183,7 @@
 </script>
 
 <div
-  class="h-fit bg-oli dark:bg-[#24292F] cell-input py-0.5 pl-1 rounded-b overflow-hidden relative align-middle cursor-text pointer-events-auto"
+  class="h-fit bg-oli dark:bg-[#1E1E1E] cell-input py-0.5 pl-1 rounded-b overflow-hidden relative align-middle cursor-text pointer-events-auto"
   style=" min-height: 25px; width:100%;"
   id="cell-input"
   bind:this={div}

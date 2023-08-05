@@ -1,62 +1,63 @@
 <script>
-    import Notebook from "./Notebook.svelte";
-    import { socket, open_socket, send_message } from "../stores/socket";
-    import { onMount } from "svelte";
-    let canvas_div = null;
+  import Notebook from "./Notebook.svelte";
+  import { socket, open_socket, send_message } from "../stores/socket";
+  import { onMount } from "svelte";
+  let canvas_div = null;
 
-    // middle mouse to pan
-    import mouse_pos from "../stores/mouse.js";
+  // middle mouse to pan
+  import mouse_pos from "../stores/mouse.js";
 
-    let moving = false;
-    let clicked_x = 0;
-    let clicked_y = 0;
-    let mouseDown = function (e) {
-        if (
-            e.button === 0 && // if middle mouse button is pressed
-            (e.target.id === "tissue" || e.target.id === "canvas")
-        ) {
-            moving = true;
-            clicked_x = $mouse_pos.x;
-            clicked_y = $mouse_pos.y;
-        }
-    };
-    let mouseUp = function () {
-        moving = false;
-    };
-    let mouseMove = function (e) {
-        if (moving) {
-            window.scrollBy({
-                left: clicked_x - $mouse_pos.x,
-                top: clicked_y - $mouse_pos.y,
-                behavior: "instant",
-            });
-        }
-    };
+  let moving = false;
+  let clicked_x = 0;
+  let clicked_y = 0;
+  let mouseDown = function (e) {
+    if (
+      e.button === 0 && // if middle mouse button is pressed
+      (e.target.id === "tissue" || e.target.id === "canvas")
+    ) {
+      moving = true;
+      clicked_x = $mouse_pos.x;
+      clicked_y = $mouse_pos.y;
+    }
+  };
+  let mouseUp = function () {
+    moving = false;
+  };
+  let mouseMove = function (e) {
+    if (moving) {
+      window.scrollBy({
+        left: clicked_x - $mouse_pos.x,
+        top: clicked_y - $mouse_pos.y,
+        behavior: "instant",
+      });
+    }
+  };
 
-    // ---------- zoom
-    import { zoom, set_zoom } from "../stores/zoom";
+  // ---------- zoom
+  import { zoom, set_zoom } from "../stores/zoom";
 
-    //// add event listeners
-    onMount(() => {
-        window.addEventListener("wheel", (event) => {
-            set_zoom(event);
-        }, { passive: false });
-    });
+  //// add event listeners
+  onMount(() => {
+    window.addEventListener(
+      "wheel",
+      (event) => {
+        set_zoom(event);
+      },
+      { passive: false },
+    );
+  });
 
+  onMount(async () => {
+    open_socket();
+  });
 
-    onMount(async () => {
-        open_socket();
-       
-    });
-
-    // import ZoomToolBar from "../components/canvas_components/zoom.svelte";
-    import ToolbarCanvas from "./canvas_components/ToolbarCanvas.svelte";
-    
+  // import ZoomToolBar from "../components/canvas_components/zoom.svelte";
+  import ToolbarCanvas from "./canvas_components/ToolbarCanvas.svelte";
 </script>
 
 <div
-    class="canvas bg-oli dark:bg-oli-700 relative overflow-auto"
-    style="
+  class="canvas bg-oli dark:bg-[#1E1E1E] relative overflow-auto"
+  style="
         height: 20000px; 
         width: 20000px; 
         transform: scale({$zoom}); 
@@ -68,17 +69,17 @@
         );
         background-size: 15px 15px;
     "
-    id="canvas"
-    on:mousemove={mouseMove}
-    on:mousedown={mouseDown}
-    on:mouseup={mouseUp}
-    bind:this={canvas_div}
+  id="canvas"
+  on:mousemove={mouseMove}
+  on:mousedown={mouseDown}
+  on:mouseup={mouseUp}
+  bind:this={canvas_div}
 >
-    {#await open_socket}
-        <div>Waiting for socket</div>
-    {:then}
-        <Notebook />
-    {/await}
+  {#await open_socket}
+    <div>Waiting for socket</div>
+  {:then}
+    <Notebook />
+  {/await}
 </div>
 
 <!-- <ZoomToolBar /> -->

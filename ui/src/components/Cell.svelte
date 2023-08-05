@@ -431,9 +431,10 @@
 </script>
 
 <div
-  class="cell rounded bg-transparent border border-oli-300 dark:border-oli-300 absolute w-fit h-fit flex flex-col overflow-visible
-  {dragging ? 'drop-shadow-2xl' : ''}
-  {!$cp_graph[cell_id] ? 'drop-shadow-lg' : ''}"
+  class="cell rounded bg-transparent border border-oli-300 dark:border-oli-500 absolute w-fit h-fit flex flex-col overflow-visible
+  {dragging ? 'drop-shadow-2xl dark:drop-shadow-2xl-dark' : ''}
+  {!$cp_graph[cell_id] ? 'drop-shadow-lg dark:drop-shadow-lg-dark' : ''}
+  "
   bind:this={cell_div}
   style="
         top: {drag_cell_pos.y ? drag_cell_pos.y : cell.top}px;
