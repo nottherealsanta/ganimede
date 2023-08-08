@@ -7,7 +7,7 @@ from rich import print
 
 import logging
 
-from managers.Comms import Comms
+from .Comms import Comms
 
 log = logging.getLogger(__name__)
 

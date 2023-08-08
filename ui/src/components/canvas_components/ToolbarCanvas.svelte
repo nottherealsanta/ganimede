@@ -18,7 +18,7 @@
 </script>
 
 <div
-  class=" fixed flex flex-row self-center top-[1px] align-center items-center w-[500px] h-8 pl-2 bg-oli dark:bg-oli-700 border rounded-xl border-oli-500 dark:border-oli-200 justify-left align-middle pointer-events-auto fill-oli-400 stroke-oli-400 dark:fill-oli-200 dark:stroke-oli-200"
+  class=" fixed flex flex-row self-center top-[1px] align-center items-center w-[500px] h-8 pl-2 bg-oli dark:bg-oli-700 border rounded-xl border-oli-500 dark:border-oli-400 justify-left align-middle pointer-events-auto fill-oli-400 stroke-oli-400 dark:fill-oli-200 dark:stroke-oli-200"
   style="
     left: 50%;
     transform: translate(-50%, 50%);

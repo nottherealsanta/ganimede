@@ -12,7 +12,6 @@
     ynp_graph,
     ypc_graph,
   } from "../stores/_notebook";
-  import * as Y from "yjs";
 
   onMount(() => {
     cell_div.setAttribute("cell_id", cell_id);
@@ -384,8 +383,8 @@
         parent_cell.top +
         $html_elements[$cp_graph[cell_id]].querySelector("#title")
           .clientHeight +
-        34;
-      let left_pos = parent_cell.left + 12;
+        32;
+      let left_pos = parent_cell.left + 8;
       if (cell.top !== top_pos) {
         cell.top = top_pos;
       }
@@ -431,7 +430,7 @@
 </script>
 
 <div
-  class="cell rounded bg-transparent border border-oli-300 dark:border-oli-500 absolute w-fit h-fit flex flex-col overflow-visible
+  class="cell rounded bg-transparent border border-oli-200 dark:border-oli-600 absolute w-fit h-fit flex flex-col overflow-visible
   {dragging ? 'drop-shadow-2xl dark:drop-shadow-2xl-dark' : ''}
   {!$cp_graph[cell_id] ? 'drop-shadow-lg dark:drop-shadow-lg-dark' : ''}
   "
@@ -467,7 +466,7 @@
     {/if}
   </div>
 
-  <NewCellToolbar {cell} />
+  <NewCellToolbar {cell} cell_hover={is_hover} />
   <!-- debug -->
   <!-- <div
     class="absolute bottom-0 right-0 w-fit h-fit text-gray-500 text-[9px] dark:text-gray-400"

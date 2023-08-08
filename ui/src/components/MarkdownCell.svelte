@@ -31,7 +31,7 @@
   let n_lines = 0;
   $: n_lines = cell.source.toString().length;
 
-  $: width = Math.ceil(max_columns * 8) + 40;
+  $: width = Math.ceil(max_columns * 9) + 40;
   $: width = Math.min(width, max_width);
   $: width = Math.max(width, min_min_width);
 
@@ -191,14 +191,14 @@
 </script>
 
 <div
-  class="h-fit bg-oli dark:bg-oli-800 rounded cell-input py-0.5 pl-1 overflow-hidden relative align-middle cursor-text pointer-events-auto"
-  style="min-width: min-content; width: {width}px"
+  class="h-fit bg-oli dark:bg-oli-800 rounded cell-input py-0.5 px-1 overflow-hidden relative align-middle cursor-text pointer-events-auto"
+  style="min-width: 300px; max-width: 1000px; min-height: 30px;"
   id="cell-input"
   bind:this={div}
 >
   <div
-    class="w-full h-fit px-1 rounded text-[14px]"
-    style="display: {focus ? 'none' : 'block'}; font-family: IBM Plex Sans"
+    class="w-full h-fit px-1 rounded"
+    style="display: {focus ? 'none' : 'block'}; font-family: Inter"
   >
     {#if editor}
       {@html marked(source)}

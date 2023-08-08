@@ -507,6 +507,9 @@ video {
 .pointer-events-auto {
   pointer-events: auto;
 }
+.static {
+  position: static;
+}
 .fixed {
   position: fixed;
 }
@@ -623,6 +626,9 @@ video {
 .h-full {
   height: 100%;
 }
+.h-40 {
+  height: 10rem;
+}
 .w-3 {
   width: 0.75rem;
 }
@@ -650,6 +656,9 @@ video {
 }
 .w-full {
   width: 100%;
+}
+.w-40 {
+  width: 10rem;
 }
 .min-w-\[250px\] {
   min-width: 250px;
@@ -780,6 +789,9 @@ video {
 .border-t-2 {
   border-top-width: 2px;
 }
+.border-t {
+  border-top-width: 1px;
+}
 .border-oli-100 {
   --tw-border-opacity: 1;
   border-color: rgb(236 236 236 / var(--tw-border-opacity));
@@ -822,6 +834,12 @@ video {
 .bg-transparent {
   background-color: transparent;
 }
+.bg-oli\/20 {
+  background-color: rgb(255 255 255 / 0.2);
+}
+.bg-oli\/10 {
+  background-color: rgb(255 255 255 / 0.1);
+}
 .fill-black {
   fill: #000;
 }
@@ -849,6 +867,12 @@ video {
 .fill-yellow-600 {
   fill: #ca8a04;
 }
+.fill-oli-300 {
+  fill: #B3B3B3;
+}
+.fill-oli-100 {
+  fill: #ECECEC;
+}
 .stroke-black {
   stroke: #000;
 }
@@ -863,6 +887,9 @@ video {
 }
 .stroke-oli-600 {
   stroke: #393939;
+}
+.stroke-oli-300 {
+  stroke: #B3B3B3;
 }
 .stroke-2 {
   stroke-width: 2;
@@ -952,6 +979,10 @@ video {
   --tw-text-opacity: 1;
   color: rgb(64 64 64 / var(--tw-text-opacity));
 }
+.text-oli-600 {
+  --tw-text-opacity: 1;
+  color: rgb(57 57 57 / var(--tw-text-opacity));
+}
 .drop-shadow-2xl {
   --tw-drop-shadow: drop-shadow(0 25px 25px rgb(0 0 0 / 0.15));
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
@@ -966,6 +997,13 @@ video {
 }
 .filter {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
 }
 
 /* h1 {
@@ -1173,6 +1211,14 @@ h6 {
     fill: #fff;
   }
 
+  .dark\:fill-oli-400\/30 {
+    fill: rgb(122 122 122 / 0.3);
+  }
+
+  .dark\:fill-oli-400 {
+    fill: #7A7A7A;
+  }
+
   .dark\:stroke-oli-200 {
     stroke: #D0D0D0;
   }
@@ -1183,6 +1229,10 @@ h6 {
 
   .dark\:stroke-white {
     stroke: #fff;
+  }
+
+  .dark\:stroke-oli-300 {
+    stroke: #B3B3B3;
   }
 
   .dark\:text-gray-400 {

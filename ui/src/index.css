@@ -176,33 +176,52 @@ h6 {
 }
 
 h1 {
-  font-size: x-large;
+  font-size: 36px;
   font-weight: 700;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 h2 {
-  font-size: large;
-  font-weight: 700;
+  font-size: 30px;
+  font-weight: 500;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 h3 {
-  font-size: medium;
-  font-weight: 700;
+  font-size: 24px;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 h4 {
-  font-size: small;
+  font-size: 22px;
   font-weight: 700;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 h5 {
-  font-size: x-small;
+  font-size: 18px;
   font-weight: 700;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 h6 {
-  font-size: xx-small;
+  font-size: 16px;
   font-weight: 700;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+p {
+  font-size: 16px;
+  font-weight: 400;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .ProseMirror {

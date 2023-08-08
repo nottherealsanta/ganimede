@@ -1,5 +1,6 @@
 <script>
   export let cell;
+  export let cell_hover;
 
   function connector_click(e) {
     e.preventDefault();
@@ -24,8 +25,7 @@
   }
 
   async function new_markdown_cell() {
-    // sendMessage("new_markdown_cell", "markdown");
-    console.log("new markdown cell", cell.id);
+    create_cell("markdown", cell);
   }
 
   $: has_parent = $cp_graph[cell.id] === undefined;
@@ -56,6 +56,7 @@
     drag_line.setAttribute("style", "z-index: 9999;");
     canvas_div = document.getElementById("canvas");
     canvas_div.appendChild(drag_line);
+    console.log("drag_line", drag_line);
   }
   function drag_mousemove(e) {
     if (!dragging) {
@@ -112,6 +113,7 @@
     }
 
     drag_end_pos = { x: $mouse_pos.x, y: $mouse_pos.y };
+    console.log("drag_end_pos:", drag_end_pos);
     drag_line.innerHTML = `
       <line
         x1=${drag_start_pos.x}
@@ -162,17 +164,21 @@
   on:mouseleave={() => {
     is_hover = false;
   }}
-  style={is_hover ? "" : "justify-content: center;"}
+  style="opacity: {cell_hover ? 1 : 0}; transition: opacity 0.1s ease-in-out;"
 >
   {#if is_hover}
     <div
-      class="absolute w-fit h-[19px] z-auto -top-[10px] flex flex-row drop-shadow-md cursor-default bg-oli dark:bg-oli-700 rounded border border-oli-500 dark:border-oli-300 overflow-clip fill-oli-500 dark:fill-gray-300 stroke-oli-500 dark:stroke-oli-400 stroke"
+      class="absolute w-fit h-[19px] z-[9999] -top-[10px] flex flex-row drop-shadow-md cursor-default bg-oli dark:bg-oli-700 rounded border border-oli-500 dark:border-oli-300 overflow-clip fill-oli-500 dark:fill-gray-300 stroke-oli-500 dark:stroke-oli-400 stroke"
       on:mousedown|stopPropagation={() => {}}
     >
       <!-- <ToolbarSlot><Disconnect /></ToolbarSlot> -->
       <ToolbarSlot on:click={new_code_cell}><Python /></ToolbarSlot>
       {#if has_parent}
-        <Connector on:mousedown={drag_mousedown} on:mouseup={drag_mouseup} />
+        <Connector
+          on:mousedown={drag_mousedown}
+          on:mousemove={drag_mousemove}
+          on:mouseup={drag_mouseup}
+        />
       {:else}
         <ToolbarSlot></ToolbarSlot>
       {/if}
@@ -181,7 +187,7 @@
     </div>
   {:else}
     <div
-      class="absolute w-3 h-5 -top-[10px] left-[25px] rounded-full flex items-center justify-center bg-transparent cursor-pointer stroke-oli-400 dark:stroke-oli-200 stroke-2 fill-oli-50 dark:fill-oli-500"
+      class="absolute w-3 h-5 z-[9999] -top-[10px] left-[25px] rounded-full flex items-center justify-center bg-transparent cursor-pointer stroke-oli-300 dark:stroke-oli-200 stroke-2 fill-oli-100 dark:fill-oli-500"
       id="new-cell-toolbar"
       on:click|stopPropagation={connector_click}
       on:keydown={() => {}}

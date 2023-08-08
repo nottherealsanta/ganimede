@@ -54,13 +54,13 @@
   }
 
   let path = "";
-  $: path = `M ${curr.left + 32 - left} ${curr.bottom - top + 5}
+  $: path = `M ${curr.left + 32 - left} ${curr.bottom - top + 2}
                 C ${curr.left + 32 - left} ${curr.bottom - top + 50}, 
                 ${next.left + 25 - left} ${next.top - top - 50}, 
                 ${next.left + 25 - left} ${next.top - top - 5}`;
 
   $: close =
-    next.top - curr.bottom < 100 &&
+    next.top - curr.bottom < 50 &&
     next.left - curr.left < 50 &&
     next.left - curr.left > -50;
 
@@ -114,14 +114,14 @@
   >
     <defs>
       <marker
-        id="arrow_path"
+        id="arrow_head_path"
         viewBox="0 -5 10 10"
         refX="5"
         refY="0"
         markerWidth="4"
         markerHeight="4"
         orient="auto"
-        class="fill-oli-500 dark:fill-oli-200"
+        class="fill-oli-400 dark:fill-oli-400"
       >
         <path d="M0,-5L10,0L0,5" />
       </marker>
@@ -153,9 +153,9 @@
     {#if !close}
       <path
         d={path}
-        class="stroke-oli-500 dark:stroke-oli-200 stroke-[2px] fill-transparent active:stroke-sky-400 hover:stroke-oli-400 pointer-events-auto"
+        class="stroke-oli-400 dark:stroke-oli-400 stroke-[2px] fill-transparent active:stroke-sky-400 hover:stroke-oli-400 pointer-events-auto"
         style={close ? "stroke-width: 2px;" : ""}
-        marker-end="url(#arrow_path)"
+        marker-end="url(#arrow_head_path)"
         on:mousedown={edge_mouse_down}
       />
     {:else}

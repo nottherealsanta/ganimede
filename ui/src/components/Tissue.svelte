@@ -397,8 +397,8 @@
         parent_cell.top +
         $html_elements[$cp_graph[cell_id]].querySelector("#title")
           .clientHeight +
-        34;
-      let left_pos = parent_cell.left + 12;
+        32;
+      let left_pos = parent_cell.left + 8;
       if (cell.top !== top_pos) {
         cell.top = top_pos;
       }
@@ -462,7 +462,7 @@
   $: dropzone_height = children_w_h
     ? Object.values(children_w_h).reduce((acc, child) => {
         return acc + child.height + 10;
-      }, 0) + 15
+      }, 0) + 7
     : 0;
   $: dropzone_width = children_w_h
     ? Object.values(children_w_h).reduce((acc, child) => {
@@ -490,7 +490,7 @@
 </script>
 
 <div
-  class="tissue rounded-r rounded-tl bg-transparent border-2 border-l-[2px] border-oli-400 dark:border-oli-400 absolute w-fit h-fit flex flex-col overflow-visible
+  class="tissue rounded-r rounded-tl bg-transparent border-2 border-l-[2px] border-oli-200 dark:border-oli-500 absolute w-fit h-fit flex flex-col overflow-visible
   {dragging ? 'drop-shadow-2xl dark:drop-shadow-2xl-dark' : ''}
   {!$cp_graph[cell_id] ? 'drop-shadow-lg dark:drop-shadow-lg-dark' : ''}
   "
@@ -528,7 +528,7 @@
 
   <!-- dropzone -->
   <div
-    class="dropzone rounded-br bg-oli dark:bg-oli-800 border-t-2 border-oli-400 dark:border-oli-400"
+    class="dropzone rounded-br bg-oli dark:bg-oli-800 border-t border-oli-200 dark:border-oli-500"
     {cell_id}
   >
     <div
@@ -540,7 +540,7 @@
       }}
     />
   </div>
-  <NewCellToolbar {cell} />
+  <NewCellToolbar {cell} cell_hover={is_hover} />
   <!-- debug -->
   <!-- <div
     class="absolute bottom-0 right-0 w-fit h-fit text-gray-500 text-[9px] dark:text-gray-400"

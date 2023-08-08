@@ -35,7 +35,7 @@
   let n_lines = 0;
   $: n_lines = source.toString().length;
 
-  $: width = Math.ceil(max_columns * 8) + 40;
+  $: width = Math.ceil(max_columns * 9) + 40; // TODO: must be calculated from font size
   $: width = Math.min(width, max_width);
   $: width = Math.max(width, min_min_width);
 
@@ -114,7 +114,7 @@
       monaco.editor.defineTheme("light-theme", data);
     });
 
-    monaco.editor.setTheme("light-theme");
+    // monaco.editor.setTheme("light-theme");
 
     editor = monaco.editor.create(container, monaco_config);
 

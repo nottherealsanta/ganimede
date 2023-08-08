@@ -151,7 +151,8 @@ export function create_cell(type, from_cell = null) {
             x.push([cell_id]);
             ynp_graph.set(from_cell.id, x);
         } else {
-            ynp_graph.get(from_cell.id).push(cell_id);
+            ynp_graph.get(from_cell.id).push([cell_id]);
+            console.log("ynp_graph.get(from_cell.id).toJSON(): ", ynp_graph.get(from_cell.id).toJSON());
         }
         console.log("ynp_graph: ", ynp_graph.toJSON());
     }

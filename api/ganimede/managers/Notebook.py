@@ -8,9 +8,9 @@ import y_py as Y
 from os import urandom
 from base64 import urlsafe_b64encode
 
-from managers.Kernel import Kernel
-from managers.Comms import Comms
-from managers.Cell import Cell
+from .Kernel import Kernel
+from .Comms import Comms
+from .Cell import Cell
 
 log = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ class Notebook:
         kernel: Kernel,
         comms: Comms,
         ydoc: Y.YDoc,
-        notebook_path: str = f"{getcwd()}/tests/test4.ipynb",
+        notebook_path: str,
     ):
         self.kernel = kernel
         self.comms = comms
@@ -52,8 +52,8 @@ class Notebook:
     def _load_notebook(self):
         notebook_path = Path(self.notebook_path)
         if not notebook_path.exists():
-            log.debug("Notebook does not exist")
-            return None
+            log.info("Notebook does not exist")
+            raise FileNotFoundError
         with open(notebook_path, "r") as f:
             return json.load(f)
 
@@ -258,7 +258,7 @@ class Notebook:
         # connect the parent_less cells
         parent_less_cells = []
         for i, cell in enumerate(cells):
-            if cell["heading_level"] is 1:
+            if cell["heading_level"] == 1:
                 parent_less_cells.append(cell["id"])
             elif cell["id"] not in self.pc_graph:
                 for x in self.pc_graph.keys():
