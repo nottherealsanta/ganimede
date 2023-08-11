@@ -14,7 +14,7 @@
 </script>
 
 <div
-  class="bg-oli dark:bg-oli-800 rounded-t flex h-fit w-full p-0.5 border-b border-oli-100 dark:border-oli-600 cursor-grab active:cursor-grabbing"
+  class="bg-oli dark:bg-oli-800 rounded-t flex h-fit w-full p-0.5 border-b border-oli-100 dark:border-oli-700 cursor-grab active:cursor-grabbing"
   on:mousedown
   on:mouseup
 >

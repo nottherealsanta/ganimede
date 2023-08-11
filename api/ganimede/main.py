@@ -25,7 +25,7 @@ log = logging.getLogger(__name__)
 log.propagate = False
 
 # app
-loop = asyncio.get_event_loop()
+# loop = asyncio.get_event_loop()
 app = Starlette(debug=True)
 
 # yapp server
@@ -47,8 +47,9 @@ async def on_startup():
     route_manager = RouteManager(app)
     comms = Comms()
 
+    loop = asyncio.get_event_loop()
     # yapp server
-    loop.create_task(server_task())
+    _task = loop.create_task(server_task())
 
     # yapp client
     await asyncio.sleep(0.5) # wait for server to start
@@ -84,7 +85,7 @@ def cli(file):
         host="0.0.0.0",
         port=8000,
         log_level="info",
-        reload=True,
+        reload=False,
     )
 
 # dev cli

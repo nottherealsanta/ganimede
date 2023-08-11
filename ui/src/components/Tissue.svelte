@@ -502,7 +502,7 @@
 </script>
 
 <div
-  class="tissue rounded-r rounded-tl bg-transparent border-2 border-l-[2px] border-oli-100 dark:border-oli-500 absolute w-fit h-fit flex flex-col overflow-visible
+  class="tissue rounded-r rounded-tl bg-transparent border-2 border-l-[2px] border-oli-100 dark:border-oli-700 absolute w-fit h-fit flex flex-col overflow-visible
   {dragging ? 'drop-shadow-2xl dark:drop-shadow-2xl-dark' : ''}
   {!$cp_graph[cell_id] ? 'drop-shadow-lg dark:drop-shadow-lg-dark' : ''}
   "

@@ -11,5 +11,7 @@ export default defineConfig({
 
         // })
     ],
-
+    build: {
+        outDir: '../api/ganimede/ui_dist/'
+    }
 });

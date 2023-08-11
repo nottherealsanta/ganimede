@@ -17,8 +17,6 @@
     cell_div.setAttribute("cell_id", cell_id);
     $html_elements[cell_id] = cell_div;
     $html_elements[cell_id].setAttribute("dragging", "false");
-    console.log("setting cell_id", cell_id);
-    console.log("$html_elements[cell_id] :", $html_elements[cell_id]);
   });
 
   let cell = {

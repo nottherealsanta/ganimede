@@ -17,7 +17,6 @@
   let cells = ycells.toJSON();
   ycells.observe((event) => {
     cells = ycells.toJSON();
-    console.log("new cells", cells);
   });
 
   let np_graph = ynp_graph.toJSON();
@@ -53,7 +52,12 @@
 
   // wait for $cell to be defined
   let aligned = false;
-  $: if (cells !== undefined && $html_elements !== undefined && !aligned) {
+  $: if (
+    ycells !== undefined &&
+    cells !== undefined &&
+    $html_elements !== undefined &&
+    !aligned
+  ) {
     aligned = true;
     // call align_parent_less_cells() after 1 second
     console.log("get_cell(cells[0]).get", get_cell(cells[0]).get("top"));

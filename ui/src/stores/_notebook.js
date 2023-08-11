@@ -51,7 +51,6 @@ export const pc_graph = writable(new Map());
 
 ypc_graph.observeDeep((event) => {
     // TODO: optimize this
-    console.log(">>ypc_graph: ", ypc_graph.toJSON());
     pc_graph.set(ypc_graph.toJSON());
 });
 
@@ -80,8 +79,6 @@ ynp_graph.observeDeep((event) => {
     // TODO: optimize this
     // if (!event.transaction.local) {
     np_graph.set(ynp_graph.toJSON());
-    console.log(">>ynp_graph: ", ynp_graph.toJSON());
-    console.log(">>np_graph: ", get(np_graph));
     // }
 });
 
@@ -122,14 +119,12 @@ export function create_cell(type, from_cell = null) {
     let cell_id = generateRandomCellId();
     let ycell = ydoc.getMap(cell_id);
 
-    console.log("new cell: ", cell_id);
-
+    // create cell in ydoc
     ycell.set('id', cell_id);
     ycell.set('type', type);
     ycell.set('source', new Y.Text());
     ycell.set('execution_count', null);
     ycell.set('outputs', new Y.Array());
-
     ycell.set('width', null);
     ycell.set('height', null);
     ycell.set('collapsed', null);
@@ -137,15 +132,11 @@ export function create_cell(type, from_cell = null) {
 
     let parent = get(cp_graph)[from_cell.id];
     if (parent) {
-        console.log("parent: ", parent);
         // has parent
         let index = ypc_graph.get(parent).toJSON().indexOf(from_cell.id);
-        console.log("index: ", index);
-        console.log("before ypc_graph.get(parent): ", ypc_graph.get(parent).toJSON());
         ypc_graph.get(parent).insert(index + 1, [cell_id]);
         ycell.set('top', null);
         ycell.set('left', null);
-        console.log("after ypc_graph.get(parent): ", ypc_graph.get(parent).toJSON());
 
     } else {
         // no parent
@@ -158,10 +149,37 @@ export function create_cell(type, from_cell = null) {
             ynp_graph.set(from_cell.id, x);
         } else {
             ynp_graph.get(from_cell.id).push([cell_id]);
-            console.log("ynp_graph.get(from_cell.id).toJSON(): ", ynp_graph.get(from_cell.id).toJSON());
         }
-        console.log("ynp_graph: ", ynp_graph.toJSON());
     }
 
     ycells.push([cell_id]);
+}
+
+export function delete_cell(cell_id) {
+    let ycell = ydoc.getMap(cell_id);
+
+    // delete from parent's pc_graph
+    let parent = get(cp_graph)[cell_id];
+    if (parent) {
+        // has parent
+        let index = ypc_graph.get(parent).toJSON().indexOf(cell_id);
+        ypc_graph.get(parent).delete(index, 1);
+    }
+    // delete from pc_graph
+    if (ypc_graph.get(cell_id)) {
+        ypc_graph.delete([cell_id]);
+    }
+    // delete from previous cell's np_graph
+    let previous_cell = get(pn_graph)[cell_id];
+    if (previous_cell) {
+        // has previous cell
+        let index = ynp_graph.get(previous_cell).toJSON().indexOf(cell_id);
+        ynp_graph.get(previous_cell).delete(index, 1);
+    }
+    // delete from np_graph
+    if (ynp_graph.get(cell_id)) {
+        ynp_graph.delete([cell_id]);
+    }
+    // delete from ycells
+    ycells.delete([cell_id]);
 }

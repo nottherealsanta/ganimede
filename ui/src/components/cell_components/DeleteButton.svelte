@@ -1,8 +1,10 @@
 <script>
   export let cell;
 
+  import { delete_cell } from "../../stores/_notebook";
+
   async function click() {
-    console.log("cell", cell);
+    delete_cell(cell);
   }
 </script>
 

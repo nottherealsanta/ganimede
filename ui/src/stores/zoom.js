@@ -61,7 +61,6 @@ export function zoom_in() {
             //     behavior: "instant",
             // });
         }
-        console.log(window.scrollX, window.scrollY)
         return z;
     });
 }

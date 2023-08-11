@@ -99,7 +99,6 @@ export function cell_edge_to_resize_fn(mouse_pos, clicked, cell) {
     cell.height = mouse_pos.y - cell.top;
     cell.width = cell.width + (cell.left - mouse_pos.x);
     cell.left = mouse_pos.x;
-    console.log(cell.height, cell.width, cell.top, cell.left)
   } else if (clicked.at === "bottom-right") {
     cell.height = mouse_pos.y - cell.top;
     cell.width = mouse_pos.x - cell.left;

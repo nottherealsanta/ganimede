@@ -91,7 +91,7 @@
             rgb(112, 112, 112) 000 1px,
             transparent 0
         );
-        background-size: 15px 15px;
+        background-size: 25px 25px;
     "
   id="canvas"
   on:mousemove={mouseMove}

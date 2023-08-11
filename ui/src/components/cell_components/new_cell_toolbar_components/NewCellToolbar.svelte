@@ -4,8 +4,6 @@
 
   function connector_click(e) {
     e.preventDefault();
-    console.log("button click");
-    console.log(e.target.id);
     e.stopPropagation();
   }
 
@@ -115,7 +113,6 @@
     }
 
     drag_end_pos = { x: $mouse_pos.x, y: $mouse_pos.y };
-    console.log("drag_end_pos:", drag_end_pos);
     drag_line.innerHTML = `
       <line
         x1=${drag_start_pos.x}
@@ -132,14 +129,11 @@
   function drag_mouseup() {
     if (dragging) {
       dragging = false;
-      console.log("drag_mouseup");
       if (drag_on_element !== null) {
         let next_cell_id = drag_on_element.getAttribute("cell_id");
 
         if (next_cell_id) {
-          console.log("next_cell_id", next_cell_id);
           if (!ynp_graph.get(cell.id)) {
-            console.log("ynp_graph.get(cell.id)", ynp_graph.get(cell.id));
             ynp_graph.set(cell.id, new Y.Array());
           }
           ynp_graph.get(cell.id).push([next_cell_id]);
