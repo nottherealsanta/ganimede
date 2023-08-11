@@ -1,4 +1,4 @@
-// // (1) Desired editor features:
+// (1) Desired editor features:
 // import 'monaco-editor/esm/vs/editor/browser/controller/coreCommands.js';
 // import 'monaco-editor/esm/vs/editor/browser/widget/codeEditorWidget.js';
 // // import 'monaco-editor/esm/vs/editor/browser/widget/diffEditorWidget.js';
@@ -63,7 +63,7 @@
 // // import 'monaco-editor/esm/vs/basic-languages/java/java.contribution.js';
 // // import 'monaco-editor/esm/vs/basic-languages/less/less.contribution.js';
 // // import 'monaco-editor/esm/vs/basic-languages/lua/lua.contribution.js';
-// // import 'monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution.js';
+// import 'monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution.js';
 // // import 'monaco-editor/esm/vs/basic-languages/msdax/msdax.contribution.js';
 // // import 'monaco-editor/esm/vs/basic-languages/mysql/mysql.contribution.js';
 // // import 'monaco-editor/esm/vs/basic-languages/objective-c/objective-c.contribution.js';
@@ -98,7 +98,7 @@ import * as monaco from 'monaco-editor'
 // import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 // import jsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 
-// self.MonacoEnvironment = {
+// window.MonacoEnvironment = {
 //     getWorker(_, label) {
 //         if (label === 'json') {
 //             return new jsonWorker()

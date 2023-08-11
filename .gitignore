@@ -15,3 +15,4 @@ api/.venv
 .vscode
 
 api/ganimede.egg-info
+static/

@@ -35,6 +35,9 @@ class Notebook:
 
         self.notebook_file = self._load_notebook()
 
+        with self.ydoc.begin_transaction() as t:
+            self.ydoc.get_text("nb_path").insert(t, 0, self.notebook_path)
+
         # websocket message queue
         self.comms_queue = comms.channel_queues["notebook"]
         asyncio.create_task(self.listen_comms())

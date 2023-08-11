@@ -1,23 +1,17 @@
-<script context="module">
+<script>
+  import { onMount } from "svelte";
+  import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
   self.MonacoEnvironment = {
-    getWorker: function (_moduleId, label) {
+    getWorker(_, label) {
       return new editorWorker();
     },
   };
-</script>
-
-<script>
-  import { onMount } from "svelte";
 
   import { config } from "../../stores/config";
   import { MonacoBinding } from "y-monaco";
 
-  import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
-
   export let cell;
-
   let source = cell.source;
-
   let language = "python";
 
   export let focus = false;
@@ -105,6 +99,7 @@
   };
 
   let destroyed;
+  // import * as monaco from "monaco-editor";
 
   const mount_monaco = async () => {
     monaco = await import("monaco-editor");

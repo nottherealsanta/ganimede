@@ -2,6 +2,7 @@ from starlette.routing import Route
 from starlette.responses import FileResponse
 from starlette.requests import Request
 
+import os
 from os import getcwd
 
 
@@ -13,52 +14,23 @@ class RouteManager:
 
     def default_route(self):
         async def index(request):
-            return FileResponse(f"{self.ui_dir}/index.html")
-
-        async def global_css(request: Request):
-            return FileResponse(f"{self.ui_dir}/src/index.css")
-
-        async def bundle_js(request: Request):
-            return FileResponse(f"{self.ui_dir}/src/main.js")
-
-        async def bundle_js_map(request: Request):
-            return FileResponse(f"{self.ui_dir}/src/App.svelte")
-
-        async def bundle_css(request: Request):
-            return FileResponse(f"{self.ui_dir}/public/build/bundle.css")
-
-        async def tailwind_app_css(request: Request):
-            return FileResponse(f"{self.ui_dir}/public/css/app.css")
+            if os.environ.get("DEV") == "True":
+                return FileResponse(f"{self.ui_dir}/dev/index.html")
+            return FileResponse(f"{self.ui_dir}/dist/index.html")
 
         async def favicon(request: Request):
-            return FileResponse(f"{self.ui_dir}/public/favicon.png")
-        
-        async def monaco_codicon(request: Request):
-            return FileResponse(f"{self.ui_dir}/public/codicon.ttf")
-        
-        # async def moncao_editor_worker(request: Request):
-        #     return FileResponse(f"/Users/srajan/repos/ganimede/ui/node_modules/monaco-editor/esm/vs/editor/editor.worker.js")
+            path = request.path_params["path"]
+            return FileResponse(f"{self.ui_dir}/dist/{path}")
+
+        async def assets(request: Request):
+            path = request.path_params["path"]
+            return FileResponse(f"{self.ui_dir}/dist/assets/{path}")
 
         self.app.add_route("/", index, methods=["GET"], name="index")
-        self.app.add_route(
-            "/src/index.css", global_css, methods=["GET"], name="global_css"
-        )
-        self.app.add_route(
-            "/src/main.js", bundle_js, methods=["GET"], name="main_js"
-        )
-        self.app.add_route(
-            "/src/App.svelte", bundle_js_map, methods=["GET"], name="bundle_js_map"
-        )
-        self.app.add_route(
-            "/build/bundle.css", bundle_css, methods=["GET"], name="bundle_css"
-        )
-        self.app.add_route(
-            "/css/app.css", tailwind_app_css, methods=["GET"], name="tailwind_app_css"
-        )
-        self.app.add_route("/favicon.png", favicon, methods=["GET"], name="favicon")
-        self.app.add_route("/codicon.ttf", monaco_codicon, methods=["GET"], name="monaco_codicon")
-        self.app.add_route("/node_modules/monaco-editor/esm/vs/base/browser/ui/codicons/codicon/codicon.ttf", monaco_codicon, methods=["GET"], name="monaco_codicon")
-        # self.app.add_route("/monaco-editor/esm/vs/editor/editor.worker.js", moncao_editor_worker, methods=["GET"], name="moncao_editor_worker")
+
+        self.app.add_route("/favicon.ico", favicon, methods=["GET"])
+
+        self.app.add_route("/assets/{path:path}", assets, methods=["GET"])
 
     def add_route(self, route_path, route_function, methods, name):
         self.app.add_route(route_path, route_function, methods=methods, name=name)

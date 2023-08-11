@@ -20,7 +20,8 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'ganimede = ganimede.main:cli'
+            'ganimede = ganimede.main:cli',
+            'ganimede_dev = ganimede.main:dev_cli'
         ]
     },
     python_requires='>=3.8',

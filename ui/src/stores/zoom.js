@@ -12,7 +12,7 @@
 // });
 
 import { writable, get } from "svelte/store";
-import mouse_pos from "./mouse";
+import mouse_pos from "./mouse.js";
 
 export let zoom = writable(1);
 const d_zoom = 0.025;

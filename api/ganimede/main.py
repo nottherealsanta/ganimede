@@ -87,7 +87,24 @@ def cli(file):
         reload=True,
     )
 
+# dev cli
+@click.command()
+@click.argument("file")
+def dev_cli(file):
 
+    log.info("Starting up")
+    notebook_loc = os.path.abspath(file)
+
+    os.environ["NOTEBOOK_LOC"] = notebook_loc
+    os.environ["DEV"] = "True"
+
+    uvicorn.run(
+        app=f"ganimede.main:app",  
+        host="0.0.0.0",
+        port=8000,
+        log_level="info",
+        reload=True,
+    )
 
 
 if __name__ == "__main__":

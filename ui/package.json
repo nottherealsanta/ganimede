@@ -10,20 +10,19 @@
     "start": "vite preview"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^2.4.2",
+    "@sveltejs/vite-plugin-svelte": "^2.4.4",
     "autoprefixer": "^10.4.14",
     "concurrently": "^7.6.0",
-    "postcss": "^8.4.21",
+    "postcss": "^8.4.27",
     "postcss-cli": "^10.1.0",
     "prettier": "^3.0.0",
     "prettier-plugin-svelte": "^3.0.0",
     "prettier-plugin-tailwindcss": "^0.2.7",
-    "svelte": "^3.55.0",
-    "svelte-dnd-action": "^0.9.22",
+    "style-loader": "^3.3.3",
+    "svelte": "^3.59.2",
     "svelte-preprocess": "^5.0.3",
-    "tailwindcss": "^3.2.7",
-    "vite": "^4.3.9",
-    "vite-plugin-monaco-editor": "^1.1.0"
+    "tailwindcss": "^3.3.3",
+    "vite": "^4.4.9"
   },
   "dependencies": {
     "@milkdown/core": "^7.2.1",
@@ -35,15 +34,19 @@
     "@milkdown/transformer": "^7.2.1",
     "@types/marked": "^4.0.8",
     "ansi_up": "^5.2.1",
-    "dragselect": "^2.7.4",
     "marked": "^4.2.12",
-    "monaco-editor": "^0.34.1",
+    "monaco-editor": "^0.31.1",
     "monaco-themes": "^0.4.4",
     "typescript": "^5.0.2",
     "y-monaco": "^0.1.4",
     "y-prosemirror": "^1.2.1",
     "y-protocols": "^1.0.5",
     "y-websocket": "^1.5.0",
-    "yjs": "^13.6.6"
-  }
+    "yjs": "^13.6.7"
+  },
+  "description": "---",
+  "main": "vite.config.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

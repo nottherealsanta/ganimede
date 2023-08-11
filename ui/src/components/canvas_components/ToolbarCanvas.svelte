@@ -15,6 +15,15 @@
   ydoc.getMap("kernel").observeDeep(() => {
     kernel_busy = ydoc.getMap("kernel").get("busy");
   });
+
+  let nb_path = ydoc.getText("nb_path");
+  ydoc.getText("nb_path").observeDeep(() => {
+    nb_path = ydoc.getText("nb_path");
+  });
+
+  $: console.log("nb_path: ", nb_path);
+  $: console.log("typeof nb_path: ", typeof nb_path);
+  $: nb_path_show = nb_path.toString().split("/").slice(-1)[0];
 </script>
 
 <div
@@ -24,60 +33,14 @@
     transform: translate(-50%, 50%);
     "
 >
-  <button
-    class="bg-transparent h-7 w-7 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
-    on:click={zoom_in}
-    alt="Zoom In"
+  <!-- Notebook Path -->
+  <div
+    class="mx-2 text-[12px] font-['Roboto_Mono'] text-oli-600 dark:text-oli-200"
+    title={nb_path}
   >
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      ><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g
-        id="SVGRepo_tracerCarrier"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      ></g><g id="SVGRepo_iconCarrier">
-        <path
-          d="M6 12H18M12 6V18"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          data-darkreader-inline-stroke=""
-          style="--darkreader-inline-stroke: #e8e6e3;"
-        ></path>
-      </g></svg
-    >
-  </button>
-  <button
-    class="bg-transparent h-7 w-7 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
-    on:click={zoom_out}
-    alt="Zoom Out"
-  >
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      ><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g
-        id="SVGRepo_tracerCarrier"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      ></g><g id="SVGRepo_iconCarrier">
-        <path
-          d="M6 12L18 12"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          data-darkreader-inline-stroke=""
-          style="--darkreader-inline-stroke: #e8e6e3;"
-        ></path>
-      </g></svg
-    >
-  </button>
+    {nb_path_show}
+  </div>
+
   <!-- Save -->
   <button
     class="bg-transparent h-7 w-7 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
@@ -150,5 +113,61 @@
       <circle cx="10" cy="10" r="6.5" stroke-width="0" opacity="0.30" />
       <circle cx="10" cy="10" r="4" stroke-width="0" opacity="1" />
     </svg>
+  </button>
+  <!-- Zoom + -->
+  <button
+    class="bg-transparent h-7 w-7 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
+    on:click={zoom_in}
+    alt="Zoom In"
+  >
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      ><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g
+        id="SVGRepo_tracerCarrier"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      ></g><g id="SVGRepo_iconCarrier">
+        <path
+          d="M6 12H18M12 6V18"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          data-darkreader-inline-stroke=""
+          style="--darkreader-inline-stroke: #e8e6e3;"
+        ></path>
+      </g></svg
+    >
+  </button>
+  <!-- Zoom - -->
+  <button
+    class="bg-transparent h-7 w-7 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
+    on:click={zoom_out}
+    alt="Zoom Out"
+  >
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      ><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g
+        id="SVGRepo_tracerCarrier"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      ></g><g id="SVGRepo_iconCarrier">
+        <path
+          d="M6 12L18 12"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          data-darkreader-inline-stroke=""
+          style="--darkreader-inline-stroke: #e8e6e3;"
+        ></path>
+      </g></svg
+    >
   </button>
 </div>
