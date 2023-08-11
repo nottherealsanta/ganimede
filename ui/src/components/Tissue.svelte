@@ -212,11 +212,11 @@
           if ($mouse_pos.y > _bounding_rect.top + _bounding_rect.height / 2) {
             // draw pointer on bottom
             dragover_cell.style.borderTop = "";
-            dragover_cell.style.borderBottom = "2px solid #29B0F8";
+            dragover_cell.style.borderBottom = "3px solid #FF9F3C";
             dragover_cell.setAttribute("position", "bottom");
           } else {
             // draw pointer on top
-            dragover_cell.style.borderTop = "2px solid #29B0F8";
+            dragover_cell.style.borderTop = "3px solid #FF9F3C";
             dragover_cell.style.borderBottom = "";
             dragover_cell.setAttribute("position", "top");
           }
@@ -255,8 +255,7 @@
           selected_dragzone.style.backgroundColor = "";
         }
         // set styles
-        dragzone_under.style.border = "2px solid #689DB9";
-        dragzone_under.style.backgroundColor = "#689DB909";
+        dragzone_under.style.backgroundColor = "#B3E0F8";
         selected_dragzone = dragzone_under;
       } else if (dragzone_under === undefined) {
         if (selected_dragzone) {
@@ -474,8 +473,8 @@
 
   $: dropzone_height = children_w_h
     ? Object.values(children_w_h).reduce((acc, child) => {
-        return acc + child.height + 10;
-      }, 0) + 7
+        return acc + child.height + 11;
+      }, 0) + 10
     : 0;
   $: dropzone_width = children_w_h
     ? Object.values(children_w_h).reduce((acc, child) => {
@@ -503,7 +502,7 @@
 </script>
 
 <div
-  class="tissue rounded-r rounded-tl bg-transparent border-2 border-l-[2px] border-oli-200 dark:border-oli-500 absolute w-fit h-fit flex flex-col overflow-visible
+  class="tissue rounded-r rounded-tl bg-transparent border-2 border-l-[2px] border-oli-100 dark:border-oli-500 absolute w-fit h-fit flex flex-col overflow-visible
   {dragging ? 'drop-shadow-2xl dark:drop-shadow-2xl-dark' : ''}
   {!$cp_graph[cell_id] ? 'drop-shadow-lg dark:drop-shadow-lg-dark' : ''}
   "
@@ -555,7 +554,7 @@
   </div>
   <NewCellToolbar {cell} cell_hover={is_hover} />
   <!-- debug -->
-  <div
+  <!-- <div
     class="absolute -bottom-2 z-[9999] right-0 w-fit h-fit text-gray-500 text-[9px] dark:text-gray-400"
     style="pointer-events: none;"
   >
@@ -566,7 +565,7 @@
       {$html_elements[cell_id].clientHeight}
     {/if}
     {dragging}
-  </div>
+  </div> -->
 </div>
 
 <svelte:window on:mousemove={drag_mousemove} on:mouseup={drag_mouseup} />

@@ -989,6 +989,9 @@ video {
   --tw-text-opacity: 1;
   color: rgb(57 57 57 / var(--tw-text-opacity));
 }
+.outline {
+  outline-style: solid;
+}
 .drop-shadow-2xl {
   --tw-drop-shadow: drop-shadow(0 25px 25px rgb(0 0 0 / 0.15));
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);

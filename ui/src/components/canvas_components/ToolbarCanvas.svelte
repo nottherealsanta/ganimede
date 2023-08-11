@@ -38,7 +38,7 @@
     class="mx-2 text-[11px] font-['Roboto_Mono'] text-oli-600 dark:text-oli-200"
     title={nb_path}
   >
-    {nb_path_show}
+    /{nb_path_show}
   </div>
 
   <!-- Save -->

@@ -12,7 +12,7 @@
 </script>
 
 <div
-  class="flex bg-oli dark:bg-oli-800 h-6 w-full rounded-tr p-0.5 border-b border-oli-200 dark:border-oli-600 cursor-grab active:cursor-grabbing"
+  class="flex bg-oli dark:bg-oli-800 h-6 w-full rounded-tr p-0.5 border-b border-oli-100 dark:border-oli-600 cursor-grab active:cursor-grabbing"
   on:mousedown
   on:mosueup
 >
