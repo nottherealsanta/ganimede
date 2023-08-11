@@ -427,7 +427,7 @@
   // ---------- reactive width and height
   // TODO: This should be from html_element
   let children_w_h = {};
-  $: if ($pc_graph[cell_id]) {
+  if ($pc_graph[cell_id]) {
     $pc_graph[cell_id]
       .map((child_cell_id) => {
         return ydoc.getMap(child_cell_id);
@@ -453,13 +453,24 @@
       }, {});
   }
 
-  // $: console.log("ypc_graph.get(cell_id): ", ypc_graph.get(cell_id));
-  // $: if (ypc_graph.get(cell_id)) {
-  //   console.log("ypc_graph.get(cell_id): ", ypc_graph.get(cell_id).toJSON());
-  //   ypc_graph.get(cell_id).observe((yevent) => {
-  //     console.log("ypc_graph changed: ", cell_id);
-  //   });
-  // } TODO: actullay use only ypc instead of pc
+  $: if (ypc_graph.get(cell_id)) {
+    ypc_graph.get(cell_id).observe((yevent) => {
+      ypc_graph
+        .get(cell_id)
+        .toJSON()
+        .map((child_cell_id) => {
+          return ydoc.getMap(child_cell_id);
+        })
+        .map((ychild) => {
+          return ychild.observe((yevent) => {
+            children_w_h[ychild.get("id")] = {
+              width: ychild.get("width"),
+              height: ychild.get("height"),
+            };
+          });
+        });
+    });
+  }
 
   $: dropzone_height = children_w_h
     ? Object.values(children_w_h).reduce((acc, child) => {
