@@ -54,7 +54,6 @@
   let current_theme = window.matchMedia("(prefers-color-scheme: dark)").matches
     ? theme.dark
     : theme.light;
-  console.log("current_theme", current_theme);
   // -- watch for dark mode changes
   window
     .matchMedia("(prefers-color-scheme: dark)")

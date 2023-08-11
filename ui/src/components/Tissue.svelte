@@ -409,14 +409,16 @@
       let prev_cell_id = ypc_graph.get($cp_graph[cell_id]).toJSON()[
         cell_list_loc - 1
       ];
-      if ($html_elements[prev_cell_id].getAttribute("dragging") === "false") {
-        let top_pos = prev_cell.top + prev_cell.height + 11;
+      if ($html_elements[prev_cell_id]) {
+        if ($html_elements[prev_cell_id].getAttribute("dragging") === "false") {
+          let top_pos = prev_cell.top + prev_cell.height + 11;
 
-        if (cell.top !== top_pos) {
-          cell.top = top_pos;
-        }
-        if (cell.left !== prev_cell.left) {
-          cell.left = prev_cell.left;
+          if (cell.top !== top_pos) {
+            cell.top = top_pos;
+          }
+          if (cell.left !== prev_cell.left) {
+            cell.left = prev_cell.left;
+          }
         }
       }
     }
@@ -528,7 +530,7 @@
 
   <!-- dropzone -->
   <div
-    class="dropzone rounded-br bg-oli dark:bg-oli-800 border-t border-oli-200 dark:border-oli-500"
+    class="dropzone min-h-[25px] rounded-br bg-oli dark:bg-oli-800 border-t border-oli-50 dark:border-oli-500"
     {cell_id}
   >
     <div
@@ -542,8 +544,8 @@
   </div>
   <NewCellToolbar {cell} cell_hover={is_hover} />
   <!-- debug -->
-  <!-- <div
-    class="absolute bottom-0 right-0 w-fit h-fit text-gray-500 text-[9px] dark:text-gray-400"
+  <div
+    class="absolute -bottom-2 z-[9999] right-0 w-fit h-fit text-gray-500 text-[9px] dark:text-gray-400"
     style="pointer-events: none;"
   >
     {cell_id}
@@ -553,7 +555,7 @@
       {$html_elements[cell_id].clientHeight}
     {/if}
     {dragging}
-  </div> -->
+  </div>
 </div>
 
 <svelte:window on:mousemove={drag_mousemove} on:mouseup={drag_mouseup} />

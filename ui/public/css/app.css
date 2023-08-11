@@ -566,11 +566,20 @@ video {
 .top-7 {
   top: 1.75rem;
 }
-.top-\[1px\] {
-  top: 1px;
+.top-\[0px\] {
+  top: 0px;
 }
 .top-\[4px\] {
   top: 4px;
+}
+.bottom-5 {
+  bottom: 1.25rem;
+}
+.-bottom-2 {
+  bottom: -0.5rem;
+}
+.-bottom-4 {
+  bottom: -1rem;
 }
 .z-50 {
   z-index: 50;
@@ -584,13 +593,13 @@ video {
 .m-0 {
   margin: 0px;
 }
-.my-1 {
-  margin-top: 0.25rem;
-  margin-bottom: 0.25rem;
-}
 .mx-2 {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
+}
+.my-1 {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
 }
 .ml-1 {
   margin-left: 0.25rem;
@@ -600,9 +609,6 @@ video {
 }
 .mt-0 {
   margin-top: 0px;
-}
-.ml-2 {
-  margin-left: 0.5rem;
 }
 .block {
   display: block;
@@ -622,12 +628,6 @@ video {
 .h-6 {
   height: 1.5rem;
 }
-.h-7 {
-  height: 1.75rem;
-}
-.h-8 {
-  height: 2rem;
-}
 .h-\[19px\] {
   height: 19px;
 }
@@ -644,6 +644,12 @@ video {
 .h-full {
   height: 100%;
 }
+.min-h-\[50px\] {
+  min-height: 50px;
+}
+.min-h-\[25px\] {
+  min-height: 25px;
+}
 .w-3 {
   width: 0.75rem;
 }
@@ -658,12 +664,6 @@ video {
 }
 .w-6 {
   width: 1.5rem;
-}
-.w-7 {
-  width: 1.75rem;
-}
-.w-\[500px\] {
-  width: 500px;
 }
 .w-auto {
   width: auto;
@@ -759,9 +759,6 @@ video {
 .rounded-sm {
   border-radius: 0.125rem;
 }
-.rounded-xl {
-  border-radius: 0.75rem;
-}
 .rounded-b {
   border-bottom-right-radius: 0.25rem;
   border-bottom-left-radius: 0.25rem;
@@ -815,9 +812,17 @@ video {
   --tw-border-opacity: 1;
   border-color: rgb(208 208 208 / var(--tw-border-opacity));
 }
+.border-oli-300 {
+  --tw-border-opacity: 1;
+  border-color: rgb(179 179 179 / var(--tw-border-opacity));
+}
 .border-oli-500 {
   --tw-border-opacity: 1;
   border-color: rgb(64 64 64 / var(--tw-border-opacity));
+}
+.border-oli-50 {
+  --tw-border-opacity: 1;
+  border-color: rgb(246 246 246 / var(--tw-border-opacity));
 }
 .bg-nilam {
   --tw-bg-opacity: 1;
@@ -937,11 +942,11 @@ video {
 .align-middle {
   vertical-align: middle;
 }
-.font-mono {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-}
 .font-\[\'Roboto_Mono\'\] {
   font-family: 'Roboto Mono';
+}
+.font-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 .text-\[10px\] {
   font-size: 10px;
@@ -955,22 +960,6 @@ video {
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
-}
-.text-sm {
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-}
-.text-\[13px\] {
-  font-size: 13px;
-}
-.text-\[12px\] {
-  font-size: 12px;
-}
-.font-medium {
-  font-weight: 500;
-}
-.font-\[Roboto_Mono\] {
-  font-weight: Roboto Mono;
 }
 .italic {
   font-style: italic;
@@ -990,10 +979,6 @@ video {
 .text-oli-600 {
   --tw-text-opacity: 1;
   color: rgb(57 57 57 / var(--tw-text-opacity));
-}
-.text-oli-400 {
-  --tw-text-opacity: 1;
-  color: rgb(122 122 122 / var(--tw-text-opacity));
 }
 .drop-shadow-2xl {
   --tw-drop-shadow: drop-shadow(0 25px 25px rgb(0 0 0 / 0.15));
@@ -1234,6 +1219,11 @@ h6 {
     color: rgb(156 163 175 / var(--tw-text-opacity));
   }
 
+  .dark\:text-oli-200 {
+    --tw-text-opacity: 1;
+    color: rgb(208 208 208 / var(--tw-text-opacity));
+  }
+
   .dark\:text-oli-400 {
     --tw-text-opacity: 1;
     color: rgb(122 122 122 / var(--tw-text-opacity));
@@ -1242,11 +1232,6 @@ h6 {
   .dark\:text-white {
     --tw-text-opacity: 1;
     color: rgb(255 255 255 / var(--tw-text-opacity));
-  }
-
-  .dark\:text-oli-200 {
-    --tw-text-opacity: 1;
-    color: rgb(208 208 208 / var(--tw-text-opacity));
   }
 
   .dark\:drop-shadow-2xl-dark {

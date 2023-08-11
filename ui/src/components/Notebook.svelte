@@ -17,6 +17,7 @@
   let cells = ycells.toJSON();
   ycells.observe((event) => {
     cells = ycells.toJSON();
+    console.log("new cells", cells);
   });
 
   let np_graph = ynp_graph.toJSON();

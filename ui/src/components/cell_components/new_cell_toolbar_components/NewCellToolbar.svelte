@@ -21,10 +21,12 @@
   import { create_cell } from "../../../stores/_notebook.js";
 
   async function new_code_cell(e) {
+    e.stopPropagation();
     create_cell("code", cell);
   }
 
-  async function new_markdown_cell() {
+  async function new_markdown_cell(e) {
+    e.stopPropagation();
     create_cell("markdown", cell);
   }
 

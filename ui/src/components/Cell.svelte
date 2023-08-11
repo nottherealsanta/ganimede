@@ -17,6 +17,8 @@
     cell_div.setAttribute("cell_id", cell_id);
     $html_elements[cell_id] = cell_div;
     $html_elements[cell_id].setAttribute("dragging", "false");
+    console.log("setting cell_id", cell_id);
+    console.log("$html_elements[cell_id] :", $html_elements[cell_id]);
   });
 
   let cell = {
@@ -395,14 +397,16 @@
       let prev_cell_id = ypc_graph.get($cp_graph[cell_id]).toJSON()[
         cell_list_loc - 1
       ];
-      if ($html_elements[prev_cell_id].getAttribute("dragging") === "false") {
-        let top_pos = prev_cell.top + prev_cell.height + 11;
+      if ($html_elements[prev_cell_id]) {
+        if ($html_elements[prev_cell_id].getAttribute("dragging") === "false") {
+          let top_pos = prev_cell.top + prev_cell.height + 11;
 
-        if (cell.top !== top_pos) {
-          cell.top = top_pos;
-        }
-        if (cell.left !== prev_cell.left) {
-          cell.left = prev_cell.left;
+          if (cell.top !== top_pos) {
+            cell.top = top_pos;
+          }
+          if (cell.left !== prev_cell.left) {
+            cell.left = prev_cell.left;
+          }
         }
       }
     }
@@ -468,7 +472,7 @@
 
   <NewCellToolbar {cell} cell_hover={is_hover} />
   <!-- debug -->
-  <!-- <div
+  <div
     class="absolute bottom-0 right-0 w-fit h-fit text-gray-500 text-[9px] dark:text-gray-400"
     style="pointer-events: none;"
   >
@@ -478,8 +482,7 @@
       {$html_elements[cell_id].clientWidth} x
       {$html_elements[cell_id].clientHeight}
     {/if}
-    drag: {drag_cell_pos.x}
-  </div> -->
+  </div>
 </div>
 
 <svelte:window on:mousemove={drag_mousemove} on:mouseup={drag_mouseup} />

@@ -122,6 +122,8 @@ export function create_cell(type, from_cell = null) {
     let cell_id = generateRandomCellId();
     let ycell = ydoc.getMap(cell_id);
 
+    console.log("new cell: ", cell_id);
+
     ycell.set('id', cell_id);
     ycell.set('type', type);
     ycell.set('source', new Y.Text());
@@ -135,11 +137,15 @@ export function create_cell(type, from_cell = null) {
 
     let parent = get(cp_graph)[from_cell.id];
     if (parent) {
+        console.log("parent: ", parent);
         // has parent
         let index = ypc_graph.get(parent).toJSON().indexOf(from_cell.id);
+        console.log("index: ", index);
+        console.log("before ypc_graph.get(parent): ", ypc_graph.get(parent).toJSON());
         ypc_graph.get(parent).insert(index + 1, [cell_id]);
         ycell.set('top', null);
         ycell.set('left', null);
+        console.log("after ypc_graph.get(parent): ", ypc_graph.get(parent).toJSON());
 
     } else {
         // no parent

@@ -14,14 +14,16 @@
 </script>
 
 <div
-  class="bg-oli dark:bg-oli-800 rounded-t flex h-fit w-full p-0.5 border-b border-oli-200 dark:border-oli-600 cursor-grab active:cursor-grabbing"
+  class="bg-oli dark:bg-oli-800 rounded-t flex h-fit w-full p-0.5 border-b border-oli-100 dark:border-oli-600 cursor-grab active:cursor-grabbing"
   on:mousedown
   on:mouseup
 >
   {#if cell.type === "code" || cell.id in $pc_graph}
     <PrimeButton {cell} />
-  {:else}
+  {:else if is_hover}
     <TurnToTissueButton {cell} />
+  {:else}
+    <div class="w-5 h-5"></div>
   {/if}
   {#if is_hover}
     <Drag />

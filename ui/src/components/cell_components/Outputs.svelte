@@ -63,8 +63,8 @@
 >
   <!-- <div class="flex h-full w-6" style="margin-right:7px" /> -->
   <div
-    class="w-full h-auto px-1 pl-[6px] py-0.5
-                 border-t-2 border-oli-100 dark:border-oli-700 rounded-br float-bottom mt-0.25 cursor-default pointer-events-auto select-text"
+    class="w-full h-auto px-1 pl-[6px] py-0.25
+                 border-t border-oli-100 dark:border-oli-700 rounded-br float-bottom mt-0.25 cursor-default pointer-events-auto select-text"
   >
     {#if outputs}
       {#each outputs as output}

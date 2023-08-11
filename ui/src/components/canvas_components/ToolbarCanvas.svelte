@@ -27,15 +27,14 @@
 </script>
 
 <div
-  class=" fixed flex flex-row self-center top-[1px] align-center items-center w-[500px] h-8 pl-2 bg-oli dark:bg-oli-700 border rounded-xl border-oli-500 dark:border-oli-400 justify-left align-middle pointer-events-auto fill-oli-400 stroke-oli-400 dark:fill-oli-200 dark:stroke-oli-200"
+  class=" fixed flex flex-row self-center top-[0px] align-center items-center w-full h-6 pl-2 bg-oli dark:bg-oli-700 border-b border-oli-300 dark:border-oli-400 justify-left align-middle pointer-events-auto fill-oli-400 stroke-oli-400 dark:fill-oli-200 dark:stroke-oli-200"
   style="
-    left: 50%;
-    transform: translate(-50%, 50%);
+    left: 0%;
     "
 >
   <!-- Notebook Path -->
   <div
-    class="mx-2 text-[12px] font-['Roboto_Mono'] text-oli-600 dark:text-oli-200"
+    class="mx-2 text-[11px] font-['Roboto_Mono'] text-oli-600 dark:text-oli-200"
     title={nb_path}
   >
     {nb_path_show}
@@ -43,13 +42,13 @@
 
   <!-- Save -->
   <button
-    class="bg-transparent h-7 w-7 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
+    class="bg-transparent h-6 w-6 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
     on:click={interrupt_kernel}
     alt="Save"
   >
     <svg
-      width="15"
-      height="15"
+      width="13"
+      height="13"
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"
       ><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g
@@ -67,23 +66,23 @@
   </button>
   <!-- Interupt -->
   <button
-    class="bg-transparent h-7 w-7 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
+    class="bg-transparent h-6 w-6 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
     on:click={interrupt_kernel}
     alt="Interrupt Kernel"
   >
-    <svg width="10" height="10">
+    <svg width="9" height="9">
       <rect width="10" height="10" rx="3" />
     </svg>
   </button>
   <!-- Restart -->
   <button
-    class="bg-transparent h-7 w-7 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
+    class="bg-transparent h-6 w-6 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
     on:click={interrupt_kernel}
     alt="Restart"
   >
     <svg
-      width="14"
-      height="14"
+      width="13"
+      height="13"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -103,7 +102,7 @@
   </button>
   <!-- Kernel Status Indicator -->
   <button
-    class="bg-transparent h-7 w-7 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center border-0 {kernel_busy
+    class="bg-transparent h-6 w-6 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center border-0 {kernel_busy
       ? 'fill-yellow-600'
       : 'fill-green-600'}"
     alt="Status"
@@ -116,13 +115,13 @@
   </button>
   <!-- Zoom + -->
   <button
-    class="bg-transparent h-7 w-7 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
+    class="bg-transparent h-6 w-6 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
     on:click={zoom_in}
     alt="Zoom In"
   >
     <svg
-      width="20"
-      height="20"
+      width="18"
+      height="18"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -144,13 +143,13 @@
   </button>
   <!-- Zoom - -->
   <button
-    class="bg-transparent h-7 w-7 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
+    class="bg-transparent h-6 w-6 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
     on:click={zoom_out}
     alt="Zoom Out"
   >
     <svg
-      width="20"
-      height="20"
+      width="18"
+      height="18"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
