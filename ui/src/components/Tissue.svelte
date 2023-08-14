@@ -251,16 +251,15 @@
           selected_dragzone &&
           selected_dragzone.getAttribute("cell_id") !== cell_id
         ) {
-          selected_dragzone.style.border = "";
-          selected_dragzone.style.backgroundColor = "";
+          selected_dragzone.classList.remove("ring-1")
         }
         // set styles
-        dragzone_under.style.backgroundColor = "#B3E0F8";
+        dragzone_under.classList.add("ring-1");
+        dragzone_under.classList.add("ring-orange-300");
         selected_dragzone = dragzone_under;
       } else if (dragzone_under === undefined) {
         if (selected_dragzone) {
-          selected_dragzone.style.border = "";
-          selected_dragzone.style.backgroundColor = "";
+          selected_dragzone.classList.remove("ring-1")
           selected_dragzone = null;
         }
       }
@@ -343,8 +342,7 @@
         dragover_cell = null;
       }
       if (selected_dragzone) {
-        selected_dragzone.style.border = "";
-        selected_dragzone.style.backgroundColor = "";
+        selected_dragzone.classList.remove("ring-1")
       }
     }
     dragging_began = false;
@@ -502,7 +500,7 @@
 </script>
 
 <div
-  class="tissue rounded-r rounded-tl bg-transparent border-2 border-l-[2px] border-oli-100 dark:border-oli-700 absolute w-fit h-fit flex flex-col overflow-visible
+  class="tissue rounded-r rounded-tl bg-transparent border-2 border-l-[2px] border-oli-100 dark:border-oli-600 absolute w-fit h-fit flex flex-col overflow-visible
   {dragging ? 'drop-shadow-2xl dark:drop-shadow-2xl-dark' : ''}
   {!$cp_graph[cell_id] ? 'drop-shadow-lg dark:drop-shadow-lg-dark' : ''}
   "
@@ -512,7 +510,7 @@
         left: {drag_cell_pos.x ? drag_cell_pos.x : cell.left}px;
         cursor: {dragging ? 'grabbing' : 'default'};
         opacity: {dragging ? '0.75' : '1'};
-        border-color: {dragging ? '#0ea5e9FF' : ''};
+        border-color: {dragging ? '#0ea5e9' : ''};
         "
   on:mousedown={drag_mousedown}
   on:mouseup={drag_mouseup}
@@ -528,7 +526,7 @@
   <TissueToolbar {cell} {is_hover} />
 
   <!-- title -->
-  <div class="bg-oli dark:bg-oli-800 h-fit w-full flex" id="title">
+  <div class="bg-oli dark:bg-oli-800 pb-1 h-fit w-full flex" id="title">
     {#if cell.type === "code"}
       <CodeCell {cell} />
     {:else if cell.type === "markdown"}
@@ -540,7 +538,7 @@
 
   <!-- dropzone -->
   <div
-    class="dropzone min-h-[25px] rounded-br bg-oli dark:bg-oli-800 border-t border-oli-50 dark:border-oli-500"
+    class="dropzone min-h-[25px] rounded-br bg-oli dark:bg-oli-800 border-t border-oli-50 dark:border-oli-700"
     {cell_id}
   >
     <div

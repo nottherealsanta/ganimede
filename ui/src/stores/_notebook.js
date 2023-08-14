@@ -16,6 +16,7 @@ const websocket_provider = new WebsocketProvider(
     ydoc
 );
 
+
 websocket_provider.on("status", event => {
     console.log("yjs status: ", event.status); // logs "connected" or "disconnected"
     if (event.status === "disconnected") {
@@ -27,25 +28,25 @@ websocket_provider.on("status", event => {
 
 
 
+
+// ---------- cells
 export const ycells = ydoc.getArray('cells');
 // export const cells = writable(ycells.toJSON());
 
 ycells.observe((event) => {
-    // TODO: optimize this
-    // if (!event.transaction.local) {
-    //     cells.set(ycells.toJSON());
-    // }
 });
 
+// ---------- undo
+const undoManager = new Y.UndoManager(ycells);
 
-// cells.subscribe((value) => {
-//     // sync ycells with cells
-//     for (const key in value) {
-//         ycells.insert(parseInt(key), [value[key]]);
-//     }
-// });
+// shortcut
+document.addEventListener("keydown", function (event) {
+    if ((event.ctrlKey || event.metaKey) && event.key === "z") {
+        undoManager.undo();
+    }
+});
 
-//  PC graph
+//  ---------- PC graph
 export const ypc_graph = ydoc.getMap('pc_graph');
 export const pc_graph = writable(new Map());
 
@@ -70,7 +71,7 @@ cp_graph.set = (value) => pc_graph.update(n => {
     console.error("cp_graph is read-only");
 });
 
-// NP graph
+// ---------- NP graph
 
 export const ynp_graph = ydoc.getMap('np_graph');
 export const np_graph = writable(ynp_graph.toJSON());
@@ -104,7 +105,7 @@ pn_graph.set = (value) => np_graph.update(n => {
     console.error("pn_graph is read-only");
 });
 
-// New cell
+// ---------- New cell
 
 function generateRandomCellId(idLength = 8) {
     const nBytes = Math.max(Math.floor(idLength * 3 / 4), 1);
@@ -153,7 +154,11 @@ export function create_cell(type, from_cell = null) {
     }
 
     ycells.push([cell_id]);
+    undoManager.stopCapturing();
 }
+
+
+// ---------- Delete cell
 
 export function delete_cell(cell_id) {
 
@@ -190,4 +195,5 @@ export function delete_cell(cell_id) {
     // delete from ycells
     let _index = ycells.toJSON().indexOf(cell_id);
     ycells.delete(_index, 1);
+    undoManager.stopCapturing();
 }

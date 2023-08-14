@@ -236,16 +236,15 @@
           selected_dragzone &&
           selected_dragzone.getAttribute("cell_id") !== cell_id
         ) {
-          selected_dragzone.style.border = "";
-          selected_dragzone.style.backgroundColor = "";
+          selected_dragzone.classList.remove("ring-1");
         }
         // set styles
-        dragzone_under.style.backgroundColor = "#B3E0F8";
+        dragzone_under.classList.add("ring-1");
+        dragzone_under.classList.add("ring-orange-300");
         selected_dragzone = dragzone_under;
       } else if (dragzone_under === undefined) {
         if (selected_dragzone) {
-          selected_dragzone.style.border = "";
-          selected_dragzone.style.backgroundColor = "";
+          selected_dragzone.classList.remove("ring-1");
           selected_dragzone = null;
         }
       }
@@ -328,8 +327,7 @@
         dragover_cell = null;
       }
       if (selected_dragzone) {
-        selected_dragzone.style.border = "";
-        selected_dragzone.style.backgroundColor = "";
+        selected_dragzone.classList.remove("ring-1");
         selected_dragzone = null;
       }
     }

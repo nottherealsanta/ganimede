@@ -55,8 +55,8 @@
 
   let path = "";
   $: path = `M ${curr.left + 32 - left} ${curr.bottom - top + 2}
-                C ${curr.left + 32 - left} ${curr.bottom - top + 50}, 
-                ${next.left + 25 - left} ${next.top - top - 50}, 
+                C ${curr.left + 32 - left} ${curr.bottom - top + 50},
+                ${next.left + 25 - left} ${next.top - top - 50},
                 ${next.left + 25 - left} ${next.top - top - 5}`;
 
   $: close =
@@ -101,9 +101,9 @@
   class="bg-transparent z-[9998]"
   id="edge"
   style="
-    position: absolute; 
-    top: {top}px; left: {left}px; 
-    width: {width}px; height: {height}px; 
+    position: absolute;
+    top: {top}px; left: {left}px;
+    width: {width}px; height: {height}px;
     pointer-events: none;
     "
 >
@@ -179,51 +179,13 @@
     style="top: {edge_toolbar_pos.y}px; left: {edge_toolbar_pos.x}px; transform: translate(-50%, -50%);"
     on:mouseleave={() => (show_edge_toolbar = false)}
   >
-    <!-- <svg
-      class="bg-oli-100 hover:bg-oli active:bg-purple-200 rounded cursor-pointer drop-shadow-md"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      ><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g
-        id="SVGRepo_tracerCarrier"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      ></g><g id="SVGRepo_iconCarrier">
-        <path
-          d="M6.46967 17.5303C6.17678 17.2374 6.17678 16.7626 6.46967 16.4697L8.68934 14.25H7.5C7.08579 14.25 6.75 13.9142 6.75 13.5C6.75 13.0858 7.08579 12.75 7.5 12.75H10.5C10.9142 12.75 11.25 13.0858 11.25 13.5V16.5C11.25 16.9142 10.9142 17.25 10.5 17.25C10.0858 17.25 9.75 16.9142 9.75 16.5V15.3107L7.53033 17.5303C7.23744 17.8232 6.76256 17.8232 6.46967 17.5303Z"
-          fill="#1C274C"
-        ></path>
-        <path
-          d="M16.5 11.25C16.9142 11.25 17.25 10.9142 17.25 10.5C17.25 10.0858 16.9142 9.75 16.5 9.75H15.3107L17.5303 7.53033C17.8232 7.23744 17.8232 6.76256 17.5303 6.46967C17.2374 6.17678 16.7626 6.17678 16.4697 6.46967L14.25 8.68934V7.5C14.25 7.08579 13.9142 6.75 13.5 6.75C13.0858 6.75 12.75 7.08579 12.75 7.5V10.5C12.75 10.9142 13.0858 11.25 13.5 11.25H16.5Z"
-          fill="#1C274C"
-        ></path>
-      </g></svg
-    >
-    <svg
-      class="bg-oli-100 hover:bg-oli ml-2 active:bg-red-200 rounded cursor-pointer drop-shadow-lg"
-      viewBox="0 0 24 24"
-      fill="none"
-      on:click={delete_edge}
-      on:keydown={delete_edge}
-      xmlns="http://www.w3.org/2000/svg"
-      ><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g
-        id="SVGRepo_tracerCarrier"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      ></g><g id="SVGRepo_iconCarrier">
-        <path
-          d="M10.0303 8.96967C9.73741 8.67678 9.26253 8.67678 8.96964 8.96967C8.67675 9.26256 8.67675 9.73744 8.96964 10.0303L10.9393 12L8.96966 13.9697C8.67677 14.2626 8.67677 14.7374 8.96966 15.0303C9.26255 15.3232 9.73743 15.3232 10.0303 15.0303L12 13.0607L13.9696 15.0303C14.2625 15.3232 14.7374 15.3232 15.0303 15.0303C15.3232 14.7374 15.3232 14.2625 15.0303 13.9697L13.0606 12L15.0303 10.0303C15.3232 9.73746 15.3232 9.26258 15.0303 8.96969C14.7374 8.6768 14.2625 8.6768 13.9696 8.96969L12 10.9394L10.0303 8.96967Z"
-          fill="#1C274C"
-        ></path>
-      </g></svg
-    > -->
+
     <div
-      class="w-5 h-5 p-0.5 bg-oli hover:bg-oli-100 active:bg-red-200 fill-oli-500 rounded border border-oli-200 cursor-pointer drop-shadow-md justify-center items-center flex"
+      class="w-5 h-5 p-0.5 bg-oli dark:bg-oli-800 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-red-200 fill-oli-500 dark:fill-oli  rounded border border-oli-200 dark:border-oli-500 cursor-pointer drop-shadow-md justify-center items-center flex"
       on:click={delete_edge}
       on:keydown={delete_edge}
     >
       <svg
-        fill="#000000"
         height="12px"
         width="12px"
         version="1.1"
@@ -244,7 +206,7 @@
       >
     </div>
     <div
-      class="ml-1 w-5 h-5 p-0.5 bg-oli hover:bg-oli-100 active:bg-red-200 fill-oli-500 rounded border border-oli-200 cursor-pointer drop-shadow-md justify-center items-center flex"
+      class="ml-1 w-5 h-5 p-0.5 bg-oli dark:bg-oli-800 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-red-200 fill-oli-500 dark:fill-oli  rounded border border-oli-200 dark:border-oli-500 cursor-pointer drop-shadow-md justify-center items-center flex"
       on:click={delete_edge}
       on:keydown={delete_edge}
     >

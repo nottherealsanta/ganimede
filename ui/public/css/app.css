@@ -557,8 +557,8 @@ video {
 .left-1\/2 {
   left: 50%;
 }
-.left-\[25px\] {
-  left: 25px;
+.left-\[11px\] {
+  left: 11px;
 }
 .right-0 {
   right: 0px;
@@ -578,21 +578,6 @@ video {
 .top-\[4px\] {
   top: 4px;
 }
-.left-\[15px\] {
-  left: 15px;
-}
-.left-\[12px\] {
-  left: 12px;
-}
-.left-\[1px\] {
-  left: 1px;
-}
-.left-\[10px\] {
-  left: 10px;
-}
-.left-\[11px\] {
-  left: 11px;
-}
 .z-50 {
   z-index: 50;
 }
@@ -609,10 +594,6 @@ video {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
 }
-.mx-\[1px\] {
-  margin-left: 1px;
-  margin-right: 1px;
-}
 .my-1 {
   margin-top: 0.25rem;
   margin-bottom: 0.25rem;
@@ -620,17 +601,14 @@ video {
 .ml-1 {
   margin-left: 0.25rem;
 }
-.ml-2 {
-  margin-left: 0.5rem;
-}
 .ml-auto {
   margin-left: auto;
 }
-.mt-0 {
-  margin-top: 0px;
-}
 .mr-\[1px\] {
   margin-right: 1px;
+}
+.mt-0 {
+  margin-top: 0px;
 }
 .block {
   display: block;
@@ -669,8 +647,8 @@ video {
 .min-h-\[25px\] {
   min-height: 25px;
 }
-.w-3 {
-  width: 0.75rem;
+.w-10 {
+  width: 2.5rem;
 }
 .w-4 {
   width: 1rem;
@@ -693,9 +671,6 @@ video {
 }
 .w-full {
   width: 100%;
-}
-.w-10 {
-  width: 2.5rem;
 }
 .min-w-\[250px\] {
   min-width: 250px;
@@ -848,19 +823,12 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
-.bg-oli-100 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(236 236 236 / var(--tw-bg-opacity));
-}
 .bg-oli-50 {
   --tw-bg-opacity: 1;
   background-color: rgb(246 246 246 / var(--tw-bg-opacity));
 }
 .bg-oli-50\/50 {
   background-color: rgb(246 246 246 / 0.5);
-}
-.bg-oli\/10 {
-  background-color: rgb(255 255 255 / 0.1);
 }
 .bg-transparent {
   background-color: transparent;
@@ -892,12 +860,6 @@ video {
 .fill-yellow-600 {
   fill: #ca8a04;
 }
-.fill-oli-300 {
-  fill: #B3B3B3;
-}
-.fill-oli {
-  fill: #FFFFFF;
-}
 .stroke-black {
   stroke: #000;
 }
@@ -915,9 +877,6 @@ video {
 }
 .stroke-oli-600 {
   stroke: #393939;
-}
-.stroke-none {
-  stroke: none;
 }
 .stroke-2 {
   stroke-width: 2;
@@ -955,6 +914,9 @@ video {
 }
 .pb-0\.5 {
   padding-bottom: 0.125rem;
+}
+.pb-1 {
+  padding-bottom: 0.25rem;
 }
 .pl-1 {
   padding-left: 0.25rem;
@@ -1011,6 +973,15 @@ video {
 .text-oli-600 {
   --tw-text-opacity: 1;
   color: rgb(57 57 57 / var(--tw-text-opacity));
+}
+.ring-1 {
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+}
+.ring-orange-300 {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(253 186 116 / var(--tw-ring-opacity));
 }
 .drop-shadow-2xl {
   --tw-drop-shadow: drop-shadow(0 25px 25px rgb(0 0 0 / 0.15));
@@ -1116,10 +1087,6 @@ h6 {
   --tw-bg-opacity: 1;
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
 }
-.hover\:bg-oli:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
 .hover\:bg-oli-100:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(236 236 236 / var(--tw-bg-opacity));
@@ -1150,10 +1117,6 @@ h6 {
 .active\:bg-oli-200:active {
   --tw-bg-opacity: 1;
   background-color: rgb(208 208 208 / var(--tw-bg-opacity));
-}
-.active\:bg-purple-200:active {
-  --tw-bg-opacity: 1;
-  background-color: rgb(233 213 255 / var(--tw-bg-opacity));
 }
 .active\:bg-red-200:active {
   --tw-bg-opacity: 1;
@@ -1206,6 +1169,11 @@ h6 {
     background-color: rgb(64 64 64 / 0.5);
   }
 
+  .dark\:bg-oli-600 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(57 57 57 / var(--tw-bg-opacity));
+  }
+
   .dark\:bg-oli-700 {
     --tw-bg-opacity: 1;
     background-color: rgb(38 38 38 / var(--tw-bg-opacity));
@@ -1213,11 +1181,15 @@ h6 {
 
   .dark\:bg-oli-800 {
     --tw-bg-opacity: 1;
-    background-color: rgb(28 28 28 / var(--tw-bg-opacity));
+    background-color: rgb(30 30 30 / var(--tw-bg-opacity));
   }
 
   .dark\:fill-gray-300 {
     fill: #d1d5db;
+  }
+
+  .dark\:fill-oli {
+    fill: #FFFFFF;
   }
 
   .dark\:fill-oli-200 {
@@ -1230,10 +1202,6 @@ h6 {
 
   .dark\:fill-oli-400 {
     fill: #7A7A7A;
-  }
-
-  .dark\:fill-oli-500 {
-    fill: #404040;
   }
 
   .dark\:fill-white {
@@ -1296,13 +1264,18 @@ h6 {
     background-color: rgb(64 64 64 / var(--tw-bg-opacity));
   }
 
+  .dark\:hover\:bg-oli-700:hover {
+    --tw-bg-opacity: 1;
+    background-color: rgb(38 38 38 / var(--tw-bg-opacity));
+  }
+
   .dark\:hover\:bg-oli-800:hover {
     --tw-bg-opacity: 1;
-    background-color: rgb(28 28 28 / var(--tw-bg-opacity));
+    background-color: rgb(30 30 30 / var(--tw-bg-opacity));
   }
 
   .dark\:hover\:bg-oli-800\/90:hover {
-    background-color: rgb(28 28 28 / 0.9);
+    background-color: rgb(30 30 30 / 0.9);
   }
 
   .dark\:hover\:bg-zinc-700:hover {

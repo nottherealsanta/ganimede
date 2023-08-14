@@ -158,12 +158,12 @@
 >
   {#if is_hover}
     <div
-      class="absolute w-fit h-5 -top-[11px] flex flex-row bg-transparent fill-oli-500 dark:fill-gray-300 stroke-oli-500 dark:stroke-oli-400 stroke"
+      class="absolute w-fit h-5 -top-[11px] z-[9999] flex flex-row bg-transparent fill-oli-500 dark:fill-oli dark:fill-gray-300 stroke-oli-500 dark:stroke-oli-400 stroke"
       on:mousedown|stopPropagation={() => {}}
     >
       <!-- <ToolbarSlot><Disconnect /></ToolbarSlot> -->
       <div
-        class="w-5 h-5 p-0.5 mr-[1px] bg-oli hover:bg-oli-100 active:bg-yellow-100 fill-oli-500 rounded border border-oli-300 cursor-pointer drop-shadow-md justify-center items-center flex"
+        class="w-5 h-5 p-0.5 mr-[1px] bg-oli dark:bg-oli-600 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-yellow-100 fill-oli-500 dark:fill-oli rounded border border-oli-300 dark:border-oli-500 cursor-pointer drop-shadow-md justify-center items-center flex"
         on:click={new_code_cell}
         on:keydown={new_code_cell}
       >
@@ -189,7 +189,7 @@
       </div>
       {#if has_parent}
         <div
-          class="w-5 h-5 p-0.5 mr-[1px] bg-oli hover:bg-oli-100 active:bg-sky-200 fill-oli-500 rounded border border-oli-300 cursor-pointer drop-shadow-md justify-center items-center flex"
+          class="w-5 h-5 p-0.5 mr-[1px] bg-oli dark:bg-oli-600 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-sky-200 fill-oli-500 dark:fill-oli rounded border border-oli-300 dark:border-oli-500 cursor-pointer drop-shadow-md justify-center items-center flex"
           on:mousedown={drag_mousedown}
           on:mouseup={drag_mouseup}
         >
@@ -207,23 +207,13 @@
         </div>
       {:else}
         <div
-          class="w-5 h-5 p-0.5 mr-[1px] bg-oli fill-oli rounded border border-oli-100 stroke-none cursor-pointer drop-shadow-md justify-center items-center flex"
+          class="w-5 h-5 p-0.5 mr-[1px] bg-oli dark:bg-oli-600 rounded border border-oli-100 dark:border-oli-500 drop-shadow-md justify-center items-center flex"
         >
-          <svg
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            width="70%"
-            height="70%"
-          >
-            <path
-              d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 100-12 6 6 0 000 12z"
-            /></svg
-          >
+
         </div>
       {/if}
       <div
-        class="w-5 h-5 p-0.5 mr-[1px] bg-oli hover:bg-oli-100 active:bg-green-100 fill-oli-500 rounded border border-oli-300 cursor-pointer drop-shadow-md justify-center items-center flex"
+        class="w-5 h-5 p-0.5 mr-[1px] bg-oli dark:bg-oli-600 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-green-100 fill-oli-500 dark:fill-oli rounded border border-oli-300 dark:border-oli-500 cursor-pointer drop-shadow-md justify-center items-center flex"
         on:click={new_markdown_cell}
         on:keydown={new_markdown_cell}
       >
@@ -243,7 +233,7 @@
     </div>
   {:else}
     <div
-      class="absolute w-10 h-5 z-[9999] -top-[10px] left-[11px] rounded-full flex items-center justify-center bg-transparent cursor-pointer stroke-oli-300 dark:stroke-oli-200 stroke-2 fill-oli-100 dark:fill-oli-500"
+      class="absolute w-10 h-5 z-[9999] -top-[10px] left-[11px] rounded-full flex items-center justify-center bg-transparent cursor-pointer stroke-oli-300 dark:stroke-oli-200 stroke-2 fill-oli-100 dark:fill-oli0 dark:fill-oli-200"
       id="new-cell-toolbar"
       on:click|stopPropagation={connector_click}
       on:keydown={() => {}}
