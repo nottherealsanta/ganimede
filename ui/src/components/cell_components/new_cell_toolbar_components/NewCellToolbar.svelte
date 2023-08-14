@@ -10,12 +10,6 @@
   let is_hover = false;
 
   // Components
-  import ToolbarSlot from "./ToolbarSlot.svelte";
-  import Connector from "../Icons/connector.svelte";
-  import Python from "../Icons/python.svelte";
-  import Markdown from "../Icons/markdown.svelte";
-  import Disconnect from "../Icons/disconnect.svelte";
-  import NewCellMenu from "../Icons/newCellMenu.svelte";
   import { create_cell } from "../../../stores/_notebook.js";
 
   async function new_code_cell(e) {
@@ -164,26 +158,92 @@
 >
   {#if is_hover}
     <div
-      class="absolute w-fit h-[19px] z-[9999] -top-[10px] flex flex-row drop-shadow-md cursor-default bg-oli dark:bg-oli-700 rounded border border-oli-500 dark:border-oli-300 overflow-clip fill-oli-500 dark:fill-gray-300 stroke-oli-500 dark:stroke-oli-400 stroke"
+      class="absolute w-fit h-5 -top-[11px] flex flex-row bg-transparent fill-oli-500 dark:fill-gray-300 stroke-oli-500 dark:stroke-oli-400 stroke"
       on:mousedown|stopPropagation={() => {}}
     >
       <!-- <ToolbarSlot><Disconnect /></ToolbarSlot> -->
-      <ToolbarSlot on:click={new_code_cell}><Python /></ToolbarSlot>
+      <div
+        class="w-5 h-5 p-0.5 mr-[1px] bg-oli hover:bg-oli-100 active:bg-yellow-100 fill-oli-500 rounded border border-oli-300 cursor-pointer drop-shadow-md justify-center items-center flex"
+        on:click={new_code_cell}
+        on:keydown={new_code_cell}
+      >
+        <svg
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          viewBox="0 0 40 40"
+          width="70%"
+          height="70%"
+        >
+          <rect x="10" y="0" width="20" height="40" rx="10" ry="5" />
+          <rect x="0" y="10" width="40" height="20" rx="5" ry="10" />
+          <circle cx="14.5" cy="5" r="1.85" stroke="white" />
+          <circle cx="25.5" cy="35" r="1.85" stroke="white" />
+          <line x1="10" y1="9.5" x2="20" y2="9.5" stroke="white" />
+          <line x1="20" y1="30.5" x2="30" y2="30.5" stroke="white" />
+          <path
+            d="m 9.5,30 c 0,-10 2.5,-10 10,-10 8.5,0 11,0 11,-10"
+            stroke="white"
+          />
+        </svg>
+      </div>
       {#if has_parent}
-        <Connector
+        <div
+          class="w-5 h-5 p-0.5 mr-[1px] bg-oli hover:bg-oli-100 active:bg-sky-200 fill-oli-500 rounded border border-oli-300 cursor-pointer drop-shadow-md justify-center items-center flex"
           on:mousedown={drag_mousedown}
-          on:mousemove={drag_mousemove}
           on:mouseup={drag_mouseup}
-        />
+        >
+          <svg
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            width="70%"
+            height="70%"
+          >
+            <path
+              d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 100-12 6 6 0 000 12z"
+            /></svg
+          >
+        </div>
       {:else}
-        <ToolbarSlot></ToolbarSlot>
+        <div
+          class="w-5 h-5 p-0.5 mr-[1px] bg-oli fill-oli rounded border border-oli-100 stroke-none cursor-pointer drop-shadow-md justify-center items-center flex"
+        >
+          <svg
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            width="70%"
+            height="70%"
+          >
+            <path
+              d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 100-12 6 6 0 000 12z"
+            /></svg
+          >
+        </div>
       {/if}
-      <ToolbarSlot on:click={new_markdown_cell}><Markdown /></ToolbarSlot>
-      <!-- <ToolbarSlot><NewCellMenu /></ToolbarSlot> -->
+      <div
+        class="w-5 h-5 p-0.5 mr-[1px] bg-oli hover:bg-oli-100 active:bg-green-100 fill-oli-500 rounded border border-oli-300 cursor-pointer drop-shadow-md justify-center items-center flex"
+        on:click={new_markdown_cell}
+        on:keydown={new_markdown_cell}
+      >
+        <svg
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          viewBox="11.3 9.1 33 33"
+          width="70%"
+          height="70%"
+        >
+          <path
+            d="M 12.0 39.2 V 12.0 h 8.0 l 8.0 10.0 l 8.0 -10.0 h 8.0 v 27.2 H 36.0 V 23.6 L 28.0 33.6 L 20.0 23.6 v 15.6 z h 8.0 z"
+          />
+        </svg>
+      </div>
     </div>
   {:else}
     <div
-      class="absolute w-3 h-5 z-[9999] -top-[10px] left-[25px] rounded-full flex items-center justify-center bg-transparent cursor-pointer stroke-oli-300 dark:stroke-oli-200 stroke-2 fill-oli-100 dark:fill-oli-500"
+      class="absolute w-10 h-5 z-[9999] -top-[10px] left-[11px] rounded-full flex items-center justify-center bg-transparent cursor-pointer stroke-oli-300 dark:stroke-oli-200 stroke-2 fill-oli-100 dark:fill-oli-500"
       id="new-cell-toolbar"
       on:click|stopPropagation={connector_click}
       on:keydown={() => {}}
@@ -192,8 +252,8 @@
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 20 20"
-        width="80%"
-        height="80%"
+        width="50%"
+        height="50%"
       >
         <path
           d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 100-12 6 6 0 000 12z"
@@ -204,19 +264,3 @@
 </div>
 
 <svelte:window on:mouseup={drag_mouseup} on:mousemove={drag_mousemove} />
-
-<!-- a line from the cell to the new cell toolbar -->
-<!-- {#if drag_start_pos.x !== null && drag_start_pos.y !== null}
-  <svg
-    class="absolute bg-red-300 w-full h-full top-0 left-0 z-50 pointer-events-none"
-  >
-    <line
-      x1={drag_start_pos.x}
-      y1={drag_start_pos.y}
-      x2={drag_end_pos.x}
-      y2={drag_end_pos.y}
-      stroke="#29B0F8"
-      stroke-width="2"
-    />
-  </svg>
-{/if} -->

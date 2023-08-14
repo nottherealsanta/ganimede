@@ -4,7 +4,7 @@
   import { delete_cell } from "../../stores/_notebook";
 
   async function click() {
-    delete_cell(cell);
+    delete_cell(cell.id);
   }
 </script>
 

@@ -15,8 +15,15 @@
   import Tissue from "./Tissue.svelte";
 
   let cells = ycells.toJSON();
+  let cells_map = [];
+  cells_map = cells.map((cell, index) => ({
+    serial: index + 1,
+    cell_id: cell,
+  }));
+
   ycells.observe((event) => {
     cells = ycells.toJSON();
+    // cells = cells;
   });
 
   let np_graph = ynp_graph.toJSON();
@@ -70,7 +77,7 @@
   }
 </script>
 
-{#each cells as cell_id}
+{#each cells as cell_id, index (cell_id)}
   {#if !(cell_id in $pc_graph)}
     <Cell {cell_id} />
   {:else}
@@ -78,7 +85,7 @@
   {/if}
 {/each}
 
-{#each cells as cell_id}
+{#each cells as cell_id, index (cell_id)}
   {#if np_graph[cell_id]}
     {#each np_graph[cell_id] as next_id}
       <Edges current_cell_id={cell_id} {next_id} />

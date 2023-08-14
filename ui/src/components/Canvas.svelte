@@ -53,29 +53,28 @@
 
   // ---------- context menu
 
-  // let myContextMenu = null;
-  // let menu_left = 0;
-  // let menu_top = 0;
-  // function showCustomContextMenu(event) {
-  //   event.preventDefault();
-  //   menu_left = event.clientX;
-  //   menu_top = event.clientY;
-  //   myContextMenu.style.display = "block";
-  //   // TODO: display to none if click outside or on menu
-  //   // TODO: context menu on what is being clicked
-  // }
-  // document.addEventListener("contextmenu", showCustomContextMenu);
-  // document.addEventListener("click", () => {
-  //   myContextMenu.style.display = "none";
-  // });
-  // document.addEventListener("scroll", () => {
-  //   myContextMenu.style.display = "none";
-  // });
-  // document.addEventListener("wheel", () => {
-  //   myContextMenu.style.display = "none";
-  // });
+  let myContextMenu = null;
+  let menu_left = 0;
+  let menu_top = 0;
+  function showCustomContextMenu(event) {
+    event.preventDefault();
+    menu_left = event.clientX;
+    menu_top = event.clientY;
+    myContextMenu.style.display = "block";
+    // TODO: display to none if click outside or on menu
+    // TODO: context menu on what is being clicked
+  }
+  document.addEventListener("contextmenu", showCustomContextMenu);
+  document.addEventListener("click", () => {
+    myContextMenu.style.display = "none";
+  });
+  document.addEventListener("scroll", () => {
+    myContextMenu.style.display = "none";
+  });
+  document.addEventListener("wheel", () => {
+    myContextMenu.style.display = "none";
+  });
 
-  // import ZoomToolBar from "../components/canvas_components/zoom.svelte";
   import ToolbarCanvas from "./canvas_components/ToolbarCanvas.svelte";
 </script>
 
@@ -109,10 +108,10 @@
 <!-- <ZoomToolBar /> -->
 <ToolbarCanvas />
 
-<!-- <div
-  class="h-fit w-40 bg-oli dark:bg-[#1E1E1E] fixed rounded z-50 text-oli-600 dark:text-oli-400 border border-oli-500 dark:border-oli-600"
+<div
+  class="h-fit w-40 bg-oli p-2 dark:bg-[#1E1E1E] fixed rounded z-50 text-oli-600 dark:text-oli-400 border border-oli-500 dark:border-oli-600"
   id="customContextMenu"
-  style="top: {menu_top}px; left: {menu_left}px; position: fixed;"
+  style="top: {menu_top}px; left: {menu_left}px; position: fixed; display: none;"
   bind:this={myContextMenu}
 >
   <ul>
@@ -120,4 +119,4 @@
     <li>Option 2</li>
     <li>Option 3</li>
   </ul>
-</div> -->
+</div>

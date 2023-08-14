@@ -156,8 +156,8 @@ export function create_cell(type, from_cell = null) {
 }
 
 export function delete_cell(cell_id) {
-    let ycell = ydoc.getMap(cell_id);
 
+    console.log("delete cell: ", cell_id);
     // delete from parent's pc_graph
     let parent = get(cp_graph)[cell_id];
     if (parent) {
@@ -167,6 +167,13 @@ export function delete_cell(cell_id) {
     }
     // delete from pc_graph
     if (ypc_graph.get(cell_id)) {
+        // recusive delete children
+        let children = ypc_graph.get(cell_id).toJSON();
+        if (children) {
+            for (const child of children) {
+                delete_cell(child);
+            }
+        }
         ypc_graph.delete([cell_id]);
     }
     // delete from previous cell's np_graph
@@ -181,5 +188,6 @@ export function delete_cell(cell_id) {
         ynp_graph.delete([cell_id]);
     }
     // delete from ycells
-    ycells.delete([cell_id]);
+    let _index = ycells.toJSON().indexOf(cell_id);
+    ycells.delete(_index, 1);
 }

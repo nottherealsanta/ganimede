@@ -545,6 +545,9 @@ video {
 .-top-\[10px\] {
   top: -10px;
 }
+.-top-\[11px\] {
+  top: -11px;
+}
 .bottom-0 {
   bottom: 0px;
 }
@@ -575,6 +578,21 @@ video {
 .top-\[4px\] {
   top: 4px;
 }
+.left-\[15px\] {
+  left: 15px;
+}
+.left-\[12px\] {
+  left: 12px;
+}
+.left-\[1px\] {
+  left: 1px;
+}
+.left-\[10px\] {
+  left: 10px;
+}
+.left-\[11px\] {
+  left: 11px;
+}
 .z-50 {
   z-index: 50;
 }
@@ -591,6 +609,10 @@ video {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
 }
+.mx-\[1px\] {
+  margin-left: 1px;
+  margin-right: 1px;
+}
 .my-1 {
   margin-top: 0.25rem;
   margin-bottom: 0.25rem;
@@ -598,11 +620,17 @@ video {
 .ml-1 {
   margin-left: 0.25rem;
 }
+.ml-2 {
+  margin-left: 0.5rem;
+}
 .ml-auto {
   margin-left: auto;
 }
 .mt-0 {
   margin-top: 0px;
+}
+.mr-\[1px\] {
+  margin-right: 1px;
 }
 .block {
   display: block;
@@ -624,9 +652,6 @@ video {
 }
 .h-7 {
   height: 1.75rem;
-}
-.h-\[19px\] {
-  height: 19px;
 }
 .h-\[25px\] {
   height: 25px;
@@ -659,9 +684,6 @@ video {
 .w-6 {
   width: 1.5rem;
 }
-.w-\[400px\] {
-  width: 400px;
-}
 .w-auto {
   width: auto;
 }
@@ -672,8 +694,14 @@ video {
 .w-full {
   width: 100%;
 }
+.w-10 {
+  width: 2.5rem;
+}
 .min-w-\[250px\] {
   min-width: 250px;
+}
+.min-w-\[400px\] {
+  min-width: 400px;
 }
 .max-w-3xl {
   max-width: 48rem;
@@ -729,9 +757,6 @@ video {
 .overflow-hidden {
   overflow: hidden;
 }
-.overflow-clip {
-  overflow: clip;
-}
 .overflow-visible {
   overflow: visible;
 }
@@ -749,9 +774,6 @@ video {
 }
 .rounded-full {
   border-radius: 9999px;
-}
-.rounded-lg {
-  border-radius: 0.5rem;
 }
 .rounded-sm {
   border-radius: 0.125rem;
@@ -826,6 +848,10 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
+.bg-oli-100 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(236 236 236 / var(--tw-bg-opacity));
+}
 .bg-oli-50 {
   --tw-bg-opacity: 1;
   background-color: rgb(246 246 246 / var(--tw-bg-opacity));
@@ -833,9 +859,8 @@ video {
 .bg-oli-50\/50 {
   background-color: rgb(246 246 246 / 0.5);
 }
-.bg-red-300 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(252 165 165 / var(--tw-bg-opacity));
+.bg-oli\/10 {
+  background-color: rgb(255 255 255 / 0.1);
 }
 .bg-transparent {
   background-color: transparent;
@@ -867,6 +892,12 @@ video {
 .fill-yellow-600 {
   fill: #ca8a04;
 }
+.fill-oli-300 {
+  fill: #B3B3B3;
+}
+.fill-oli {
+  fill: #FFFFFF;
+}
 .stroke-black {
   stroke: #000;
 }
@@ -885,6 +916,9 @@ video {
 .stroke-oli-600 {
   stroke: #393939;
 }
+.stroke-none {
+  stroke: none;
+}
 .stroke-2 {
   stroke-width: 2;
 }
@@ -897,9 +931,16 @@ video {
 .p-0\.5 {
   padding: 0.125rem;
 }
+.p-2 {
+  padding: 0.5rem;
+}
 .px-1 {
   padding-left: 0.25rem;
   padding-right: 0.25rem;
+}
+.px-2 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
 }
 .py-0 {
   padding-top: 0px;
@@ -917,9 +958,6 @@ video {
 }
 .pl-1 {
   padding-left: 0.25rem;
-}
-.pl-2 {
-  padding-left: 0.5rem;
 }
 .pl-\[6px\] {
   padding-left: 6px;
@@ -1078,6 +1116,10 @@ h6 {
   --tw-bg-opacity: 1;
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
 }
+.hover\:bg-oli:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
 .hover\:bg-oli-100:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(236 236 236 / var(--tw-bg-opacity));
@@ -1101,6 +1143,10 @@ h6 {
   --tw-bg-opacity: 1;
   background-color: rgb(147 197 253 / var(--tw-bg-opacity));
 }
+.active\:bg-green-100:active {
+  --tw-bg-opacity: 1;
+  background-color: rgb(220 252 231 / var(--tw-bg-opacity));
+}
 .active\:bg-oli-200:active {
   --tw-bg-opacity: 1;
   background-color: rgb(208 208 208 / var(--tw-bg-opacity));
@@ -1113,15 +1159,18 @@ h6 {
   --tw-bg-opacity: 1;
   background-color: rgb(254 202 202 / var(--tw-bg-opacity));
 }
+.active\:bg-sky-200:active {
+  --tw-bg-opacity: 1;
+  background-color: rgb(186 230 253 / var(--tw-bg-opacity));
+}
+.active\:bg-yellow-100:active {
+  --tw-bg-opacity: 1;
+  background-color: rgb(254 249 195 / var(--tw-bg-opacity));
+}
 .active\:stroke-sky-400:active {
   stroke: #38bdf8;
 }
 @media (prefers-color-scheme: dark) {
-
-  .dark\:border-oli-200 {
-    --tw-border-opacity: 1;
-    border-color: rgb(208 208 208 / var(--tw-border-opacity));
-  }
 
   .dark\:border-oli-300 {
     --tw-border-opacity: 1;
