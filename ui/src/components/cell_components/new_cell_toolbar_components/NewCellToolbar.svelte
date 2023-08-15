@@ -22,7 +22,7 @@
     create_cell("markdown", cell);
   }
 
-  $: has_parent = $cp_graph[cell.id] === undefined;
+  $: is_parent_less = $cp_graph[cell.id] === undefined;
 
   // ---- canvas div
   let canvas_div = null;
@@ -40,7 +40,6 @@
 
   function drag_mousedown() {
     dragging = true;
-    console.log("drag_mousedown");
     drag_start_pos = { x: $mouse_pos.x, y: $mouse_pos.y };
     drag_line = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     drag_line.setAttribute(
@@ -50,7 +49,6 @@
     drag_line.setAttribute("style", "z-index: 9999;");
     canvas_div = document.getElementById("canvas");
     canvas_div.appendChild(drag_line);
-    console.log("drag_line", drag_line);
   }
   function drag_mousemove(e) {
     if (!dragging) {
@@ -147,49 +145,52 @@
 </script>
 
 <div
-  class="newcelltoolbar absolute -bottom-[21px] w-fit h-5 bg-transparent"
+  class="newcelltoolbar absolute -bottom-[21px] -left-[1px] w-fit h-5 z-[9999]"
   on:mouseenter={() => {
     is_hover = true;
   }}
   on:mouseleave={() => {
     is_hover = false;
   }}
-  style="opacity: {cell_hover ? 1 : 0}; transition: opacity 0.1s ease-in-out;"
+  style="opacity: {cell_hover ? 1 : 0}; "
 >
   {#if is_hover}
     <div
-      class="absolute w-fit h-5 -top-[11px] z-[9999] flex flex-row bg-transparent fill-oli-500 dark:fill-oli dark:fill-gray-300 stroke-oli-500 dark:stroke-oli-400 stroke"
+      class="absolute w-fit h-fit -top-[11px] z-[9999] flex flex-row rounded bg-oli dark:bg-oli-800 drop-shadow-md border border-oli-400 overflow-clip items-center justify-center fill-oli-500 dark:fill-oli stroke-oli-500 dark:stroke-oli-400 stroke"
       on:mousedown|stopPropagation={() => {}}
     >
       <!-- <ToolbarSlot><Disconnect /></ToolbarSlot> -->
       <div
-        class="w-5 h-5 p-0.5 mr-[1px] bg-oli dark:bg-oli-600 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-yellow-100 fill-oli-500 dark:fill-oli rounded border border-oli-300 dark:border-oli-500 cursor-pointer drop-shadow-md justify-center items-center flex"
+        class="w-5 h-5 p-0.5 bg-oli dark:bg-oli-700 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-yellow-100 fill-oli-400 dark:fill-oli cursor-pointer justify-center items-center flex"
         on:click={new_code_cell}
         on:keydown={new_code_cell}
       >
         <svg
-          version="1.1"
           xmlns="http://www.w3.org/2000/svg"
           xmlns:xlink="http://www.w3.org/1999/xlink"
-          viewBox="0 0 40 40"
-          width="70%"
-          height="70%"
+          aria-label="Python"
+          role="img"
+          viewBox="0 0 512 512"
+          width="90%"
+          height="90%"
+          ><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g
+            id="SVGRepo_tracerCarrier"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          ></g><g id="SVGRepo_iconCarrier">
+            <g>
+              <path
+                id="p"
+                d="M254 64c-16 0-31 1-44 4-39 7-46 21-46 47v35h92v12H130c-27 0-50 16-58 46-8 35-8 57 0 93 7 28 23 47 49 47h32v-42c0-30 26-57 57-57h91c26 0 46-21 46-46v-88c0-24-21-43-46-47-15-3-32-4-47-4zm-50 28c10 0 17 8 17 18 0 9-7 17-17 17-9 0-17-8-17-17 0-10 8-18 17-18z"
+              ></path>
+            </g>
+            <use xlink:href="#p" transform="rotate(180,256,255)"></use>
+          </g></svg
         >
-          <rect x="10" y="0" width="20" height="40" rx="10" ry="5" />
-          <rect x="0" y="10" width="40" height="20" rx="5" ry="10" />
-          <circle cx="14.5" cy="5" r="1.85" stroke="white" />
-          <circle cx="25.5" cy="35" r="1.85" stroke="white" />
-          <line x1="10" y1="9.5" x2="20" y2="9.5" stroke="white" />
-          <line x1="20" y1="30.5" x2="30" y2="30.5" stroke="white" />
-          <path
-            d="m 9.5,30 c 0,-10 2.5,-10 10,-10 8.5,0 11,0 11,-10"
-            stroke="white"
-          />
-        </svg>
       </div>
-      {#if has_parent}
+      {#if is_parent_less}
         <div
-          class="w-5 h-5 p-0.5 mr-[1px] bg-oli dark:bg-oli-600 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-sky-200 fill-oli-500 dark:fill-oli rounded border border-oli-300 dark:border-oli-500 cursor-pointer drop-shadow-md justify-center items-center flex"
+          class="z-[999] w-5 h-5 p-0.5 bg-oli dark:bg-oli-700 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-sky-200 fill-oli-400 dark:fill-oli stroke-none cursor-pointer justify-center items-center flex"
           on:mousedown={drag_mousedown}
           on:mouseup={drag_mouseup}
         >
@@ -207,13 +208,11 @@
         </div>
       {:else}
         <div
-          class="w-5 h-5 p-0.5 mr-[1px] bg-oli dark:bg-oli-600 rounded border border-oli-100 dark:border-oli-500 drop-shadow-md justify-center items-center flex"
-        >
-
-        </div>
+          class="w-5 h-5 p-0.5 bg-oli dark:bg-oli-700 rounded border border-oli-100 dark:border-oli-500 justify-center items-center flex"
+        ></div>
       {/if}
       <div
-        class="w-5 h-5 p-0.5 mr-[1px] bg-oli dark:bg-oli-600 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-green-100 fill-oli-500 dark:fill-oli rounded border border-oli-300 dark:border-oli-500 cursor-pointer drop-shadow-md justify-center items-center flex"
+        class="w-5 h-5 p-0.5 bg-oli dark:bg-oli-700 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-green-100 fill-oli-400 stroke-none dark:fill-oli cursor-pointer justify-center items-center flex"
         on:click={new_markdown_cell}
         on:keydown={new_markdown_cell}
       >
@@ -233,7 +232,7 @@
     </div>
   {:else}
     <div
-      class="absolute w-10 h-5 z-[9999] -top-[10px] left-[11px] rounded-full flex items-center justify-center bg-transparent cursor-pointer stroke-oli-300 dark:stroke-oli-200 stroke-2 fill-oli-100 dark:fill-oli0 dark:fill-oli-200"
+      class="absolute w-10 h-5 z-[9999] -top-[10px] left-[11px] rounded-full flex items-center justify-center bg-transparent cursor-pointer stroke-oli-300 dark:stroke-oli-500 stroke-2 fill-oli-100 dark:fill-oli-500"
       id="new-cell-toolbar"
       on:click|stopPropagation={connector_click}
       on:keydown={() => {}}

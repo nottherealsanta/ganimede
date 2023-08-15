@@ -98,7 +98,7 @@
 </script>
 
 <div
-  class="bg-transparent z-[9998]"
+  class="bg-transparent"
   id="edge"
   style="
     position: absolute;
@@ -175,13 +175,12 @@
 
 {#if show_edge_toolbar}
   <div
-    class="h-5 w-fit z-[9999] bg-transparent rounded absolute flex"
+    class="h-fit w-fit px-0.25 z-[999] bg-oli dark:bg-oli-700 rounded drop-shadow-md absolute overflow-clip items-center justify-center flex"
     style="top: {edge_toolbar_pos.y}px; left: {edge_toolbar_pos.x}px; transform: translate(-50%, -50%);"
     on:mouseleave={() => (show_edge_toolbar = false)}
   >
-
     <div
-      class="w-5 h-5 p-0.5 bg-oli dark:bg-oli-800 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-red-200 fill-oli-500 dark:fill-oli  rounded border border-oli-200 dark:border-oli-500 cursor-pointer drop-shadow-md justify-center items-center flex"
+      class="w-5 h-5 p-0.5 bg-oli dark:bg-oli-700 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-red-200 dark:active:bg-red-600 fill-oli-500 border border-oli-200 dark:border-oli-500 dark:fill-oli-100 rounded cursor-pointer justify-center items-center flex"
       on:click={delete_edge}
       on:keydown={delete_edge}
     >
@@ -206,7 +205,7 @@
       >
     </div>
     <div
-      class="ml-1 w-5 h-5 p-0.5 bg-oli dark:bg-oli-800 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-red-200 fill-oli-500 dark:fill-oli  rounded border border-oli-200 dark:border-oli-500 cursor-pointer drop-shadow-md justify-center items-center flex"
+      class="ml-1 w-5 h-5 p-0.5 bg-oli dark:bg-oli-700 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-red-200 dark:active:bg-red-600 fill-oli-500 border border-oli-200 dark:border-oli-500 dark:fill-oli-100 rounded cursor-pointer justify-center items-center flex"
       on:click={delete_edge}
       on:keydown={delete_edge}
     >
