@@ -197,3 +197,60 @@ export function delete_cell(cell_id) {
     ycells.delete(_index, 1);
     undoManager.stopCapturing();
 }
+
+// ---------- Move cell
+
+export function move_cell(cell_id, dragover_cell, selected_dragzone) {
+    // do - dragged over 
+    const ycell = ydoc.getMap(cell_id);
+    const cell_parent = get(cp_graph)[cell_id];
+
+    // remove from previous parent
+    if (cell_parent) {
+        const y_cell_parent = ypc_graph.get(cell_parent);
+        const index = y_cell_parent.toJSON().indexOf(cell_id);
+        y_cell_parent.delete(index, 1);
+    }
+
+    function remove_from_np() {
+        console.log("remove from np");
+        const previous_cell = get(pn_graph)[cell_id];
+        if (previous_cell) {
+            const y_previous_cell = ynp_graph.get(previous_cell);
+            const index = y_previous_cell.toJSON().indexOf(cell_id);
+            y_previous_cell.delete(index, 1);
+        }
+    }
+
+    if (dragover_cell) {
+        const do_cell_id = dragover_cell.getAttribute('cell_id');
+        const do_cell_position = dragover_cell.getAttribute('position');
+        const do_parent = get(cp_graph)[do_cell_id];
+        if (do_parent) {
+            const y_do_parent = ypc_graph.get(do_parent);
+            let index = y_do_parent.toJSON().indexOf(do_cell_id);
+            if (do_cell_position === 'bottom') {
+                index += 1;
+            }
+            y_do_parent.insert(index, [cell_id]);
+            remove_from_np();
+        } else {
+            // no do_parent
+            const do_cell = ydoc.getMap(do_cell_id).toJSON();
+            ycell.set('left', do_cell.left);
+            if (do_cell_position === 'bottom') {
+                ycell.set('top', do_cell.top + do_cell.height + 10);
+            } else {
+                ycell.set('top', do_cell.top - ycell.get('height') - 10);
+            }
+        }
+    } else if (selected_dragzone) {
+        const do_dragzone_id = selected_dragzone.getAttribute('cell_id');
+        if (get(cp_graph)[cell_id] !== do_dragzone_id) {
+            ypc_graph.get(do_dragzone_id).push([cell_id]);
+        }
+        remove_from_np();
+    }
+
+
+}

@@ -8,9 +8,8 @@
     cp_graph,
     html_elements,
     ydoc,
-    pc_graph,
-    ynp_graph,
     ypc_graph,
+    move_cell,
   } from "../stores/_notebook";
 
   onMount(() => {
@@ -265,61 +264,7 @@
         y: null,
       };
 
-      if (dragover_cell) {
-        let dnd_cell_id = dragover_cell.getAttribute("cell_id");
-        let dnd_parent = $cp_graph[dnd_cell_id];
-        let cell_parent = $cp_graph[cell_id];
-
-        // remove cell from parent
-        if (cell_parent) {
-          let cell_parent_yarray = ypc_graph.get(cell_parent);
-          var cell_loc = cell_parent_yarray.toJSON().indexOf(cell_id);
-          cell_parent_yarray.delete(cell_loc, 1);
-        }
-
-        // add to next to dnd_cell_id
-        if (dnd_parent) {
-          let dnd_parent_yarray = ypc_graph.get(dnd_parent);
-          let dnd_cell_loc_pos = dnd_parent_yarray
-            .toJSON()
-            .indexOf(dnd_cell_id);
-          if (dragover_cell.getAttribute("position") === "bottom") {
-            dnd_cell_loc_pos += 1;
-          }
-          dnd_parent_yarray.insert(dnd_cell_loc_pos, [cell_id]);
-        } else {
-          // dragging onto a non-parent cell
-          // TODO: now only snaps to bottom, make it snap to top as well
-          cell.left = get_cell(dnd_cell_id).left;
-          cell.top =
-            get_cell(dnd_cell_id).top + get_cell(dnd_cell_id).height + 10;
-        }
-      } else if (selected_dragzone) {
-        // add to the end of the tissue/parent
-        let dnd_cell_id = selected_dragzone.getAttribute("cell_id");
-
-        // if dropped on the same parent, preserve order
-        if ($cp_graph[cell_id] !== dnd_cell_id) {
-          let cell_parent = $cp_graph[cell_id];
-
-          // remove cell from parent
-          if (cell_parent) {
-            let cell_loc = ypc_graph.get(cell_parent).toJSON().indexOf(cell_id);
-            ypc_graph.get(cell_parent).delete(cell_loc, 1);
-          }
-
-          ypc_graph.get(dnd_cell_id).push([cell_id]);
-        }
-      } else {
-        // remove from parent
-        let cell_parent = $cp_graph[cell_id];
-
-        // if cell is in some parent
-        if (cell_parent) {
-          let cell_loc = ypc_graph.get(cell_parent).toJSON().indexOf(cell_id);
-          ypc_graph.get(cell_parent).delete(cell_loc, 1);
-        }
-      }
+      move_cell(cell_id, dragover_cell, selected_dragzone);
 
       if (dragover_cell) {
         dragover_cell.style.borderTop = "";
@@ -429,9 +374,10 @@
 </script>
 
 <div
-  class="cell rounded bg-transparent border border-oli-200 dark:border-oli-600 absolute w-fit h-fit flex flex-col overflow-visible
+  class="cell rounded bg-transparent border border-oli-200 dark:border-oli-600 ring-sky-200 dark:ring-sky-600 absolute w-fit h-fit flex flex-col overflow-visible
   {dragging ? 'drop-shadow-2xl dark:drop-shadow-2xl-dark' : ''}
   {!$cp_graph[cell_id] ? 'drop-shadow-lg dark:drop-shadow-lg-dark' : ''}
+  {is_hover ? 'ring-1 ' : ''}
   "
   bind:this={cell_div}
   style="

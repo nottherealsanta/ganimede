@@ -208,7 +208,7 @@
         </div>
       {:else}
         <div
-          class="w-5 h-5 p-0.5 bg-oli dark:bg-oli-700 rounded border border-oli-100 dark:border-oli-500 justify-center items-center flex"
+          class="w-5 h-5 p-0.5 bg-oli-50 dark:bg-oli-700 rounded border border-oli-100 dark:border-oli-500 justify-center items-center flex"
         ></div>
       {/if}
       <div

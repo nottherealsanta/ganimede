@@ -1,18 +1,12 @@
-<script lang="ts">
+<script>
   export let output;
-
+  let display_text;
   $: if (output["data"]) {
     if (output["data"]["text/plain"]) {
-      output["text"] = output["data"]["text/plain"];
+      display_text = output["data"]["text/plain"];
     }
   } else {
-    output["text"] = output["text"];
-  }
-  let display_text;
-  $: if (typeof output["text"] === "string") {
     display_text = output["text"];
-  } else {
-    display_text = " ";
   }
 </script>
 

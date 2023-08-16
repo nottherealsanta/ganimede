@@ -104,12 +104,15 @@
     monaco = await import("monaco-editor");
 
     // --- import theme
-    import("monaco-themes/themes/Active4D.json").then((data) => {
+    await import("monaco-themes/themes/Active4D.json").then((data) => {
       monaco.editor.defineTheme("light-theme", data);
     });
 
-    // monaco.editor.setTheme("light-theme");
-
+    if (current_theme === theme.light) {
+      monaco.editor.setTheme("light-theme");
+    } else {
+      monaco.editor.setTheme("vs-dark");
+    }
     editor = monaco.editor.create(container, monaco_config);
 
     // --- set theme
