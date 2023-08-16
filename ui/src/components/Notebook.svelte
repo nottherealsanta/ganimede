@@ -37,24 +37,27 @@
   }
 
   function align_parent_less_cells() {
-    let top = 1000;
-    let left = 5000;
-    for (let cell_id of cells) {
-      if ($cp_graph[cell_id]) {
-        continue;
+    console.log("000", ydoc.getMap("notebook").get("aligned"));
+    if (!ydoc.getMap("notebook").get("aligned")) {
+      let top = 1000;
+      let left = 5000;
+      for (let cell_id of cells) {
+        if ($cp_graph[cell_id]) {
+          continue;
+        }
+        get_cell(cell_id).set("top", top);
+        top += $html_elements[cell_id].offsetHeight + 10;
+        get_cell(cell_id).set("left", left);
       }
-      get_cell(cell_id).set("top", top);
-      top += $html_elements[cell_id].offsetHeight + 10;
-      get_cell(cell_id).set("left", left);
+      // window.scrollTo(4900, 1000)
+      // scroll to the first cell
     }
-    // window.scrollTo(4900, 1000)
-    // scroll to the first cell
+    ydoc.getMap("notebook").set("aligned", true);
     window.scrollTo({
       top: get_cell(cells[0]).get("top") - 100,
       left: get_cell(cells[0]).get("left") - 100,
       behavior: "instant",
     });
-    //
   }
 
   // wait for $cell to be defined
@@ -67,13 +70,7 @@
   ) {
     aligned = true;
     // call align_parent_less_cells() after 1 second
-    console.log("get_cell(cells[0]).get", get_cell(cells[0]).get("top"));
-    if (
-      get_cell(cells[0]).get("top") === null ||
-      get_cell(cells[0]).get("top") === undefined
-    ) {
-      setTimeout(align_parent_less_cells, 1000);
-    }
+    setTimeout(align_parent_less_cells, 1000);
   }
 </script>
 
