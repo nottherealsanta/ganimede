@@ -148,6 +148,7 @@
         y: $mouse_pos.y - dh_clicked.y,
       };
 
+      // parent less cell
       if (!$cp_graph[cell_id]) {
         cell.top = $mouse_pos.y - dh_clicked.y;
         cell.left = $mouse_pos.x - dh_clicked.x;
@@ -374,10 +375,11 @@
 </script>
 
 <div
-  class="cell rounded bg-transparent border border-oli-200 dark:border-oli-600 ring-sky-200 dark:ring-sky-600 absolute w-fit h-fit flex flex-col overflow-visible
+  class="cell rounded bg-transparent border border-oli-200 dark:border-oli-600 ring-sky-400/50 dark:ring-sky-600/50 absolute w-fit h-fit flex flex-col overflow-visible
   {dragging ? 'drop-shadow-2xl dark:drop-shadow-2xl-dark' : ''}
   {!$cp_graph[cell_id] ? 'drop-shadow-lg dark:drop-shadow-lg-dark' : ''}
   {is_hover ? 'ring-1 ' : ''}
+  {dragging ? 'ring-4 ' : ''}
   "
   bind:this={cell_div}
   style="
@@ -385,7 +387,6 @@
         left: {drag_cell_pos.x ? drag_cell_pos.x : cell.left}px;
         z-index: {dragging ? 9999 : z_index};
         cursor: {dragging ? 'grabbing' : 'default'};
-        border-color: {dragging ? '#29B0F8' : ''};
         opacity: {dragging ? '0.75' : '1'};
         "
   bind:clientHeight={cell.height}

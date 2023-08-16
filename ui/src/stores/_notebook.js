@@ -213,7 +213,6 @@ export function move_cell(cell_id, dragover_cell, selected_dragzone) {
     }
 
     function remove_from_np() {
-        console.log("remove from np");
         const previous_cell = get(pn_graph)[cell_id];
         if (previous_cell) {
             const y_previous_cell = ynp_graph.get(previous_cell);

@@ -439,18 +439,17 @@
 
   // ---------- Components
   import NewCellToolbar from "../components/cell_components/new_cell_toolbar_components/NewCellToolbar.svelte";
-  import CellToolbar from "./cell_components/CellToolbar.svelte";
   import TissueToolbar from "./cell_components/TissueToolbar.svelte";
-  import Cell from "./Cell.svelte";
 
   let is_hover = false;
 </script>
 
 <div
-  class="tissue rounded-r rounded-tl bg-transparent border-2 border-l-[2px] border-oli-100 dark:border-oli-600 ring-sky-200 dark:ring-sky-600 absolute w-fit h-fit flex flex-col overflow-visible
+  class="tissue rounded-r rounded-tl bg-transparent border-2 border-l-[2px] border-oli-100 dark:border-oli-600 ring-sky-400/50 dark:ring-sky-600/50 absolute w-fit h-fit flex flex-col overflow-visible
   {dragging ? 'drop-shadow-2xl dark:drop-shadow-2xl-dark' : ''}
   {!$cp_graph[cell_id] ? 'drop-shadow-lg dark:drop-shadow-lg-dark' : ''}
-  {is_hover ? 'ring-2 ' : ''}
+  {is_hover ? 'ring-1 ' : ''}
+  {dragging ? 'ring-4 ' : ''}
   "
   bind:this={cell_div}
   style="
@@ -458,7 +457,6 @@
         left: {drag_cell_pos.x ? drag_cell_pos.x : cell.left}px;
         cursor: {dragging ? 'grabbing' : 'default'};
         opacity: {dragging ? '0.75' : '1'};
-        border-color: {dragging ? '#0ea5e9' : ''};
         "
   bind:clientHeight={cell.height}
   bind:clientWidth={cell.width}
