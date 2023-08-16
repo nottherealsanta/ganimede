@@ -9,6 +9,7 @@
 
   import { config } from "../../stores/config";
   import { MonacoBinding } from "y-monaco";
+  import { send_message } from "../../stores/socket";
 
   export let cell;
   let source = cell.source;
@@ -146,6 +147,27 @@
 
     editor.onDidContentSizeChange(updateHeight);
     updateHeight();
+
+    // custom keybindings
+
+    // -- run
+    editor.addAction({
+      id: "run",
+      label: "Run",
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter],
+      run: () => {
+        if (cell.state === "idle") {
+          send_message({
+            channel: "notebook",
+            method: "queue_cell",
+            message: {
+              cell_id: cell.id,
+              code: cell.source,
+            },
+          });
+        }
+      },
+    });
 
     // y-monaco
     const monacoBinding = new MonacoBinding(
