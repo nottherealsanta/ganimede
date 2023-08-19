@@ -4,7 +4,7 @@
   import { onMount } from "svelte";
   let canvas_div = null;
 
-  // middle mouse to pan
+  // ---------- mouse click to pan
   import mouse_pos from "../stores/mouse.js";
 
   let moving = false;
@@ -13,7 +13,7 @@
   let mouseDown = function (e) {
     if (
       e.button === 0 && // if middle mouse button is pressed
-      (e.target.id === "tissue" || e.target.id === "canvas")
+      e.target.id === "canvas"
     ) {
       moving = true;
       clicked_x = $mouse_pos.x;
@@ -35,8 +35,8 @@
 
   // ---------- zoom
   import { zoom, set_zoom } from "../stores/zoom";
-
-  //// add event listeners
+  $: console.log("zoom", $zoom);
+  // add event listeners
   onMount(() => {
     window.addEventListener(
       "wheel",
@@ -75,6 +75,25 @@
     myContextMenu.style.display = "none";
   });
 
+  // ---------- scroll
+  // debug
+  // let scroll_x = 0;
+  // let scroll_y = 0;
+
+  // let view_width = 0;
+  // let view_height = 0;
+
+  // document.addEventListener("scroll", () => {
+  //   scroll_x = window.scrollX / $zoom;
+  //   scroll_y = window.scrollY / $zoom;
+  //   view_width = window.innerWidth / $zoom;
+  //   view_height = window.innerHeight / $zoom;
+  // });
+
+  // $: center_x = scroll_x + view_width / 2;
+  // $: center_y = scroll_y + view_height / 2;
+
+  // ---------- toolbar
   import ToolbarCanvas from "./canvas_components/ToolbarCanvas.svelte";
 </script>
 
@@ -84,7 +103,7 @@
         height: 20000px; 
         width: 20000px; 
         transform: scale({$zoom}); 
-        transform-origin: 0 0 ;
+        transform-origin: 0 0;
         background-image: radial-gradient(
             circle at 0px 0px,
             rgb(112, 112, 112) 000 1px,
@@ -103,6 +122,25 @@
   {:then}
     <Notebook />
   {/await}
+
+  <!-- debug -->
+
+  <!-- <div
+    class="h-5 w-5"
+    style="top: {$mouse_pos.y +
+      10}px; left: {$mouse_pos.x}px; position: absolute;"
+  >
+    {$mouse_pos.x}, {$mouse_pos.y}
+  </div> -->
+  <!-- <div
+    class="bg-sky-100/10"
+    style="top: {scroll_y}px; left: {scroll_x}px; position: absolute; width: {window.innerWidth /
+      $zoom}px; height: {window.innerHeight / $zoom}px;"
+  ></div>
+  <div
+    class="w-1 h-1 bg-red-400"
+    style="top: {center_y}px; left: {center_x}px; position: absolute;"
+  ></div> -->
 </div>
 
 <!-- <ZoomToolBar /> -->
