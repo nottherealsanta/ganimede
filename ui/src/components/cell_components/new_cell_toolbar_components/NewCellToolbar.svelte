@@ -142,6 +142,10 @@
       }
     }
   }
+
+  // ---------- Icons
+  import Python from "../Icons/python.svelte";
+  import Markdown from "../Icons/markdown.svelte";
 </script>
 
 <div
@@ -165,24 +169,7 @@
         on:click={new_code_cell}
         on:keydown={new_code_cell}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          aria-label="Python"
-          role="img"
-          viewBox="0 0 512 512"
-          width="90%"
-          height="90%"
-          ><g>
-            <g>
-              <path
-                id="p"
-                d="M254 64c-16 0-31 1-44 4-39 7-46 21-46 47v35h92v12H130c-27 0-50 16-58 46-8 35-8 57 0 93 7 28 23 47 49 47h32v-42c0-30 26-57 57-57h91c26 0 46-21 46-46v-88c0-24-21-43-46-47-15-3-32-4-47-4zm-50 28c10 0 17 8 17 18 0 9-7 17-17 17-9 0-17-8-17-17 0-10 8-18 17-18z"
-              ></path>
-            </g>
-            <use xlink:href="#p" transform="rotate(180,256,255)"></use>
-          </g></svg
-        >
+        <Python />
       </div>
       {#if is_parent_less}
         <div
@@ -212,18 +199,7 @@
         on:click={new_markdown_cell}
         on:keydown={new_markdown_cell}
       >
-        <svg
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          viewBox="11.3 9.1 33 33"
-          width="70%"
-          height="70%"
-        >
-          <path
-            d="M 12.0 39.2 V 12.0 h 8.0 l 8.0 10.0 l 8.0 -10.0 h 8.0 v 27.2 H 36.0 V 23.6 L 28.0 33.6 L 20.0 23.6 v 15.6 z h 8.0 z"
-          />
-        </svg>
+        <Markdown />
       </div>
     </div>
   {:else}
