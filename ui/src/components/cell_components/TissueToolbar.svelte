@@ -5,6 +5,7 @@
   import Drag from "../cell_components/Icons/drag.svelte";
   import MenuButton from "../cell_components/MenuButton.svelte";
   import { pc_graph } from "../../stores/_notebook";
+  import TissueRunButton from "./TissueRunButton.svelte";
 
   export let cell;
 
@@ -17,7 +18,7 @@
   on:mosueup
 >
   {#if cell.type === "code" || cell.id in $pc_graph}
-    <PrimeButton {cell} />
+    <TissueRunButton {cell} />
     <!-- <ExecutionCount {cell} /> -->
   {:else}
     <div class="h-5 w-5" />

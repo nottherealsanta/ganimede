@@ -35,7 +35,7 @@
 
   // ---------- zoom
   import { zoom, set_zoom } from "../stores/zoom";
-  $: console.log("zoom", $zoom);
+
   // add event listeners
   onMount(() => {
     window.addEventListener(
@@ -53,26 +53,32 @@
 
   // ---------- context menu
 
-  let myContextMenu = null;
+  let right_click_menu = null;
   let menu_left = 0;
   let menu_top = 0;
   function showCustomContextMenu(event) {
     event.preventDefault();
     menu_left = event.clientX;
     menu_top = event.clientY;
-    myContextMenu.style.display = "block";
+    right_click_menu.style.display = "block";
     // TODO: display to none if click outside or on menu
     // TODO: context menu on what is being clicked
   }
   document.addEventListener("contextmenu", showCustomContextMenu);
   document.addEventListener("click", () => {
-    myContextMenu.style.display = "none";
+    if (right_click_menu) {
+      right_click_menu.style.display = "none";
+    }
   });
   document.addEventListener("scroll", () => {
-    myContextMenu.style.display = "none";
+    if (right_click_menu) {
+      right_click_menu.style.display = "none";
+    }
   });
   document.addEventListener("wheel", () => {
-    myContextMenu.style.display = "none";
+    if (right_click_menu) {
+      right_click_menu.style.display = "none";
+    }
   });
 
   // ---------- scroll
@@ -150,7 +156,7 @@
   class="h-fit w-40 bg-oli p-2 dark:bg-[#1E1E1E] fixed rounded z-50 text-oli-600 dark:text-oli-400 border border-oli-500 dark:border-oli-600"
   id="customContextMenu"
   style="top: {menu_top}px; left: {menu_left}px; position: fixed; display: none;"
-  bind:this={myContextMenu}
+  bind:this={right_click_menu}
 >
   <ul>
     <li>Option 1</li>

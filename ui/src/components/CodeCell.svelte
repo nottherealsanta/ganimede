@@ -70,11 +70,7 @@
           xmlns="http://www.w3.org/2000/svg"
           style="
         rotate: {input_collapsed ? '180deg' : '270deg'}"
-          ><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g
-            id="SVGRepo_tracerCarrier"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ></g><g id="SVGRepo_iconCarrier">
+          ><g>
             <path
               d="M15 7L10 12L15 17"
               stroke-width="1.5"
@@ -111,11 +107,7 @@
               xmlns="http://www.w3.org/2000/svg"
               style="
             rotate: {output_collapsed ? '180deg' : '270deg'}"
-              ><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g
-                id="SVGRepo_tracerCarrier"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              ></g><g id="SVGRepo_iconCarrier">
+              ><g>
                 <path
                   d="M15 7L10 12L15 17"
                   stroke-width="1.5"

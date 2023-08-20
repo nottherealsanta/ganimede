@@ -686,6 +686,9 @@ video {
 .w-1 {
   width: 0.25rem;
 }
+.w-8 {
+  width: 2rem;
+}
 .min-w-\[250px\] {
   min-width: 250px;
 }
@@ -772,6 +775,9 @@ video {
 }
 .rounded-sm {
   border-radius: 0.125rem;
+}
+.rounded-lg {
+  border-radius: 0.5rem;
 }
 .rounded-b {
   border-bottom-right-radius: 0.25rem;
