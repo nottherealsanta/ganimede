@@ -8,6 +8,7 @@ module.exports = {
         'oli':
         {
           DEFAULT: '#FFFFFF',
+          25: '#FAFAFA',
           50: '#F6F6F6',
           100: '#ECECEC',
           200: '#D0D0D0',
