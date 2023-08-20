@@ -17,13 +17,8 @@
   on:mousedown
   on:mosueup
 >
-  {#if cell.type === "code" || cell.id in $pc_graph}
-    <TissueRunButton {cell} />
-    <!-- <ExecutionCount {cell} /> -->
-  {:else}
-    <div class="h-5 w-5" />
-  {/if}
   {#if is_hover}
+    <TissueRunButton {cell} />
     <Drag />
     <div class="flex flex-row ml-auto">
       <MenuButton {cell} />

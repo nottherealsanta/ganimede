@@ -161,7 +161,7 @@
     >
       <!-- <ToolbarSlot><Disconnect /></ToolbarSlot> -->
       <div
-        class="w-5 h-5 p-0.5 bg-oli dark:bg-oli-700 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-yellow-100 fill-oli-400 dark:fill-oli cursor-pointer justify-center items-center flex"
+        class="w-5 h-5 p-0.5 bg-oli dark:bg-oli-700 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-yellow-100 fill-oli-500 dark:fill-oli cursor-pointer justify-center items-center flex"
         on:click={new_code_cell}
         on:keydown={new_code_cell}
       >
@@ -186,7 +186,7 @@
       </div>
       {#if is_parent_less}
         <div
-          class="z-[999] w-5 h-5 p-0.5 bg-oli dark:bg-oli-700 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-sky-200 fill-oli-400 dark:fill-oli stroke-none cursor-pointer justify-center items-center flex"
+          class="z-[999] w-5 h-5 p-0.5 bg-oli dark:bg-oli-700 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-sky-200 fill-oli-500 dark:fill-oli stroke-none cursor-pointer justify-center items-center flex"
           on:mousedown={drag_mousedown}
           on:mouseup={drag_mouseup}
         >
@@ -208,7 +208,7 @@
         ></div>
       {/if}
       <div
-        class="w-5 h-5 p-0.5 bg-oli dark:bg-oli-700 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-green-100 fill-oli-400 stroke-none dark:fill-oli cursor-pointer justify-center items-center flex"
+        class="w-5 h-5 p-0.5 bg-oli dark:bg-oli-700 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-green-100 fill-oli-500 stroke-none dark:fill-oli cursor-pointer justify-center items-center flex"
         on:click={new_markdown_cell}
         on:keydown={new_markdown_cell}
       >

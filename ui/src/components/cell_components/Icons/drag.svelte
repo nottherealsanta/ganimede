@@ -1,5 +1,5 @@
 <div
-  class="absolute left-1/2 transform -translate-x-1/2 top-[4px] stroke-oli-400 dark:stroke-oli-200"
+  class="absolute left-1/2 transform -translate-x-1/2 top-[4px] stroke-oli-600 dark:stroke-oli-200"
 >
   <svg
     width="15px"
