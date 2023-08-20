@@ -115,7 +115,7 @@ function generateRandomCellId(idLength = 8) {
     return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
-export function create_cell(type, from_cell = null) {
+export function create_cell(type, from_cell = null, left = null, top = null) {
 
     let cell_id = generateRandomCellId();
     let ycell = ydoc.getMap(cell_id);
@@ -131,26 +131,34 @@ export function create_cell(type, from_cell = null) {
     ycell.set('collapsed', null);
     ycell.set('state', 'idle');
 
-    let parent = get(cp_graph)[from_cell.id];
-    if (parent) {
-        // has parent
-        let index = ypc_graph.get(parent).toJSON().indexOf(from_cell.id);
-        ypc_graph.get(parent).insert(index + 1, [cell_id]);
-        ycell.set('top', null);
-        ycell.set('left', null);
 
-    } else {
-        // no parent
-        ycell.set('top', from_cell.top + from_cell.height + 10);
-        ycell.set('left', from_cell.left);
-        // set np_graph
-        if (!ynp_graph.get(from_cell.id)) {
-            let x = new Y.Array();
-            x.push([cell_id]);
-            ynp_graph.set(from_cell.id, x);
+    if (from_cell !== null) {
+        let parent = get(cp_graph)[from_cell.id];
+        if (parent) {
+            // has parent 
+            let index = ypc_graph.get(parent).toJSON().indexOf(from_cell.id);
+            ypc_graph.get(parent).insert(index + 1, [cell_id]);
+            ycell.set('top', null);
+            ycell.set('left', null);
+
         } else {
-            ynp_graph.get(from_cell.id).push([cell_id]);
+            // no parent
+            ycell.set('top', from_cell.top + from_cell.height + 10);
+            ycell.set('left', from_cell.left);
+            // set np_graph
+            if (!ynp_graph.get(from_cell.id)) {
+                let x = new Y.Array();
+                x.push([cell_id]);
+                ynp_graph.set(from_cell.id, x);
+            } else {
+                ynp_graph.get(from_cell.id).push([cell_id]);
+            }
         }
+    } else if (top !== null && left !== null) {
+        ycell.set('top', top);
+        ycell.set('left', left);
+    } else {
+        console.error("create_cell: from_cell or top and left must be provided");
     }
 
     ycells.push([cell_id]);

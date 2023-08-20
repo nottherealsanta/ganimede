@@ -103,6 +103,8 @@
   import ToolbarCanvas from "./canvas_components/ToolbarCanvas.svelte";
   import Python from "./cell_components/Icons/python.svelte";
   import Markdown from "./cell_components/Icons/markdown.svelte";
+
+  import { create_cell } from "../stores/_notebook";
 </script>
 
 <div
@@ -155,27 +157,39 @@
 <ToolbarCanvas />
 
 <div
-  class="h-fit w-100 bg-oli py-1 px-0.5 dark:bg-[#1E1E1E] font-['Roboto_Mono'] fixed rounded z-50 border border-oli-200 dark:border-oli-600 stroke-none"
+  class="h-fit w-100 bg-oli py-0.5 px-0.5 dark:bg-[#1E1E1E] font-['Roboto_Mono'] fixed rounded z-50 border border-oli-200 dark:border-oli-600 stroke-none"
   id="customContextMenu"
   style="top: {menu_top}px; left: {menu_left}px; position: fixed; display: none;"
   bind:this={right_click_menu}
 >
   <ul>
     <li>
-      <div
-        class="h-7 px-2 py-1 flex flex-row hover:bg-oli-100/50 items-center justify-center rounded cursor-pointer fill-oli-400 hover:fill-oli-500 dark:hover:fill-oli-300 text-oli-400 hover:text-oli-500 dark:hover:text-oli-300"
+      <button
+        class="h-7 px-2 py-1 m-0 flex flex-row bg-transparent border-none hover:bg-oli-100/50 items-center justify-center cursor-pointer fill-oli-400 hover:fill-oli-500 dark:hover:fill-oli-300 text-oli-400 hover:text-oli-500 dark:hover:text-oli-300"
+        on:click={create_cell(
+          "code",
+          null,
+          $mouse_pos.x - 50,
+          $mouse_pos.y - 15,
+        )}
       >
-        <div class="w-5 mr-2"><Python /></div>
+        <div class="w-5 mr-1"><Python /></div>
         Code Cell
-      </div>
+      </button>
     </li>
     <li>
-      <div
-        class="h-7 pl-[12px] pr-[8px] py-1 flex flex-row hover:bg-oli-100/50 items-center justify-center rounded cursor-pointer fill-oli-400 hover:fill-oli-500 dark:hover:fill-oli-300 text-oli-400 hover:text-oli-500 dark:hover:text-oli-300"
+      <button
+        class="h-7 px-2 py-1 m-0 flex flex-row bg-transparent border-none hover:bg-oli-100/50 items-center justify-center cursor-pointer fill-oli-400 hover:fill-oli-500 dark:hover:fill-oli-300 text-oli-400 hover:text-oli-500 dark:hover:text-oli-300"
+        on:click={create_cell(
+          "markdown",
+          null,
+          $mouse_pos.x - 50,
+          $mouse_pos.y - 15,
+        )}
       >
-        <div class="w-5 mr-[7px]"><Markdown /></div>
-        Text Cell
-      </div>
+        <div class="w-5 mr-1"><Markdown /></div>
+        Code Cell
+      </button>
     </li>
   </ul>
 </div>

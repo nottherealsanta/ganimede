@@ -634,6 +634,9 @@ video {
 .mr-\[7px\] {
   margin-right: 7px;
 }
+.mr-1 {
+  margin-right: 0.25rem;
+}
 .block {
   display: block;
 }
@@ -842,6 +845,9 @@ video {
 }
 .border-t {
   border-top-width: 1px;
+}
+.border-none {
+  border-style: none;
 }
 .border-oli-100 {
   --tw-border-opacity: 1;
