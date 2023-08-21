@@ -12,7 +12,7 @@
   let clicked_y = 0;
   let mouseDown = function (e) {
     if (
-      e.button === 0 && // if middle mouse button is pressed
+      e.button === 1 && // if middle mouse button is pressed
       e.target.id === "canvas"
     ) {
       moving = true;
@@ -51,6 +51,22 @@
     open_socket();
   });
 
+  // ---------- 2D scroll
+
+  onMount(() => {
+    window.addEventListener(
+      "wheel",
+      (event) => {
+        event.preventDefault();
+        window.scrollBy({
+          left: event.deltaX,
+          top: event.deltaY,
+          behavior: "instant",
+        });
+      },
+      { passive: false },
+    );
+  });
   // ---------- context menu
 
   let right_click_menu = null;
