@@ -487,7 +487,7 @@
 
   <!-- dropzone -->
   <div
-    class="dropzone min-h-[25px] rounded-br bg-oli-25 dark:bg-oli-800 border-t border-oli-50 dark:border-oli-700"
+    class="dropzone min-h-[25px] rounded-br bg-oli-25 dark:bg-oli-850 border-t border-oli-50 dark:border-oli-700"
     {cell_id}
   >
     <div

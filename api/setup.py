@@ -1,11 +1,11 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='ganimede',
-    version='0.1.1',
-    description='A Rethinking of Computational Notebooks',
-    author='nottherealsanta',
-    packages=find_packages( include=['ganimede', 'ganimede.*']),
+    name="ganimede",
+    version="0.2",
+    description="A Rethinking of Computational Notebooks",
+    author="nottherealsanta",
+    packages=find_packages(include=["ganimede", "ganimede.*"]),
     install_requires=[
         "jupyter_client>=7.4.9",
         "starlette>=0.23.1",
@@ -19,15 +19,15 @@ setup(
         "click==8.1.3",
     ],
     entry_points={
-        'console_scripts': [
-            'ganimede = ganimede.main:cli',
-            'ganimede_dev = ganimede.main:dev_cli'
+        "console_scripts": [
+            "ganimede = ganimede.main:cli",
+            "ganimede_dev = ganimede.main:dev_cli",
         ]
     },
-    python_requires='>=3.8',
+    python_requires=">=3.8",
     include_package_data=True,
     package_data={
-    "ganimede": ['ui_dist/**/*'],
+        "ganimede": ["ui_dist/**/*"],
     },
-
+    url="https://github.com/nottherealsanta/ganimede",
 )

@@ -840,6 +840,10 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
+.bg-oli-25 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(250 250 250 / var(--tw-bg-opacity));
+}
 .bg-oli-50 {
   --tw-bg-opacity: 1;
   background-color: rgb(246 246 246 / var(--tw-bg-opacity));
@@ -856,10 +860,6 @@ video {
 }
 .bg-transparent {
   background-color: transparent;
-}
-.bg-oli-25 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(250 250 250 / var(--tw-bg-opacity));
 }
 .fill-black {
   fill: #000;
@@ -1232,6 +1232,11 @@ h6 {
   .dark\:bg-oli-800 {
     --tw-bg-opacity: 1;
     background-color: rgb(30 30 30 / var(--tw-bg-opacity));
+  }
+
+  .dark\:bg-oli-850 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(26 26 26 / var(--tw-bg-opacity));
   }
 
   .dark\:fill-oli {

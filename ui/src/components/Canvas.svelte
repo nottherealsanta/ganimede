@@ -188,7 +188,7 @@
         )}
       >
         <div class="w-5 mr-1"><Markdown /></div>
-        Code Cell
+        Text Cell
       </button>
     </li>
   </ul>
