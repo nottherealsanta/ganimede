@@ -2,8 +2,8 @@
   export let output;
   let html_string;
 
-  $: if (typeof output["data"]["text/html"] === "string") {
-    html_string = output["data"]["text/html"];
+  $: if (typeof output["data"]["text/html"].join("") === "string") {
+    html_string = output["data"]["text/html"].join("");
   } else {
     html_string = " ";
   }
