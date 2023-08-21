@@ -53,7 +53,7 @@
         ? 'fill-yellow-600'
         : 'fill-green-600'}"
       alt="Status"
-      title={kernel_busy ? "Busy" : "Idle"}
+      title="kernel status: {kernel_busy ? 'Busy' : 'Idle'}"
     >
       <svg width="20" height="20">
         <circle cx="10" cy="10" r="9" stroke-width="0" opacity="0.10" />
@@ -65,7 +65,7 @@
     <button
       class="bg-transparent h-6 w-6 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
       on:click={interrupt_kernel}
-      alt="Checkpoint"
+      title="Checkpoint"
     >
       <Checkpoint />
     </button>
@@ -73,7 +73,7 @@
     <button
       class="bg-transparent h-6 w-6 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
       on:click={interrupt_kernel}
-      alt="Interrupt"
+      title="Interrupt"
     >
       <Interrupt />
     </button>
@@ -81,7 +81,7 @@
     <button
       class="bg-transparent h-6 w-6 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
       on:click={interrupt_kernel}
-      alt="Restart"
+      title="Restart"
     >
       <Restart />
     </button>
@@ -90,7 +90,7 @@
     <button
       class="bg-transparent h-6 w-6 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
       on:click={zoom_in}
-      alt="Zoom In"
+      title="Zoom In"
     >
       <ZoomIn />
     </button>
@@ -98,7 +98,7 @@
     <button
       class="bg-transparent h-6 w-6 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
       on:click={zoom_out}
-      alt="Zoom Out"
+      title="Zoom Out"
     >
       <ZoomOut />
     </button>
