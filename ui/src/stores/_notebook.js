@@ -221,11 +221,16 @@ export function move_cell(cell_id, dragover_cell, selected_dragzone) {
     }
 
     function remove_from_np() {
+        // prev
         const previous_cell = get(pn_graph)[cell_id];
         if (previous_cell) {
             const y_previous_cell = ynp_graph.get(previous_cell);
             const index = y_previous_cell.toJSON().indexOf(cell_id);
             y_previous_cell.delete(index, 1);
+        }
+        // next
+        if (ynp_graph.get(cell_id)) {
+            ynp_graph.delete(cell_id);
         }
     }
 
