@@ -124,7 +124,7 @@
 </script>
 
 <div
-  class="canvas bg-oli dark:bg-[#1E1E1E] relative overflow-auto"
+  class="canvas bg-oli-25 dark:bg-[#1E1E1E] relative overflow-auto"
   style="
         height: 20000px; 
         width: 20000px; 
