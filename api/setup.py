@@ -2,11 +2,6 @@ from setuptools import setup, find_packages
 import codecs
 import os
 
-here = os.dirname(os.path.abspath(os.path.dirname(__file__)))
-
-with codecs.open(os.path.join(here, "README.md"), encoding="utf-8") as fh:
-    long_description = "\\n" + fh.read()
-
 setup(
     name="ganimede",
     version="{{VERSION_PLACEHOLDER}}",
@@ -37,4 +32,5 @@ setup(
         "ganimede": ["ui_dist/**/*"],
     },
     url="https://github.com/nottherealsanta/ganimede",
+    long_description="A Rethinking of Computational Notebooks",
 )
