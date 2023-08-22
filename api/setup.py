@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="ganimede",
-    version="0.2",
+    version="{{VERSION_PLACEHOLDER}}",
     description="A Rethinking of Computational Notebooks",
     author="nottherealsanta",
     packages=find_packages(include=["ganimede", "ganimede.*"]),
