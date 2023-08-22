@@ -13,8 +13,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+            node-version: 19.4.0
       - name: NPM build
         run: |
+          npm ci
           npm run build
         working-directory: ./ui
       - name: Set up Python
