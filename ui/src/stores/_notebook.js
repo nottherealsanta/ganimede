@@ -29,7 +29,7 @@ websocket_provider.on("status", event => {
 
 export const yrun_queue = ydoc.getArray('run_queue');
 yrun_queue.observe((event) => {
-    console.log("run_queue: ", event);
+    // console.log("run_queue: ", event);
 });
 // ---------- cells
 export const ycells = ydoc.getArray('cells');
