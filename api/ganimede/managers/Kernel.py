@@ -21,7 +21,7 @@ class Kernel:
 
         self.ydoc = ydoc
         self.ykernel = ydoc.get_map("kernel")
-        self._busy = False # TODO: change this to status
+        self._busy = False  # TODO: change this to status
 
         self.comms_queue = comms.channel_queues["kernel"]
 
@@ -81,7 +81,7 @@ class Kernel:
     async def flush_io_pub(self):
         while True:
             try:
-                await self.kernel_client.get_iopub_msg(timeout=0.1) 
+                await self.kernel_client.get_iopub_msg(timeout=0.1)
             except queue.Empty:
                 log.debug("No more messages")
                 break
@@ -111,8 +111,6 @@ class Kernel:
         return output
 
     async def execute(self, code: str, msg_queue: asyncio.Queue):
-        log.info(f"executing: {code}")
-
         if self.kernel_client is None:
             log.debug("Kernel not started")
             await self.start_kernel()
@@ -121,6 +119,7 @@ class Kernel:
         await self.flush_io_pub()
 
         async def execute_code(code: str) -> None:
+            log.info(f"executing: {code}")
             self.kernel_client.execute(code)
             client_execute_reply = await self.kernel_client.get_shell_msg()
             log.debug(f"client_execute_reply: {client_execute_reply}")
@@ -178,5 +177,4 @@ class Kernel:
 
         await asyncio.gather(execute_task, output_task)
 
-        log.debug("Execution finished")
         return execute_task.result()

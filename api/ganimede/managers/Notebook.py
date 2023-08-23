@@ -44,6 +44,8 @@ class Notebook:
 
         self.run_queue = asyncio.Queue()
         asyncio.create_task(self.run_queue_loop())
+        self.yrun_queue = self.ydoc.get_array("run_queue")
+        # self.ydoc.get_array("run_queue").observe(self.yrun_queue_event)
 
         if notebook_path is not None:
             self.init_cells()
@@ -261,25 +263,40 @@ class Notebook:
 
     async def queue_cell(self, cell_id: str, code: list[str]):
         log.debug(f"queue_cell: {cell_id}")
-        self.run_queue.put_nowait((cell_id, code))
+        self.run_queue.put_nowait((cell_id))
         self._change_cell_state(cell_id, "queued")
+        with self.ydoc.begin_transaction() as t:
+            self.ydoc.get_array("run_queue").append(t, cell_id)
 
     async def interrupt_kernel(self):
         await self.empty_run_queue()
         await self.kernel.interrupt()
 
+    # def yrun_queue_event(self, event):
+    #     print(event.delta)
+    #     print(type(event.delta))
+
+    #     for i in event.insert:
+    #         self.run_queue.put_nowait(i)
+
     async def run_queue_loop(self):
         while True:
-            cell_id, code = await self.run_queue.get()
+            cell_id = await self.run_queue.get()
             self._change_cell_state(cell_id, "running")
             self._clear_outputs(cell_id)
-            await self.run(cell_id, code)
+            await self.run(cell_id)
+            with self.ydoc.begin_transaction() as t:
+                self.ydoc.get_array("run_queue").delete(t, 0)
 
     async def empty_run_queue(self):
         log.debug("empty_run_queue")
         while self.run_queue.qsize() > 0:
-            cell_id, _ = self.run_queue.get_nowait()
+            cell_id = self.run_queue.get_nowait()
             self._change_cell_state(cell_id, "idle")
+            with self.ydoc.begin_transaction() as t:
+                self.ydoc.get_array("run_queue").delete_range(
+                    t, 0, len(self.ydoc.get_array("run_queue"))
+                )
 
     def _clear_outputs(self, cell_id: str):
         with self.ydoc.begin_transaction() as t:
@@ -293,11 +310,12 @@ class Notebook:
         with self.ydoc.begin_transaction() as t:
             self.ydoc.get_map(cell_id).set(t, "execution_count", execution_count)
 
-    async def run(self, cell_id: str, code: list[str]):
+    async def run(self, cell_id: str):
         msg_queue = asyncio.Queue()
 
         loop = asyncio.get_event_loop()
 
+        code = self.ydoc.get_map(cell_id).get("source").__str__()
         execute_task = loop.create_task(
             self.kernel.execute(code=code, msg_queue=msg_queue)
         )
