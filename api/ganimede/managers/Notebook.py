@@ -10,7 +10,6 @@ from base64 import urlsafe_b64encode
 
 from .Kernel import Kernel
 from .Comms import Comms
-from .Cell import Cell
 
 log = logging.getLogger(__name__)
 
@@ -29,7 +28,6 @@ class Notebook:
         self.notebook_path = notebook_path
         log.debug(notebook_path)
 
-        self.cells = []
         self.np_graph = {}  # next-prev directed graph'
         self.pc_graph = {}  # parent-children directed graph
 
@@ -49,10 +47,6 @@ class Notebook:
 
         if notebook_path is not None:
             self.init_cells()
-
-    @property
-    def id_map(self):
-        return {cell.id: i for (i, cell) in enumerate(self.cells)}
 
     def _load_notebook(self):
         notebook_path = Path(self.notebook_path)
@@ -359,11 +353,6 @@ class Notebook:
             if cell_id in self.pc_graph[key]:
                 return key
         return None
-
-    async def sync_cell_properties(self, cell_id: str, sync: dict):
-        cell = self.cells[self.id_map[cell_id]]
-        for key in sync.keys():
-            setattr(cell, key, sync[key])
 
     def init_tlhw(self):
         self.comms.send(
