@@ -10,6 +10,13 @@
       message: {},
     });
   }
+  async function checkpoint() {
+    send_message({
+      channel: "notebook",
+      method: "checkpoint",
+      message: {},
+    });
+  }
 
   let kernel_busy = ydoc.getMap("kernel").get("busy");
   ydoc.getMap("kernel").observeDeep(() => {
@@ -64,7 +71,7 @@
     <!-- Checkpoint -->
     <button
       class="bg-transparent h-6 w-6 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
-      on:click={interrupt_kernel}
+      on:click={checkpoint}
       title="Checkpoint"
     >
       <Checkpoint />

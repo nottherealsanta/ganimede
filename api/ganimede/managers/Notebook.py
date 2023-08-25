@@ -362,6 +362,54 @@ class Notebook:
             }
         )
 
+    async def checkpoint(self):
+        notebook = {
+            "cells": [],
+            "metadata": {
+                "gm": {
+                    "np_graph": {},
+                    "pc_graph": {},
+                }
+            },
+        }
+
+        # Collect cells
+        for cell_id in self.ycells:
+            cell = self.ydoc.get_map(cell_id)
+            cell_data = {
+                "id": cell_id,
+                "cell_type": cell.get("type"),
+                "source": cell.get("source").__str__().split("\n"),
+                "outputs": [output for output in cell.get("outputs")],
+                "metadata": {
+                    "gm": {
+                        "top": cell.get("top"),
+                        "left": cell.get("left"),
+                        "height": cell.get("height"),
+                        "width": cell.get("width"),
+                        "collapsed": cell.get("collapsed"),
+                    }
+                },
+            }
+            notebook["cells"].append(cell_data)
+
+        # Collect np_graph and pc_graph
+        for id in self.ynp_graph.keys():
+            notebook["metadata"]["gm"]["np_graph"][id] = [
+                next_id for next_id in self.ynp_graph.get(id)
+            ]
+        for id in self.ypc_graph.keys():
+            notebook["metadata"]["gm"]["pc_graph"][id] = [
+                child_id for child_id in self.ypc_graph.get(id)
+            ]
+
+        # Save to file
+        # add .ganimede before .ipynb
+        notebook_path = Path(self.notebook_path)
+        notebook_path = notebook_path.parent / (notebook_path.stem + ".ganimede.ipynb")
+        with open(notebook_path, "w") as f:
+            json.dump(notebook, f)
+
 
 def _generate_random_cell_id(id_length: int = 8) -> str:
     n_bytes = max(id_length * 3 // 4, 1)
