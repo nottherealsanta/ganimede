@@ -37,7 +37,7 @@
   }
 
   function align_parent_less_cells() {
-    console.log("000", ydoc.getMap("notebook").get("aligned"));
+    console.log("aligned: ", ydoc.getMap("notebook").get("aligned"));
     if (!ydoc.getMap("notebook").get("aligned")) {
       let top = 1000;
       let left = 5000;
