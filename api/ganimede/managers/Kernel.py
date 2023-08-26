@@ -178,3 +178,18 @@ class Kernel:
         await asyncio.gather(execute_task, output_task)
 
         return execute_task.result()
+    
+
+    async def restart_kernel(self):
+        log.debug("Restarting kernel")
+
+        if self.kernel_client is None:
+            log.debug("Kernel not started")
+            return
+
+        try:
+            await self.kernel_manager.restart_kernel()
+            log.debug("Kernel restarted")
+        except Exception as e:
+            log.error(e)
+            self.kernel_client = None

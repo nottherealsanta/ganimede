@@ -17,6 +17,13 @@
       message: {},
     });
   }
+  export async function restart_kernel() {
+    send_message({
+      channel: "kernel",
+      method: "restart_kernel",
+      message: {},
+    });
+  }
 
   let kernel_busy = ydoc.getMap("kernel").get("busy");
   ydoc.getMap("kernel").observeDeep(() => {
@@ -87,7 +94,7 @@
     <!-- Restart -->
     <button
       class="bg-transparent h-6 w-6 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
-      on:click={interrupt_kernel}
+      on:click={restart_kernel}
       title="Restart"
     >
       <Restart />
