@@ -255,7 +255,7 @@ class Notebook:
         for cell in cells:
             log.info(cell)
 
-    async def queue_cell(self, cell_id: str, code: list[str]):
+    async def queue_cell(self, cell_id: str):
         log.debug(f"queue_cell: {cell_id}")
         self.run_queue.put_nowait((cell_id))
         self._change_cell_state(cell_id, "queued")

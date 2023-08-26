@@ -22,7 +22,6 @@
         method: "queue_cell",
         message: {
           cell_id: cell.id,
-          code: cell.source,
         },
       });
     }
