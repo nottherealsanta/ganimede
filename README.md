@@ -10,6 +10,9 @@ pip install ganimede
 ganimede <path_to_notebook.ipynb>
 ```
 
+> [!WARNING]
+> Ganimede is in early development and is not ready for production use.
+
 - Canvas: build the flow of code in 2D space
 - Collaboration: real-time collaboration on the same notebook
 - Auto cell commit: every run of a cell is saved / versioned
