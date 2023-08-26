@@ -66,7 +66,9 @@
         <polygon points="19 12 19 43 43 27.5 19 12" />
       </svg>
     {:else}
-      <div class="font-mono text-[11px]">{execution_count}</div>
+      <div class="font-mono text-[11px] text-oli-400 dark:text-oli-100">
+        {execution_count}
+      </div>
     {/if}
   {:else if cell.state == "queued"}
     {#if hover}

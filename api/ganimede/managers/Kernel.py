@@ -77,6 +77,7 @@ class Kernel:
         log.debug(f"Kernel client: {self.kernel_client}")
 
     async def interrupt(self):
+        log.info("Interrupting kernel")
         await self.kernel_manager.interrupt_kernel()
 
     async def flush_io_pub(self):
@@ -180,7 +181,7 @@ class Kernel:
         return execute_task.result()
 
     async def restart_kernel(self):
-        log.debug("Restarting kernel")
+        log.info("Restarting kernel")
 
         if self.kernel_client is None:
             log.debug("Kernel not started")
