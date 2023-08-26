@@ -587,9 +587,6 @@ video {
 .z-\[999\] {
   z-index: 999;
 }
-.z-10 {
-  z-index: 10;
-}
 .m-0 {
   margin: 0px;
 }
@@ -716,9 +713,6 @@ video {
 }
 .cursor-text {
   cursor: text;
-}
-.cursor-wait {
-  cursor: wait;
 }
 .select-text {
   -webkit-user-select: text;
@@ -869,10 +863,6 @@ video {
 }
 .bg-transparent {
   background-color: transparent;
-}
-.bg-red-300 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(252 165 165 / var(--tw-bg-opacity));
 }
 .fill-black {
   fill: #000;
@@ -1163,9 +1153,6 @@ h6 {
 .hover\:bg-oli-50\/90:hover {
   background-color: rgb(246 246 246 / 0.9);
 }
-.hover\:bg-white\/50:hover {
-  background-color: rgb(255 255 255 / 0.5);
-}
 .hover\:fill-oli-500:hover {
   fill: #404040;
 }
@@ -1341,10 +1328,6 @@ h6 {
   .dark\:drop-shadow-lg-dark {
     --tw-drop-shadow: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.5));
     filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
-  }
-
-  .dark\:hover\:bg-black\/10:hover {
-    background-color: rgb(0 0 0 / 0.1);
   }
 
   .dark\:hover\:bg-neutral-700:hover {
