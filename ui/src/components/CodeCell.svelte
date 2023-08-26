@@ -46,7 +46,7 @@
   }}
 >
   <div
-    class="flex flex-col items-start w-auto h-auto rounded p-0.25justify-start align-middle"
+    class="flex flex-col items-start w-auto h-auto rounded p-0.25 justify-start align-middle"
   >
     <!-- input -->
     {#if !input_collapsed}

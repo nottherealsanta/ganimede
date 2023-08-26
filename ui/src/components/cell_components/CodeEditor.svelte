@@ -162,7 +162,6 @@
             method: "queue_cell",
             message: {
               cell_id: cell.id,
-              code: cell.source,
             },
           });
         }
@@ -209,7 +208,7 @@
   bind:this={div}
 >
   <div
-    class="w-full h-full cursor-text"
+    class="h-full cursor-text"
     bind:this={container}
     style="width: {width}px"
   />
