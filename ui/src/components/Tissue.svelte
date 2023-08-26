@@ -119,6 +119,7 @@
 
   let selected_dragzone = null;
   let dragover_cell = null;
+  let draggedOverElements = [];
 
   function drag_mousedown(e) {
     if (e.button === 0) {
@@ -223,6 +224,14 @@
           }
         }
 
+        // remove draggedOverElements border except for dragover_cell
+        draggedOverElements.forEach((el) => {
+          if (el !== dragover_cell) {
+            el.style.borderTop = "";
+            el.style.borderBottom = "";
+          }
+        });
+
         // if moved to another cell
         if (
           dragover_cell &&
@@ -291,6 +300,7 @@
       if (selected_dragzone) {
         selected_dragzone.classList.remove("ring-1");
       }
+      draggedOverElements = [];
     }
     dragging_began = false;
     dragging = false;

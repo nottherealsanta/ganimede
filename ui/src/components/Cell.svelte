@@ -118,6 +118,7 @@
 
   let selected_dragzone = null;
   let dragover_cell = null;
+  let draggedOverElements = [];
 
   function drag_mousedown(e) {
     if (e.button === 0) {
@@ -197,6 +198,9 @@
 
         // if mouse is on bottom/top half of cell
         if (dragover_cell) {
+          if (!draggedOverElements.includes(dragover_cell)) {
+            draggedOverElements.push(dragover_cell);
+          }
           if ($mouse_pos.y > _bounding_rect.top + _bounding_rect.height / 2) {
             // draw pointer on bottom
             dragover_cell.style.borderTop = "";
@@ -221,6 +225,14 @@
           dragover_cell = null;
         }
       }
+
+      // remove draggedOverElements border except for dragover_cell
+      draggedOverElements.forEach((el) => {
+        if (el !== dragover_cell) {
+          el.style.borderTop = "";
+          el.style.borderBottom = "";
+        }
+      });
 
       // if mouse_on_cell is null
       if (cell_under === undefined && dragover_cell) {
@@ -276,6 +288,7 @@
         selected_dragzone.classList.remove("ring-1");
         selected_dragzone = null;
       }
+      draggedOverElements = [];
     }
     dragging_began = false;
     dragging = false;
