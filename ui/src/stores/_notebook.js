@@ -216,10 +216,11 @@ export function move_cell(cell_id, dragover_cell, selected_dragzone) {
     const cell_parent = get(cp_graph)[cell_id];
 
     // remove from previous parent
+    let index_in_parent = null;
     if (cell_parent) {
         const y_cell_parent = ypc_graph.get(cell_parent);
-        const index = y_cell_parent.toJSON().indexOf(cell_id);
-        y_cell_parent.delete(index, 1);
+        index_in_parent = y_cell_parent.toJSON().indexOf(cell_id);
+        y_cell_parent.delete(index_in_parent, 1);
     }
 
     function remove_from_np() {
@@ -260,8 +261,11 @@ export function move_cell(cell_id, dragover_cell, selected_dragzone) {
         }
     } else if (selected_dragzone) {
         const do_dragzone_id = selected_dragzone.getAttribute('cell_id');
-        if (get(cp_graph)[cell_id] !== do_dragzone_id) {
+
+        if (cell_parent !== do_dragzone_id) {
             ypc_graph.get(do_dragzone_id).push([cell_id]);
+        } else {
+            ypc_graph.get(do_dragzone_id).insert(index_in_parent, [cell_id]);
         }
         remove_from_np();
     }
