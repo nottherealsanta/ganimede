@@ -71,6 +71,7 @@
     {/if}
   {:else if cell.state == "queued"}
     {#if hover}
+      <!-- stop -->
       <svg
         viewBox="0 0 20 20"
         fill="currentColor"
@@ -81,6 +82,7 @@
         <rect x="6" y="6" width="7" height="7" />
       </svg>
     {:else}
+      <!-- queued -->
       <svg
         version="1.1"
         id="L9"
@@ -106,9 +108,10 @@
     {/if}
   {:else if cell.state == "running"}
     {#if hover}
+      <!-- stop -->
       <svg
         viewBox="0 0 20 20"
-        fill="#888"
+        fill="currentColor"
         xmlns="http://www.w3.org/2000/svg"
         stroke="currentColor"
         stroke-width="1"
@@ -116,6 +119,7 @@
         <rect x="6" y="6" width="7" height="7" />
       </svg>
     {:else}
+      <!-- running -->
       <svg
         version="1.1"
         id="L9"
