@@ -81,7 +81,7 @@
     </button>
     <!-- Checkpoint -->
     <button
-      class="bg-transparent h-6 w-6 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
+      class="bg-transparent h-6 w-6 m-0 p-0 flex align-middle justify-center items-center self-center rounded border-0 hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-oli-100/90 dark:active:bg-oli-900/90"
       on:click={checkpoint}
       title="Checkpoint"
     >
@@ -89,7 +89,7 @@
     </button>
     <!-- Interupt -->
     <button
-      class="bg-transparent h-6 w-6 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
+      class="bg-transparent h-6 w-6 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center rounded border-0 hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-oli-100/90 dark:active:bg-oli-900/90"
       on:click={interrupt_kernel}
       title="Interrupt"
     >
@@ -97,7 +97,7 @@
     </button>
     <!-- Restart -->
     <button
-      class="bg-transparent h-6 w-6 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
+      class="bg-transparent h-6 w-6 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center rounded border-0 hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-oli-100/90 dark:active:bg-oli-900/90"
       on:click={restart_kernel}
       title="Restart"
     >
@@ -106,7 +106,7 @@
 
     <!-- Zoom + -->
     <button
-      class="bg-transparent h-6 w-6 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
+      class="bg-transparent h-6 w-6 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center rounded border-0 hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-oli-100/90 dark:active:bg-oli-900/90"
       on:click={zoom_in}
       title="Zoom In"
     >
@@ -114,7 +114,7 @@
     </button>
     <!-- Zoom - -->
     <button
-      class="bg-transparent h-6 w-6 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-blue-300 rounded border-0"
+      class="bg-transparent h-6 w-6 ml-1 m-0 p-0 flex align-middle justify-center items-center self-center rounded border-0 hover:bg-oli-50/90 dark:hover:bg-oli-800/90 active:bg-oli-100/90 dark:active:bg-oli-900/90"
       on:click={zoom_out}
       title="Zoom Out"
     >
