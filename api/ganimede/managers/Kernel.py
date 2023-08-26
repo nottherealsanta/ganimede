@@ -46,6 +46,7 @@ class Kernel:
     @busy.setter
     def busy(self, value):
         self._busy = value
+        log.info(f"busy: {value}")
         with self.ydoc.begin_transaction() as t:
             self.ykernel.set(t, "busy", value)
 
@@ -122,7 +123,7 @@ class Kernel:
             log.info(f"executing: {code}")
             self.kernel_client.execute(code)
             client_execute_reply = await self.kernel_client.get_shell_msg()
-            log.debug(f"client_execute_reply: {client_execute_reply}")
+            log.info(f"client_execute_reply: {client_execute_reply}")
             msg_queue.put_nowait(
                 {
                     "msg_type": "execute_reply",
@@ -164,10 +165,9 @@ class Kernel:
                         msg = self._msg_to_output(msg)
 
                     msg_queue.put_nowait(msg)
-                    log.debug(f"+msg_queue size: {msg_queue.qsize()}")
+                    log.info(f"+msg_queue size: {msg_queue.qsize()}")
                 except queue.Empty:
-                    log.debug("msg_queue empty")
-                    self.busy = False
+                    log.info("msg_queue empty")
                     pass
 
         loop = asyncio.get_event_loop()
@@ -178,7 +178,6 @@ class Kernel:
         await asyncio.gather(execute_task, output_task)
 
         return execute_task.result()
-    
 
     async def restart_kernel(self):
         log.debug("Restarting kernel")

@@ -333,7 +333,6 @@ class Notebook:
                 and "execution_state" in msg
                 and msg["execution_state"] == "idle"
             ):  # last message
-                self._change_cell_state(cell_id, "idle")
                 is_kernel_idle = True
 
             if execution_count_already_set and is_kernel_idle:  # last message
@@ -347,6 +346,8 @@ class Notebook:
 
                 with self.ydoc.begin_transaction() as t:
                     self.ydoc.get_map(cell_id).get("outputs").append(t, msg)
+
+        self._change_cell_state(cell_id, "idle")
 
     def _find_parent(self, cell_id: str):
         for key in self.pc_graph.keys():
