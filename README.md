@@ -1,6 +1,6 @@
 # Ganimede
 
-_Rethinking of Computational Notebooks_
+_Rethinking of Computational Notebooks, Jupyter Whiteboard_
 
 ```sh
 pip install ganimede
