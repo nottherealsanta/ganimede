@@ -32,11 +32,11 @@ ganimede <path_to_notebook.ipynb>
 
 ### Why?
 
-Not all things in a notebook makes sense in a sequential order, therefore the canvas is a better representation of the flow of code. This also makes it easier to visualize the order and the dependencies between cells.
+- Not all things in a notebook makes sense in a sequential order, therefore the canvas is a better representation of the flow of code. This also makes it easier to visualize the order and the dependencies between cells.
 
-Data science workflows are constantly switching between working in a notebook and converting it to scripts. This is exaggerated when working on a project that is already in production. This also decreases team efficiency.
+- Data science workflows are constantly switching between working in a notebook and converting it to scripts. This is exaggerated when working on a project that is already in production. This also decreases team efficiency.
 
-Real-time collaboration and intiutive git integration is a must for any modern tool.
+- Real-time collaboration and intiutive git integration is a must for any modern tool.
 
 ### Built on top of :
 
