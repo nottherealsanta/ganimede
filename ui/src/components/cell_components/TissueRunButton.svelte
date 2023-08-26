@@ -14,26 +14,28 @@
   let div = null;
   // run
   import { send_message } from "../../stores/socket";
+  import { ypc_graph, ydoc } from "../../stores/_notebook";
   async function primary_button_click() {
-    let state = cell.state;
-    if (state === "idle") {
-      send_message({
-        channel: "notebook",
-        method: "queue_cell",
-        message: {
-          cell_id: cell.id,
-          code: cell.source,
-        },
+    queueChildren(cell.id);
+  }
+
+  function queueChildren(parent_id) {
+    const children = ypc_graph.get(parent_id);
+    if (children) {
+      children.toJSON().forEach((child_id) => {
+        const childCell = ydoc.getMap(child_id).toJSON();
+        if (childCell.type === "code") {
+          send_message({
+            channel: "notebook",
+            method: "queue_cell",
+            message: {
+              cell_id: child_id,
+            },
+          });
+        }
+        queueChildren(child_id);
       });
     }
-    if (state === "queued" || state === "running") {
-      send_message({
-        channel: "notebook",
-        method: "interrupt_kernel",
-        message: {},
-      });
-    }
-    console.log("primary_button_click", cell.id);
   }
 </script>
 
@@ -51,91 +53,19 @@
   }}
   bind:this={div}
 >
-  {#if cell.state == "idle"}
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      width="20"
-      height="20"
-      ><g>
-        <path
-          d="M12 10.2L5 6L5 18L12 13.8M12 6L12 18L21 12L12 6Z"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        ></path>
-      </g></svg
-    >
-  {:else if cell.state == "queued"}
-    {#if hover}
-      <svg
-        viewBox="0 0 20 20"
-        fill="currentColor"
-        xmlns="http://www.w3.org/2000/svg"
-        stroke="currentColor"
-        stroke-width="1"
-      >
-        <rect x="6" y="6" width="7" height="7" />
-      </svg>
-    {:else}
-      <svg
-        version="1.1"
-        id="L9"
-        xmlns="http://www.w3.org/2000/svg"
-        x="0px"
-        y="0px"
-        viewBox="0 0 100 100"
-        enable-background="new 0 0 0 0"
-      >
-        <path
-          d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50"
-        >
-          <animateTransform
-            attributeName="transform"
-            type="rotate"
-            dur="5s"
-            from="360 50 50"
-            to="0 50 50"
-            repeatCount="indefinite"
-          />
-        </path>
-      </svg>
-    {/if}
-  {:else if cell.state == "running"}
-    {#if hover}
-      <svg
-        viewBox="0 0 20 20"
-        fill="#888"
-        xmlns="http://www.w3.org/2000/svg"
-        stroke="currentColor"
-        stroke-width="1"
-      >
-        <rect x="6" y="6" width="7" height="7" />
-      </svg>
-    {:else}
-      <svg
-        version="1.1"
-        id="L9"
-        xmlns="http://www.w3.org/2000/svg"
-        x="0px"
-        y="0px"
-        viewBox="0 0 100 100"
-        enable-background="new 0 0 0 0"
-      >
-        <path
-          d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50"
-        >
-          <animateTransform
-            attributeName="transform"
-            type="rotate"
-            dur="1s"
-            from="0 50 50"
-            to="360 50 50"
-            repeatCount="indefinite"
-          />
-        </path>
-      </svg>
-    {/if}
-  {/if}
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    ><g>
+      <path
+        d="M12 10.2L5 6L5 18L12 13.8M12 6L12 18L21 12L12 6Z"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      ></path>
+    </g></svg
+  >
 </div>
