@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
   export let output;
 
   import { default as AnsiUp } from "ansi_up";
