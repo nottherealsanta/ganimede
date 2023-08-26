@@ -1,16 +1,3 @@
-
-// import writeable from 'svelte-store/writeable';
-
-// export let zoom = writeable(1);
-
-// window.addEventListener('wheel', (e) => {
-//     if (e.ctrlKey || e.metaKey) {
-//         e.preventDefault();
-//         zoom += e.deltaY * -0.01;
-//         document.body.style.transform = `scale(${zoom})`;
-//     }
-// });
-
 import { writable, get } from "svelte/store";
 import mouse_pos from "./mouse.js";
 

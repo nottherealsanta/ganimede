@@ -115,6 +115,9 @@
   // $: center_x = scroll_x + view_width / 2;
   // $: center_y = scroll_y + view_height / 2;
 
+  // ---------- Notification
+  import Toast from "./utility_components/Toast.svelte";
+
   // ---------- toolbar
   import ToolbarCanvas from "./canvas_components/ToolbarCanvas.svelte";
   import Python from "./cell_components/Icons/python.svelte";
@@ -209,3 +212,5 @@
     </li>
   </ul>
 </div>
+
+<Toast />

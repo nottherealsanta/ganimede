@@ -2,6 +2,7 @@
   import { send_message } from "../../stores/socket";
   import { zoom_in, zoom_out } from "../../stores/zoom.js";
   import { ydoc } from "../../stores/_notebook";
+  import { notifications } from "../../stores/notifications.js";
 
   async function interrupt_kernel() {
     send_message({
@@ -9,6 +10,7 @@
       method: "interrupt",
       message: {},
     });
+    notifications.warning("Kernel Interrupted", 2000);
   }
   async function checkpoint() {
     send_message({
@@ -16,6 +18,7 @@
       method: "checkpoint",
       message: {},
     });
+    notifications.info("Checkpoint Created", 2000);
   }
   export async function restart_kernel() {
     send_message({
@@ -23,6 +26,7 @@
       method: "restart_kernel",
       message: {},
     });
+    notifications.info("Kernel Restarted", 2000);
   }
 
   let kernel_busy = ydoc.getMap("kernel").get("busy");
