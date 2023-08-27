@@ -466,7 +466,7 @@
         top: {drag_cell_pos.y ? drag_cell_pos.y : cell.top}px;
         left: {drag_cell_pos.x ? drag_cell_pos.x : cell.left}px;
         cursor: {dragging ? 'grabbing' : 'default'};
-        opacity: {dragging ? '0.75' : '1'};
+        opacity: {dragging ? '0.5' : '1'};
         "
   bind:clientHeight={cell.height}
   bind:clientWidth={cell.width}

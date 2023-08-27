@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from "svelte";
+  import { onMount, afterUpdate } from "svelte";
   import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
   self.MonacoEnvironment = {
     getWorker(_, label) {
@@ -25,7 +25,7 @@
   let container;
   let editor;
   let max_columns = 0;
-  let div = null;
+  let input_div = null;
 
   let n_lines = 0;
   $: n_lines = source.toString().length;
@@ -180,23 +180,37 @@
     };
   };
 
+  function lines_content_overflow_fix() {
+    // get elements that have "lines-content monaco-editor-background" as class
+    let lines_content = input_div.getElementsByClassName("lines-content");
+    // change their style: width to 100%, height to 100%
+    for (let i = 0; i < lines_content.length; i++) {
+      lines_content[i].style.width = "100%";
+      lines_content[i].style.height = "100%";
+      console.log("lines_content[i]", lines_content[i]);
+    }
+    console.log("lines_content.length", lines_content.length);
+  }
+
   onMount(() => {
     current_theme = window.matchMedia("(prefers-color-scheme: dark)").matches
       ? theme.dark
       : theme.light;
     mount_monaco();
     // for dragSelect
-    if (div) {
-      div.addEventListener("mousedown", (e) => {
+    if (input_div) {
+      input_div.addEventListener("mousedown", (e) => {
         e.stopPropagation();
       });
-      div.addEventListener("mouseup", (e) => {
+      input_div.addEventListener("mouseup", (e) => {
         e.stopPropagation();
       });
-      div.addEventListener("click", () => {
+      input_div.addEventListener("click", () => {
         editor.focus();
       });
     }
+    // overflow fix
+    setTimeout(lines_content_overflow_fix, 500);
   });
 </script>
 
@@ -205,7 +219,7 @@
   {cell.outputs.toJSON().length > 0 ? '' : 'rounded-b'}"
   style=" min-height: 25px; width:100%;"
   id="cell-input"
-  bind:this={div}
+  bind:this={input_div}
 >
   <div
     class="h-full cursor-text"

@@ -702,30 +702,6 @@ video {
 .transform {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
-@keyframes bounce {
-
-  0%, 100% {
-    transform: translateY(-25%);
-    animation-timing-function: cubic-bezier(0.8,0,1,1);
-  }
-
-  50% {
-    transform: none;
-    animation-timing-function: cubic-bezier(0,0,0.2,1);
-  }
-}
-.animate-bounce {
-  animation: bounce 1s infinite;
-}
-@keyframes spin {
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
 .cursor-default {
   cursor: default;
 }
@@ -1008,6 +984,9 @@ video {
 .pt-0\.5 {
   padding-top: 0.125rem;
 }
+.pt-1 {
+  padding-top: 0.25rem;
+}
 .align-middle {
   vertical-align: middle;
 }
@@ -1177,9 +1156,6 @@ h6 {
 .hover\:bg-oli-50\/90:hover {
   background-color: rgb(246 246 246 / 0.9);
 }
-.hover\:bg-oli-500\/90:hover {
-  background-color: rgb(64 64 64 / 0.9);
-}
 .hover\:fill-oli-500:hover {
   fill: #404040;
 }
@@ -1193,25 +1169,15 @@ h6 {
   --tw-text-opacity: 1;
   color: rgb(64 64 64 / var(--tw-text-opacity));
 }
-@keyframes spin {
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-.active\:animate-spin:active {
-  animation: spin 1s linear infinite;
-}
 .active\:cursor-grabbing:active {
   cursor: grabbing;
-}
-.active\:bg-blue-300:active {
-  --tw-bg-opacity: 1;
-  background-color: rgb(147 197 253 / var(--tw-bg-opacity));
 }
 .active\:bg-green-100:active {
   --tw-bg-opacity: 1;
   background-color: rgb(220 252 231 / var(--tw-bg-opacity));
+}
+.active\:bg-oli-100\/90:active {
+  background-color: rgb(236 236 236 / 0.9);
 }
 .active\:bg-oli-200:active {
   --tw-bg-opacity: 1;
@@ -1228,9 +1194,6 @@ h6 {
 .active\:bg-yellow-100:active {
   --tw-bg-opacity: 1;
   background-color: rgb(254 249 195 / var(--tw-bg-opacity));
-}
-.active\:bg-oli-100\/90:active {
-  background-color: rgb(236 236 236 / 0.9);
 }
 .active\:stroke-sky-400:active {
   stroke: #38bdf8;
@@ -1416,27 +1379,12 @@ h6 {
     background-color: rgb(38 38 38 / var(--tw-bg-opacity));
   }
 
+  .dark\:active\:bg-oli-900\/90:active {
+    background-color: rgb(19 19 19 / 0.9);
+  }
+
   .dark\:active\:bg-red-600:active {
     --tw-bg-opacity: 1;
     background-color: rgb(220 38 38 / var(--tw-bg-opacity));
-  }
-
-  .dark\:active\:bg-blue-300:active {
-    --tw-bg-opacity: 1;
-    background-color: rgb(147 197 253 / var(--tw-bg-opacity));
-  }
-
-  .dark\:active\:bg-blue-800:active {
-    --tw-bg-opacity: 1;
-    background-color: rgb(30 64 175 / var(--tw-bg-opacity));
-  }
-
-  .dark\:active\:bg-blue-900:active {
-    --tw-bg-opacity: 1;
-    background-color: rgb(30 58 138 / var(--tw-bg-opacity));
-  }
-
-  .dark\:active\:bg-oli-900\/90:active {
-    background-color: rgb(19 19 19 / 0.9);
   }
 }

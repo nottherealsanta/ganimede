@@ -81,7 +81,6 @@
         >
       </button>
     {/if}
-
     <!-- output -->
     {#if cell.outputs.length > 0 || cell.state == "running"}
       <!-- <Outputs {cell} /> -->

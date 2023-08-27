@@ -208,7 +208,7 @@
     {/if}
   </div>
   <div
-    class="w-full cursor-text"
+    class="w-full cursor-text pt-1"
     bind:this={container}
     style="
         width: {width}px; 

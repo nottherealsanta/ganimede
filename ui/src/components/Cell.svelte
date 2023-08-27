@@ -400,7 +400,7 @@
         left: {drag_cell_pos.x ? drag_cell_pos.x : cell.left}px;
         z-index: {dragging ? 9999 : z_index};
         cursor: {dragging ? 'grabbing' : 'default'};
-        opacity: {dragging ? '0.75' : '1'};
+        opacity: {dragging ? '0.5' : '1'};
         "
   bind:clientHeight={cell.height}
   bind:clientWidth={cell.width}

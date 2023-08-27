@@ -18,22 +18,23 @@ export async function open_socket() {
                 "method": "get",
             }));
             console.log("Socket opened");
+            socket.ready = true;
         };
         socket.onclose = function (event) {
-            console.log("Socket closed");
+            socket.ready = false;
             socket = null;
+            console.log("Socket closed");
         }
-        socket.onmessage = function (event) {
-            let data = JSON.parse(event.data);
-            let channel = data["channel"];
-            let method = data["method"];
-            let message = data["message"];
+        // socket.onmessage = function (event) {
+        //     let data = JSON.parse(event.data);
+        //     let channel = data["channel"];
+        //     let method = data["method"];
+        //     let message = data["message"];
 
-            if (channel === "notebook") {
-                // notebook[method](message);
-            }
-
-        };
+        //     if (channel === "notebook") {
+        //         // notebook[method](message);
+        //     }
+        // };
     }
 };
 
