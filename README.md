@@ -18,11 +18,11 @@ ganimede <path_to_notebook.ipynb>
 - Auto cell commit: every run of a cell is saved / versioned
 - Production mirroring: real-time auto converts sets of cells to scripts.
 
-### Demo
+## Demo
 
 [![Watch the video](https://img.youtube.com/vi/osR8aek9AuA/hqdefault.jpg)](https://www.youtube.com/embed/osR8aek9AuA)
 
-### Roadmap
+## Roadmap
 
 - Real-time collaboration
 - Store run history of cells
@@ -30,7 +30,7 @@ ganimede <path_to_notebook.ipynb>
 - Mirror to scripts
 - Auto format code
 
-### Why?
+## Why?
 
 - Not all things in a notebook makes sense in a sequential order, therefore the canvas is a better representation of the flow of code. This also makes it easier to visualize the order and the dependencies between cells.
 
@@ -38,7 +38,7 @@ ganimede <path_to_notebook.ipynb>
 
 - Real-time collaboration and intiutive git integration is a must for any modern tool.
 
-### Built on top of :
+## Built on top of :
 
 - [jupyter_client](https://github.com/jupyter/jupyter_client)
 - [svelte](https://github.com/sveltejs/svelte)
