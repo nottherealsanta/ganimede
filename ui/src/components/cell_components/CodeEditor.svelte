@@ -187,9 +187,7 @@
     for (let i = 0; i < lines_content.length; i++) {
       lines_content[i].style.width = "100%";
       lines_content[i].style.height = "100%";
-      console.log("lines_content[i]", lines_content[i]);
     }
-    console.log("lines_content.length", lines_content.length);
   }
 
   onMount(() => {
