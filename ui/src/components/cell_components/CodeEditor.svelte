@@ -181,6 +181,7 @@
   };
 
   function lines_content_overflow_fix() {
+    if (input_div === null) return;
     // get elements that have "lines-content monaco-editor-background" as class
     let lines_content = input_div.getElementsByClassName("lines-content");
     // change their style: width to 100%, height to 100%
