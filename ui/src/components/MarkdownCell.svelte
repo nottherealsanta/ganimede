@@ -194,7 +194,7 @@
 </script>
 
 <div
-  class="h-fit bg-oli dark:bg-oli-800 rounded cell-input py-0.5 px-1 overflow-hidden relative align-middle cursor-text pointer-events-auto"
+  class="h-fit bg-oli dark:bg-oli-800 rounded cell-input py-1 px-1 overflow-hidden relative align-middle cursor-text pointer-events-auto"
   style="min-width: 300px; max-width: 1000px; min-height: 30px;"
   id="cell-input"
   bind:this={div}
@@ -208,7 +208,7 @@
     {/if}
   </div>
   <div
-    class="w-full cursor-text pt-1"
+    class="w-full cursor-text pt-0.5"
     bind:this={container}
     style="
         width: {width}px; 
