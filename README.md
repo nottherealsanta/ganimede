@@ -14,7 +14,7 @@ ganimede <path_to_notebook.ipynb>
 > Ganimede is in early development and is not ready for production use.
 
 - Canvas: build the flow of code in 2D space
-- AI: Connect to GPT4, Copilot, etc.
+- AI: With cell outputs in context
 - Collaboration: real-time collaboration on the same notebook
 - Auto cell commit: every run of a cell is saved / versioned
 - Production mirroring: real-time auto converts sets of cells to scripts.
