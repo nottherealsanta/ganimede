@@ -12,7 +12,7 @@
   let clicked_y = 0;
   let mouseDown = function (e) {
     if (
-      e.button === 1 && // if middle mouse button is pressed
+      e.button === 0 && // if
       e.target.id === "canvas"
     ) {
       moving = true;
