@@ -618,9 +618,6 @@ video {
 .mt-0 {
   margin-top: 0px;
 }
-.mb-1 {
-  margin-bottom: 0.25rem;
-}
 .block {
   display: block;
 }
@@ -972,6 +969,9 @@ video {
 .pb-1 {
   padding-bottom: 0.25rem;
 }
+.pl-0 {
+  padding-left: 0px;
+}
 .pl-1 {
   padding-left: 0.25rem;
 }
@@ -986,9 +986,6 @@ video {
 }
 .pt-0\.5 {
   padding-top: 0.125rem;
-}
-.pt-1 {
-  padding-top: 0.25rem;
 }
 .align-middle {
   vertical-align: middle;

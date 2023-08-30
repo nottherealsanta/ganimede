@@ -6,13 +6,17 @@
     cp_graph,
     pc_graph,
     html_elements,
+    // users,
+    awareness,
   } from "../stores/_notebook";
-
+  import mouse_pos from "../stores/mouse.js";
   import Edges from "./utility_components/Edges.svelte";
 
   // Components
   import Cell from "./Cell.svelte";
   import Tissue from "./Tissue.svelte";
+  import { onMount } from "svelte";
+  import Cursor from "./utility_components/Cursor.svelte";
 
   let cells = ycells.toJSON();
   let cells_map = [];
@@ -72,6 +76,47 @@
     // call align_parent_less_cells() after 1 second
     setTimeout(align_parent_less_cells, 1000);
   }
+
+  // ---------- awareness
+  onMount(() => {
+    awareness.setLocalStateField("cursor", {
+      x: $mouse_pos.x,
+      y: $mouse_pos.y,
+    });
+  });
+  function mousemove(e) {
+    awareness.setLocalStateField("cursor", {
+      x: $mouse_pos.x,
+      y: $mouse_pos.y,
+    });
+  }
+
+  let users = [];
+  let local_user_id = awareness.clientID;
+  console.log("users: ", users);
+
+  function update_users() {
+    users = [];
+    for (let [key, value] of awareness.getStates()) {
+      if (key !== local_user_id) {
+        users.push(value);
+      }
+    }
+  }
+  function debounce(func, delay) {
+    let timer = null;
+
+    return function () {
+      clearTimeout(timer);
+      timer = setTimeout(func, delay);
+    };
+  }
+
+  const debouncedUpdateUsers = debounce(update_users, 10);
+
+  awareness.on("change", (changes) => {
+    debouncedUpdateUsers();
+  });
 </script>
 
 {#each cells as cell_id, index (cell_id)}
@@ -89,3 +134,16 @@
     {/each}
   {/if}
 {/each}
+
+{#if users}
+  {#each users as user}
+    <Cursor
+      x={user.cursor.x}
+      y={user.cursor.y}
+      id={user.id}
+      color={user.color}
+    />
+  {/each}
+{/if}
+
+<svelte:window on:mousemove={mousemove} />

@@ -126,7 +126,17 @@ label {
 
 /* active line number color */
 .monaco-editor .line-numbers.active-line-number {
-  color: #000;
+  color: #adadad;
+}
+/* dark mode */
+@media (prefers-color-scheme: dark) {
+  .monaco-editor .margin-view-overlays .line-numbers {
+    font-size: 11px;
+    color: #ffffff41;
+  }
+  .monaco-editor .line-numbers.active-line-number {
+    color: #ffffff41;
+  }
 }
 
 /* headings */

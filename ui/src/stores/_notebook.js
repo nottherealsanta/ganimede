@@ -2,7 +2,7 @@ import { derived, writable } from "svelte/store";
 import { get } from 'svelte/store'
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
-import { subscribe } from "svelte/internal";
+import { Awareness } from 'y-protocols/awareness'
 
 export const html_elements = writable({});
 html_elements.set = function (cell_id, element) {
@@ -26,6 +26,22 @@ websocket_provider.on("status", event => {
     }
 });
 
+// ---------- awareness
+// const doc = new Y.Doc()
+// const provider = new WebsocketProvider('ws://localhost:1234', 'g-y-room', doc)
+export const awareness = websocket_provider.awareness;
+// awareness.setLocalStateField('user', {
+//     // Define a print name that should be displayed
+//     id: Math.random().toString(36).substring(2, 6),
+//     // Define a color that should be associated to the user:
+//     color: '#' + (Math.random() * 0xFFFFFF << 0).toString(16)
+// })
+awareness.setLocalStateField('id', Math.random().toString(36).substring(2, 6));
+awareness.setLocalStateField('color', '#' + (Math.random() * 0xFFFFFF << 0).toString(16));
+awareness.setLocalStateField('cursor', {
+    x: 0,
+    y: 0,
+})
 
 export const yrun_queue = ydoc.getArray('run_queue');
 yrun_queue.observe((event) => {

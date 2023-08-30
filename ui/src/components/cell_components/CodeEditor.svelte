@@ -214,7 +214,7 @@
 </script>
 
 <div
-  class="h-fit bg-oli dark:bg-[#1E1E1E] cell-input py-0.5 pl-1 overflow-hidden relative align-middle cursor-text pointer-events-auto
+  class="h-fit bg-oli dark:bg-[#1E1E1E] cell-input py-0.5 pl-0 overflow-hidden relative align-middle cursor-text pointer-events-auto
   {cell.outputs.toJSON().length > 0 ? '' : 'rounded-b'}"
   style=" min-height: 25px; width:100%;"
   id="cell-input"
