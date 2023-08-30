@@ -14,6 +14,7 @@ ganimede <path_to_notebook.ipynb>
 > Ganimede is in early development and is not ready for production use.
 
 - Canvas: build the flow of code in 2D space
+- AI: Connect to GPT4, Copilot, etc.
 - Collaboration: real-time collaboration on the same notebook
 - Auto cell commit: every run of a cell is saved / versioned
 - Production mirroring: real-time auto converts sets of cells to scripts.
@@ -33,6 +34,8 @@ ganimede <path_to_notebook.ipynb>
 ## Why?
 
 - Not all things in a notebook makes sense in a sequential order, therefore the canvas is a better representation of the flow of code. This also makes it easier to visualize the order and the dependencies between cells.
+
+- Chat and interact with LLMs to generate code and ideas.
 
 - Data science workflows are constantly switching between working in a notebook and converting it to scripts. This is exaggerated when working on a project that is already in production. This also decreases team efficiency.
 
