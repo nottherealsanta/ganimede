@@ -135,6 +135,7 @@
   {/if}
 {/each}
 
+<!-- awareness cursor -->
 {#if users}
   {#each users as user}
     <Cursor
