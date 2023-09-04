@@ -46,8 +46,8 @@
     z-index: 9999;
     display: flex;
     flex-direction: column;
+    align-items: flex-end;
     justify-content: flex-start;
-    align-items: end;
     pointer-events: none;
   }
 
