@@ -22,14 +22,16 @@
     create_cell("markdown", cell);
   }
 
+  import { cp_graph, pc_graph, ynp_graph } from "../../../stores/_notebook.js";
   $: is_parent_less = $cp_graph[cell.id] === undefined;
+  $: is_tissue = cell.id in $pc_graph;
+  $: console.log(is_tissue);
 
   // ---- canvas div
   let canvas_div = null;
 
   // ---- next prev dragging
   import mouse_pos from "../../../stores/mouse.js";
-  import { cp_graph, ynp_graph } from "../../../stores/_notebook.js";
   import * as Y from "yjs";
 
   let dragging = false;
@@ -146,24 +148,25 @@
   // ---------- Icons
   import Python from "../Icons/python.svelte";
   import Markdown from "../Icons/markdown.svelte";
+  import LLM from "../Icons/llm.svelte";
 </script>
 
 <div
-  class="newcelltoolbar absolute -bottom-[21px] -left-[1px] w-fit h-5 z-[9999]"
+  class="newcelltoolbar absolute -bottom-[21px] w-fit h-5 z-[9999]"
   on:mouseenter={() => {
     is_hover = true;
   }}
   on:mouseleave={() => {
     is_hover = false;
   }}
-  style="opacity: {cell_hover ? 1 : 0}; "
+  style="opacity: {cell_hover ? 1 : 0}; left: {is_tissue ? -2 : -1}px;"
 >
   {#if is_hover}
     <div
       class="absolute w-fit h-fit -top-[11px] z-[9999] flex flex-row rounded bg-oli dark:bg-oli-800 drop-shadow-md border border-oli-400 overflow-clip items-center justify-center fill-oli-500 dark:fill-oli stroke-oli-500 dark:stroke-oli-400 stroke"
       on:mousedown|stopPropagation={() => {}}
     >
-      <!-- <ToolbarSlot><Disconnect /></ToolbarSlot> -->
+      <!-- NEW CODE CELL -->
       <div
         class="w-5 h-5 p-0.5 bg-oli dark:bg-oli-700 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-yellow-100 fill-oli-500 dark:fill-oli cursor-pointer justify-center items-center flex"
         on:click={new_code_cell}
@@ -194,12 +197,20 @@
           class="w-5 h-5 p-0.5 bg-oli-50 dark:bg-oli-700 rounded border border-oli-100 dark:border-oli-500 justify-center items-center flex"
         ></div>
       {/if}
+      <!-- NEW MARKDOWN CELL -->
       <div
         class="w-5 h-5 p-0.5 bg-oli dark:bg-oli-700 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-green-100 fill-oli-500 stroke-none dark:fill-oli cursor-pointer justify-center items-center flex"
         on:click={new_markdown_cell}
         on:keydown={new_markdown_cell}
       >
         <Markdown />
+      </div>
+      <div
+        class="w-5 h-5 p-0.5 bg-oli dark:bg-oli-700 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-green-100 fill-oli-500 stroke-none dark:fill-oli cursor-pointer justify-center items-center flex"
+        on:click={new_markdown_cell}
+        on:keydown={new_markdown_cell}
+      >
+        <LLM />
       </div>
     </div>
   {:else}

@@ -54,8 +54,8 @@
   }
 
   let path = "";
-  $: path = `M ${curr.left + 32 - left} ${curr.bottom - top + 2}
-                C ${curr.left + 32 - left} ${curr.bottom - top + 50},
+  $: path = `M ${curr.left + 31 - left} ${curr.bottom - top + 2}
+                C ${curr.left + 31 - left} ${curr.bottom - top + 50},
                 ${next.left + 25 - left} ${next.top - top - 50},
                 ${next.left + 25 - left} ${next.top - top - 5}`;
 
@@ -66,9 +66,9 @@
 
   // line should start from current bottom, current left + 25 and end at next top, next left + 25
   $: line = {
-    x1: curr.left + 32 - left,
+    x1: curr.left + 31 - left,
     y1: curr.bottom - top + 5,
-    x2: next.left + 32 - left,
+    x2: next.left + 31 - left,
     y2: next.top - top - 5,
   };
 
