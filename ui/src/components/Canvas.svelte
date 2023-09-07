@@ -176,7 +176,7 @@
 <ToolbarCanvas />
 
 <div
-  class="h-fit w-100 bg-oli py-0.5 px-0.5 dark:bg-[#1E1E1E] font-['Roboto_Mono'] fixed rounded z-50 border border-oli-200 dark:border-oli-600 stroke-none"
+  class="h-fit w-100 bg-oli py-1 px-1 dark:bg-[#1E1E1E] font-['Roboto_Mono'] fixed rounded z-50 border border-oli-200 dark:border-oli-600 stroke-none"
   id="customContextMenu"
   style="top: {menu_top}px; left: {menu_left}px; position: fixed; display: none;"
   bind:this={right_click_menu}
@@ -192,7 +192,7 @@
           $mouse_pos.y - 15,
         )}
       >
-        <div class="w-5 mr-1"><Python /></div>
+        <div class="w-4 mr-1"><Python /></div>
         Code Cell
       </button>
     </li>
@@ -206,7 +206,7 @@
           $mouse_pos.y - 15,
         )}
       >
-        <div class="w-5 mr-1"><Markdown /></div>
+        <div class="w-4 mr-1"><Markdown /></div>
         Text Cell
       </button>
     </li>

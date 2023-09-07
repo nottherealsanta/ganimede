@@ -25,7 +25,6 @@
   import { cp_graph, pc_graph, ynp_graph } from "../../../stores/_notebook.js";
   $: is_parent_less = $cp_graph[cell.id] === undefined;
   $: is_tissue = cell.id in $pc_graph;
-  $: console.log(is_tissue);
 
   // ---- canvas div
   let canvas_div = null;

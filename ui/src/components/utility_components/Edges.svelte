@@ -175,7 +175,7 @@
 
 {#if show_edge_toolbar}
   <div
-    class="h-fit w-fit px-0.25 z-[999] bg-oli dark:bg-oli-700 rounded drop-shadow-md absolute overflow-clip items-center justify-center flex"
+    class="h-fit w-fit p-0.5 z-[999] bg-oli dark:bg-oli-700 rounded drop-shadow-md absolute overflow-clip items-center justify-center flex"
     style="top: {edge_toolbar_pos.y}px; left: {edge_toolbar_pos.x}px; transform: translate(-50%, -50%);"
     on:mouseleave={() => (show_edge_toolbar = false)}
   >
@@ -218,6 +218,31 @@
           <path
             d="M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55 c-4.127,0-8.08,1.639-10.993,4.55l-171.138,171.14L59.25,4.565c-2.913-2.911-6.866-4.55-10.993-4.55 c-4.126,0-8.08,1.639-10.992,4.55L4.558,37.284c-6.077,6.075-6.077,15.909,0,21.986l171.138,171.128L4.575,401.505 c-6.074,6.077-6.074,15.911,0,21.986l32.709,32.719c2.911,2.911,6.865,4.55,10.992,4.55c4.127,0,8.08-1.639,10.994-4.55 l171.117-171.12l171.118,171.12c2.913,2.911,6.866,4.55,10.993,4.55c4.128,0,8.081-1.639,10.992-4.55l32.709-32.719 c6.074-6.075,6.074-15.909,0-21.986L285.08,230.397z"
           ></path>
+        </g></svg
+      >
+    </div>
+    <div
+      class="ml-1 w-5 h-5 p-0.5 bg-oli dark:bg-oli-700 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-red-200 dark:active:bg-red-600 fill-oli-500 border border-oli-200 rounded items-center justify-center stroke-black dark:stroke-white cursor-pointer pointer-events-auto"
+      on:click={delete_edge}
+      on:keydown={delete_edge}
+    >
+      <svg
+        height="15px"
+        width="15px"
+        viewBox="0 0 21 21"
+        xmlns="http://www.w3.org/2000/svg"
+        ><g>
+          <g
+            fill="none"
+            fill-rule="evenodd"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            transform="translate(2 3)"
+          >
+            <path
+              d="m1.5 4.5h14v7.9976807c0 1.1045695-.8954305 2-2 2h-10c-1.1045695 0-2-.8954305-2-2zm0-3.9777832h14c.5522847 0 1 .44771525 1 1v1.9777832c0 .55228475-.4477153 1-1 1h-14c-.55228475 0-1-.44771525-1-1v-1.9777832c0-.55228475.44771525-1 1-1z"
+            ></path> <path d="m6.5 7.5h4"></path>
+          </g>
         </g></svg
       >
     </div>
