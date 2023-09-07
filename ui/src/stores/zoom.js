@@ -2,7 +2,7 @@ import { writable, get } from "svelte/store";
 import mouse_pos from "./mouse.js";
 
 export let zoom = writable(1);
-const d_zoom = 0.025;
+const d_zoom = 0.05;
 const max_zoom = 1.65;
 const min_zoom = 0.3;
 
