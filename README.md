@@ -25,11 +25,15 @@ ganimede <path_to_notebook.ipynb>
 
 ## Roadmap
 
-- Real-time collaboration
-- Store run history of cells
-- Easy to visualize execution order
-- Mirror to scripts
-- Auto format code
+- [x] Canvas
+- [x] Code execution
+- [x] Markdown
+- [x] Tissue Grouping (Headings)
+- [ ] AI (in-progress)
+- [ ] Real-time collaboration (in-progress)
+- [ ] Auto format code
+- [ ] Store run history of cells
+- [ ] Mirror to scripts
 
 ## Why?
 
