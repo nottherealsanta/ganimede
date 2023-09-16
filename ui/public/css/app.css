@@ -539,9 +539,6 @@ video {
 .-bottom-\[21px\] {
   bottom: -21px;
 }
-.-left-\[1px\] {
-  left: -1px;
-}
 .-left-\[8px\] {
   left: -8px;
 }
@@ -835,10 +832,6 @@ video {
   --tw-border-opacity: 1;
   border-color: rgb(246 246 246 / var(--tw-border-opacity));
 }
-.border-oli {
-  --tw-border-opacity: 1;
-  border-color: rgb(255 255 255 / var(--tw-border-opacity));
-}
 .bg-nilam {
   --tw-bg-opacity: 1;
   background-color: rgb(246 248 250 / var(--tw-bg-opacity));
@@ -927,14 +920,6 @@ video {
 }
 .p-0\.5 {
   padding: 0.125rem;
-}
-.px-0 {
-  padding-left: 0px;
-  padding-right: 0px;
-}
-.px-0\.5 {
-  padding-left: 0.125rem;
-  padding-right: 0.125rem;
 }
 .px-1 {
   padding-left: 0.25rem;

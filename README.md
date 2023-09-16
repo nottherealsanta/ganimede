@@ -23,6 +23,8 @@ ganimede <path_to_notebook.ipynb>
 
 [![Watch the video](https://img.youtube.com/vi/osR8aek9AuA/hqdefault.jpg)](https://www.youtube.com/embed/osR8aek9AuA)
 
+![RTC Demo Sep 23](https://www.youtube.com/embed/nIBj7SI_q5U)
+
 ## Roadmap
 
 - [x] Canvas
