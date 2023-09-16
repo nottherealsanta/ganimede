@@ -26,7 +26,7 @@ ganimede <path_to_notebook.ipynb>
 ## Roadmap
 
 - [x] Canvas
-- [x] Code execution
+- [x] Code execution [Cell functions Demo Sep 23](https://www.youtube.com/embed/eVH0Ld_jgRA)
 - [x] Markdown
 - [x] Tissue Grouping (Headings)
 - [ ] Connect to LLMs (OpenAI's GPT3.5, GPT4 in-progress)
