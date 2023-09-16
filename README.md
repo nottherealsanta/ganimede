@@ -23,16 +23,14 @@ ganimede <path_to_notebook.ipynb>
 
 [![Watch the video](https://img.youtube.com/vi/osR8aek9AuA/hqdefault.jpg)](https://www.youtube.com/embed/osR8aek9AuA)
 
-![RTC Demo Sep 23](https://www.youtube.com/embed/nIBj7SI_q5U)
-
 ## Roadmap
 
 - [x] Canvas
 - [x] Code execution
 - [x] Markdown
 - [x] Tissue Grouping (Headings)
-- [ ] AI (in-progress)
-- [ ] Real-time collaboration (in-progress)
+- [ ] Connect to LLMs (OpenAI's GPT3.5, GPT4 in-progress)
+- [ ] Real-time collaboration [RTC Demo Sep 23](https://www.youtube.com/embed/nIBj7SI_q5U)
 - [ ] Auto format code
 - [ ] Store run history of cells
 - [ ] Mirror to scripts
@@ -42,8 +40,6 @@ ganimede <path_to_notebook.ipynb>
 - Not all things in a notebook makes sense in a sequential order, therefore the canvas is a better representation of the flow of code. This also makes it easier to visualize the order and the dependencies between cells.
 
 - Chat and interact with LLMs to generate code and ideas.
-
-- Data science workflows are constantly switching between working in a notebook and converting it to scripts. This is exaggerated when working on a project that is already in production. This also decreases team efficiency.
 
 - Real-time collaboration and intiutive git integration is a must for any modern tool.
 
