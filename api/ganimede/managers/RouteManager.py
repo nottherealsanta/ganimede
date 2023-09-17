@@ -24,9 +24,8 @@ class RouteManager:
             # return FileResponse(f"{self.ui_dir}/dist/index.html")
 
         async def favicon(request: Request):
-            path = request.path_params["path"]
             # return FileResponse(f"{self.ui_dir}/dist/{path}")
-            file_path = files.joinpath(f"ui_dist/{path}")
+            file_path = files.joinpath(f"ui_dist/favicon.ico")
             return FileResponse(file_path)
 
         async def codicon(request: Request):
