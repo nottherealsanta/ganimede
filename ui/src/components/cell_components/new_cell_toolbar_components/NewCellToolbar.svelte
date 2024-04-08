@@ -147,7 +147,6 @@
   // ---------- Icons
   import Python from "../Icons/python.svelte";
   import Markdown from "../Icons/markdown.svelte";
-  import LLM from "../Icons/llm.svelte";
 </script>
 
 <div
@@ -204,13 +203,7 @@
       >
         <Markdown />
       </div>
-      <div
-        class="w-5 h-5 p-0.5 bg-oli dark:bg-oli-700 hover:bg-oli-100 dark:hover:bg-oli-700 active:bg-green-100 fill-oli-500 stroke-none dark:fill-oli cursor-pointer justify-center items-center flex"
-        on:click={new_markdown_cell}
-        on:keydown={new_markdown_cell}
-      >
-        <LLM />
-      </div>
+      
     </div>
   {:else}
     <div

@@ -7,6 +7,7 @@
   import MenuButton from "../cell_components/MenuButton.svelte";
 
   import { pc_graph } from "../../stores/_notebook";
+  import LLMButton from "./LLMButton.svelte";
 
   export let cell;
 
@@ -29,6 +30,7 @@
     <Drag />
     <div class="flex flex-row ml-auto">
       <MenuButton {cell} />
+      <LLMButton {cell} />
       <DeleteButton {cell} />
     </div>
   {/if}

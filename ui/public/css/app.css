@@ -882,6 +882,9 @@ video {
 .fill-oli-600 {
   fill: #393939;
 }
+.fill-oli-800 {
+  fill: #1E1E1E;
+}
 .fill-transparent {
   fill: transparent;
 }
