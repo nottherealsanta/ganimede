@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* h1 {
+    @apply text-2xl;
+    @apply font-bold;
+  }
+h2 {
+    @apply text-xl;
+    @apply font-bold;
+}
+h3 {
+    @apply text-lg;
+    @apply font-bold;
+}
+.milkdown h1 {
+	font-size: x-large;
+	font-weight: 700;
+}
+
+.milkdown h2 {
+	font-size: large;
+	font-weight: 700;
+}
+
+.milkdown h3 {
+	font-size: medium;
+	font-weight: 700;
+}
+
+.milkdown h4 {
+	font-size: small;
+	font-weight: 700;
+}
+
+.milkdown h5 {
+	font-size: x-small;
+	font-weight: 700;
+}
+
+.milkdown h6 {
+	font-size: xx-small;
+	font-weight: 700;
+}
+   
+*/
+
+h1 {
+    @apply text-2xl;
+    @apply font-bold;
+}
+h2 {
+    @apply text-xl;
+    @apply font-bold;
+}
+h3 {
+    @apply text-lg;
+    @apply font-bold;
+}
+h4 {
+    @apply text-base;
+    @apply font-bold;
+}
+h5 {
+    @apply text-sm;
+    @apply font-bold;
+}
+h6 {
+    @apply text-xs;
+    @apply font-bold;
+}

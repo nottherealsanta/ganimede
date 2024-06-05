@@ -1,0 +1,15 @@
+{
+  "monaco": {
+    "fontSize": 13,
+    "lineNumbers": "on"
+  },
+  "outputs": {
+    "fontSize": 14
+  },
+  "grid": {
+    "snap": {
+      "x": 20,
+      "y": 20
+    }
+  }
+}

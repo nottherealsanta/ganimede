@@ -1,0 +1,317 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* html {
+  cursor:
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"> <path d="M7.92098 2.29951C6.93571 1.5331 5.5 2.23523 5.5 3.48349V20.4923C5.5 21.9145 7.2945 22.5382 8.17661 21.4226L12.3676 16.1224C12.6806 15.7267 13.1574 15.4958 13.6619 15.4958H20.5143C21.9425 15.4958 22.5626 13.6887 21.4353 12.8119L7.92098 2.29951Z"/></svg>')
+      20 20,
+    auto;
+} */
+html,
+body {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  /* Prevent the user selecting text */
+  user-select: none;
+}
+
+body {
+  color: #333;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  font-size: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #fff;
+  }
+}
+
+a {
+  color: rgb(0, 100, 200);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:visited {
+  color: rgb(0, 80, 160);
+}
+
+label {
+  display: block;
+}
+
+/* Scrollbar */
+/* width */
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: rgb(244, 244, 244);
+  width: 2px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(210, 210, 210);
+}
+
+/* right corner color */
+::-webkit-scrollbar-corner {
+  background: rgb(244, 244, 244);
+}
+
+/* border-radius */
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+}
+
+/* Scrollbar dark mode */
+@media (prefers-color-scheme: dark) {
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: rgb(35, 35, 35);
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: rgb(55, 55, 55);
+  }
+
+  /* right corner color */
+  ::-webkit-scrollbar-corner {
+    background: rgb(35, 35, 35);
+  }
+}
+
+/* monaco */
+.selected-text {
+  position: absolute;
+}
+
+.cursor {
+  position: relative;
+}
+
+/* .monaco-editor {
+	padding-top: 3px;
+} */
+
+.monaco-editor .lines-content.monaco-editor-background {
+  margin-left: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.monaco-editor textarea {
+  opacity: 0;
+}
+
+/* TODO: fix band-aid */
+.view-line {
+  position: absolute;
+  width: 100%;
+}
+
+/* line number color */
+.monaco-editor .margin-view-overlays .line-numbers {
+  font-size: 12px;
+  color: #ccc;
+}
+
+/* active line number color */
+.monaco-editor .line-numbers.active-line-number {
+  color: #adadad;
+}
+/* dark mode */
+@media (prefers-color-scheme: dark) {
+  .monaco-editor .margin-view-overlays .line-numbers {
+    font-size: 11px;
+    color: #ffffff41;
+  }
+  .monaco-editor .line-numbers.active-line-number {
+    color: #ffffff41;
+  }
+}
+
+/* headings */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-block-start: 0px;
+  margin-block-end: 0px;
+}
+
+h1 {
+  font-size: 36px;
+  font-weight: 700;
+  margin-top: 1px;
+  margin-bottom: 1px;
+}
+
+h2 {
+  font-size: 30px;
+  font-weight: 500;
+  margin-top: 1px;
+  margin-bottom: 1px;
+}
+
+h3 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-top: 1px;
+  margin-bottom: 1px;
+}
+
+h4 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 1px;
+  margin-bottom: 1px;
+}
+
+h5 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-top: 1px;
+  margin-bottom: 1px;
+}
+
+h6 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 1px;
+  margin-bottom: 1px;
+}
+
+p {
+  font-size: 16px;
+  font-weight: 400;
+  margin-top: 1px;
+  margin-bottom: 1px;
+}
+
+.ProseMirror {
+  padding-left: 0.5rem;
+  padding-bottom: 0.1rem;
+  padding-top: 0.1rem;
+  padding-right: 0.5rem;
+  white-space: pre-wrap;
+  border-radius: 4px;
+  /* border-left: 1px solid rgba(215, 215, 215, 0.183); */
+}
+
+.ProseMirror pre {
+  white-space: pre-wrap;
+}
+
+.ProseMirror-focused {
+  /* outline: 0px solid rgb(73, 176, 249); */
+  border-left: 1px solid rgb(198, 164, 28);
+}
+
+/* outputs dataframe */
+.dataframe {
+  border-collapse: collapse;
+  border: 0px;
+  padding: 0;
+  font-weight: 400;
+}
+.dataframe td,
+.dataframe th {
+  border: 0px;
+  padding: 1px 6px;
+}
+.dataframe tr:nth-child(even) {
+  background-color: #f5f5f5;
+}
+.dataframe tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+.dataframe tr:hover {
+  background-color: #cccccc88;
+}
+.dataframe th {
+  color: #333333;
+  font-weight: 600;
+}
+.dataframe thead tr th {
+  background-color: #f0f0f0;
+  font-weight: 700;
+}
+
+@media (prefers-color-scheme: dark) {
+  .dataframe {
+    border: 1px solid #333333;
+    border-radius: 0.25rem /* 4px */;
+  }
+  .dataframe tr:nth-child(even) {
+    background-color: #333333;
+  }
+  .dataframe tr:nth-child(odd) {
+    background-color: #444444;
+  }
+  .dataframe tr:hover {
+    background-color: #555555;
+  }
+  .dataframe th {
+    background-color: rgba(0, 0, 0, 0.251);
+    color: #ffffff;
+  }
+  .dataframe thead tr th {
+    background-color: #333333;
+  }
+}
+
+/* selection  */
+
+.ds-selected {
+  outline: 2px solid rgb(73, 176, 249);
+  outline-offset: 0px;
+}
+.ds-selector {
+  outline: 1px solid rgb(73, 176, 249);
+  border-radius: 2px;
+}
+
+.ds-dropzone-ready {
+  outline: 2px solid rgb(162, 162, 162);
+  outline-offset: 2px;
+}
+
+.ds-dropzone-target {
+  /* animation of border flash */
+  animation: flash 0.25s infinite;
+  animation-iteration-count: 1;
+}
+@keyframes flash {
+  0% {
+    outline: 4px solid rgb(73, 176, 249);
+    outline-offset: 0px;
+  }
+
+  50% {
+    outline: 2px solid rgb(73, 176, 249);
+    outline-offset: 0px;
+  }
+
+  100% {
+    outline: 4px solid rgb(73, 176, 249);
+    outline-offset: 0px;
+  }
+}

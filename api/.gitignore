@@ -1,0 +1,15 @@
+# mac
+.DS_Store
+
+# python
+__pycache__
+
+# dist
+dist
+ui_dist
+
+# build
+build
+
+# ruff
+.ruff_cache
