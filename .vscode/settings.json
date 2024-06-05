@@ -7,4 +7,5 @@
         "statusBar.foreground": "#ffffff",
     },
     "css.lint.unknownAtRules": "ignore",
+    "editor.tabSize": 2,
 }
