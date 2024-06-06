@@ -1,8 +1,5 @@
 <script lang="ts">
-  import SaveIcon from "../../assets/icons/save.svelte";
-  import RunAllIcon from "../../assets/icons/run_nb.svelte";
-  import StopIcon from "../../assets/icons/stop.svelte";
-  import RestartIcon from "../../assets/icons/restart_nb.svelte";
+  import { Bookmark, SkipForward, Square, RotateCcw } from "lucide-svelte";
 
   let nb_name: string = "Test Notebook";
 </script>
@@ -16,19 +13,19 @@
   <!-- Notebook Actions Save, Run All, Stop, Restart -->
   <div class="actions">
     <button class="action-button">
-      <SaveIcon />
+      <Bookmark />
       <span class="tooltip">Save</span>
     </button>
     <button class="action-button">
-      <RunAllIcon />
+      <SkipForward />
       <span class="tooltip">Run All</span>
     </button>
     <button class="action-button">
-      <StopIcon />
+      <Square />
       <span class="tooltip">Stop</span>
     </button>
     <button class="action-button">
-      <RestartIcon />
+      <RotateCcw />
       <span class="tooltip">Restart</span>
     </button>
   </div>
@@ -36,9 +33,10 @@
 
 <style>
   .navbar {
-    @apply top-0 left-0 w-full h-10 
+    @apply flex
+    top-0 left-0 w-full h-10 
     px-2
-    flex items-center
+    items-center
     bg-gray-50
     border-b-2 border-gray-200;
   }
@@ -51,12 +49,12 @@
     @apply flex;
   }
   .action-button {
-    @apply relative
-    h-8 w-8 
-    mx-0.5 p-2
+    @apply relative flex
+    h-8 w-8 p-2
+    items-center justify-center
     bg-transparent
     rounded-lg
-    text-sm text-gray-800;
+    text-sm text-gray-600;
   }
   .action-button:hover {
     @apply bg-gray-100;

@@ -1,6 +1,5 @@
 <script lang="ts">
-  import CloseIcon from "../../assets/icons/close.svelte";
-  import MenuIcon from "../../assets/icons/menu.svelte";
+  import { Book, Radius, Database, Package, Settings } from "lucide-svelte";
   let show: boolean = false;
 
   function toggle() {
@@ -8,31 +7,75 @@
   }
 </script>
 
-<div class="sidebar {show ? 'w-[25rem]' : 'w-8'}">
+<div class="sidebar-buttons">
   <button class="toggle-button" on:click={toggle}>
-    {#if show}
-      <CloseIcon />
-    {:else}
-      <MenuIcon />
-    {/if}
+    <Book class="w-4 h-4" />
+  </button>
+  <button class="toggle-button" on:click={toggle}>
+    <Database class="w-4 h-4" />
+  </button>
+  <button class="toggle-button" on:click={toggle}>
+    <Radius class="w-4 h-4" />
+  </button>
+  <button class="toggle-button" on:click={toggle}>
+    <Package class="w-4 h-4" />
+  </button>
+  <button class="toggle-button" on:click={toggle}>
+    <Settings class="w-4 h-4" />
   </button>
 </div>
 
+<div
+  class="sidebar {show ? 'w-[25%]' : 'w-0'}"
+  style="visibility: {show ? 'visible' : 'hidden'}"
+>
+  Notebooks
+  <div class="section"></div>
+  Database Connections
+  <div class="section"></div>
+  Kernel
+  <div class="section"></div>
+  Environment
+  <div class="section"></div>
+  Settings
+  <div class="section"></div>
+</div>
+
 <style>
-  .sidebar {
-    @apply relative flex
-    h-full min-w-8
+  .sidebar-buttons {
+    @apply flex flex-col
+    h-full min-w-8 max-w-8 pt-1
     bg-gray-50
     border-r-2 border-gray-200;
-    transition: width 0.25s;
+  }
+  .sidebar {
+    @apply flex
+    flex-col
+    h-full pt-4 px-2
+    bg-gray-50
+    border-r-2 border-gray-200
+    text-gray-700;
+    font-family: "Inter", sans-serif;
+    font-weight: 600;
   }
   .toggle-button {
-    @apply absolute
-    w-10 h-10 p-2.5 
-    -right-5 top-2
+    @apply flex
+     w-full h-12 p-0 my-0
+     items-center justify-center
     bg-gray-50 
-    rounded-full
-    border-2 border-gray-200 
+    rounded
     text-xs text-gray-500;
+  }
+  .toggle-button:hover {
+    @apply bg-gray-100 text-gray-600;
+  }
+
+  .section {
+    @apply flex
+    h-fit min-h-24 w-auto
+    pb-2
+    mb-2
+    bg-transparent
+    border-b-2 border-gray-200;
   }
 </style>
