@@ -59,7 +59,7 @@
     text-sm text-gray-800;
   }
   .action-button:hover {
-    @apply bg-gray-200;
+    @apply bg-gray-100;
   }
   .tooltip {
     @apply absolute 
