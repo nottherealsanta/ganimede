@@ -13,4 +13,3 @@ Working on the UI design first before implementing the logic
 ## backend
 
 need to setup the backend server and package creation
-```

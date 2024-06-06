@@ -8,8 +8,12 @@
 </script>
 
 <div class="navbar">
+  <!-- Notebook Name -->
   <div class="name">{nb_name}</div>
+
   <div class="flex-grow"></div>
+
+  <!-- Notebook Actions Save, Run All, Stop, Restart -->
   <div class="actions">
     <button class="action-button">
       <SaveIcon />
