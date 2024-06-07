@@ -1,7 +1,6 @@
 <script lang="ts">
   import NewCellToolbar from "./NewCellToolbar.svelte";
   import LeftControls from "./LeftControls.svelte";
-  import RightControls from "./RightControls.svelte";
 
   export let cell_id: string;
 
@@ -24,7 +23,6 @@
   <NewCellToolbar />
 
   <LeftControls {is_hover} />
-  <RightControls {is_hover} />
 </div>
 
 <style>
