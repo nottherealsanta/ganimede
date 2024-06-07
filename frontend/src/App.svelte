@@ -6,12 +6,12 @@
 </script>
 
 <div class="app">
-  <NavBar />
   <div class="sidebar-and-nb">
     <SideBar />
     <Notebook />
   </div>
   <StatusBar />
+  <NavBar />
 </div>
 
 <style>
@@ -25,6 +25,6 @@
   }
   .sidebar-and-nb {
     @apply flex flex-row 
-    w-full h-full p-0;
+    w-full h-full p-0 pt-8 pb-5;
   }
 </style>

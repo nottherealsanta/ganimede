@@ -26,8 +26,9 @@
 </div>
 
 <div
-  class="sidebar {show ? 'w-[25%]' : 'w-0'}"
-  style="visibility: {show ? 'visible' : 'hidden'}"
+  class="sidebar"
+  style="visibility: {show ? 'visible' : 'hidden'}; 
+  display: {show ? 'block' : 'none'}"
 >
   Notebooks
   <div class="section"></div>
@@ -43,39 +44,33 @@
 
 <style>
   .sidebar-buttons {
-    @apply flex flex-col
-    h-full min-w-8 max-w-8 pt-1
-    bg-gray-50
-    border-r-2 border-gray-200;
+    @apply flex flex-col 
+      h-full min-w-8 max-w-8 pt-1 
+      bg-gray-50 border-r-2 border-gray-200;
   }
   .sidebar {
-    @apply flex
-    flex-col
-    h-full pt-4 px-2
-    bg-gray-50
-    border-r-2 border-gray-200
-    text-gray-700;
+    @apply flex flex-col 
+      h-full w-[25%] px-2 pt-4 m-0 
+      bg-gray-50 border-r-2 border-gray-200 
+      text-gray-700;
     font-family: "Inter", sans-serif;
     font-weight: 600;
   }
   .toggle-button {
-    @apply flex
-     w-full h-12 p-0 my-0
-     items-center justify-center
-    bg-gray-50 
-    rounded
-    text-xs text-gray-500;
+    @apply flex 
+      w-full h-12 p-0 my-0 
+      items-center justify-center 
+      bg-gray-50 
+      rounded 
+      text-xs text-gray-500;
   }
   .toggle-button:hover {
     @apply bg-gray-100 text-gray-600;
   }
-
   .section {
-    @apply flex
-    h-fit min-h-24 w-auto
-    pb-2
-    mb-2
-    bg-transparent
-    border-b-2 border-gray-200;
+    @apply flex 
+      h-fit min-h-24 w-auto pb-2 mb-2 
+      bg-transparent 
+      border-b-2 border-gray-200;
   }
 </style>
