@@ -5,7 +5,7 @@ export let cells = [
     "CmdY3sdw",
     "Q2dG4mjD",
   ];
-export let cell_map : {[key: string]: any} = {
+export let cell_maps : {[key: string]: any} = {
   "JiXjY973": {
     "id": "JiXjY973",
     "type": "code",
@@ -28,7 +28,7 @@ export let cell_map : {[key: string]: any} = {
   },
   "U2dG4mjD": {
     "id": "U2dG4mjD",
-    "cell_type": "markdown",
+    "type": "markdown",
     "source": [
      "# This is a heading 1"
     ],
@@ -40,7 +40,7 @@ export let cell_map : {[key: string]: any} = {
    },
   "CmdY3sdw": {
     "id": "CmdY3sdw",
-    "cell_type": "code",
+    "type": "code",
     "source": [
     "import numpy as np\n",
     "import scipy.sparse as sp\n",
@@ -60,7 +60,7 @@ export let cell_map : {[key: string]: any} = {
   },
   "Q2dG4mjD": {
     "id": "Q2dG4mjD",
-    "cell_type": "markdown",
+    "type": "markdown",
     "source": [
      "This is a markdown cell"
     ],

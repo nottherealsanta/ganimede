@@ -16,12 +16,13 @@
 <style>
   .nb {
     @apply flex flex-col 
-    w-full h-screen px-8 pt-8
+    w-full h-full px-20 pt-8
     bg-transparent;
     margin: 0 auto;
     overflow-y: scroll;
     min-width: 500px;
     scrollbar-width: thin;
+    scrollbar-color: var(--tertiary-color) var(--background-color);
   }
 
   .cells {

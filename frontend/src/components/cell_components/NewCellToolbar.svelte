@@ -5,7 +5,7 @@
 <div class="new-cell-toolbar">
   <div class="line" />
   <div class="add-icon">
-    <Plus />
+    <Plus size="12" />
   </div>
 </div>
 
