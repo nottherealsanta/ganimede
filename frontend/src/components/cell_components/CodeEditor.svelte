@@ -3,6 +3,8 @@
 </script>
 
 <script lang="ts">
+  export let cell;
+
   import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
   self.MonacoEnvironment = {
     getWorker(_, label) {
@@ -10,11 +12,28 @@
     },
   };
 
+  // theme import
+  import { light_theme } from "../../scripts/themes";
   let container: HTMLDivElement;
   let code_editor_container: HTMLDivElement;
 
   let monaco_config: any = {
-    value: "",
+    value: `import typing
+import hextoolkit
+import pandas
+# this is comment
+def sql_cell(
+    source: str,
+    data_connection_name: typing.Optional[str] = None,
+    cast_decimals: bool = True,
+) -> "pandas.DataFrame":
+    "This is a doc string"
+    if data_connection_name:
+        hex_data_connection = hextoolkit.get_data_connection(data_connection_name)
+        return hex_data_connection.query(source, cast_decimals=cast_decimals)
+    return hextoolkit.query_dataframes(source, cast_decimals=cast_decimals)
+
+dataframe_2 = sql_cell(source="", data_connection_name="[Demo] Hex Public Data", cast_decimals=True)    `,
     language: "python",
     theme: "vs-light",
     minimap: {
@@ -24,8 +43,10 @@
     overviewRulerLanes: 0,
     renderLineHighlight: "none",
     lineNumbers: "on",
-    fontSize: 13,
-    fontFamily: "Fira Code, monospace",
+    fontSize: 14,
+    fontFamily: "IBM Plex Mono",
+    fontLigatures: true,
+    fontWeight: "400",
     glyphMargin: false,
     lineNumbersMinChars: 2,
     lineDecorationsWidth: 0,
@@ -37,7 +58,7 @@
     scrollbar: {
       vertical: "hidden",
       horizontal: "hidden",
-      // handleMouseWheel: false,
+      handleMouseWheel: false,
     },
     scrollBeyondLastLine: false,
   };
@@ -45,17 +66,26 @@
     const monaco = await import("monaco-editor");
     const editor = monaco.editor.create(container, monaco_config);
 
+    // themes
+    // import("../../assets/monaco_themes/light.json").then(data => {
+    //   monaco.editor.defineTheme('light', data);
+    // })
+    monaco.editor.defineTheme("light", light_theme);
+    monaco.editor.setTheme("light");
+
     // dynamic height
     let ignoreEvent = false;
     let width = container.clientWidth;
 
-    const updateHeight = () => {
+    const updateHeightWidth = () => {
       const contentHeight = Math.max(
-        24,
-        Math.min(1000, editor.getContentHeight())
+        25,
+        Math.min(2000, editor.getContentHeight())
       );
-      container.style.width = `${width}px`;
-      container.style.height = `${contentHeight}px`;
+      if (container) {
+        container.style.width = `${width}px`;
+        container.style.height = `${contentHeight + 8}px`;
+      }
       try {
         ignoreEvent = true;
         editor.layout({ width, height: contentHeight });
@@ -63,26 +93,19 @@
         ignoreEvent = false;
       }
     };
-    editor.onDidContentSizeChange(updateHeight);
-    updateHeight();
+    editor.onDidContentSizeChange(updateHeightWidth);
+    updateHeightWidth();
 
     // dynamic width
-    // new ResizeObserver(() => console.log("resizing")).observe(
-    //   code_editor_container
-    // );
     new ResizeObserver(() => {
-      console.log("resizing");
-      width = code_editor_container.clientWidth - 32;
-      updateHeight();
+      width = code_editor_container ? code_editor_container.clientWidth - 4 : 0;
+      updateHeightWidth();
     }).observe(code_editor_container);
   });
 
   import { cell_maps } from "../../scripts/test_nb";
   import { onMount } from "svelte";
 
-  export let cell_id: string;
-
-  let cell: any = cell_maps[cell_id];
   let source: string = cell.source;
 </script>
 
@@ -94,12 +117,13 @@
   .code-editor {
     @apply flex flex-col
     w-full h-fit 
-    min-h-8 
-    pt-2 pb-1
+    p-0.5
+    min-h-6 
     bg-white
-    rounded;
+    rounded-b;
   }
   .editor {
-    @apply w-full;
+    @apply w-full rounded-md bg-white py-1;
+    overflow: hidden;
   }
 </style>

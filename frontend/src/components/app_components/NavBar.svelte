@@ -37,7 +37,7 @@
     top-0 left-0 w-full h-8 
     px-2
     items-center
-    bg-gray-50
+    bg-white
     border-b-2 border-gray-200;
   }
   .name {

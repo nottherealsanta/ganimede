@@ -12,7 +12,7 @@
 <style>
   .new-cell-toolbar {
     @apply flex 
-    w-full h-2 absolute -top-[15px] right-0 
+    w-full h-2 absolute -top-[19px] right-0 
     items-center justify-center 
     bg-transparent 
     rounded-full;

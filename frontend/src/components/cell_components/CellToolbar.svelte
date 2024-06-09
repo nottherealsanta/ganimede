@@ -22,7 +22,7 @@
   .cell-toolbar {
     @apply absolute flex 
     w-fit h-fit px-1 py-0.5
-    -top-3 right-0
+    -top-3 right-3
     items-center justify-center
     bg-white
     rounded-lg

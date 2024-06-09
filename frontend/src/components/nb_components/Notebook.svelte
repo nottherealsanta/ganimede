@@ -15,11 +15,12 @@
 
 <style>
   .nb {
-    @apply flex flex-col 
-    w-full h-full px-20 pt-8
+    @apply flex flex-row 
+    w-full h-full pt-8 
+    justify-center
+    min-w-[900px]
     bg-transparent;
-    margin: 0 auto;
-    overflow-y: scroll;
+    overflow-y: overlay;
     min-width: 500px;
     scrollbar-width: thin;
     scrollbar-color: var(--tertiary-color) var(--background-color);
@@ -27,6 +28,7 @@
 
   .cells {
     @apply flex flex-col
-    w-full;
+    w-[70rem]
+    min-w-[60rem];
   }
 </style>

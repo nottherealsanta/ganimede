@@ -23,6 +23,9 @@
   },
   "dependencies": {
     "lucide-svelte": "^0.383.0",
-    "monaco-editor": "^0.49.0"
+    "monaco-editor": "^0.49.0",
+    "y-monaco": "^0.1.5",
+    "y-protocols": "^1.0.6",
+    "yjs": "^13.6.15"
   }
 }

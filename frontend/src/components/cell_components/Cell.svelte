@@ -24,15 +24,15 @@
 >
   <!-- code / markdown -->
   {#if cell.type === "code"}
-    <CodeCell {cell_id} />
+    <CodeCell {cell_id} {is_hover} />
   {:else if cell.type === "markdown"}
-    <div class="markdown bg-gray-50 w-full h-full">
+    <div class="markdown bg-transparent w-full h-full">
       <p>{cell.source}</p>
     </div>
   {/if}
   <NewCellToolbar />
   <Grab {is_hover} />
-  <CellToolbar {is_hover} />
+  <!-- <CellToolbar {is_hover} /> -->
   <!-- debug -->
   <!-- <div class="debug">
     <p>{cell_id}</p>
@@ -44,8 +44,7 @@
 <style>
   .cell {
     @apply flex relative
-    w-auto h-auto mx-8 mb-5
-    max-w-[100rem]
+    w-auto h-auto mb-8 
     bg-white
     rounded-md;
   }
