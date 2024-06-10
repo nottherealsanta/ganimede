@@ -25,4 +25,7 @@
     border-2 border-gray-100
     rounded-md;
   }
+  .code-cell:hover {
+    @apply border-gray-200;
+  }
 </style>

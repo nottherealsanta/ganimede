@@ -28,7 +28,7 @@
 
   .cells {
     @apply flex flex-col
-    w-[70rem]
-    min-w-[60rem];
+    w-[85%]
+    min-w-[80rem];
   }
 </style>

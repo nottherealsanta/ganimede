@@ -20,9 +20,6 @@
     <div class="toolbar-button">
       <EllipsisVertical size="16" />
     </div>
-    <div class="toolbar-button">
-      <Trash2 size="16" />
-    </div>
   {/if}
 </div>
 
@@ -52,11 +49,11 @@
   }
   .language-indicator {
     @apply flex 
-    h-full w-16
+    h-full w-fit px-1
     mr-2
     items-center justify-center
     cursor-default
-    bg-gray-100
+    bg-gray-50
     rounded-md
     text-xs
     text-gray-400;
