@@ -66,6 +66,10 @@ export const light_theme: any = {
     "editor.selectionBackground": "#BAD6FD",
     "editor.lineHighlightBackground": "#00000012",
     "editorCursor.foreground": "#000000",
-    "editorWhitespace.foreground": "#BFBFBF"
-  }
+    "editorWhitespace.foreground": "#BFBFBF",
+		"editorBracketHighlight.foreground1": "#005CC6",
+    "editorBracketHighlight.foreground2": "#008001",
+		"editorBracketHighlight.foreground3": "#5B32A3",
+    "editorBracketHighlight.unexpectedBracket.foreground": "#ff0000",
+	}
 }

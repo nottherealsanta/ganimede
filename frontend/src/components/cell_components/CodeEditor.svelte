@@ -55,6 +55,7 @@ dataframe_2 = sql_cell(source="", data_connection_name="[Demo] Hex Public Data",
     wordWrap: "on",
     wrappingStrategy: "advanced",
     wrappingColumn: 80,
+    bracketPairColorization: true,
     scrollbar: {
       vertical: "hidden",
       horizontal: "hidden",
