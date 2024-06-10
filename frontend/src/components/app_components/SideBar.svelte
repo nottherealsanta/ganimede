@@ -1,5 +1,12 @@
 <script lang="ts">
-  import { Book, Radius, Database, Package, Settings } from "lucide-svelte";
+  import {
+    Book,
+    Radius,
+    Database,
+    Package,
+    Sparkles,
+    Settings,
+  } from "lucide-svelte";
   let show: boolean = false;
 
   function toggle() {
@@ -21,6 +28,9 @@
     <Package class="w-4 h-4" />
   </button>
   <button class="toggle-button" on:click={toggle}>
+    <Sparkles class="w-4 h-4" />
+  </button>
+  <button class="toggle-button" on:click={toggle}>
     <Settings class="w-4 h-4" />
   </button>
 </div>
@@ -37,6 +47,8 @@
   Kernel
   <div class="section"></div>
   Environment
+  <div class="section"></div>
+  AI Copilot
   <div class="section"></div>
   Settings
   <div class="section"></div>
