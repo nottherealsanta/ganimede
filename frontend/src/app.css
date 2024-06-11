@@ -32,6 +32,8 @@ body {
   min-height: 100vh;
   overflow: hidden;
 }
+
+/* monaco */
 .monaco-editor .margin-view-overlays .line-numbers {
   font-size: 12px;
   color: #ccc;
@@ -40,4 +42,16 @@ body {
 /* active line number color */
 .monaco-editor .line-numbers.active-line-number {
   color: #adadad;
+}
+
+/* sortablejs */
+.sortable-chosen {
+  box-shadow: rgba(44, 42, 44, 0.2) 0px 8px 24px;
+  opacity: 0.5;
+}
+.sortable-ghost {
+  outline: 2px solid rgba(51, 158, 235, 1);
+}
+.multi-drag {
+  outline: 2px solid rgb(43, 134, 199);
 }

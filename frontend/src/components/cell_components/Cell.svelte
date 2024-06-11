@@ -1,7 +1,6 @@
 <script lang="ts">
   import CodeCell from "./CodeCell.svelte";
   import NewCellToolbar from "./NewCellToolbar.svelte";
-  import CellToolbar from "./CellToolbar.svelte";
   import Grab from "./Grab.svelte";
 
   export let cell_id: string;
@@ -22,22 +21,25 @@
     is_hover = false;
   }}
 >
+  <Grab {is_hover} />
+  <NewCellToolbar />
+
   <!-- code / markdown -->
   {#if cell.type === "code"}
     <CodeCell {cell_id} {is_hover} />
   {:else if cell.type === "markdown"}
-    <div class="markdown bg-transparent w-full h-full">
+    <div
+      class="markdown bg-transparent p-2 w-full h-full border-l-2 border-gray-200"
+    >
       <p>{cell.source}</p>
     </div>
   {/if}
-  <NewCellToolbar />
-  <Grab {is_hover} />
-  <!-- <CellToolbar {is_hover} /> -->
+
   <!-- debug -->
-  <!-- <div class="debug">
+  <div class="debug">
     <p>{cell_id}</p>
     <p>{cell.type}</p>
-  </div> -->
+  </div>
   <!----------->
 </div>
 
@@ -50,9 +52,10 @@
   }
   .debug {
     @apply absolute bottom-0 right-0
-    bg-gray-200/50
+    bg-gray-200/20
     rounded-md
     text-xs
+    text-gray-400
     p-2;
   }
 </style>

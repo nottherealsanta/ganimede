@@ -3,15 +3,15 @@
   export let is_hover: boolean;
 </script>
 
-<div class="left-controls" style="opacity: {is_hover ? 1 : 0};">
-  <GripVertical size="20" />
+<div class="left-controls grab-handle" style="opacity: {is_hover ? 1 : 0};">
+  <GripVertical size="24" />
 </div>
 
 <style>
   .left-controls {
     @apply absolute flex 
-  w-6 h-6 p-1
-  top-0 -left-5
+  w-8 h-8 p-[7px]
+  top-0 -left-6
   items-center justify-center
   bg-transparent
   rounded-none

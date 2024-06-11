@@ -57,7 +57,7 @@
     rounded-md
     text-xs
     text-gray-400;
-    font-family: "IBM Plex Mono", monospace;
+    font-family: "Inter", sans-serif;
     font-weight: 500;
     font-style: normal;
   }
@@ -69,7 +69,7 @@
     bg-transparent
     text-xs
     text-gray-400;
-    font-family: "IBM Plex Mono", monospace;
+    font-family: "Inter", sans-serif;
     font-weight: 500;
     font-style: normal;
   }
@@ -80,13 +80,13 @@
     cursor-default
     bg-transparent
     text-xs text-gray-400;
-    font-family: "IBM Plex Mono", monospace;
+    font-family: "Inter", sans-serif;
     font-weight: 500;
     font-style: normal;
   }
   .toolbar-button {
     @apply relative flex 
-    h-full w-6 p-1 mx-0.5
+    h-full w-8 p-1 
     items-center justify-center
     bg-transparent
     rounded
