@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Plus } from "lucide-svelte";
-  export let index: number;
+  // export let index: number;
 </script>
 
 <div class="new-cell-toolbar">
@@ -20,8 +20,9 @@
 
 <style>
   .new-cell-toolbar {
-    @apply flex relative
+    @apply flex absolute
     w-full h-2
+    -top-4
     items-center justify-center 
     bg-transparent 
     rounded-full;

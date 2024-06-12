@@ -1,5 +1,6 @@
 <script lang="ts">
   import CodeCell from "./CodeCell.svelte";
+  import NewCellToolbar from "./NewCellToolbar.svelte";
   import Grab from "./Grab.svelte";
 
   export let cell_id: string;
@@ -29,6 +30,7 @@
   }}
 >
   <Grab {is_hover} />
+  <NewCellToolbar />
 
   <!-- code / markdown -->
   {#if cell.type === "code"}
@@ -54,7 +56,16 @@
     border-2 border-transparent;
   }
   .active-cell {
-    @apply border-2 border-blue-500;
+    /* @apply border-2 border-blue-500; */
+  }
+  .active-cell::before {
+    content: "";
+    position: absolute;
+    top: 2px; /* Adjust to remove pixels from the top */
+    bottom: 2px; /* Adjust to remove pixels from the bottom */
+    left: 0;
+    width: 2px; /* Adjust to match the desired border width */
+    @apply bg-blue-500;
   }
   .debug {
     @apply absolute bottom-0 right-0

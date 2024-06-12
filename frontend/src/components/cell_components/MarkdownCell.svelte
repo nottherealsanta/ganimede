@@ -2,37 +2,77 @@
   export let cell_id: string;
   import { cell_maps } from "../../scripts/test_nb";
   let cell: any = cell_maps[cell_id];
+  let source = cell.source.join("\n");
 
+  // marked for markdown
   import { marked } from "marked";
   marked.setOptions({
     gfm: true,
   });
 
-  let source = cell.source.join("\n");
+  // active cell
+  import { activeCellId } from "../../stores/notebook";
+  $: is_active = $activeCellId === cell_id;
+
+  // -- when active focus the textarea
+  let textarea: HTMLTextAreaElement;
+  $: if (is_active) {
+    setTimeout(() => {
+      if (textarea) {
+        textarea.focus();
+        textarea.style.height = `${textarea.scrollHeight}px`; // Add this line
+      }
+    }, 0);
+  }
+
+  function adjustHeight() {
+    if (textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  }
 </script>
 
 <div class="markdown">
-  <p>{@html marked(source)}</p>
+  <textarea
+    class="textarea {is_active ? 'block' : 'hidden'}"
+    bind:value={source}
+    bind:this={textarea}
+    on:input={() => {
+      cell.source = source.split("\n");
+      adjustHeight(); // Add this line
+    }}
+  ></textarea>
+  <div class="{is_active ? 'hidden' : ''} markdown-content">
+    {@html marked(source)}
+  </div>
 </div>
 
 <style>
   .markdown {
     @apply flex flex-col
-    w-full h-full
-    px-4
+    w-full 
+    px-4 py-2
     bg-transparent
     text-gray-900
-    border-l-2 border-gray-200
     rounded-md
     overflow-y-auto;
+    font-family: "Inter", sans-serif;
+  }
+  .textarea {
+    @apply w-full h-full
+    bg-transparent
+    border-none
+    resize-none
+    outline-none;
     font-family: "Inter", sans-serif;
   }
   :global(.markdown p) {
     font-size: 16px;
     font-weight: 400;
     line-height: 1.6;
-    margin-top: 6px;
-    margin-bottom: 6px;
+    margin-top: 4px;
+    margin-bottom: 4px;
   }
   :global(.markdown ul) {
     list-style-type: circle;

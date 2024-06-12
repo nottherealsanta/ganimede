@@ -32,7 +32,6 @@
   >
     {#each cell_ids as cell_id, index (cell_id)}
       <Cell {cell_id} />
-      <NewCellToolbar {index} />
     {/each}
   </SortableList>
 </div>
