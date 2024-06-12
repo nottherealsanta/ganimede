@@ -11,6 +11,8 @@
   </div>
   {#if is_hover}
     <div class="cell-status-time">0.0s</div>
+    <div class="flex-grow"></div>
+
     <div class="execution-count">4</div>
     <div class="flex-grow"></div>
     <div class="language-indicator">Python</div>
@@ -89,7 +91,7 @@
     h-full w-8 p-1 
     items-center justify-center
     bg-transparent
-    rounded
+    rounded-md
     text-gray-400;
   }
   .toolbar-button:hover {

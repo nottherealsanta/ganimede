@@ -1,18 +1,22 @@
 <script lang="ts">
   import CodeCell from "./CodeCell.svelte";
-  import NewCellToolbar from "./NewCellToolbar.svelte";
   import Grab from "./Grab.svelte";
 
   export let cell_id: string;
 
   import { cell_maps } from "../../scripts/test_nb";
+  import MarkdownCell from "./MarkdownCell.svelte";
   let cell: any = cell_maps[cell_id];
 
   let is_hover: boolean = false;
+
+  // active cell
+  import { activeCellId } from "../../stores/notebook";
+  $: is_active = $activeCellId === cell_id;
 </script>
 
 <div
-  class="cell"
+  class="cell {is_active ? 'active-cell' : ''}"
   role="presentation"
   on:mouseenter={() => {
     is_hover = true;
@@ -20,19 +24,17 @@
   on:mouseleave={() => {
     is_hover = false;
   }}
+  on:click={() => {
+    activeCellId.set(cell_id);
+  }}
 >
   <Grab {is_hover} />
-  <NewCellToolbar />
 
   <!-- code / markdown -->
   {#if cell.type === "code"}
     <CodeCell {cell_id} {is_hover} />
   {:else if cell.type === "markdown"}
-    <div
-      class="markdown bg-transparent p-2 w-full h-full border-l-2 border-gray-200"
-    >
-      <p>{cell.source}</p>
-    </div>
+    <MarkdownCell {cell_id} />
   {/if}
 
   <!-- debug -->
@@ -46,9 +48,13 @@
 <style>
   .cell {
     @apply flex relative
-    w-auto h-auto mb-8 
+    w-auto h-auto my-2 
     bg-white
-    rounded-md;
+    rounded-md
+    border-2 border-transparent;
+  }
+  .active-cell {
+    @apply border-2 border-blue-500;
   }
   .debug {
     @apply absolute bottom-0 right-0

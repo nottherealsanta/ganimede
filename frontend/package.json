@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "lucide-svelte": "^0.383.0",
+    "marked": "^12.0.2",
     "monaco-editor": "^0.49.0",
     "sortablejs": "^1.15.2",
     "y-monaco": "^0.1.5",

@@ -1,5 +1,5 @@
 export let path = "test_nb.ipynb";
-export let cells = [
+export let cell_ids = [
     "JiXjY973",
     "U2dG4mjD",
     "CmdY3sdw",

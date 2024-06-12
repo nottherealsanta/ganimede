@@ -1,30 +1,26 @@
 <script>
   import SortableList from "./SortableList.svelte";
   import Cell from "../cell_components/Cell.svelte";
-
-  import { cells } from "../../scripts/test_nb";
-  $: console.log(cells);
+  import NewCellToolbar from "../cell_components/NewCellToolbar.svelte";
+  import { onMount } from "svelte";
+  import { cell_ids } from "../../scripts/test_nb";
 
   // @ts-ignore
   function onDragStart(event) {}
 
   // @ts-ignore
-  function onDragEnd(_event) {}
+  function onDragEnd(event) {}
+
+  // onMount set active cell to the first cell
+  import { activeCellId } from "../../stores/notebook";
+  onMount(() => {
+    activeCellId.set(cell_ids[0]);
+  });
 </script>
 
-<!-- 
-<div class="nb">
-  <div class="cells">
-    {#each cells as cell_id}
-      <Cell {cell_id} />
-    {/each}
-  </div>
-</div> -->
-<!-- 
- -->
 <div class="nb">
   <SortableList
-    class="sortable-list flex flex-col w-[85%] min-w-[80rem]"
+    class="sortable-list flex flex-col w-[85%] min-w-[40rem]"
     group="nested"
     animation={100}
     swapThreshold={0.5}
@@ -34,8 +30,9 @@
     touchStartThreshold={100}
     handle=".grab-handle"
   >
-    {#each cells as cell_id, index (cell_id)}
+    {#each cell_ids as cell_id, index (cell_id)}
       <Cell {cell_id} />
+      <NewCellToolbar {index} />
     {/each}
   </SortableList>
 </div>
