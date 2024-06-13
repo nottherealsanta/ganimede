@@ -1,6 +1,5 @@
 <script lang="ts">
   import CodeCell from "./CodeCell.svelte";
-  import NewCellToolbar from "./NewCellToolbar.svelte";
   import Grab from "./Grab.svelte";
 
   export let cell_id: string;
@@ -32,7 +31,6 @@
   }}
 >
   <Grab {is_hover} />
-  <NewCellToolbar />
 
   <!-- code / markdown -->
   {#if cell.type === "python" || cell.type === "sql"}
@@ -52,7 +50,7 @@
 <style>
   .cell {
     @apply flex relative
-    w-auto h-auto my-2 
+    w-auto h-auto
     bg-white
     rounded-md
     border-2 border-transparent;
