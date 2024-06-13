@@ -1,11 +1,13 @@
 <script lang="ts">
   import { Plus } from "lucide-svelte";
+  export let index;
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div class="new-cell-toolbar" on:click|stopPropagation>
   <div class="line" />
+  {index}
   <div class="toolbar-button">Python</div>
   <div class="line" />
   <div class="toolbar-button">SQL</div>

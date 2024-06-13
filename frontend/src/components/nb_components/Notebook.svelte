@@ -29,11 +29,17 @@
     invertSwap={true}
     touchStartThreshold={100}
     handle=".grab-handle"
+    filter=".new-cell-toolbar"
   >
     {#each cell_ids as cell_id, index (cell_id)}
-      <Cell {cell_id} />
-      <NewCellToolbar />
+      <div>
+        <!-- above each cell -->
+        <NewCellToolbar {index} />
+        <Cell {cell_id} />
+      </div>
     {/each}
+    <!-- final new cell toolbar at the end -->
+    <NewCellToolbar index={cell_ids.length} />
   </SortableList>
 </div>
 
