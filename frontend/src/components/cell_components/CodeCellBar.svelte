@@ -1,15 +1,20 @@
 <script lang="ts">
-  import { Play, Sparkles, EllipsisVertical, Trash2 } from "lucide-svelte";
+  import { Play, Sparkles, EllipsisVertical, Trash2, X } from "lucide-svelte";
 
   import { cell_maps } from "../../scripts/test_nb";
+  import { activeCellId } from "../../stores/notebook";
   import AiBar from "./AiBar.svelte";
 
   export let cell_id: string;
   let cell: any = cell_maps[cell_id];
   export let is_hover: boolean = false;
+  $: is_active = $activeCellId === cell_id;
 
   // ai bar
   let ai_bar: boolean = false;
+  $: if (!is_active) {
+    ai_bar = false;
+  }
 </script>
 
 <div class="cell-sidebar">
@@ -24,19 +29,23 @@
     <div class="flex-grow"></div>
     <div class="language-indicator">{cell.type}</div>
     <button
-      class="toolbar-button"
+      class="toolbar-button {ai_bar ? 'text-fuchsia-500' : ''}"
       on:click={() => (ai_bar = !ai_bar)}
       aria-label="Toggle AI Bar"
     >
-      <Sparkles size="16" />
+      {#if ai_bar}
+        <X size="16" />
+      {:else}
+        <Sparkles size="16" />
+      {/if}
     </button>
     <div class="toolbar-button">
       <EllipsisVertical size="16" />
     </div>
   {/if}
 </div>
-{#if ai_bar}
-  <AiBar />
+{#if ai_bar && is_active}
+  <AiBar {ai_bar} />
 {/if}
 
 <style>

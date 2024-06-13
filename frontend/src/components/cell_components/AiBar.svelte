@@ -1,48 +1,75 @@
 <script lang="ts">
-  import { Sparkles } from "lucide-svelte";
+  import { onMount } from "svelte";
+  import { X } from "lucide-svelte";
+
+  // on Mount focus the textarea
+  let textarea: HTMLDivElement;
+  onMount(() => {
+    textarea.focus();
+  });
+
+  export let ai_bar: boolean;
 </script>
 
 <div class="ai-bar">
-  <textarea class="textarea" placeholder="AI Copilot"></textarea>
-  <div class="flex-grow"></div>
-  <button class="aibar-button" aria-label="Run AI Copilot">
-    <Sparkles size="14" class="mx-2" />Generate
-  </button>
+  <div class="ai-bar-inside">
+    <div class="textarea" contentEditable bind:this={textarea}></div>
+    <div class="flex-grow"></div>
+    <!-- <button
+      class="aibar-button"
+      aria-label="Close AI Bar"
+      on:click={() => {
+        ai_bar = false;
+        console.log(ai_bar);
+      }}
+    >
+      <X size="14" />
+    </button> -->
+  </div>
 </div>
 
 <style>
   .ai-bar {
     @apply flex
-    w-full h-auto min-h-8
-    py-2 px-2
+    w-full h-auto min-h-6
+    py-1 px-1
     items-center justify-center
     bg-white
     overflow-y-auto
     border-y-2 border-gray-100;
   }
+  .ai-bar-inside {
+    @apply flex 
+    w-full h-full px-2 py-1
+    items-center justify-center 
+    rounded-md 
+    border border-gray-300;
+  }
   .textarea {
-    @apply w-fit h-8
-    px-2
-    bg-red-400
-    border-none
-    resize-none
-    outline-none
-    text-gray-700
-    text-base;
+    @apply min-w-[10rem] py-1 text-sm;
     font-family: "Inter", sans-serif;
+  }
+  .textarea:focus {
+    @apply outline-none;
+  }
+  .textarea:empty:before {
+    content: "Ask AI";
+    color: #a0aec0;
   }
   .aibar-button {
     @apply flex
-    h-full w-fit
+    h-8 w-8
     px-2 py-1 
     items-center justify-center
     bg-white
     rounded-md
-    border-2 border-fuchsia-200
     cursor-pointer
     text-sm
-    text-gray-600;
+    text-gray-400;
     font-family: "Inter", sans-serif;
     font-weight: 500;
+  }
+  .aibar-button:hover {
+    @apply bg-gray-100;
   }
 </style>
