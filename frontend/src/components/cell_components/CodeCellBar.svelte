@@ -4,6 +4,7 @@
   import { cell_maps } from "../../scripts/test_nb";
   import { activeCellId } from "../../stores/notebook";
   import AiBar from "./AiBar.svelte";
+  import CellRunButton from "./bar_components/CellRunButton.svelte";
 
   export let cell_id: string;
   let cell: any = cell_maps[cell_id];
@@ -18,9 +19,7 @@
 </script>
 
 <div class="cell-sidebar">
-  <div class="run-button">
-    <Play size="16" />
-  </div>
+  <CellRunButton {cell} {is_hover} />
   {#if is_hover}
     <div class="cell-status-time">0.0s</div>
     <div class="flex-grow"></div>

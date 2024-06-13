@@ -35,18 +35,19 @@
     @apply flex 
     w-fit h-6 px-2 mx-2
     items-center
-    bg-gray-50
+    bg-white
     rounded-lg
     border border-gray-200
     text-sm
     text-gray-500
-    z-10;
+    z-10
+    shadow-sm;
     font-family: "Inter", sans-serif;
     font-weight: 500;
     user-select: none;
   }
   .toolbar-button:hover {
-    @apply bg-gray-100;
+    @apply bg-gray-50;
   }
   .toolbar-button:active {
     @apply bg-gray-100 
