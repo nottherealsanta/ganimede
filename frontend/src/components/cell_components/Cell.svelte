@@ -42,10 +42,10 @@
   {/if}
 
   <!-- debug -->
-  <div class="debug">
+  <!-- <div class="debug">
     <p>{cell_id}</p>
     <p>{cell.type}</p>
-  </div>
+  </div> -->
   <!----------->
 </div>
 

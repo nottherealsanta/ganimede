@@ -4,6 +4,7 @@ export let cell_ids = [
     "U2dG4mjD",
     "CmdY3sdw",
     "Q2dG4mjD",
+    "F9j3Bj2o"
   ];
 export let cell_maps : {[key: string]: any} = {
   "JiXjY973": {
@@ -63,6 +64,21 @@ export let cell_maps : {[key: string]: any} = {
     "type": "markdown",
     "source": [
      "This is a markdown cell"
+    ],
+    "heading_level": null,
+    "collapsed": false,
+    "parent_collapsed": false,
+    "state": "idle",
+    "execution_time": null
+  },
+  "F9j3Bj2o": {
+    "id": "F9j3Bj2o",
+    "type": "sql",
+    "source": [
+      "SELECT * FROM table\n",
+      "WHERE column = 'value'\n",
+      "ORDER BY column\n",
+      "LIMIT 10"
     ],
     "heading_level": null,
     "collapsed": false,

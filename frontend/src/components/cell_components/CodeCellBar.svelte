@@ -50,7 +50,7 @@
   }
   .run-button {
     @apply flex 
-    h-full w-8
+    h-7 w-7
     items-center justify-center
     bg-transparent
     rounded
@@ -77,6 +77,9 @@
     font-weight: 500;
     font-style: normal;
   }
+  .language-indicator:hover {
+    @apply bg-gray-100;
+  }
   .cell-status-time {
     @apply flex 
     h-full w-16
@@ -102,7 +105,7 @@
   }
   .toolbar-button {
     @apply relative flex 
-    h-full w-8 p-1 
+    h-7 w-7 p-1 
     items-center justify-center
     bg-transparent
     rounded-md

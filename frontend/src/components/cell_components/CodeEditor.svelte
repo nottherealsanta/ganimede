@@ -18,23 +18,8 @@
   let code_editor_container: HTMLDivElement;
 
   let monaco_config: any = {
-    value: `import typing
-import hextoolkit
-import pandas
-# this is comment
-def sql_cell(
-    source: str,
-    data_connection_name: typing.Optional[str] = None,
-    cast_decimals: bool = True,
-) -> "pandas.DataFrame":
-    "This is a doc string"
-    if data_connection_name:
-        hex_data_connection = hextoolkit.get_data_connection(data_connection_name)
-        return hex_data_connection.query(source, cast_decimals=cast_decimals)
-    return hextoolkit.query_dataframes(source, cast_decimals=cast_decimals)
-
-dataframe_2 = sql_cell(source="", data_connection_name="[Demo] Hex Public Data", cast_decimals=True)    `,
-    language: "python",
+    value: cell.source.join(""),
+    language: cell.type,
     theme: "vs-light",
     minimap: {
       enabled: false,

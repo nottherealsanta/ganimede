@@ -56,8 +56,12 @@
     bg-transparent
     text-gray-900
     rounded-md
-    overflow-y-auto;
+    overflow-y-auto
+    border border-transparent;
     font-family: "Inter", sans-serif;
+  }
+  .markdown:hover {
+    @apply border border-gray-300;
   }
   .textarea {
     @apply w-full h-full

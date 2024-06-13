@@ -38,9 +38,9 @@
 
 <style>
   .nb {
-    @apply flex flex-row 
-    w-full h-full pt-8 
-    justify-center
+    @apply flex flex-col
+    w-full h-full pt-8 pb-96
+    items-center
     min-w-[900px]
     bg-transparent;
     overflow-y: overlay;
