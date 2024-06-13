@@ -1,21 +1,16 @@
 <script lang="ts">
   import { Plus } from "lucide-svelte";
-  // export let index: number;
 </script>
 
-<div class="new-cell-toolbar">
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<div class="new-cell-toolbar" on:click|stopPropagation>
   <div class="line" />
-  <div class="toolbar-button">
-    <Plus class="mr-1" size="16" />Python
-  </div>
+  <div class="toolbar-button">Python</div>
   <div class="line" />
-  <div class="toolbar-button">
-    <Plus class="mr-1" size="16" />SQL
-  </div>
+  <div class="toolbar-button">SQL</div>
   <div class="line" />
-  <div class="toolbar-button">
-    <Plus class="mr-1" size="16" />Markdown
-  </div>
+  <div class="toolbar-button">Markdown</div>
 </div>
 
 <style>
@@ -47,11 +42,12 @@
     text-gray-500
     z-10;
     font-family: "Inter", sans-serif;
+    font-weight: 500;
   }
   .toolbar-button:hover {
-    @apply bg-gray-100;
+    @apply bg-gray-50;
   }
   .toolbar-button:active {
-    @apply bg-gray-200 text-gray-700;
+    @apply bg-gray-100 text-gray-700;
   }
 </style>

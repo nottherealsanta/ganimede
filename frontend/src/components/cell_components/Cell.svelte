@@ -17,7 +17,9 @@
 </script>
 
 <div
-  class="cell {is_active ? 'active-cell' : ''}"
+  class="cell
+  {is_active ? 'active-cell' : ''} 
+  "
   role="presentation"
   on:mouseenter={() => {
     is_hover = true;
@@ -33,7 +35,7 @@
   <NewCellToolbar />
 
   <!-- code / markdown -->
-  {#if cell.type === "code"}
+  {#if cell.type === "python" || cell.type === "sql"}
     <CodeCell {cell_id} {is_hover} />
   {:else if cell.type === "markdown"}
     <MarkdownCell {cell_id} />
@@ -55,16 +57,14 @@
     rounded-md
     border-2 border-transparent;
   }
-  .active-cell {
-    /* @apply border-2 border-blue-500; */
-  }
+
   .active-cell::before {
     content: "";
     position: absolute;
-    top: 2px; /* Adjust to remove pixels from the top */
-    bottom: 2px; /* Adjust to remove pixels from the bottom */
+    top: 2px;
+    bottom: 2px;
     left: 0;
-    width: 2px; /* Adjust to match the desired border width */
+    width: 2px;
     @apply bg-blue-500;
   }
   .debug {

@@ -8,7 +8,7 @@ export let cell_ids = [
 export let cell_maps : {[key: string]: any} = {
   "JiXjY973": {
     "id": "JiXjY973",
-    "type": "code",
+    "type": "python",
     "source": ["print('Hello world')"],
     "execution_count": 1,
     "outputs": [
@@ -40,7 +40,7 @@ export let cell_maps : {[key: string]: any} = {
    },
   "CmdY3sdw": {
     "id": "CmdY3sdw",
-    "type": "code",
+    "type": "python",
     "source": [
     "import numpy as np\n",
     "import scipy.sparse as sp\n",

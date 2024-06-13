@@ -52,7 +52,7 @@
   .markdown {
     @apply flex flex-col
     w-full 
-    px-4 py-2
+    px-4 py-0
     bg-transparent
     text-gray-900
     rounded-md
@@ -61,18 +61,18 @@
   }
   .textarea {
     @apply w-full h-full
+    py-2
     bg-transparent
     border-none
     resize-none
     outline-none;
     font-family: "Inter", sans-serif;
+    min-height: 50px;
   }
   :global(.markdown p) {
     font-size: 16px;
     font-weight: 400;
     line-height: 1.6;
-    margin-top: 4px;
-    margin-bottom: 4px;
   }
   :global(.markdown ul) {
     list-style-type: circle;
@@ -84,22 +84,16 @@
     font-weight: 600;
     font-size: 30px;
     line-height: 2;
-    margin-top: 4px;
-    margin-bottom: 4px;
   }
   :global(.markdown h2) {
     font-weight: 500;
     font-size: 20px;
     line-height: 2;
-    margin-top: 4px;
-    margin-bottom: 4px;
   }
   :global(.markdown h3) {
     font-weight: 500;
     font-size: 18px;
     line-height: 2;
-    margin-top: 4px;
-    margin-bottom: 4px;
   }
   :global(.markdown h4) {
     font-weight: 600;
