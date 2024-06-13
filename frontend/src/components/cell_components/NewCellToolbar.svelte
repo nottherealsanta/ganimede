@@ -29,25 +29,28 @@
     @apply bg-gray-50;
   }
   .line {
-    @apply absolute h-[2px] w-full bg-gray-300;
+    @apply absolute h-[1px] w-[98%] bg-gray-200;
   }
   .toolbar-button {
     @apply flex 
     w-fit h-6 px-2 mx-2
     items-center
-    bg-white
+    bg-gray-50
     rounded-lg
-    border border-gray-300
+    border border-gray-200
     text-sm
     text-gray-500
     z-10;
     font-family: "Inter", sans-serif;
     font-weight: 500;
+    user-select: none;
   }
   .toolbar-button:hover {
-    @apply bg-gray-50;
+    @apply bg-gray-100;
   }
   .toolbar-button:active {
-    @apply bg-gray-100 text-gray-700;
+    @apply bg-gray-100 
+    text-blue-500
+    border border-blue-500;
   }
 </style>
