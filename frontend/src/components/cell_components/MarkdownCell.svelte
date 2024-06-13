@@ -76,7 +76,7 @@
   :global(.markdown p) {
     font-size: 16px;
     font-weight: 400;
-    line-height: 1.6;
+    line-height: 1.5;
   }
   :global(.markdown ul) {
     list-style-type: circle;
@@ -87,32 +87,32 @@
   :global(.markdown h1) {
     font-weight: 600;
     font-size: 30px;
-    line-height: 2;
+    line-height: 1.5;
   }
   :global(.markdown h2) {
     font-weight: 500;
     font-size: 20px;
-    line-height: 2;
+    line-height: 1.5;
   }
   :global(.markdown h3) {
     font-weight: 500;
     font-size: 18px;
-    line-height: 2;
+    line-height: 1.5;
   }
   :global(.markdown h4) {
     font-weight: 600;
     font-size: 16px;
-    line-height: 2;
+    line-height: 1.5;
   }
   :global(.markdown h5) {
     font-weight: 600;
     font-size: 14px;
-    line-height: 2;
+    line-height: 1.5;
   }
   :global(.markdown h6) {
     font-weight: 600;
     font-size: 12px;
-    line-height: 2;
+    line-height: 1.5;
   }
   :global(.markdown code) {
     padding: 5px;
