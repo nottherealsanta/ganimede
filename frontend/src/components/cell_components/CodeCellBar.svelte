@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { Play, Sparkles, EllipsisVertical, Trash2, X } from "lucide-svelte";
+  import { Sparkles, X } from "lucide-svelte";
 
   import { cell_maps } from "../../scripts/test_nb";
   import { activeCellId } from "../../stores/notebook";
   import AiBar from "./AiBar.svelte";
   import CellRunButton from "./bar_components/CellRunButton.svelte";
+  import CellContextButton from "./bar_components/CellContextButton.svelte";
 
   export let cell_id: string;
   let cell: any = cell_maps[cell_id];
@@ -20,12 +21,9 @@
 
 <div class="cell-sidebar">
   <CellRunButton {cell} {is_hover} />
+  <div class="flex-grow"></div>
   {#if is_hover}
     <div class="cell-status-time">0.0s</div>
-    <div class="flex-grow"></div>
-
-    <div class="execution-count">4</div>
-    <div class="flex-grow"></div>
     <div class="language-indicator">{cell.type}</div>
     <button
       class="toolbar-button {ai_bar ? 'text-fuchsia-500' : ''}"
@@ -38,10 +36,8 @@
         <Sparkles size="16" />
       {/if}
     </button>
-    <div class="toolbar-button">
-      <EllipsisVertical size="16" />
-    </div>
   {/if}
+  <CellContextButton {is_hover} />
 </div>
 {#if ai_bar && is_active}
   <AiBar {ai_bar} />
@@ -55,21 +51,6 @@
     items-center
     bg-transparent
     rounded-t;
-  }
-  .run-button {
-    @apply flex 
-    h-7 w-7
-    items-center justify-center
-    bg-transparent
-    rounded
-    cursor-pointer
-    text-gray-400;
-  }
-  .run-button:hover {
-    @apply bg-gray-100;
-  }
-  .run-button:active {
-    @apply bg-gray-100 text-gray-800;
   }
   .language-indicator {
     @apply flex 

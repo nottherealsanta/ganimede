@@ -42,7 +42,7 @@
     text-sm
     text-gray-500
     z-10
-    shadow-sm;
+    shadow-md;
     font-family: "Inter", sans-serif;
     font-weight: 500;
     user-select: none;

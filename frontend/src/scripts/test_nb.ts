@@ -4,7 +4,9 @@ export let cell_ids = [
     "U2dG4mjD",
     "CmdY3sdw",
     "Q2dG4mjD",
-    "F9j3Bj2o"
+    "F9j3Bj2o",
+    "H93BfwI8",
+    "jBu3Ivjd"
   ];
 export let cell_maps : {[key: string]: any} = {
   "JiXjY973": {
@@ -85,5 +87,43 @@ export let cell_maps : {[key: string]: any} = {
     "parent_collapsed": false,
     "state": "idle",
     "execution_time": null
-  }
+  },
+  "H93BfwI8": {
+    "id": "H93BfwI8",
+    "type": "markdown",
+    "source": [
+     "# This also is a heading 1\n",
+      "This is some text in the markdown cell"
+    ],
+    "heading_level": 1,
+    "collapsed": false,
+    "parent_collapsed": false,
+    "state": "idle",
+    "execution_time": null
+   },
+   "jBu3Ivjd": {
+    "id": "jBu3Ivjd",
+    "type": "python",
+    "source": [
+    "a = np.array([1, 2, 3, 4, 5])\n",
+    "b = np.array([6, 7, 8, 9, 10])\n",
+    "c = a + b\n",
+    "print(c)"
+   ],
+    "execution_count": 4,
+    "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[ 7  9 11 13 15]\n"
+     ]
+    }
+    ],
+    "heading_level": null,
+    "collapsed": false,
+    "parent_collapsed": false,
+    "state": "idle",
+    "execution_time": 0.5
+  },
 }
