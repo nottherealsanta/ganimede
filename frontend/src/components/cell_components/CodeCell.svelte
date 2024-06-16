@@ -2,6 +2,7 @@
   import CodeEditor from "./CodeEditor.svelte";
   import CodeCellBar from "./CodeCellBar.svelte";
   import { cell_maps } from "../../scripts/test_nb";
+  import Output from "./outputs/Output.svelte";
 
   export let cell_id: string;
   export let is_hover: boolean = false;
@@ -10,10 +11,12 @@
 </script>
 
 <div class="code-cell">
-  <div class="flex flex-col">
-    <CodeCellBar {cell_id} {is_hover} />
-    <CodeEditor {cell} />
-  </div>
+  <CodeCellBar {cell_id} {is_hover} />
+  <CodeEditor {cell} />
+
+  {#if cell.outputs && cell.outputs.length > 0}
+    <Output {cell} />
+  {/if}
 </div>
 
 <style>

@@ -15,8 +15,8 @@
 </script>
 
 <div
-  class="w-fit max-w-3xl h-auto bg-transparent hover:bg-oli-100 dark:hover:bg-oli-800 my-1 pl-1 pr-1 pt-0.5 pb-0.5 rounded whitespace-pre-line overflow-hidden text-xs select-text dark:text-white"
-  style="font-family: Roboto Mono; font-size: 0.8rem;"
+  class="w-fit max-w-3xl h-auto bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 my-1 p-1 rounded whitespace-pre-line overflow-hidden text-sm select-text dark:text-white"
+  style="font-family: 'Inter', sans-serif;"
 >
   {@html display_text}
 </div>

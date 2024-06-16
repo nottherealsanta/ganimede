@@ -17,13 +17,18 @@
   $: if (!is_active) {
     ai_bar = false;
   }
+
+  $: exe_count_test =
+    cell.execution_count === undefined ? " " : cell.execution_count.toString();
 </script>
 
-<div class="cell-sidebar">
-  <CellRunButton {cell} {is_hover} />
+<div class="cell-bar">
+  <CellRunButton {cell} />
   <div class="flex-grow"></div>
+
   {#if is_hover}
     <div class="cell-status-time">0.0s</div>
+    <div class="execution-count">{exe_count_test}</div>
     <div class="language-indicator">{cell.type}</div>
     <button
       class="toolbar-button {ai_bar ? 'text-fuchsia-500' : ''}"
@@ -44,25 +49,26 @@
 {/if}
 
 <style>
-  .cell-sidebar {
+  .cell-bar {
     @apply flex 
+    -top-2
     w-full h-8
     px-1 py-0.5
     items-center
-    bg-transparent
+    bg-gray-50/50
     rounded-t;
   }
   .language-indicator {
     @apply flex 
-    h-full w-fit px-1
-    mr-2
+    h-7 w-fit px-2
+    mx-1
     items-center justify-center
     cursor-default
-    bg-gray-50
+    bg-transparent
     rounded-md
     text-xs
     text-gray-400;
-    font-family: "Inter", sans-serif;
+    font-family: "IBM Plex Sans", sans-serif;
     font-weight: 500;
     font-style: normal;
   }
@@ -77,18 +83,19 @@
     bg-transparent
     text-xs
     text-gray-400;
-    font-family: "Inter", sans-serif;
+    font-family: "IBM Plex Sans", sans-serif;
     font-weight: 500;
     font-style: normal;
   }
   .execution-count {
-    @apply flex 
+    @apply flex absolute
     h-full w-8
+    left-1/2
     items-center justify-center
     cursor-default
     bg-transparent
     text-xs text-gray-400;
-    font-family: "Inter", sans-serif;
+    font-family: "IBM Plex Sans", sans-serif;
     font-weight: 500;
     font-style: normal;
   }

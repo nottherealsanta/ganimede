@@ -32,18 +32,19 @@
   .ai-bar {
     @apply flex
     w-full h-auto min-h-6
-    py-1 px-1
+    py-0.5 px-0.5
     items-center justify-center
-    bg-white
+    bg-gray-50
     overflow-y-auto
     border-y-2 border-gray-100;
   }
   .ai-bar-inside {
     @apply flex 
     w-full h-full px-2 py-1
+    bg-white
     items-center justify-center 
     rounded-md 
-    border border-gray-300;
+    border-2 border-gray-100;
   }
   .textarea {
     @apply min-w-[10rem] py-1 text-sm;

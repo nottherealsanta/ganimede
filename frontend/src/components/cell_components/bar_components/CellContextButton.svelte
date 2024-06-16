@@ -89,18 +89,23 @@
 <style>
   .menu-button {
     @apply relative flex 
-    h-7 w-7 p-1 
+    h-7 w-7 p-1 mx-1
     items-center justify-center
     bg-transparent
     rounded-md
     text-gray-400;
+  }
+  .menu-button:hover {
+    @apply bg-gray-100;
   }
   .menu {
     @apply absolute 
     right-0 z-10 mt-0 py-1 px-1 w-52
     origin-top-right 
     rounded bg-white 
-    shadow-lg ring-1 ring-gray-200;
+    text-gray-600
+    shadow
+    ring-1 ring-gray-200;
     font-family: "IBM Plex Sans", sans-serif;
     font-weight: 400;
   }

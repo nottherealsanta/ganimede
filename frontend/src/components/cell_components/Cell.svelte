@@ -59,11 +59,11 @@
   .active-cell::before {
     content: "";
     position: absolute;
-    top: 2px;
-    bottom: 2px;
+    top: 4px;
+    bottom: 4px;
     left: 0;
     width: 2px;
-    @apply bg-blue-500;
+    @apply bg-blue-500 rounded-full;
   }
   .debug {
     @apply absolute bottom-0 right-0

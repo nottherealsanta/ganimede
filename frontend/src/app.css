@@ -36,12 +36,12 @@ body {
 /* monaco */
 .monaco-editor .margin-view-overlays .line-numbers {
   font-size: 12px;
-  color: #ccc;
+  color: #afafaf;
 }
 
 /* active line number color */
 .monaco-editor .line-numbers.active-line-number {
-  color: #adadad;
+  color: #000000;
 }
 
 /* sortablejs */
