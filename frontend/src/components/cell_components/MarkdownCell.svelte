@@ -51,9 +51,10 @@
 <style>
   .markdown {
     @apply flex flex-col
-    w-full 
+    w-full min-h-20
     px-4 py-0
     bg-transparent
+    items-start justify-center
     text-gray-900
     rounded-md
     overflow-y-auto
@@ -61,7 +62,7 @@
     font-family: "Inter", sans-serif;
   }
   .markdown:hover {
-    @apply border border-gray-300;
+    @apply border border-gray-200;
   }
   .textarea {
     @apply w-full h-full

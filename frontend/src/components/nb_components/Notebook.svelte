@@ -33,7 +33,6 @@
   >
     {#each cell_ids as cell_id, index (cell_id)}
       <div>
-        <!-- above each cell -->
         <NewCellToolbar {index} />
         <Cell {cell_id} />
       </div>

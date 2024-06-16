@@ -16,7 +16,7 @@
 
 <div
   class="w-fit max-w-3xl h-auto bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 my-1 p-1 rounded whitespace-pre-line overflow-hidden text-sm select-text dark:text-white"
-  style="font-family: 'Inter', sans-serif;"
+  style="font-family: 'IBM Plex Mono', monospace; font-weight: 400;"
 >
   {@html display_text}
 </div>

@@ -7,7 +7,6 @@
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div class="new-cell-toolbar" on:click|stopPropagation>
   <div class="line" />
-  {index}
   <div class="toolbar-button">Python</div>
   <div class="line" />
   <div class="toolbar-button">SQL</div>
@@ -18,7 +17,7 @@
 <style>
   .new-cell-toolbar {
     @apply flex relative
-    w-full h-2 my-1
+    w-full h-2 mb-1
     items-center justify-center 
     bg-transparent 
     rounded-full;

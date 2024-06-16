@@ -16,9 +16,7 @@
 </script>
 
 <div
-  class="cell
-  {is_active ? 'active-cell' : ''} 
-  "
+  class="cell"
   role="presentation"
   on:mouseenter={() => {
     is_hover = true;
@@ -32,6 +30,9 @@
 >
   <Grab {is_hover} />
 
+  {#if is_active}
+    <div class="active-cell-indicator"></div>
+  {/if}
   <!-- code / markdown -->
   {#if cell.type === "python" || cell.type === "sql"}
     <CodeCell {cell_id} {is_hover} />
@@ -49,21 +50,22 @@
 
 <style>
   .cell {
-    @apply flex relative
-    w-auto h-auto
+    @apply flex flex-col relative
+    w-auto h-auto mb-1
     bg-white
     rounded-md
     border-2 border-transparent;
   }
 
-  .active-cell::before {
-    content: "";
-    position: absolute;
-    top: 4px;
-    bottom: 4px;
-    left: 0;
-    width: 2px;
-    @apply bg-blue-500 rounded-full;
+  .active-cell-indicator {
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    top: -2px;
+    left: -2px;
+    @apply absolute
+    bg-transparent
+    ring-2 ring-sky-500
+    rounded-md;
   }
   .debug {
     @apply absolute bottom-0 right-0

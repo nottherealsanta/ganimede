@@ -105,11 +105,11 @@
     w-full h-fit 
     p-0.5
     min-h-6 
-    bg-white
+    bg-gray-50/50
     rounded-b;
   }
   .editor {
-    @apply w-full rounded-md bg-white py-1;
+    @apply w-full rounded-md bg-gray-50/50 py-1;
     overflow: hidden;
   }
 </style>

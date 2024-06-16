@@ -13,7 +13,6 @@
 <div class="code-cell">
   <CodeCellBar {cell_id} {is_hover} />
   <CodeEditor {cell} />
-
   {#if cell.outputs && cell.outputs.length > 0}
     <Output {cell} />
   {/if}
@@ -26,6 +25,13 @@
     m-0
     bg-transparent
     border-2 border-gray-100
+    rounded-md;
+  }
+  .output {
+    @apply flex flex-col
+    w-full h-auto
+    mt-2
+    bg-transparent
     rounded-md;
   }
 </style>

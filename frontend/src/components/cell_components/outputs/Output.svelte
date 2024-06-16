@@ -52,7 +52,7 @@
 <!-- min-height: {last_height}px;  -->
 <!-- min-width: {last_width}px; -->
 <div
-  class="flex rounded-b-md border-t-2 border-gray-100 px-2 items-start h-auto w-full justify-center align-stretch overflow-y-auto pointer-events-none"
+  class="outputs flex rounded-b-md px-2 items-start h-auto w-full justify-center align-stretch overflow-y-auto pointer-events-none"
   style=" max-height: 616px; 
         {cell.state == 'queued' ? 'opacity: 0.5' : ''}
         max-width: 100%;
@@ -91,4 +91,13 @@
 </div>
 
 <style>
+  .outputs {
+    @apply flex flex-col
+    w-full h-auto
+    px-4 py-2
+    bg-white
+    rounded-b-md
+    overflow-y-auto
+    pointer-events-none;
+  }
 </style>

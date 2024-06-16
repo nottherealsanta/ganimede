@@ -19,7 +19,9 @@
   }
 
   $: exe_count_test =
-    cell.execution_count === undefined ? " " : cell.execution_count.toString();
+    cell.execution_count === undefined
+      ? "[ ]"
+      : cell.execution_count.toString();
 </script>
 
 <div class="cell-bar">
