@@ -62,7 +62,7 @@ export const light_theme: any = {
   ],
   "colors": {
     "editor.foreground": "#000000",
-    "editor.background": "#FCFCFD",
+    "editor.background": "#F9FAFB",
     "editor.selectionBackground": "#BAD6FD",
     "editor.lineHighlightBackground": "#00000012",
     "editorCursor.foreground": "#000000",

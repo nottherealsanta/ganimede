@@ -12,9 +12,10 @@
 
 <div class="code-cell">
   <CodeCellBar {cell_id} {is_hover} />
-  <CodeEditor {cell} />
+  <CodeEditor {cell} {is_hover} />
+
   {#if cell.outputs && cell.outputs.length > 0}
-    <Output {cell} />
+    <Output {cell} {is_hover} />
   {/if}
 </div>
 
@@ -27,11 +28,7 @@
     border-2 border-gray-100
     rounded-md;
   }
-  .output {
-    @apply flex flex-col
-    w-full h-auto
-    mt-2
-    bg-transparent
-    rounded-md;
+  .code-cell:hover {
+    @apply border-gray-200;
   }
 </style>

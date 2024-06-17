@@ -51,7 +51,7 @@
 <style>
   .markdown {
     @apply flex flex-col
-    w-full min-h-20
+    w-full min-h-10
     px-4 py-0
     bg-transparent
     items-start justify-center

@@ -56,7 +56,14 @@
     rounded-md
     border-2 border-transparent;
   }
-
+  .cell::after {
+    /* for hover effect to work on grab and collapse */
+    content: "";
+    @apply absolute
+    top-0 -left-8
+    w-8 h-full
+    bg-transparent;
+  }
   .active-cell-indicator {
     width: calc(100% + 4px);
     height: calc(100% + 4px);

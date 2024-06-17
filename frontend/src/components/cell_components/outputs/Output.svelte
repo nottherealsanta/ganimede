@@ -1,30 +1,10 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-
   export let cell: any;
-
+  export let is_hover: boolean = false;
   let outputs: never[] = cell.outputs;
-  // cell.ycell.observeDeep(() => {
-  //   // TODO: this is a hack to get the outputs to update, fix this
-  //   outputs = cell.outputs.toJSON();
-  // });
 
-  // last heights
   let height = 0;
-  // let last_height = 0;
   let width = 0;
-  // let last_width = 0;
-  // $: if (cell.state == "queued") {
-  //   last_height = height;
-  //   last_width = width;
-  // } else if (cell.state == "idle") {
-  //   last_height = 0;
-  //   last_width = 0;
-  // }
-  // onMount(() => {
-  //   last_height = height;
-  //   last_width = width;
-  // });
 
   // output components
   import ErrorOutput from "./ErrorOutput.svelte";
@@ -33,71 +13,89 @@
   import MarkdownOutput from "./MarkdownOutput.svelte";
   import TextOutput from "./TextOutput.svelte";
 
-  // toggle collapsed
-  // function toggle_output_collapsed(e) {
-  //   if (cell.collapsed == "i") {
-  //     cell.collapsed = "b";
-  //   } else if (cell.collapsed == "b") {
-  //     cell.collapsed = "i";
-  //   } else if (cell.collapsed == "o") {
-  //     cell.collapsed = null;
-  //   } else {
-  //     cell.collapsed = "o";
-  //   }
-  // }
-  // $: output_collapsed = cell.collapsed == "o" || cell.collapsed == "b";
-  let output_collapsed = false;
+  // collapsible chevron
+  import Collapsible from "../../utility_components/Collapsible.svelte";
+  let output_collapsed: boolean = false;
 </script>
 
-<!-- min-height: {last_height}px;  -->
-<!-- min-width: {last_width}px; -->
-<div
-  class="outputs flex rounded-b-md px-2 items-start h-auto w-full justify-center align-stretch overflow-y-auto pointer-events-none"
-  style=" max-height: 616px; 
+<div class="relative">
+  <div
+    class="outputs"
+    style=" max-height: 600px; 
         {cell.state == 'queued' ? 'opacity: 0.5' : ''}
         max-width: 100%;
         "
-  bind:clientHeight={height}
-  bind:clientWidth={width}
-  on:mousedown|stopPropagation={() => {}}
-  aria-hidden={true}
->
-  <div
-    class="w-full h-auto p-0
-                 rounded-br float-bottom cursor-default pointer-events-auto select-text"
+    bind:clientHeight={height}
+    bind:clientWidth={width}
+    on:mousedown|stopPropagation={() => {}}
+    aria-hidden={true}
   >
-    {#if outputs}
-      {#each outputs as output}
-        {#if output["data"]}
-          {#if "text/html" in output["data"]}
-            <HtmlOutput {output} />
-          {:else if "text/markdown" in output["data"]}
-            <MarkdownOutput {output} />
-          {:else if "image/png" in output["data"]}
-            <ImageOutput {output} />
-          {:else if "text/plain" in output["data"]}
+    <div
+      class="w-full h-auto px-4
+          rounded-br float-bottom
+          cursor-default
+          pointer-events-auto select-text"
+      style="display: {output_collapsed ? 'none' : 'block'}"
+    >
+      {#if outputs}
+        {#each outputs as output}
+          <!-- {JSON.stringify(output)} -->
+          {#if output["text"]}
             <TextOutput {output} />
           {/if}
-        {/if}
-        {#if output["text"]}
-          <TextOutput {output} />
-        {/if}
-        {#if output["output_type"] == "error"}
-          <ErrorOutput {output} />
-        {/if}
-      {/each}
-    {/if}
+          {#if output["output_type"] == "error"}
+            <ErrorOutput {output} />
+          {/if}
+          {#if output["data"]}
+            {#if "text/html" in output["data"]}
+              <HtmlOutput {output} />
+            {:else if "text/markdown" in output["data"]}
+              <MarkdownOutput {output} />
+            {:else if "image/png" in output["data"]}
+              <ImageOutput {output} />
+            {:else if "text/plain" in output["data"]}
+              <TextOutput {output} />
+            {/if}
+          {/if}
+        {/each}
+      {/if}
+    </div>
   </div>
+  <!-- if collapsed -->
+  {#if output_collapsed}
+    <button
+      class="collapsed-outputs"
+      on:click={() => (output_collapsed = false)}
+    >
+      Outputs hidden
+    </button>
+  {/if}
+  {#if is_hover}
+    <Collapsible bind:is_collapsed={output_collapsed} />
+  {/if}
 </div>
 
 <style>
   .outputs {
-    @apply flex flex-col
-    w-full h-auto
-    px-4 py-2
+    @apply flex flex-col 
+    relative
+    w-full h-fit
+    py-2
     bg-white
     rounded-b-md
-    overflow-y-auto
-    pointer-events-none;
+    overflow-y-auto;
+    overflow-x: visible;
+    scrollbar-width: thin;
+  }
+  .collapsed-outputs {
+    @apply flex
+    w-full h-10
+    px-4
+  bg-white
+  text-gray-600
+    text-sm
+    items-center 
+    z-10;
+    font-family: "Inter";
   }
 </style>

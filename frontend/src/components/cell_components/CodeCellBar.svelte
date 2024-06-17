@@ -57,7 +57,7 @@
     w-full h-8
     px-1 py-0.5
     items-center
-    bg-gray-50/50
+    bg-gray-50
     rounded-t;
   }
   .language-indicator {

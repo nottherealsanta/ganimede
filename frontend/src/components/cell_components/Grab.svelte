@@ -16,7 +16,8 @@
   bg-transparent
   rounded-none
   cursor-grab
-  text-gray-400;
+  text-gray-400
+  z-10;
   }
   .left-controls:hover {
     @apply text-gray-500;

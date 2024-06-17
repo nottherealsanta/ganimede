@@ -1,7 +1,7 @@
 <!-- <script>
   export let output;
   let output_div;
-  let html_string;
+  let html_string: string;
   let html_type;
   $: if (typeof output["data"]["text/html"].join("") === "string") {
     html_string = output["data"]["text/html"].join("");

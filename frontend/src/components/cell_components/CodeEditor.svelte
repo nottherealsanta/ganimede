@@ -4,6 +4,7 @@
 
 <script lang="ts">
   export let cell;
+  export let is_hover: boolean = false;
 
   import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
   self.MonacoEnvironment = {
@@ -70,7 +71,7 @@
       );
       if (container) {
         container.style.width = `${width}px`;
-        container.style.height = `${contentHeight + 8}px`;
+        container.style.height = `${contentHeight + 4}px`;
       }
       try {
         ignoreEvent = true;
@@ -84,32 +85,62 @@
 
     // dynamic width
     new ResizeObserver(() => {
-      width = code_editor_container ? code_editor_container.clientWidth - 4 : 0;
+      width = code_editor_container ? code_editor_container.clientWidth - 6 : 0;
       updateHeightWidth();
     }).observe(code_editor_container);
   });
 
   import { cell_maps } from "../../scripts/test_nb";
   import { onMount } from "svelte";
+  import Collapsible from "../utility_components/Collapsible.svelte";
 
+  let code_collapsed: boolean = false;
   let source: string = cell.source;
 </script>
 
 <div class="code-editor" bind:this={code_editor_container}>
-  <div class="editor" bind:this={container}></div>
+  <div
+    class="editor"
+    style="display: {code_collapsed ? 'none' : 'block'}"
+    bind:this={container}
+  ></div>
+
+  <!-- if collapsed -->
+  {#if code_collapsed && cell.source.length > 1}
+    <button class="collapsed-editor" on:click={() => (code_collapsed = false)}>
+      {cell.source[0]}...
+    </button>
+  {/if}
+  {#if is_hover && cell.source.length > 1}
+    <Collapsible bind:is_collapsed={code_collapsed} />
+  {/if}
 </div>
 
 <style>
   .code-editor {
-    @apply flex flex-col
+    @apply flex flex-col relative
     w-full h-fit 
+    bg-gray-50
     p-0.5
     min-h-6 
-    bg-gray-50/50
     rounded-b;
   }
   .editor {
-    @apply w-full rounded-md bg-gray-50/50 py-1;
-    overflow: hidden;
+    @apply w-full rounded-md bg-gray-50 px-1;
+    overflow: visible;
+  }
+  .collapsed-editor {
+    @apply flex
+    w-full h-10
+    px-4
+  bg-gray-50
+  text-gray-500
+    text-sm
+    items-center 
+    z-10;
+    font-family: "IBM Plex Mono";
+  }
+  .collapsed-editor:hover {
+    @apply bg-gray-100;
   }
 </style>
