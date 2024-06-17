@@ -42,7 +42,7 @@
   }
   .name {
     @apply text-gray-800;
-    font-family: "Inter", sans-serif;
+    font-family: "IBM Plex Sans", sans-serif;
     font-weight: 600;
   }
   .actions {

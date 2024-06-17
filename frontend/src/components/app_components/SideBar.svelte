@@ -65,7 +65,7 @@
       h-full w-[25%] px-2 pt-4 m-0 
       bg-gray-50 border-r-2 border-gray-200 
       text-gray-700;
-    font-family: "Inter", sans-serif;
+    font-family: "IBM Plex Sans", sans-serif;
     font-weight: 600;
   }
   .toggle-button {

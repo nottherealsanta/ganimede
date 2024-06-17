@@ -18,7 +18,7 @@
   .right-controls {
     @apply absolute flex 
     w-6 h-6 p-1
-    top-[6px] -right-6
+    top-[6px] -right-7
     items-center justify-center
     bg-transparent
     rounded-r-md

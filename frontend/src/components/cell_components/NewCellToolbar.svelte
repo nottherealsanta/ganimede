@@ -29,7 +29,7 @@
     @apply bg-gray-50;
   }
   .line {
-    @apply absolute h-[1px] w-[98%] bg-gray-200;
+    @apply absolute h-[1px] w-[98%] bg-gray-300;
   }
   .toolbar-button {
     @apply flex 
@@ -37,7 +37,7 @@
     items-center
     bg-white
     rounded-lg
-    border border-gray-200
+    border border-gray-300
     text-sm
     text-gray-500
     z-10

@@ -48,7 +48,7 @@
   }
   .textarea {
     @apply min-w-[10rem] py-1 text-sm;
-    font-family: "Inter", sans-serif;
+    font-family: "IBM Plex Sans", sans-serif;
   }
   .textarea:focus {
     @apply outline-none;
@@ -67,8 +67,6 @@
     cursor-pointer
     text-sm
     text-gray-400;
-    font-family: "Inter", sans-serif;
-    font-weight: 500;
   }
   .aibar-button:hover {
     @apply bg-gray-100;

@@ -18,14 +18,15 @@
     h-7 w-7
     items-center justify-center
     bg-transparent
-    rounded-md
+    rounded-sm
+    border border-transparent
     cursor-pointer
     text-gray-400;
   }
   .run-button:hover {
-    @apply bg-gray-200;
+    @apply bg-gray-200 text-gray-600;
   }
   .run-button:active {
-    @apply bg-gray-300 text-gray-700;
+    @apply bg-gray-300 text-gray-800;
   }
 </style>
