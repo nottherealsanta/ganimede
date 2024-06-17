@@ -34,7 +34,7 @@
 <style>
   .navbar {
     @apply flex fixed
-    top-0 left-0 w-full h-8 
+    top-0 left-0 w-full h-8
     px-2
     items-center
     bg-white
@@ -50,7 +50,7 @@
   }
   .action-button {
     @apply relative flex
-    h-8 w-8 p-2
+    h-7 w-7 p-[6px]
     items-center justify-center
     bg-transparent
     rounded-lg
@@ -61,11 +61,11 @@
   }
   .tooltip {
     @apply absolute 
-    w-fit px-1 py-0.5 
+    w-fit px-2 py-1 
     bg-gray-700 text-gray-100
     rounded-md
     -bottom-6 right-1/3
-    text-nowrap text-xs;
+    text-nowrap text-sm;
     transition: opacity 0.25s ease-out;
     opacity: 0;
     overflow: hidden;

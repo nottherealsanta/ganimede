@@ -23,7 +23,11 @@
 
 <style>
   .text-output {
-    @apply w-fit max-w-3xl h-auto bg-transparent  my-1 p-1 rounded whitespace-pre-line overflow-hidden text-sm select-text;
+    @apply w-fit min-w-32
+    h-auto bg-transparent  
+    my-1 p-1 rounded
+     whitespace-pre-line 
+     overflow-hidden text-sm select-text;
   }
   .text-output:hover {
     @apply bg-gray-100;

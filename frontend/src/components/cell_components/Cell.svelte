@@ -15,26 +15,6 @@
   // active cell
   import { activeCellId } from "../../stores/notebook";
   $: is_active = $activeCellId === cell_id;
-
-  // deactivate cell when clicked outside
-  function handleClickOutside(event: MouseEvent) {
-    if (cell_div && !cell_div.contains(event.target as Node)) {
-      activeCellId.set("");
-    }
-  }
-
-  $: {
-    if (is_active) {
-      document.addEventListener("click", handleClickOutside);
-    } else {
-      document.removeEventListener("click", handleClickOutside);
-    }
-  }
-  import { onDestroy } from "svelte";
-  import { Delete } from "lucide-svelte";
-  onDestroy(() => {
-    document.removeEventListener("click", handleClickOutside);
-  });
 </script>
 
 <div
