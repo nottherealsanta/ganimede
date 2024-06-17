@@ -1,18 +1,40 @@
 <script lang="ts">
   import CodeCell from "./CodeCell.svelte";
   import Grab from "./Grab.svelte";
+  import DeleteCell from "./DeleteCell.svelte";
 
   export let cell_id: string;
 
   import { cell_maps } from "../../scripts/test_nb";
   import MarkdownCell from "./MarkdownCell.svelte";
   let cell: any = cell_maps[cell_id];
+  let cell_div: HTMLDivElement;
 
   let is_hover: boolean = false;
 
   // active cell
   import { activeCellId } from "../../stores/notebook";
   $: is_active = $activeCellId === cell_id;
+
+  // deactivate cell when clicked outside
+  function handleClickOutside(event: MouseEvent) {
+    if (cell_div && !cell_div.contains(event.target as Node)) {
+      activeCellId.set("");
+    }
+  }
+
+  $: {
+    if (is_active) {
+      document.addEventListener("click", handleClickOutside);
+    } else {
+      document.removeEventListener("click", handleClickOutside);
+    }
+  }
+  import { onDestroy } from "svelte";
+  import { Delete } from "lucide-svelte";
+  onDestroy(() => {
+    document.removeEventListener("click", handleClickOutside);
+  });
 </script>
 
 <div
@@ -24,11 +46,13 @@
   on:mouseleave={() => {
     is_hover = false;
   }}
-  on:click={() => {
+  bind:this={cell_div}
+  on:click={(e) => {
     activeCellId.set(cell_id);
   }}
 >
   <Grab {is_hover} />
+  <DeleteCell {cell_id} {is_hover} />
 
   {#if is_active}
     <div class="active-cell-indicator"></div>
@@ -56,11 +80,19 @@
     rounded-md
     border-2 border-transparent;
   }
-  .cell::after {
-    /* for hover effect to work on grab and collapse */
+  .cell::before {
+    /* for hover effect to work on grab */
     content: "";
     @apply absolute
     top-0 -left-8
+    w-8 h-full
+    bg-transparent;
+  }
+  .cell::after {
+    /* for hover effect to work on delete */
+    content: "";
+    @apply absolute
+    top-0 -right-8
     w-8 h-full
     bg-transparent;
   }
