@@ -15,7 +15,7 @@
 <style>
   .collapsible-chevron {
     @apply flex absolute
-    w-1
+    w-2
     -left-0
     bg-transparent
     items-center justify-center
@@ -26,7 +26,7 @@
     top: 3px;
   }
   .collapsible-chevron:hover {
-    @apply w-[6px] bg-sky-500;
+    @apply w-2 bg-blue-500;
     height: calc(100% - 6px);
     top: 3px;
   }
@@ -44,9 +44,11 @@
   }
 
   .collapse-text {
-    @apply absolute mr-6 hidden text-xs text-gray-600;
+    @apply absolute mr-6 hidden text-xs text-blue-500;
     transform: rotate(-90deg);
     animation: fadeIn 2s ease-in-out;
+    font-family: "IBM Plex Sans", sans-serif;
+    font-weight: 700;
   }
 
   .collapsible-chevron:hover .collapse-text {

@@ -71,8 +71,9 @@
     left: -2px;
     @apply absolute
     bg-transparent
-    ring-2 ring-sky-500
+    ring-2 ring-gray-800
     rounded-md;
+    pointer-events: none;
   }
   .debug {
     @apply absolute bottom-0 right-0

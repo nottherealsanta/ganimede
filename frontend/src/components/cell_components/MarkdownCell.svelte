@@ -43,7 +43,7 @@
       adjustHeight(); // Add this line
     }}
   ></textarea>
-  <div class="{is_active ? 'hidden' : ''} markdown-content">
+  <div class="{is_active ? 'hidden' : ''} markdown-content w-full h-fit">
     {@html marked(source)}
   </div>
 </div>
@@ -70,9 +70,13 @@
     bg-transparent
     border-none
     resize-none
-    outline-none;
+    outline-none
+    z-20;
     font-family: "Inter", sans-serif;
     min-height: 50px;
+  }
+  .textarea::selection {
+    @apply bg-sky-200;
   }
   :global(.markdown p) {
     font-size: 16px;

@@ -15,8 +15,17 @@
 </script>
 
 <div
-  class="w-fit max-w-3xl h-auto bg-transparent hover:bg-gray-100my-1 p-1 rounded whitespace-pre-line overflow-hidden text-sm select-text"
+  class="text-output"
   style="font-family: 'IBM Plex Mono', monospace; font-weight: 400;"
 >
   {@html display_text}
 </div>
+
+<style>
+  .text-output {
+    @apply w-fit max-w-3xl h-auto bg-transparent  my-1 p-1 rounded whitespace-pre-line overflow-hidden text-sm select-text;
+  }
+  .text-output:hover {
+    @apply bg-gray-100;
+  }
+</style>

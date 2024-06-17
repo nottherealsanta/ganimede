@@ -23,9 +23,9 @@
     text-gray-400;
   }
   .run-button:hover {
-    @apply bg-gray-100;
+    @apply bg-gray-200;
   }
   .run-button:active {
-    @apply bg-gray-100 text-gray-700;
+    @apply bg-gray-300 text-gray-700;
   }
 </style>

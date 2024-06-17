@@ -3,8 +3,13 @@
 </script>
 
 <script lang="ts">
+  import { onMount } from "svelte";
+  import Collapsible from "../utility_components/Collapsible.svelte";
+
   export let cell;
   export let is_hover: boolean = false;
+
+  let code_collapsed: boolean = false;
 
   import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
   self.MonacoEnvironment = {
@@ -89,13 +94,6 @@
       updateHeightWidth();
     }).observe(code_editor_container);
   });
-
-  import { cell_maps } from "../../scripts/test_nb";
-  import { onMount } from "svelte";
-  import Collapsible from "../utility_components/Collapsible.svelte";
-
-  let code_collapsed: boolean = false;
-  let source: string = cell.source;
 </script>
 
 <div class="code-editor" bind:this={code_editor_container}>
@@ -106,12 +104,13 @@
   ></div>
 
   <!-- if collapsed -->
-  {#if code_collapsed && cell.source.length > 1}
+  {#if code_collapsed}
     <button class="collapsed-editor" on:click={() => (code_collapsed = false)}>
+      <span>Code Hidden</span>&nbsp;
       {cell.source[0]}...
     </button>
   {/if}
-  {#if is_hover && cell.source.length > 1}
+  {#if is_hover}
     <Collapsible bind:is_collapsed={code_collapsed} />
   {/if}
 </div>
@@ -133,7 +132,7 @@
     @apply flex
     w-full h-10
     px-4
-  bg-gray-50
+  bg-gray-100
   text-gray-500
     text-sm
     items-center 
@@ -141,6 +140,10 @@
     font-family: "IBM Plex Mono";
   }
   .collapsed-editor:hover {
-    @apply bg-gray-100;
+    @apply bg-gray-200;
+  }
+  .collapsed-editor span {
+    font-family: "IBM Plex Sans", sans-serif;
+    font-weight: 600;
   }
 </style>

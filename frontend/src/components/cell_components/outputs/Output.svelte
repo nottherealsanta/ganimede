@@ -31,7 +31,7 @@
     aria-hidden={true}
   >
     <div
-      class="w-full h-auto px-4
+      class="w-full h-auto px-4 py-2
           rounded-br float-bottom
           cursor-default
           pointer-events-auto select-text"
@@ -80,7 +80,7 @@
     @apply flex flex-col 
     relative
     w-full h-fit
-    py-2
+    
     bg-white
     rounded-b-md
     overflow-y-auto;
@@ -96,6 +96,10 @@
     text-sm
     items-center 
     z-10;
-    font-family: "Inter";
+    font-family: "IBM Plex Sans", sans-serif;
+    font-weight: 600;
+  }
+  .collapsed-outputs:hover {
+    @apply bg-gray-100;
   }
 </style>

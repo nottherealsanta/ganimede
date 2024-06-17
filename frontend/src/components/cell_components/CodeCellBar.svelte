@@ -26,12 +26,14 @@
 
 <div class="cell-bar">
   <CellRunButton {cell} />
-  <div class="flex-grow"></div>
 
   {#if is_hover}
     <div class="cell-status-time">0.0s</div>
+    <div class="flex-grow"></div>
     <div class="execution-count">{exe_count_test}</div>
     <div class="language-indicator">{cell.type}</div>
+
+    <!-- AI Button -->
     <button
       class="toolbar-button {ai_bar ? 'text-fuchsia-500' : ''}"
       on:click={() => (ai_bar = !ai_bar)}
@@ -43,7 +45,10 @@
         <Sparkles size="16" />
       {/if}
     </button>
+  {:else}
+    <div class="flex-grow"></div>
   {/if}
+
   <CellContextButton {is_hover} />
 </div>
 {#if ai_bar && is_active}
@@ -55,7 +60,7 @@
     @apply flex 
     -top-2
     w-full h-8
-    px-1 py-0.5
+    px-0.5 py-0.5
     items-center
     bg-gray-50
     rounded-t;
