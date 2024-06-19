@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { X } from "lucide-svelte";
+  import { X, SendHorizonal, Ellipsis } from "lucide-svelte";
 
   // on Mount focus the textarea
   let textarea: HTMLDivElement;
@@ -14,8 +14,13 @@
 <div class="ai-bar">
   <div class="ai-bar-inside">
     <div class="textarea" contentEditable bind:this={textarea}></div>
-    <div class="flex-grow"></div>
-    <!-- <button
+    <button class="aibar-button" aria-label="Send AI">
+      <SendHorizonal size="14" />
+    </button>
+    <button class="aibar-button" aria-label="Send AI">
+      <Ellipsis size="14" />
+    </button>
+    <button
       class="aibar-button"
       aria-label="Close AI Bar"
       on:click={() => {
@@ -24,30 +29,30 @@
       }}
     >
       <X size="14" />
-    </button> -->
+    </button>
   </div>
 </div>
 
 <style>
   .ai-bar {
     @apply flex
-    w-full h-auto min-h-6
-    py-0.5 px-0.5
+    w-full h-auto min-h-6 px-1 py-1
     items-center justify-center
-    bg-gray-50
+    bg-gray-100
     overflow-y-auto
+    rounded-md
     border-y-2 border-gray-100;
   }
   .ai-bar-inside {
     @apply flex 
-    w-full h-full px-2 py-1
+    w-full h-full px-1 py-1
     bg-white
     items-center justify-center 
     rounded-md 
-    border-2 border-gray-100;
+    border-2 border-gray-300;
   }
   .textarea {
-    @apply min-w-[10rem] py-1 text-sm;
+    @apply w-full min-w-[10rem] p-1 text-sm bg-transparent;
     font-family: "IBM Plex Sans", sans-serif;
   }
   .textarea:focus {
@@ -66,7 +71,7 @@
     rounded-md
     cursor-pointer
     text-sm
-    text-gray-400;
+    text-gray-500;
   }
   .aibar-button:hover {
     @apply bg-gray-100;

@@ -89,14 +89,17 @@
 <style>
   .menu-button {
     @apply relative flex 
-    h-7 w-7 p-1 mx-1
+    h-7 w-7 p-1 ml-1
     items-center justify-center
     bg-transparent
     rounded-md
-    text-gray-400;
+    text-gray-500;
   }
   .menu-button:hover {
     @apply bg-gray-100;
+  }
+  .menu-button:active {
+    @apply bg-gray-200 text-gray-800;
   }
   .menu {
     @apply absolute 

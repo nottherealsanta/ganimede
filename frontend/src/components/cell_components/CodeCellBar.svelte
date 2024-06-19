@@ -52,7 +52,7 @@
   <CellContextButton {is_hover} />
 </div>
 {#if ai_bar && is_active}
-  <AiBar {ai_bar} />
+  <AiBar bind:ai_bar />
 {/if}
 
 <style>
@@ -60,7 +60,7 @@
     @apply flex 
     -top-2
     w-full h-8
-    px-0.5 py-0.5
+    px-0.5 py-1
     items-center
     bg-gray-50
     rounded-t;
@@ -74,7 +74,7 @@
     bg-transparent
     rounded-md
     text-xs
-    text-gray-400;
+    text-gray-500;
     font-family: "IBM Plex Sans", sans-serif;
     font-weight: 500;
     font-style: normal;
@@ -89,7 +89,7 @@
     cursor-default
     bg-transparent
     text-xs
-    text-gray-400;
+    text-gray-500;
     font-family: "IBM Plex Sans", sans-serif;
     font-weight: 500;
     font-style: normal;
@@ -101,7 +101,7 @@
     items-center justify-center
     cursor-default
     bg-transparent
-    text-xs text-gray-400;
+    text-xs text-gray-500;
     font-family: "IBM Plex Sans", sans-serif;
     font-weight: 500;
     font-style: normal;
@@ -112,7 +112,7 @@
     items-center justify-center
     bg-transparent
     rounded-md
-    text-gray-400;
+    text-gray-500;
   }
   .toolbar-button:hover {
     @apply bg-gray-100;
