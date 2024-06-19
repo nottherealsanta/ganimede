@@ -20,7 +20,7 @@
 
 <div class="nb">
   <SortableList
-    class="sortable-list flex flex-col w-[85%] min-w-[40rem]"
+    class="sortable-list flex flex-col w-[85%] min-w-[20rem]"
     group="nested"
     animation={100}
     swapThreshold={0.5}
@@ -47,7 +47,6 @@
     @apply flex flex-col
     w-full h-full pt-8 pb-96
     items-center
-    min-w-[900px]
     bg-transparent;
     overflow-y: overlay;
     min-width: 500px;

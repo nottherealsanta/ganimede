@@ -32,6 +32,7 @@
   .new-cell-toolbar {
     @apply flex relative
     w-full h-2 mb-1
+    z-20
     items-center justify-center 
     bg-transparent 
     rounded-full;
@@ -64,8 +65,8 @@
     @apply bg-gray-100 border-gray-300 text-gray-600;
   }
   .toolbar-button:active {
-    @apply bg-gray-100 
+    @apply bg-gray-200 
     text-gray-700
-    shadow-none;
+    shadow-sm;
   }
 </style>

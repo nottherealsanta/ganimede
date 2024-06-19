@@ -31,12 +31,12 @@
     activeCellId.set(cell_id);
   }}
 >
-  <Grab {is_hover} />
-  <DeleteCell {cell_id} {is_hover} />
-
   {#if is_active}
     <div class="active-cell-indicator"></div>
   {/if}
+  <Grab {is_hover} />
+  <DeleteCell {cell_id} {is_hover} />
+
   <!-- code / markdown -->
   {#if cell.type === "python" || cell.type === "sql"}
     <CodeCell {cell_id} {is_hover} />
@@ -77,15 +77,23 @@
     bg-transparent;
   }
   .active-cell-indicator {
-    width: calc(100% + 4px);
-    height: calc(100% + 4px);
-    top: -2px;
-    left: -2px;
+    width: calc(35px);
+    height: calc(100%);
+    top: 0px;
+    left: -30px;
     @apply absolute
-    bg-transparent
-    ring-2 ring-gray-800
-    rounded-md;
+    /* ring-2 ring-sky-600 */
+    bg-sky-400/10
+    z-0;
     pointer-events: none;
+  }
+  .active-cell-indicator::before {
+    content: "";
+    @apply absolute
+    top-0 left-0
+    w-1 h-full
+    rounded-sm
+    bg-sky-600;
   }
   .debug {
     @apply absolute bottom-0 right-0

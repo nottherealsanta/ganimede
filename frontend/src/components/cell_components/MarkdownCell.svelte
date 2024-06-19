@@ -53,7 +53,8 @@
     @apply flex flex-col
     w-full min-h-10
     px-4 py-0
-    bg-transparent
+    z-10
+    bg-white
     items-start justify-center
     text-gray-900
     rounded-md

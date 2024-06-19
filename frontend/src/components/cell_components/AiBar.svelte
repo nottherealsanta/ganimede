@@ -52,7 +52,7 @@
     border-2 border-gray-300;
   }
   .textarea {
-    @apply w-full min-w-[10rem] p-1 text-sm bg-transparent;
+    @apply w-full p-1 text-sm bg-transparent;
     font-family: "IBM Plex Sans", sans-serif;
   }
   .textarea:focus {

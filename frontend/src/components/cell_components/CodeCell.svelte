@@ -23,7 +23,7 @@
   .code-cell {
     @apply flex flex-col
     w-full h-auto
-    m-0
+    m-0 z-10
     bg-transparent
     border-2 border-gray-100
     rounded-md;

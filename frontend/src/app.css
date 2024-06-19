@@ -28,7 +28,6 @@ body {
   margin: 0;
   display: flex;
   place-items: center;
-  min-width: 320px;
   min-height: 100vh;
   overflow: hidden;
 }
@@ -53,7 +52,6 @@ body {
 .sortable-ghost {
   /* outline: 5px solid #3b82f6; */
   border: 2px solid #0CA5E9;
-  border-radius: 10%;
   opacity: 1;
   height: 0px;
   overflow: hidden;

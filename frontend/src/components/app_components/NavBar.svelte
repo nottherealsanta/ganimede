@@ -64,7 +64,7 @@
     w-fit px-2 py-1 
     bg-gray-700 text-gray-100
     rounded-md
-    -bottom-6 right-1/3
+    -bottom-8 right-1/3
     text-nowrap text-sm;
     transition: opacity 0.25s ease-out;
     opacity: 0;

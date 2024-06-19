@@ -28,7 +28,7 @@
   <CellRunButton {cell} />
 
   {#if is_hover}
-    <div class="cell-status-time">0.0s</div>
+    <div class="cell-status-time">0s</div>
     <div class="flex-grow"></div>
     <div class="execution-count">{exe_count_test}</div>
     <div class="language-indicator">{cell.type}</div>
