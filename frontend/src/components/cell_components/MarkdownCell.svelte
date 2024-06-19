@@ -11,8 +11,8 @@
   });
 
   // active cell
-  import { activeCellId } from "../../stores/notebook";
-  $: is_active = $activeCellId === cell_id;
+  import { active_cell_id } from "../../stores/notebook";
+  $: is_active = $active_cell_id === cell_id;
 
   // -- when active focus the textarea
   let textarea: HTMLTextAreaElement;
@@ -52,7 +52,6 @@
   .markdown {
     @apply flex flex-col
     w-full min-h-10
-    px-4 py-0
     z-10
     bg-white
     items-start justify-center
@@ -67,8 +66,8 @@
   }
   .textarea {
     @apply w-full h-full
-    py-2
-    bg-transparent
+    px-4 py-2
+    bg-gray-50
     border-none
     resize-none
     outline-none

@@ -13,8 +13,8 @@
   let is_hover: boolean = false;
 
   // active cell
-  import { activeCellId } from "../../stores/notebook";
-  $: is_active = $activeCellId === cell_id;
+  import { active_cell_id, is_command_mode } from "../../stores/notebook";
+  $: is_active = $active_cell_id === cell_id;
 </script>
 
 <div
@@ -28,7 +28,7 @@
   }}
   bind:this={cell_div}
   on:click={(e) => {
-    activeCellId.set(cell_id);
+    active_cell_id.set(cell_id);
   }}
 >
   {#if is_active}
@@ -77,13 +77,13 @@
     bg-transparent;
   }
   .active-cell-indicator {
-    width: calc(35px);
+    width: calc(100% + 35px);
     height: calc(100%);
     top: 0px;
     left: -30px;
     @apply absolute
-    /* ring-2 ring-sky-600 */
     bg-sky-400/10
+    border-r-2 border-sky-600
     z-0;
     pointer-events: none;
   }

@@ -2,7 +2,7 @@
   import { Sparkles, X } from "lucide-svelte";
 
   import { cell_maps } from "../../scripts/test_nb";
-  import { activeCellId } from "../../stores/notebook";
+  import { active_cell_id } from "../../stores/notebook";
   import AiBar from "./AiBar.svelte";
   import CellRunButton from "./bar_components/CellRunButton.svelte";
   import CellContextButton from "./bar_components/CellContextButton.svelte";
@@ -10,7 +10,7 @@
   export let cell_id: string;
   let cell: any = cell_maps[cell_id];
   export let is_hover: boolean = false;
-  $: is_active = $activeCellId === cell_id;
+  $: is_active = $active_cell_id === cell_id;
 
   // ai bar
   let ai_bar: boolean = false;
