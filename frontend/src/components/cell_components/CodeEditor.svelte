@@ -10,6 +10,7 @@
   export let is_hover: boolean = false;
 
   let code_collapsed: boolean = false;
+  let editor: any;
 
   import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
   self.MonacoEnvironment = {
@@ -56,7 +57,7 @@
   };
   onMount(async () => {
     const monaco = await import("monaco-editor");
-    const editor = monaco.editor.create(container, monaco_config);
+    editor = monaco.editor.create(container, monaco_config);
 
     // themes
     // import("../../assets/monaco_themes/light.json").then(data => {
@@ -94,6 +95,16 @@
       updateHeightWidth();
     }).observe(code_editor_container);
   });
+
+  import { active_cell_id, is_command_mode } from "../../stores/notebook.js";
+  $: is_active = $active_cell_id === cell.id;
+  $: if (is_active && !$is_command_mode) {
+    if (editor) {
+      setTimeout(() => {
+        editor.focus();
+      }, 100);
+    }
+  }
 </script>
 
 <div class="code-editor" bind:this={code_editor_container}>

@@ -8,4 +8,6 @@
     },
     "css.lint.unknownAtRules": "ignore",
     "editor.tabSize": 2,
+    "javascript.validate.enable": false
+
 }

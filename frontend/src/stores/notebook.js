@@ -10,5 +10,5 @@ export const active_cell_loc = derived(active_cell_id, ($active_cell_id, set) =>
     set(cellLoc);
 }
 );
-export const is_command_mode = writable(false);
+export const is_command_mode = writable(true);
 

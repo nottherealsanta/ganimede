@@ -13,12 +13,12 @@
   let is_hover: boolean = false;
 
   // active cell
-  import { active_cell_id, is_command_mode } from "../../stores/notebook";
+  import { active_cell_id, is_command_mode } from "../../stores/notebook.js";
   $: is_active = $active_cell_id === cell_id;
 </script>
 
 <div
-  class="cell"
+  class="cell {!is_command_mode ? 'border-sky-400' : 'border-transparent'}"
   role="presentation"
   on:mouseenter={() => {
     is_hover = true;
@@ -29,11 +29,16 @@
   bind:this={cell_div}
   on:click={(e) => {
     active_cell_id.set(cell_id);
+    $is_command_mode = false;
   }}
 >
   {#if is_active}
     <div class="active-cell-indicator"></div>
   {/if}
+  {#if is_active && $is_command_mode}
+    <div class="active-not-editable-cell-indicator"></div>
+  {/if}
+
   <Grab {is_hover} />
   <DeleteCell {cell_id} {is_hover} />
 
@@ -58,7 +63,7 @@
     w-auto h-auto mb-1
     bg-white
     rounded-md
-    border-2 border-transparent;
+    border-2;
   }
   .cell::before {
     /* for hover effect to work on grab */
@@ -82,18 +87,23 @@
     top: 0px;
     left: -30px;
     @apply absolute
-    bg-sky-400/10
-    border-r-2 border-sky-600
-    z-0;
-    pointer-events: none;
-  }
-  .active-cell-indicator::before {
-    content: "";
-    @apply absolute
-    top-0 left-0
     w-1 h-full
     rounded-sm
     bg-sky-600;
+    pointer-events: none;
+  }
+
+  .active-not-editable-cell-indicator {
+    width: calc(100% + 30px);
+    height: calc(100%);
+    top: 0px;
+    left: -30px;
+    @apply absolute
+    bg-blue-200/10
+    border-2 border-blue-400/20
+    rounded-r-md
+    z-20;
+    pointer-events: none;
   }
   .debug {
     @apply absolute bottom-0 right-0

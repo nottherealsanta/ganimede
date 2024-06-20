@@ -11,12 +11,13 @@
   });
 
   // active cell
-  import { active_cell_id } from "../../stores/notebook";
+  import { active_cell_id, is_command_mode } from "../../stores/notebook";
+  import { ChevronDown } from "lucide-svelte";
   $: is_active = $active_cell_id === cell_id;
 
   // -- when active focus the textarea
   let textarea: HTMLTextAreaElement;
-  $: if (is_active) {
+  $: if (is_active && !$is_command_mode) {
     setTimeout(() => {
       if (textarea) {
         textarea.focus();
@@ -31,52 +32,69 @@
       textarea.style.height = `${textarea.scrollHeight}px`;
     }
   }
+
+  $: show_textarea = is_active && !$is_command_mode;
 </script>
 
 <div class="markdown">
-  <textarea
-    class="textarea {is_active ? 'block' : 'hidden'}"
-    bind:value={source}
-    bind:this={textarea}
-    on:input={() => {
-      cell.source = source.split("\n");
-      adjustHeight(); // Add this line
-    }}
-  ></textarea>
-  <div class="{is_active ? 'hidden' : ''} markdown-content w-full h-fit">
-    {@html marked(source)}
+  <div
+    class="flex absolute top-0 w-8 h-10 justify-center items-center bg-transparent rounded-l-md"
+  >
+    <ChevronDown class="w-6 h-6 text-gray-500" />
+  </div>
+  <div class="flex w-full h-full ml-8">
+    <textarea
+      class="textarea {show_textarea ? 'block' : 'hidden'}"
+      bind:value={source}
+      bind:this={textarea}
+      on:input={() => {
+        cell.source = source.split("\n");
+        adjustHeight(); // Add this line
+      }}
+    ></textarea>
+    <div class="{show_textarea ? 'hidden' : ''} marked w-full h-fit">
+      {@html marked(source)}
+    </div>
   </div>
 </div>
 
 <style>
   .markdown {
-    @apply flex flex-col
+    @apply flex flex-row
     w-full min-h-10
+    h-full 
     z-10
     bg-white
-    items-start justify-center
+    items-center
     text-gray-900
     rounded-md
     overflow-y-auto
     border border-transparent;
-    font-family: "Inter", sans-serif;
   }
   .markdown:hover {
     @apply border border-gray-200;
   }
   .textarea {
     @apply w-full h-full
-    px-4 py-2
+    px-2 py-2
     bg-gray-50
     border-none
     resize-none
     outline-none
     z-20;
     font-family: "Inter", sans-serif;
-    min-height: 50px;
   }
   .textarea::selection {
     @apply bg-sky-200;
+  }
+  .marked {
+    @apply w-full h-fit
+    px-2
+    border-none
+    resize-none
+    outline-none
+    z-20;
+    font-family: "Inter", sans-serif;
   }
   :global(.markdown p) {
     font-size: 16px;

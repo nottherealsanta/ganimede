@@ -5,10 +5,13 @@
   import Notebook from "./components/nb_components/Notebook.svelte";
 
   import { onMount } from "svelte";
-  import { setupKeyboardShortcuts } from "./stores/keyboard";
+  import { keydown_function } from "./stores/keyboard";
 
   onMount(() => {
-    setupKeyboardShortcuts();
+    window.addEventListener("keydown", keydown_function);
+    return () => {
+      window.removeEventListener("keydown", keydown_function);
+    };
   });
 </script>
 

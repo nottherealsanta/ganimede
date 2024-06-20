@@ -92,6 +92,7 @@
     w-full h-10
     px-4
     ml-0.5
+    mb-0.5
   bg-white
   text-gray-600
     text-sm
