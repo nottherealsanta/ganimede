@@ -16,27 +16,6 @@
   onMount(() => {
     active_cell_id.set(cell_ids[0]);
   });
-
-  // keyboard shortcuts
-  import { is_command_mode, active_cell_loc } from "../../stores/notebook";
-  window.addEventListener("keydown", (e) => {
-    // if escape key is pressed, set command mode to true
-    if (e.key === "Escape") {
-      is_command_mode.set(true);
-    } else if (e.key === "Enter" && is_command_mode) {
-      is_command_mode.set(false);
-    }
-
-    if (e.key === "ArrowUp" && is_command_mode) {
-      if ($active_cell_loc > 0) {
-        active_cell_id.set(cell_ids[$active_cell_loc - 1]);
-      }
-    } else if (e.key === "ArrowDown" && is_command_mode) {
-      if ($active_cell_loc < cell_ids.length - 1) {
-        active_cell_id.set(cell_ids[$active_cell_loc + 1]);
-      }
-    }
-  });
 </script>
 
 <div class="nb">

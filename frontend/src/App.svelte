@@ -1,8 +1,15 @@
-<script lang="ts">
+<script>
   import NavBar from "./components/app_components/NavBar.svelte";
   import StatusBar from "./components/app_components/StatusBar.svelte";
   import SideBar from "./components/app_components/SideBar.svelte";
   import Notebook from "./components/nb_components/Notebook.svelte";
+
+  import { onMount } from "svelte";
+  import { setupKeyboardShortcuts } from "./stores/keyboard";
+
+  onMount(() => {
+    setupKeyboardShortcuts();
+  });
 </script>
 
 <div class="app">
