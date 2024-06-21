@@ -32,7 +32,7 @@
   .new-cell-toolbar {
     @apply flex relative
     w-full h-2 mb-1
-    z-20
+    z-10
     items-center justify-center 
     bg-transparent 
     rounded-full;

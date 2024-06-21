@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Sparkles, X } from "lucide-svelte";
+  import { ChevronDown, FastForward, Sparkles, X } from "lucide-svelte";
 
   import { cell_maps } from "../../scripts/test_nb";
   import { active_cell_id } from "../../stores/notebook";
@@ -11,6 +11,11 @@
   let cell: any = cell_maps[cell_id];
   export let is_hover: boolean = false;
   $: is_active = $active_cell_id === cell_id;
+
+  $: is_markdown = cell.type === "markdown";
+  $: is_heading =
+    is_markdown &&
+    cell.source.some((line: string) => line.trim().startsWith("#"));
 
   // ai bar
   let ai_bar: boolean = false;
@@ -24,26 +29,37 @@
       : cell.execution_count.toString();
 </script>
 
-<div class="cell-bar">
-  <CellRunButton {cell} />
+<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+<div class="cell-bar {is_markdown ? 'bg-white' : 'bg-gray-50'}">
+  {#if !is_markdown}
+    <CellRunButton {cell} />
+  {/if}
 
   {#if is_hover}
-    <div class="cell-status-time">0s</div>
+    {#if is_markdown && is_heading}
+      <button class="toolbar-button">
+        <ChevronDown size="16" class="text-gray-500" />
+      </button>
+      <button class="toolbar-button">
+        <FastForward size="16" class="text-gray-500" />
+      </button>
+    {/if}
+
+    {#if !is_markdown}
+      <div class="cell-status-time">0s</div>
+    {/if}
     <div class="flex-grow"></div>
-    <div class="execution-count">{exe_count_test}</div>
+    {#if !is_markdown}
+      <div class="execution-count">{exe_count_test}</div>
+    {/if}
     <div class="language-indicator">{cell.type}</div>
 
     <!-- AI Button -->
     <button
       class="toolbar-button {ai_bar ? 'text-fuchsia-500' : ''}"
       on:click={() => (ai_bar = !ai_bar)}
-      aria-label="Toggle AI Bar"
     >
-      {#if ai_bar}
-        <X size="16" />
-      {:else}
-        <Sparkles size="16" />
-      {/if}
+      <Sparkles size="16" />
     </button>
   {:else}
     <div class="flex-grow"></div>
@@ -62,7 +78,7 @@
     w-full h-8
     px-0.5 py-1
     items-center
-    bg-gray-50
+    
     rounded-t;
   }
   .language-indicator {

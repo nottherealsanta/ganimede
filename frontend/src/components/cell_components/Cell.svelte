@@ -2,6 +2,7 @@
   import CodeCell from "./CodeCell.svelte";
   import Grab from "./Grab.svelte";
   import DeleteCell from "./DeleteCell.svelte";
+  import CellBar from "./CellBar.svelte";
 
   export let cell_id: string;
 
@@ -15,10 +16,16 @@
   // active cell
   import { active_cell_id, is_command_mode } from "../../stores/notebook.js";
   $: is_active = $active_cell_id === cell_id;
+
+  // markdown
+  $: is_markdown = cell.type === "markdown";
 </script>
 
 <div
-  class="cell {!is_command_mode ? 'border-sky-400' : 'border-transparent'}"
+  class="cell
+  {is_markdown ? 'border-transparent' : 'border-gray-100'}
+  {is_hover ? 'ring-1 ring-gray-200' : ''}
+  "
   role="presentation"
   on:mouseenter={() => {
     is_hover = true;
@@ -42,11 +49,12 @@
   <Grab {is_hover} />
   <DeleteCell {cell_id} {is_hover} />
 
+  <CellBar {cell_id} {is_hover} />
   <!-- code / markdown -->
   {#if cell.type === "python" || cell.type === "sql"}
     <CodeCell {cell_id} {is_hover} />
   {:else if cell.type === "markdown"}
-    <MarkdownCell {cell_id} />
+    <MarkdownCell {cell_id} {is_hover} />
   {/if}
 
   <!-- debug -->
@@ -95,12 +103,11 @@
 
   .active-not-editable-cell-indicator {
     width: calc(100% + 30px);
-    height: calc(100%);
-    top: 0px;
+    height: calc(100% + 10px);
+    top: -5px;
     left: -30px;
     @apply absolute
     bg-blue-200/10
-    border-2 border-blue-400/20
     rounded-r-md
     z-20;
     pointer-events: none;

@@ -5,7 +5,12 @@
   // on Mount focus the textarea
   let textarea: HTMLDivElement;
   onMount(() => {
-    textarea.focus();
+    // textarea.focus();
+    setTimeout(() => {
+      if (textarea) {
+        textarea.focus();
+      }
+    }, 55);
   });
 
   export let ai_bar: boolean;

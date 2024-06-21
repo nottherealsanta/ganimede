@@ -102,7 +102,7 @@
     if (editor) {
       setTimeout(() => {
         editor.focus();
-      }, 100);
+      }, 50);
     }
   }
 </script>
@@ -142,16 +142,17 @@
   .collapsed-editor {
     @apply flex
     w-full h-10
+    m-0.5
     px-4
-  bg-gray-100
-  text-gray-500
+  bg-gray-50
+  text-gray-600
     text-sm
     items-center 
     z-10;
     font-family: "IBM Plex Mono";
   }
   .collapsed-editor:hover {
-    @apply bg-gray-200;
+    @apply bg-gray-100;
   }
   .collapsed-editor span {
     font-family: "IBM Plex Sans", sans-serif;

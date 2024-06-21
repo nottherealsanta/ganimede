@@ -103,12 +103,13 @@
   }
   .menu {
     @apply absolute 
-    right-0 z-10 mt-0 py-1 px-1 w-52
+    right-0 mt-0 py-1 px-1 w-52
     origin-top-right 
     rounded bg-white 
     text-gray-600
     shadow
-    ring-1 ring-gray-200;
+    ring-1 ring-gray-200
+    z-20;
     font-family: "IBM Plex Sans", sans-serif;
     font-weight: 400;
   }

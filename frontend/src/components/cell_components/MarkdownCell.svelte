@@ -1,5 +1,6 @@
 <script lang="ts">
   export let cell_id: string;
+  export let is_hover: boolean = false;
   import { cell_maps } from "../../scripts/test_nb";
   let cell: any = cell_maps[cell_id];
   let source = cell.source.join("\n");
@@ -12,23 +13,24 @@
 
   // active cell
   import { active_cell_id, is_command_mode } from "../../stores/notebook";
-  import { ChevronDown } from "lucide-svelte";
   $: is_active = $active_cell_id === cell_id;
 
   // -- when active focus the textarea
   let textarea: HTMLTextAreaElement;
+  let is_focused = false;
   $: if (is_active && !$is_command_mode) {
-    setTimeout(() => {
-      if (textarea) {
+    if (textarea && !is_focused) {
+      is_focused = true;
+      setTimeout(() => {
+        console.log("focus");
         textarea.focus();
         textarea.style.height = `${textarea.scrollHeight}px`; // Add this line
-      }
-    }, 0);
+      }, 50);
+    }
   }
 
   function adjustHeight() {
     if (textarea) {
-      textarea.style.height = "auto";
       textarea.style.height = `${textarea.scrollHeight}px`;
     }
   }
@@ -37,12 +39,7 @@
 </script>
 
 <div class="markdown">
-  <div
-    class="flex absolute top-0 w-8 h-10 justify-center items-center bg-transparent rounded-l-md"
-  >
-    <ChevronDown class="w-6 h-6 text-gray-500" />
-  </div>
-  <div class="flex w-full h-full ml-8">
+  <div class="flex flex-col w-full h-full">
     <textarea
       class="textarea {show_textarea ? 'block' : 'hidden'}"
       bind:value={source}
@@ -68,12 +65,9 @@
     items-center
     text-gray-900
     rounded-md
-    overflow-y-auto
-    border border-transparent;
+    overflow-y-auto;
   }
-  .markdown:hover {
-    @apply border border-gray-200;
-  }
+
   .textarea {
     @apply w-full h-full
     px-2 py-2
