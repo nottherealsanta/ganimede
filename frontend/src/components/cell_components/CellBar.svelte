@@ -1,11 +1,18 @@
 <script lang="ts">
+  import AiBar from "./AiBar.svelte";
+  import RunButton from "./bar_components/RunButton.svelte";
+  import ContextButton from "./bar_components/ContextButton.svelte";
+  import HeadingCollapsible from "./bar_components/HeadingCollapsible.svelte";
+  import HeadingRunAll from "./bar_components/HeadingRunAll.svelte";
+  import ExecutionTime from "./bar_components/ExecutionTime.svelte";
+  import ExecutionCount from "./bar_components/ExecutionCount.svelte";
+  import LanguageIndicator from "./bar_components/LanguageIndicator.svelte";
+  import AIButton from "./bar_components/AIButton.svelte";
+
   import { ChevronDown, FastForward, Sparkles, X } from "lucide-svelte";
 
   import { cell_maps } from "../../scripts/test_nb";
   import { active_cell_id } from "../../stores/notebook";
-  import AiBar from "./AiBar.svelte";
-  import CellRunButton from "./bar_components/CellRunButton.svelte";
-  import CellContextButton from "./bar_components/CellContextButton.svelte";
 
   export let cell_id: string;
   let cell: any = cell_maps[cell_id];
@@ -18,59 +25,46 @@
     cell.source.some((line: string) => line.trim().startsWith("#"));
 
   // ai bar
-  let ai_bar: boolean = false;
+  let is_ai_bar_open: boolean = false;
   $: if (!is_active) {
-    ai_bar = false;
+    is_ai_bar_open = false;
   }
 
-  $: exe_count_test =
-    cell.execution_count === undefined
-      ? "[ ]"
-      : cell.execution_count.toString();
+  $: execution_count = cell.execution_count;
 </script>
 
 <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 <div class="cell-bar {is_markdown ? 'bg-white' : 'bg-gray-50'}">
   {#if !is_markdown}
-    <CellRunButton {cell} />
+    <RunButton {cell} />
   {/if}
   {#if is_markdown && is_heading}
-    <button class="toolbar-button">
-      <ChevronDown size="16" class="text-gray-500" />
-    </button>
+    <HeadingCollapsible {is_heading} />
   {/if}
 
   {#if is_hover}
     {#if is_markdown && is_heading}
-      <button class="toolbar-button">
-        <FastForward size="16" class="text-gray-500" />
-      </button>
+      <HeadingRunAll {is_heading} {is_hover} />
     {/if}
 
     {#if !is_markdown}
-      <div class="cell-status-time">0s</div>
+      <ExecutionTime {is_markdown} {is_hover} />
     {/if}
     <div class="flex-grow"></div>
     {#if !is_markdown}
-      <div class="execution-count">{exe_count_test}</div>
+      <ExecutionCount {execution_count} {is_markdown} {is_hover} />
     {/if}
     <div class="language-indicator">{cell.type}</div>
 
-    <!-- AI Button -->
-    <button
-      class="toolbar-button {ai_bar ? 'text-fuchsia-500' : ''}"
-      on:click={() => (ai_bar = !ai_bar)}
-    >
-      <Sparkles size="16" />
-    </button>
+    <AIButton {is_hover} bind:is_ai_bar_open />
   {:else}
     <div class="flex-grow"></div>
   {/if}
 
-  <CellContextButton {is_hover} />
+  <ContextButton {is_hover} />
 </div>
-{#if ai_bar && is_active}
-  <AiBar bind:ai_bar />
+{#if is_ai_bar_open && is_active}
+  <AiBar bind:is_ai_bar_open />
 {/if}
 
 <style>

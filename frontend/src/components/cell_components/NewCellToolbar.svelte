@@ -24,7 +24,7 @@
 
 {#if ai_bar}
   <div class="my-2">
-    <AiBar bind:ai_bar />
+    <AiBar bind:is_ai_bar_open={ai_bar} />
   </div>
 {/if}
 

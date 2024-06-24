@@ -13,7 +13,7 @@
     }, 55);
   });
 
-  export let ai_bar: boolean;
+  export let is_ai_bar_open: boolean;
 </script>
 
 <div class="ai-bar">
@@ -29,8 +29,8 @@
       class="aibar-button"
       aria-label="Close AI Bar"
       on:click={() => {
-        ai_bar = false;
-        console.log(ai_bar);
+        is_ai_bar_open = false;
+        console.log(is_ai_bar_open);
       }}
     >
       <X size="14" />
