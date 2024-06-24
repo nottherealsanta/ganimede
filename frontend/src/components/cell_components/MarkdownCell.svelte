@@ -1,6 +1,5 @@
 <script lang="ts">
   export let cell_id: string;
-  export let is_hover: boolean = false;
   import { cell_maps } from "../../scripts/test_nb";
   let cell: any = cell_maps[cell_id];
   let source = cell.source.join("\n");
@@ -38,7 +37,14 @@
   $: show_textarea = is_active && !$is_command_mode;
 </script>
 
-<div class="markdown">
+<div
+  class="markdown"
+  on:click={(e) => {
+    active_cell_id.set(cell_id);
+    $is_command_mode = false;
+  }}
+  role="presentation"
+>
   <div class="flex flex-col w-full h-full">
     <textarea
       class="textarea {show_textarea ? 'block' : 'hidden'}"

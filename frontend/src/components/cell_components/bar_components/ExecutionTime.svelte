@@ -18,5 +18,6 @@
     font-family: "IBM Plex Sans", sans-serif;
     font-weight: 500;
     font-style: normal;
+    user-select: none;
   }
 </style>

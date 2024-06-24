@@ -7,7 +7,7 @@ export const keydown_function = (event) => {
   // }
   // Check if the Escape key is pressed to enter command mode
   if (event.key === 'Escape') {
-    console.log('Escape');
+
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur()
     }
@@ -16,7 +16,7 @@ export const keydown_function = (event) => {
     // Check if the ArrowUp key is pressed to move to the previous cell
     if (event.key === 'ArrowUp') {
       // move active cell to the previous cell
-      console.log('ArrowUp');
+
       event.preventDefault();
       let x = get(active_cell_loc);
       if (x > 0) {
@@ -26,7 +26,7 @@ export const keydown_function = (event) => {
     // Check if the ArrowDown key is pressed to move to the next cell
     else if (event.key === 'ArrowDown') {
       // move active cell to the next cell
-      console.log('ArrowDown');
+
       event.preventDefault();
       let x = get(active_cell_loc);
       if (x < get(cell_ids).length - 1) {
@@ -35,14 +35,14 @@ export const keydown_function = (event) => {
     }
     // Check if the Enter key is pressed to enter edit mode
     else if (event.key === 'Enter') {
-      console.log('Enter');
+
       event.preventDefault();
       is_command_mode.set(false);
     }
     // Additional shortcuts for command mode
     else if (event.key === 'a') {
       // Logic to insert a cell above
-      console.log('a');
+
       // TODO: Implement the logic to insert a cell above
     }
     else if (event.key === 'b') {
@@ -64,7 +64,7 @@ export const keydown_function = (event) => {
     else if (event.key === 'd' && event.repeat) {
       // Logic to delete the selected cell (press D twice)
       // TODO: Implement the logic to delete the selected cell
-      console.log('dd');
+
     }
     else if (event.key === 'z') {
       // Logic to undo cell deletion

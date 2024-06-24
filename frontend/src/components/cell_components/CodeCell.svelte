@@ -6,9 +6,18 @@
   export let cell_id: string;
   export let is_hover: boolean = false;
   let cell: any = cell_maps[cell_id];
+
+  import { active_cell_id, is_command_mode } from "../../stores/notebook.js";
 </script>
 
-<div class="code-cell">
+<div
+  class="code-cell"
+  on:click={(e) => {
+    active_cell_id.set(cell_id);
+    $is_command_mode = false;
+  }}
+  role="presentation"
+>
   <CodeEditor {cell} {is_hover} />
 
   {#if cell.outputs && cell.outputs.length > 0}

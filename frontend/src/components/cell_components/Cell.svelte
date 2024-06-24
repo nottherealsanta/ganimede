@@ -17,6 +17,13 @@
   import { active_cell_id, is_command_mode } from "../../stores/notebook.js";
   $: is_active = $active_cell_id === cell_id;
 
+  $: if (is_active && cell_div) {
+    cell_div.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+    });
+  }
+
   // markdown
   $: is_markdown = cell.type === "markdown";
 </script>
@@ -34,27 +41,26 @@
     is_hover = false;
   }}
   bind:this={cell_div}
-  on:click={(e) => {
-    active_cell_id.set(cell_id);
-    $is_command_mode = false;
-  }}
 >
+  <!-- Active -->
   {#if is_active}
     <div class="active-cell-indicator"></div>
   {/if}
-  {#if is_active && $is_command_mode}
-    <div class="active-not-editable-cell-indicator"></div>
+  <!-- Active & Editable -->
+  {#if is_active && !$is_command_mode}
+    <div class="active-editable-cell-indicator"></div>
   {/if}
 
+  <!-- Cell Controls -->
   <Grab {is_hover} />
   <DeleteCell {cell_id} {is_hover} />
-
   <CellBar {cell_id} {is_hover} />
-  <!-- code / markdown -->
+
+  <!-- Code / Markdown -->
   {#if cell.type === "python" || cell.type === "sql"}
     <CodeCell {cell_id} {is_hover} />
   {:else if cell.type === "markdown"}
-    <MarkdownCell {cell_id} {is_hover} />
+    <MarkdownCell {cell_id} />
   {/if}
 
   <!-- debug -->
@@ -101,23 +107,24 @@
     pointer-events: none;
   }
 
-  .active-not-editable-cell-indicator {
-    width: calc(100% + 30px);
-    height: calc(100% + 10px);
-    top: -5px;
-    left: -30px;
+  .active-editable-cell-indicator {
+    width: calc(100%);
+    height: calc(100%);
+    top: 0px;
+    left: 0px;
     @apply absolute
-    bg-blue-200/10
-    rounded-r-md
+    bg-transparent
+    ring-2 ring-sky-600
+    rounded-md
     z-20;
     pointer-events: none;
   }
-  .debug {
+  /* .debug {
     @apply absolute bottom-0 right-0
     bg-gray-200/20
     rounded-md
     text-xs
     text-gray-400
     p-2;
-  }
+  } */
 </style>

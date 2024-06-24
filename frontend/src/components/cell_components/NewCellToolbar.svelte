@@ -56,7 +56,7 @@
     text-sm
     text-gray-500
     z-10
-    shadow-md;
+    shadow;
     font-family: "IBM Plex Sans", sans-serif;
     font-weight: 500;
     user-select: none;

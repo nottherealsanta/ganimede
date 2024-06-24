@@ -15,21 +15,40 @@
   export let is_active: boolean = false;
 
   let is_open = false;
+  let menuButtonElement: HTMLButtonElement;
+  let dropdownElement: HTMLDivElement;
+  let dropdown_y = 0;
 
   function handleClickOutside(event: MouseEvent) {
-    const dropdown = document.querySelector(".dropdown-container");
-    if (dropdown && !dropdown.contains(event.target as Node)) {
+    if (dropdownElement && !dropdownElement.contains(event.target as Node)) {
       is_open = false;
     }
   }
 
   function toggleOpen() {
+    console.log("toggleOpen");
     if (is_open) {
       document.removeEventListener("click", handleClickOutside);
       is_open = false;
     } else {
       document.addEventListener("click", handleClickOutside);
       is_open = true;
+      // We'll update the position after the dropdown is rendered
+      // setTimeout(updateDropdownPosition, 0);
+    }
+  }
+
+  function updateDropdownPosition() {
+    if (!menuButtonElement || !dropdownElement) return;
+
+    let menuButton_y = menuButtonElement.getBoundingClientRect().y;
+    let dropdown_height = dropdownElement.getBoundingClientRect().height;
+    let screen_height = window.innerHeight;
+
+    if (menuButton_y + dropdown_height > screen_height) {
+      dropdown_y = -dropdown_height;
+    } else {
+      dropdown_y = 0;
     }
   }
 
@@ -41,7 +60,11 @@
 {#if is_hover || is_open || is_active}
   <div class="relative inline-block text-left dropdown-container">
     <div>
-      <button class="menu-button" on:click={toggleOpen}>
+      <button
+        class="menu-button"
+        on:click={toggleOpen}
+        bind:this={menuButtonElement}
+      >
         <EllipsisVertical size="16" />
       </button>
     </div>
@@ -53,6 +76,8 @@
         aria-orientation="vertical"
         aria-labelledby="menu-button"
         tabindex="-1"
+        bind:this={dropdownElement}
+        style="top: {dropdown_y}px;"
       >
         <button class="menu-item">
           <Library size="16" class="mr-2" />
