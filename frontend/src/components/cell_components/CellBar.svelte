@@ -42,26 +42,25 @@
     <HeadingCollapsible {is_heading} />
   {/if}
 
-  {#if is_hover}
+  {#if is_hover || is_active}
     {#if is_markdown && is_heading}
-      <HeadingRunAll {is_heading} {is_hover} />
+      <HeadingRunAll {is_heading} />
     {/if}
 
     {#if !is_markdown}
-      <ExecutionTime {is_markdown} {is_hover} />
+      <ExecutionTime {is_markdown} />
     {/if}
     <div class="flex-grow"></div>
     {#if !is_markdown}
-      <ExecutionCount {execution_count} {is_markdown} {is_hover} />
+      <ExecutionCount {execution_count} {is_markdown} />
     {/if}
-    <div class="language-indicator">{cell.type}</div>
-
-    <AIButton {is_hover} bind:is_ai_bar_open />
+    <LanguageIndicator cell_type={cell.type} />
+    <AIButton bind:is_ai_bar_open />
   {:else}
     <div class="flex-grow"></div>
   {/if}
 
-  <ContextButton {is_hover} />
+  <ContextButton {is_hover} {is_active} />
 </div>
 {#if is_ai_bar_open && is_active}
   <AiBar bind:is_ai_bar_open />

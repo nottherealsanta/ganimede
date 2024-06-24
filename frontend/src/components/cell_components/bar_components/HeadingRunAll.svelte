@@ -2,10 +2,9 @@
   import { FastForward } from "lucide-svelte";
 
   export let is_heading: boolean;
-  export let is_hover: boolean;
 </script>
 
-{#if is_heading && is_hover}
+{#if is_heading}
   <button class="toolbar-button">
     <FastForward size="16" class="text-gray-500" />
   </button>

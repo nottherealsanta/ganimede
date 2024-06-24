@@ -5,7 +5,7 @@
 </script>
 
 {#if is_heading}
-  <button class="toolbar-button">
+  <button class="toolbar-button" on:click|stopPropagation>
     <ChevronDown size="16" class="text-gray-500" />
   </button>
 {/if}

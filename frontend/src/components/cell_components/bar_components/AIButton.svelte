@@ -1,18 +1,15 @@
 <script lang="ts">
   import { Sparkles } from "lucide-svelte";
 
-  export let is_hover: boolean;
   export let is_ai_bar_open: boolean;
 </script>
 
-{#if is_hover}
-  <button
-    class="toolbar-button {is_ai_bar_open ? 'text-fuchsia-500' : ''}"
-    on:click={() => (is_ai_bar_open = !is_ai_bar_open)}
-  >
-    <Sparkles size="16" />
-  </button>
-{/if}
+<button
+  class="toolbar-button {is_ai_bar_open ? 'text-fuchsia-500' : ''}"
+  on:click={() => (is_ai_bar_open = !is_ai_bar_open)}
+>
+  <Sparkles size="16" />
+</button>
 
 <style>
   .toolbar-button {

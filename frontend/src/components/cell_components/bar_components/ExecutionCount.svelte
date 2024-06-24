@@ -1,13 +1,12 @@
 <script lang="ts">
   export let execution_count;
   export let is_markdown: boolean;
-  export let is_hover: boolean;
 
   $: exe_count_test =
     execution_count === undefined ? "[ ]" : execution_count.toString();
 </script>
 
-{#if !is_markdown && is_hover}
+{#if !is_markdown}
   <div class="execution-count">{exe_count_test}</div>
 {/if}
 

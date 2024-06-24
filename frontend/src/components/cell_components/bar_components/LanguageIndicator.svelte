@@ -1,11 +1,8 @@
 <script lang="ts">
-  export let cellType: string;
-  export let isHover: boolean;
+  export let cell_type: string;
 </script>
 
-{#if isHover}
-  <div class="language-indicator">{cellType}</div>
-{/if}
+<div class="language-indicator">{cell_type}</div>
 
 <style>
   .language-indicator {

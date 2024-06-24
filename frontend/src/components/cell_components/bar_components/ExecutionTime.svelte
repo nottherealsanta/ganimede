@@ -1,9 +1,8 @@
 <script lang="ts">
   export let is_markdown: boolean;
-  export let is_hover: boolean;
 </script>
 
-{#if !is_markdown && is_hover}
+{#if !is_markdown}
   <div class="cell-status-time">0s</div>
 {/if}
 

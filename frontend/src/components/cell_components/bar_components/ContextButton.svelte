@@ -12,6 +12,7 @@
   import { onMount, onDestroy } from "svelte";
 
   export let is_hover: boolean = false;
+  export let is_active: boolean = false;
 
   let is_open = false;
 
@@ -37,7 +38,7 @@
   });
 </script>
 
-{#if is_hover || is_open}
+{#if is_hover || is_open || is_active}
   <div class="relative inline-block text-left dropdown-container">
     <div>
       <button class="menu-button" on:click={toggleOpen}>
