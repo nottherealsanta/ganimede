@@ -20,8 +20,13 @@
   let dropdown_y = 0;
 
   function handleClickOutside(event: MouseEvent) {
-    if (dropdownElement && !dropdownElement.contains(event.target as Node)) {
-      is_open = false;
+    if (
+      dropdownElement &&
+      !dropdownElement.contains(event.target as Node) &&
+      menuButtonElement &&
+      !menuButtonElement.contains(event.target as Node)
+    ) {
+      toggleOpen();
     }
   }
 
@@ -34,8 +39,9 @@
       document.addEventListener("click", handleClickOutside);
       is_open = true;
       // We'll update the position after the dropdown is rendered
-      // setTimeout(updateDropdownPosition, 0);
+      setTimeout(updateDropdownPosition, 0);
     }
+    console.log("is_open", is_open);
   }
 
   function updateDropdownPosition() {
@@ -48,7 +54,7 @@
     if (menuButton_y + dropdown_height > screen_height) {
       dropdown_y = -dropdown_height;
     } else {
-      dropdown_y = 0;
+      dropdown_y = 30;
     }
   }
 
@@ -68,7 +74,6 @@
         <EllipsisVertical size="16" />
       </button>
     </div>
-
     {#if is_open}
       <div
         class="menu"
