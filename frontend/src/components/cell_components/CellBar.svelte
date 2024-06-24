@@ -34,12 +34,14 @@
   {#if !is_markdown}
     <CellRunButton {cell} />
   {/if}
+  {#if is_markdown && is_heading}
+    <button class="toolbar-button">
+      <ChevronDown size="16" class="text-gray-500" />
+    </button>
+  {/if}
 
   {#if is_hover}
     {#if is_markdown && is_heading}
-      <button class="toolbar-button">
-        <ChevronDown size="16" class="text-gray-500" />
-      </button>
       <button class="toolbar-button">
         <FastForward size="16" class="text-gray-500" />
       </button>
