@@ -17,9 +17,10 @@
   import { active_cell_id, is_command_mode } from "../../stores/notebook.js";
   $: is_active = $active_cell_id === cell_id;
 
+  // scroll to active cell
   $: if (is_active && cell_div) {
     cell_div.scrollIntoView({
-      behavior: "smooth",
+      behavior: "instant",
       block: "nearest",
     });
   }

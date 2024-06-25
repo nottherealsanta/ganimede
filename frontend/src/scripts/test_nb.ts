@@ -1,18 +1,5 @@
 export let path = "test_nb.ipynb";
-export let cell_ids = [
-    "JiXjY973",
-    "U2dG4mjD",
-    "CmdY3sdw",
-    "Q2dG4mjD",
-    "F9j3Bj2o",
-    "H93BfwI8",
-    "jBu3Ivjd",
-    "B32b4mjD",
-    "Obx932bk",
-    "i51Bodk3",
-    "eN2B4m3d",
-    "oB1B4m3d"
-  ];
+
 export let cell_maps : {[key: string]: any} = {
   "JiXjY973": {
     "id": "JiXjY973",
@@ -293,4 +280,486 @@ export let cell_maps : {[key: string]: any} = {
     "state": "idle",
     "execution_time": 5.0
   },
+  "bo9B4m3d":{
+    "id": "eN2B4m3d",
+    "type": "python",
+    "source": [
+    "this is a syntax error"
+   ],
+    "execution_count": 7,
+    "outputs": [
+    {
+     "ename": "SyntaxError",
+     "evalue": "invalid syntax (<ipython-input-2-6c5185427360>, line 1)",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;36m  File \u001b[0;32m\"<ipython-input-2-6c5185427360>\"\u001b[0;36m, line \u001b[0;32m1\u001b[0m\n\u001b[0;31m    this is a syntax error\u001b[0m\n\u001b[0m                   ^\u001b[0m\n\u001b[0;31mSyntaxError\u001b[0m\u001b[0;31m:\u001b[0m invalid syntax\n"
+     ]
+    }
+   ],
+    "heading_level": null,
+    "collapsed": false,
+    "parent_collapsed": false,
+    "state": "idle",
+    "execution_time": 0.5
+  },
+  "JiXjY97q": {
+    "id": "JiXjY973",
+    "type": "python",
+    "source": ["print('Hello world')"],
+    "execution_count": 1,
+    "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Hello World\n"
+     ]
+    }
+   ],
+    "heading_level": null,
+    "collapsed": false,
+    "parent_collapsed": false,
+    "state": "idle",
+    "execution_time": 0.1
+  },
+  "U2aG4mjD": {
+    "id": "U2dG4mjD",
+    "type": "markdown",
+    "source": [
+     "# This is a heading 1"
+    ],
+    "heading_level": 1,
+    "collapsed": false,
+    "parent_collapsed": false,
+    "state": "idle",
+    "execution_time": null
+   },
+  "CmdY3sqw": {
+    "id": "CmdY3sdw",
+    "type": "python",
+    "source": [
+    "import numpy as np\n",
+    "import scipy.sparse as sp\n",
+    "import waves\n",
+    "import matplotlib.pyplot as plt\n",
+    "import skimage.io as io\n",
+    "import scipy.ndimage.filters as filters\n",
+    "import matplotlib.animation as animation"
+   ],
+    "execution_count": 2,
+    "outputs": [],
+    "heading_level": null,
+    "collapsed": false,
+    "parent_collapsed": false,
+    "state": "idle",
+    "execution_time": 0.5
+  },
+  "Q2dv4mjD": {
+    "id": "Q2dG4mjD",
+    "type": "markdown",
+    "source": [
+     "This is a markdown cell"
+    ],
+    "heading_level": null,
+    "collapsed": false,
+    "parent_collapsed": false,
+    "state": "idle",
+    "execution_time": null
+  },
+  "F9j3Bq2o": {
+    "id": "F9j3Bj2o",
+    "type": "sql",
+    "source": [
+      "SELECT * FROM table\n",
+      "WHERE column = 'value'\n",
+      "ORDER BY column\n",
+      "LIMIT 10"
+    ],
+    "heading_level": null,
+    "collapsed": false,
+    "parent_collapsed": false,
+    "state": "idle",
+    "execution_time": null
+  },
+  "H93Bfww8": {
+    "id": "H93BfwI8",
+    "type": "markdown",
+    "source": [
+     "# This also is a heading 1\n",
+      "This is some text in the markdown cell"
+    ],
+    "heading_level": 1,
+    "collapsed": false,
+    "parent_collapsed": false,
+    "state": "idle",
+    "execution_time": null
+   },
+   "jdu3Ivjd": {
+    "id": "jBu3Ivjd",
+    "type": "python",
+    "source": [
+    "a = np.array([1, 2, 3, 4, 5])\n",
+    "b = np.array([6, 7, 8, 9, 10])\n",
+    "c = a + b\n",
+    "print(c)"
+   ],
+    "execution_count": 4,
+    "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[ 7  9 11 13 15]\n"
+     ]
+    }
+    ],
+    "heading_level": null,
+    "collapsed": false,
+    "parent_collapsed": false,
+    "state": "idle",
+    "execution_time": 0.5
+  },
+  "B32bwmjD": {
+    "id": "B32b4mjD",
+    "type": "python",
+    "source": [
+    "import numpy as np\n",
+    "import scipy.sparse as sp\n",
+    "import waves\n",
+    "import matplotlib.pyplot as plt\n",
+    "import skimage.io as io\n",
+    "import scipy.ndimage.filters as filters\n",
+    "import matplotlib.animation as animation"
+   ],
+    "execution_count": 3,
+    "outputs": [],
+    "heading_level": null,
+    "collapsed": false,
+    "parent_collapsed": false,
+    "state": "idle",
+    "execution_time": 0.5
+  },
+  "a9XjY392": {
+    "id": "a9XjY392",
+    "type": "python",
+    "source": ["x = 5\n", "y = 10\n", "print(x * y)"],
+    "execution_count": 1,
+    "outputs": [
+      {
+        "name": "stdout",
+        "output_type": "stream",
+        "text": ["50\n"]
+      }
+    ],
+    "heading_level": null,
+    "collapsed": false,
+    "parent_collapsed": false,
+    "state": "idle",
+    "execution_time": 0.1
+  },
+  "b8dG4msR": {
+    "id": "b8dG4msR",
+    "type": "markdown",
+    "source": ["## Subheading Example"],
+    "heading_level": 2,
+    "collapsed": false,
+    "parent_collapsed": false,
+    "state": "idle",
+    "execution_time": null
+  },
+  "x3fY5sdu": {
+    "id": "x3fY5sdu",
+    "type": "python",
+    "source": [
+      "import numpy as np\n",
+      "data = np.random.random((3, 3))\n",
+      "print(data)"
+    ],
+    "execution_count": 2,
+    "outputs": [
+      {
+        "name": "stdout",
+        "output_type": "stream",
+        "text": [
+          "[[0.364255 0.176203 0.627684]\n",
+          " [0.439403 0.703822 0.244086]\n",
+          " [0.287979 0.481634 0.816981]]\n"
+        ]
+      }
+    ],
+    "heading_level": null,
+    "collapsed": false,
+    "parent_collapsed": false,
+    "state": "idle",
+    "execution_time": 0.2
+  },
+  "r7dG9mjQ": {
+    "id": "r7dG9mjQ",
+    "type": "markdown",
+    "source": ["Here's another markdown cell"],
+    "heading_level": null,
+    "collapsed": false,
+    "parent_collapsed": false,
+    "state": "idle",
+    "execution_time": null
+  },
+  "c4y9Bj9o": {
+    "id": "c4y9Bj9o",
+    "type": "sql",
+    "source": [
+      "SELECT name, age\n",
+      "FROM users\n",
+      "WHERE age > 30\n",
+      "ORDER BY age DESC"
+    ],
+    "heading_level": null,
+    "collapsed": false,
+    "parent_collapsed": false,
+    "state": "idle",
+    "execution_time": null
+  },
+  "g7j4Dwj8": {
+    "id": "g7j4Dwj8",
+    "type": "markdown",
+    "source": [
+      "### Markdown with List\n",
+      "* Item 1\n",
+      "* Item 2\n",
+      "* Item 3"
+    ],
+    "heading_level": 3,
+    "collapsed": false,
+    "parent_collapsed": false,
+    "state": "idle",
+    "execution_time": null
+  },
+  "q5h7Ivjd": {
+    "id": "q5h7Ivjd",
+    "type": "python",
+    "source": [
+      "a = np.linspace(0, 10, 5)\n",
+      "b = np.sin(a)\n",
+      "print(b)"
+    ],
+    "execution_count": 3,
+    "outputs": [
+      {
+        "name": "stdout",
+        "output_type": "stream",
+        "text": [
+          "[ 0.         0.841471  0.909297  0.14112  -0.756802]\n"
+        ]
+      }
+    ],
+    "heading_level": null,
+    "collapsed": false,
+    "parent_collapsed": false,
+    "state": "idle",
+    "execution_time": 0.2
+  },
+  "i51Bbdk3": {
+    "id": "i51Bbdk3",
+    "type": "python",
+    "source": [
+    "netflix_overall=pd.read_csv(\"/kaggle/input/netflix-shows/netflix_titles.csv\")\n",
+    "netflix_overall.head()"
+   ],
+    "execution_count": 5,
+    "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>show_id</th>\n",
+       "      <th>type</th>\n",
+       "      <th>title</th>\n",
+       "      <th>director</th>\n",
+       "      <th>cast</th>\n",
+       "      <th>country</th>\n",
+       "      <th>date_added</th>\n",
+       "      <th>release_year</th>\n",
+       "      <th>rating</th>\n",
+       "      <th>duration</th>\n",
+       "      <th>listed_in</th>\n",
+       "      <th>description</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>s1</td>\n",
+       "      <td>TV Show</td>\n",
+       "      <td>3%</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>João Miguel, Bianca Comparato, Michel Gomes, R...</td>\n",
+       "      <td>Brazil</td>\n",
+       "      <td>August 14, 2020</td>\n",
+       "      <td>2020</td>\n",
+       "      <td>TV-MA</td>\n",
+       "      <td>4 Seasons</td>\n",
+       "      <td>International TV Shows, TV Dramas, TV Sci-Fi &amp;...</td>\n",
+       "      <td>In a future where the elite inhabit an island ...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>s2</td>\n",
+       "      <td>Movie</td>\n",
+       "      <td>7:19</td>\n",
+       "      <td>Jorge Michel Grau</td>\n",
+       "      <td>Demián Bichir, Héctor Bonilla, Oscar Serrano, ...</td>\n",
+       "      <td>Mexico</td>\n",
+       "      <td>December 23, 2016</td>\n",
+       "      <td>2016</td>\n",
+       "      <td>TV-MA</td>\n",
+       "      <td>93 min</td>\n",
+       "      <td>Dramas, International Movies</td>\n",
+       "      <td>After a devastating earthquake hits Mexico Cit...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>s3</td>\n",
+       "      <td>Movie</td>\n",
+       "      <td>23:59</td>\n",
+       "      <td>Gilbert Chan</td>\n",
+       "      <td>Tedd Chan, Stella Chung, Henley Hii, Lawrence ...</td>\n",
+       "      <td>Singapore</td>\n",
+       "      <td>December 20, 2018</td>\n",
+       "      <td>2011</td>\n",
+       "      <td>R</td>\n",
+       "      <td>78 min</td>\n",
+       "      <td>Horror Movies, International Movies</td>\n",
+       "      <td>When an army recruit is found dead, his fellow...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>s4</td>\n",
+       "      <td>Movie</td>\n",
+       "      <td>9</td>\n",
+       "      <td>Shane Acker</td>\n",
+       "      <td>Elijah Wood, John C. Reilly, Jennifer Connelly...</td>\n",
+       "      <td>United States</td>\n",
+       "      <td>November 16, 2017</td>\n",
+       "      <td>2009</td>\n",
+       "      <td>PG-13</td>\n",
+       "      <td>80 min</td>\n",
+       "      <td>Action &amp; Adventure, Independent Movies, Sci-Fi...</td>\n",
+       "      <td>In a postapocalyptic world, rag-doll robots hi...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>s5</td>\n",
+       "      <td>Movie</td>\n",
+       "      <td>21</td>\n",
+       "      <td>Robert Luketic</td>\n",
+       "      <td>Jim Sturgess, Kevin Spacey, Kate Bosworth, Aar...</td>\n",
+       "      <td>United States</td>\n",
+       "      <td>January 1, 2020</td>\n",
+       "      <td>2008</td>\n",
+       "      <td>PG-13</td>\n",
+       "      <td>123 min</td>\n",
+       "      <td>Dramas</td>\n",
+       "      <td>A brilliant group of students become card-coun...</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "  show_id     type  title           director  \\\n",
+       "0      s1  TV Show     3%                NaN   \n",
+       "1      s2    Movie   7:19  Jorge Michel Grau   \n",
+       "2      s3    Movie  23:59       Gilbert Chan   \n",
+       "3      s4    Movie      9        Shane Acker   \n",
+       "4      s5    Movie     21     Robert Luketic   \n",
+       "\n",
+       "                                                cast        country  \\\n",
+       "0  João Miguel, Bianca Comparato, Michel Gomes, R...         Brazil   \n",
+       "1  Demián Bichir, Héctor Bonilla, Oscar Serrano, ...         Mexico   \n",
+       "2  Tedd Chan, Stella Chung, Henley Hii, Lawrence ...      Singapore   \n",
+       "3  Elijah Wood, John C. Reilly, Jennifer Connelly...  United States   \n",
+       "4  Jim Sturgess, Kevin Spacey, Kate Bosworth, Aar...  United States   \n",
+       "\n",
+       "          date_added  release_year rating   duration  \\\n",
+       "0    August 14, 2020          2020  TV-MA  4 Seasons   \n",
+       "1  December 23, 2016          2016  TV-MA     93 min   \n",
+       "2  December 20, 2018          2011      R     78 min   \n",
+       "3  November 16, 2017          2009  PG-13     80 min   \n",
+       "4    January 1, 2020          2008  PG-13    123 min   \n",
+       "\n",
+       "                                           listed_in  \\\n",
+       "0  International TV Shows, TV Dramas, TV Sci-Fi &...   \n",
+       "1                       Dramas, International Movies   \n",
+       "2                Horror Movies, International Movies   \n",
+       "3  Action & Adventure, Independent Movies, Sci-Fi...   \n",
+       "4                                             Dramas   \n",
+       "\n",
+       "                                         description  \n",
+       "0  In a future where the elite inhabit an island ...  \n",
+       "1  After a devastating earthquake hits Mexico Cit...  \n",
+       "2  When an army recruit is found dead, his fellow...  \n",
+       "3  In a postapocalyptic world, rag-doll robots hi...  \n",
+       "4  A brilliant group of students become card-coun...  "
+      ]
+     },
+     "execution_count": 3,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+    "heading_level": null,
+    "collapsed": false,
+    "parent_collapsed": false,
+    "state": "idle",
+    "execution_time": 0.5
+  },
 }
+
+export let cell_ids = [
+  "JiXjY973",
+  "U2dG4mjD",
+  "CmdY3sdw",
+  "Q2dG4mjD",
+  "F9j3Bj2o",
+  "H93BfwI8",
+  "jBu3Ivjd",
+  "B32b4mjD",
+  "Obx932bk",
+  "i51Bodk3",
+  "eN2B4m3d",
+  "oB1B4m3d",
+  "bo9B4m3d",
+  "JiXjY97q",
+  "U2aG4mjD",
+  "CmdY3sqw",
+  "Q2dv4mjD",
+  "F9j3Bq2o",
+  "H93Bfww8",
+  "jdu3Ivjd",
+  "B32bwmjD",
+  "a9XjY392",
+  "b8dG4msR",
+  "x3fY5sdu",
+  "r7dG9mjQ",
+  "c4y9Bj9o",
+  "g7j4Dwj8",
+  "q5h7Ivjd",
+  "i51Bbdk3",
+]

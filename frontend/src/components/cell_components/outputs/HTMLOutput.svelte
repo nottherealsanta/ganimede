@@ -1,8 +1,8 @@
-<!-- <script>
+<script lang="ts">
   export let output;
-  let output_div;
+  let output_div: HTMLDivElement;
   let html_string: string;
-  let html_type;
+  let html_type: string;
   $: if (typeof output["data"]["text/html"].join("") === "string") {
     html_string = output["data"]["text/html"].join("");
     // if html_string contains table tag, then set html_type to table
@@ -16,11 +16,45 @@
 </script>
 
 <div
-  class="flex h-fit my-1 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded {html_type} {html_type ==
-  'dataframe'
-    ? 'w-fit'
-    : 'w-full'} "
+  class=" {html_type} {html_type == 'dataframe' ? 'dataframe' : ''} "
   bind:this={output_div}
 >
   {@html html_string}
-</div> -->
+</div>
+
+<style>
+  .html-output {
+    @apply flex flex-col
+    w-full h-fit
+    p-2 my-1
+    bg-transparent 
+    rounded;
+  }
+  .dataframe {
+    @apply w-full
+    overflow-x-auto;
+  }
+
+  :global(.dataframe table) {
+    @apply text-sm;
+    border-spacing: 0;
+    width: 100%;
+    font-family: "Inter", sans-serif;
+    font-weight: 400;
+  }
+  :global(.dataframe thead th) {
+    @apply bg-gray-100 py-1 px-2;
+    text-align: right;
+  }
+  :global(.dataframe tbody th) {
+    @apply font-normal;
+    text-align: right;
+  }
+  :global(.dataframe tbody tr):nth-child(even) {
+    @apply bg-gray-100;
+  }
+  :global(.dataframe td) {
+    @apply py-0 px-2;
+    text-align: right;
+  }
+</style>
