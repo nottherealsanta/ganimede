@@ -13,7 +13,7 @@
     cell_stores,
   } from "../../stores/notebook.js";
   import MarkdownCell from "./MarkdownCell.svelte";
-  let cell: any = cell_stores[cell_id];
+  let cell: any = (cell_stores as any)[cell_id];
   let cell_div: HTMLDivElement;
 
   let is_hover: boolean = false;
@@ -37,6 +37,7 @@
   class="cell
   {is_markdown ? 'border-transparent' : 'border-gray-100'}
   {is_hover ? 'ring-1 ring-gray-200' : ''}
+  {is_active ? 'ring-2 ring-gray-200 shadow-md shadow-gray-200' : ''}
   "
   role="presentation"
   on:mouseenter={() => {
