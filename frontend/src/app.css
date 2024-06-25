@@ -46,12 +46,14 @@ body {
 /* sortablejs */
 .sortable-chosen>.cell {
   box-shadow: rgba(44, 42, 44, 0.2) 0px 8px 24px;
-  outline: 2px solid #3b82f6;
+  /* outline: 2px solid #3b82f6; */
+  @apply border-2 border-blue-500;
   opacity: 0.5;
 }
 .sortable-ghost {
   /* outline: 5px solid #3b82f6; */
-  border: 2px solid #0CA5E9;
+  /* border: 2px solid #0CA5E9; */
+  @apply border-2 border-blue-500;
   opacity: 1;
   height: 0px;
   overflow: hidden;

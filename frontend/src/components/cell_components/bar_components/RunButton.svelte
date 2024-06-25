@@ -4,6 +4,10 @@
   export let cell: any;
   $: exe_count_test =
     cell.execution_count === undefined ? " " : cell.execution_count.toString();
+
+  let state = "idle";
+
+  // simulate idle -> queued -> running -> idle
 </script>
 
 <div class="run-button group">

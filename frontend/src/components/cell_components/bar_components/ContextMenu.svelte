@@ -6,6 +6,7 @@
     Fullscreen,
     Library,
     MessageSquare,
+    History,
     Trash2,
   } from "lucide-svelte";
 
@@ -85,6 +86,10 @@
   <button class="menu-item" on:click={comment}>
     <MessageSquare size="16" class="mr-2" />
     Comment
+  </button>
+  <button class="menu-item" on:click={comment}>
+    <History size="16" class="mr-2" />
+    History
   </button>
   <hr class="my-1" />
   <button class="menu-item text-rose-600" on:click={delete_cell}>

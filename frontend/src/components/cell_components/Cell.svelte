@@ -7,14 +7,18 @@
   export let cell_id: string;
 
   import { cell_maps } from "../../scripts/test_nb";
+  import {
+    active_cell_id,
+    is_command_mode,
+    cell_stores,
+  } from "../../stores/notebook.js";
   import MarkdownCell from "./MarkdownCell.svelte";
-  let cell: any = cell_maps[cell_id];
+  let cell: any = cell_stores[cell_id];
   let cell_div: HTMLDivElement;
 
   let is_hover: boolean = false;
 
   // active cell
-  import { active_cell_id, is_command_mode } from "../../stores/notebook.js";
   $: is_active = $active_cell_id === cell_id;
 
   // scroll to active cell
@@ -104,7 +108,7 @@
     @apply absolute
     w-1 h-full
     rounded-sm
-    bg-sky-600;
+    bg-blue-600;
     pointer-events: none;
   }
 
@@ -115,7 +119,7 @@
     left: 0px;
     @apply absolute
     bg-transparent
-    ring-2 ring-sky-600
+    ring-2 ring-blue-600
     rounded-md
     z-20;
     pointer-events: none;
