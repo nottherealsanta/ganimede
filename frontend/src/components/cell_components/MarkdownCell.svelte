@@ -23,13 +23,15 @@
       setTimeout(() => {
         console.log("focus");
         textarea.focus();
-        textarea.style.height = `${textarea.scrollHeight}px`; // Add this line
+        textarea.style.height = `0`;
+        textarea.style.height = `${textarea.scrollHeight}px`;
       }, 50);
     }
   }
 
   function adjustHeight() {
     if (textarea) {
+      textarea.style.height = `0`; // this adjusts the height when it decreases
       textarea.style.height = `${textarea.scrollHeight}px`;
     }
   }
