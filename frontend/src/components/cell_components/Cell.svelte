@@ -109,18 +109,18 @@
     @apply absolute
     w-1 h-full
     rounded-sm
-    bg-blue-600;
+    bg-blue-500;
     pointer-events: none;
   }
 
   .active-editable-cell-indicator {
-    width: calc(100%);
-    height: calc(100%);
-    top: 0px;
-    left: 0px;
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    top: -2px;
+    left: -2px;
     @apply absolute
     bg-transparent
-    ring-2 ring-blue-600
+    ring-2 ring-blue-500
     rounded-md
     z-20;
     pointer-events: none;

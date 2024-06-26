@@ -336,7 +336,7 @@ export let cell_maps : {[key: string]: any} = {
     "execution_time": null
    },
   "CmdY3sqw": {
-    "id": "CmdY3sdw",
+    "id": "CmdY3sqw",
     "type": "python",
     "source": [
     "import numpy as np\n",
