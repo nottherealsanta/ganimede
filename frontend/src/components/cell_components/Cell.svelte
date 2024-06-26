@@ -37,7 +37,7 @@
   class="cell
   {is_markdown ? 'border-transparent' : 'border-gray-100'}
   {is_hover ? 'ring-1 ring-gray-200' : ''}
-  {is_active ? 'ring-2 ring-gray-200 shadow-md shadow-gray-200' : ''}
+  {is_active ? 'ring-2 ring-gray-100 ' : ''}
   "
   role="presentation"
   on:mouseenter={() => {
