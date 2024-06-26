@@ -1,2 +1,4 @@
+
+# python
+__pycache__/
 *.pyc
-backend/ganimede/__pycache__/main.cpython-310.pyc
