@@ -3,7 +3,6 @@
   import Cell from "../cell_components/Cell.svelte";
   import NewCellToolbar from "../cell_components/NewCellToolbar.svelte";
   import { onMount } from "svelte";
-  import { cell_ids } from "../../scripts/test_nb";
 
   // @ts-ignore
   function onDragStart(event) {}
@@ -12,9 +11,9 @@
   function onDragEnd(event) {}
 
   // onMount set active cell to the first cell
-  import { active_cell_id } from "../../stores/notebook";
+  import { active_cell_id, cell_ids } from "../../stores/notebook";
   onMount(() => {
-    active_cell_id.set(cell_ids[0]);
+    active_cell_id.set($cell_ids[0]);
   });
 </script>
 
@@ -31,14 +30,14 @@
     handle=".grab-handle"
     filter=".new-cell-toolbar"
   >
-    {#each cell_ids as cell_id, index (cell_id)}
+    {#each $cell_ids as cell_id, index (cell_id)}
       <div>
         <NewCellToolbar {index} />
         <Cell {cell_id} />
       </div>
     {/each}
     <!-- final new cell toolbar at the end -->
-    <NewCellToolbar index={cell_ids.length} />
+    <NewCellToolbar index={$cell_ids.length} />
   </SortableList>
 </div>
 

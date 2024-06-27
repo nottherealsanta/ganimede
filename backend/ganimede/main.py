@@ -1,13 +1,15 @@
+import logging
+import traceback
+from pathlib import Path
 import uvicorn
 from starlette.applications import Starlette
 from starlette.responses import FileResponse, PlainTextResponse
-from starlette.routing import Route
-from pathlib import Path
-import logging
-import traceback
+from starlette.routing import Route, WebSocketRoute
+
+from comms import Comms
 
 # Set up logging with DEBUG level to capture detailed information during development
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Define the directories for serving files
@@ -19,10 +21,15 @@ MONACO_DIR = (
 )  # Path to the Monaco editor's files
 
 
+# COMMS
+
+comms = Comms()
+
+
 # ROUTES
 
 
-# Function to serve files based on the request URL
+# -- Function to serve files based on the request URL
 async def serve_file(request):
     try:
         # Extract the relative path from the request URL
@@ -54,7 +61,7 @@ async def serve_file(request):
         return PlainTextResponse(f"Internal server error: {str(e)}", status_code=500)
 
 
-# Function to serve the homepage
+# -- Function to serve the homepage
 async def homepage(request):
     try:
         # Attempt to serve the index.html file as the homepage
@@ -66,15 +73,16 @@ async def homepage(request):
         return PlainTextResponse(f"Internal server error: {str(e)}", status_code=500)
 
 
-# Define the routes for the web application
+# -- Define the routes for the web p
 routes = [
     Route("/", endpoint=homepage),  # Route for the homepage
     Route("/{path:path}", endpoint=serve_file),  # Route for serving files
+    WebSocketRoute("/", comms.endpoint),  # Route for the WebSocket
 ]
 
-
-# Create the Starlette application with debugging enabled and the defined routes
+# -- Create the Starlette application with debugging enabled and the defined routes
 app = Starlette(debug=True, routes=routes)
+
 
 # Main entry point for running the application with Uvicorn
 if __name__ == "__main__":

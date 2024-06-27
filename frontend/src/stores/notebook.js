@@ -1,7 +1,8 @@
 import { writable, derived } from 'svelte/store';
 import { cell_ids as nb_cell_ids, cell_maps } from '../scripts/test_nb';
 
-export const cell_ids = writable(nb_cell_ids);
+export const cell_ids = writable([]);
+export const is_cell_ids_empty = derived(cell_ids, ($cell_ids) => $cell_ids.length === 0);
 
 export const active_cell_id = writable("");
 

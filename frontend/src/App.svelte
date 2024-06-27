@@ -6,12 +6,19 @@
 
   import { onMount } from "svelte";
   import { keydown_function } from "./stores/keyboard";
+  import { socket, open_socket } from "./stores/comms";
 
   onMount(() => {
+    // keyboard shortcuts
     window.addEventListener("keydown", keydown_function);
     return () => {
       window.removeEventListener("keydown", keydown_function);
     };
+  });
+
+  onMount(async () => {
+    // open websocket connection
+    open_socket();
   });
 </script>
 
@@ -20,8 +27,8 @@
     <SideBar />
     <Notebook />
   </div>
-  <StatusBar />
   <NavBar />
+  <StatusBar />
 </div>
 
 <style>
