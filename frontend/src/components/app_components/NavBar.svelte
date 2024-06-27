@@ -41,9 +41,10 @@
     border-b-2 border-gray-200;
   }
   .name {
-    @apply text-gray-800;
+    @apply absolute left-1/2 text-gray-800;
     font-family: "IBM Plex Sans", sans-serif;
     font-weight: 600;
+    transform: translateX(-50%);
   }
   .actions {
     @apply flex;

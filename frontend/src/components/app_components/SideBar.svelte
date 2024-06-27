@@ -2,56 +2,48 @@
   import {
     Book,
     Radius,
-    Database,
+    Users,
     Package,
     Sparkles,
     Settings,
   } from "lucide-svelte";
   let show: boolean = false;
+  let activeSection: string | null = null;
 
-  function toggle() {
-    show = !show;
+  function toggle(section: string) {
+    show = activeSection !== section || !show;
+    activeSection = show ? section : null;
   }
+  // TODO: Add Database and Environment sections
 </script>
 
 <div class="sidebar-buttons">
-  <button class="toggle-button" on:click={toggle}>
+  <button class="toggle-button" on:click={() => toggle("notebooks")}>
     <Book class="w-4 h-4" />
   </button>
-  <button class="toggle-button" on:click={toggle}>
-    <Database class="w-4 h-4" />
+  <button class="toggle-button" on:click={() => toggle("live-share")}>
+    <Users class="w-4 h-4" />
   </button>
-  <button class="toggle-button" on:click={toggle}>
+  <button class="toggle-button" on:click={() => toggle("kernel")}>
     <Radius class="w-4 h-4" />
   </button>
-  <button class="toggle-button" on:click={toggle}>
-    <Package class="w-4 h-4" />
-  </button>
-  <button class="toggle-button" on:click={toggle}>
+  <button class="toggle-button" on:click={() => toggle("ai-copilot")}>
     <Sparkles class="w-4 h-4" />
   </button>
-  <button class="toggle-button" on:click={toggle}>
+  <button class="toggle-button" on:click={() => toggle("settings")}>
     <Settings class="w-4 h-4" />
   </button>
 </div>
 
+<!-- style="visibility: {show ? 'visible' : 'hidden'}; 
+display: {show ? 'block' : 'none'}" -->
 <div
   class="sidebar"
-  style="visibility: {show ? 'visible' : 'hidden'}; 
-  display: {show ? 'block' : 'none'}"
+  style="width: {show ? '25%' : '0px'}; visibility: {show
+    ? 'visible'
+    : 'hidden'};"
 >
-  Notebooks
-  <div class="section"></div>
-  Database Connections
-  <div class="section"></div>
-  Kernel
-  <div class="section"></div>
-  Environment
-  <div class="section"></div>
-  AI Copilot
-  <div class="section"></div>
-  Settings
-  <div class="section"></div>
+  {activeSection}
 </div>
 
 <style>
@@ -62,11 +54,12 @@
   }
   .sidebar {
     @apply flex flex-col 
-    h-full w-[25%] px-2 pt-4 m-0 
+    h-full px-2 pt-4 m-0 
   bg-white border-r-2 border-gray-200 
   text-gray-700;
     font-family: "IBM Plex Sans", sans-serif;
     font-weight: 600;
+    /* transition: width 0.1s; */
   }
   .toggle-button {
     @apply flex 

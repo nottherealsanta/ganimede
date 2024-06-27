@@ -69,7 +69,7 @@
     w-full min-h-10
     h-full 
     z-10
-    bg-white
+    bg-transparent
     items-center
     text-gray-900
     rounded-md
@@ -92,6 +92,7 @@
   .marked {
     @apply w-full h-fit
     px-2
+    bg-transparent
     border-none
     resize-none
     outline-none

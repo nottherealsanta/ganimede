@@ -19,6 +19,9 @@ MONACO_DIR = (
 )  # Path to the Monaco editor's files
 
 
+# ROUTES
+
+
 # Function to serve files based on the request URL
 async def serve_file(request):
     try:
@@ -68,6 +71,7 @@ routes = [
     Route("/", endpoint=homepage),  # Route for the homepage
     Route("/{path:path}", endpoint=serve_file),  # Route for serving files
 ]
+
 
 # Create the Starlette application with debugging enabled and the defined routes
 app = Starlette(debug=True, routes=routes)

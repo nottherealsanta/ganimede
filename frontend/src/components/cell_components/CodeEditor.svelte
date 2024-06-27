@@ -19,10 +19,20 @@
     },
   };
 
+  function debounce<T extends Function>(cb: T, wait = 10) {
+    let h = 0;
+    let callable = (...args: any) => {
+      clearTimeout(h);
+      h = setTimeout(() => cb(...args), wait);
+    };
+    return <T>(<any>callable);
+  }
+
   // theme import
   import { light_theme } from "../../scripts/themes";
   let container: HTMLDivElement;
   let code_editor_container: HTMLDivElement;
+  let resizeObserver: ResizeObserver;
 
   let monaco_config: any = {
     value: cell.source.join(""),
@@ -70,7 +80,7 @@
     let ignoreEvent = false;
     let width = container.clientWidth;
 
-    const updateHeightWidth = () => {
+    const updateHeightWidth = debounce(() => {
       const contentHeight = Math.max(
         25,
         Math.min(2000, editor.getContentHeight())
@@ -85,7 +95,7 @@
       } finally {
         ignoreEvent = false;
       }
-    };
+    });
     editor.onDidContentSizeChange(updateHeightWidth);
     updateHeightWidth();
 
