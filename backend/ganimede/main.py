@@ -1,15 +1,25 @@
 import logging
 import traceback
 from pathlib import Path
+import asyncio
+
+from rich.logging import RichHandler
+
 import uvicorn
 from starlette.applications import Starlette
-from starlette.responses import FileResponse, PlainTextResponse
+from starlette.responses import FileResponse, PlainTextResponse, JSONResponse
 from starlette.routing import Route, WebSocketRoute
 
-from comms import Comms
+import y_py as Y
+from websockets import serve, connect
+from ypy_websocket import ASGIServer, WebsocketServer, WebsocketProvider
 
-# Set up logging with DEBUG level to capture detailed information during development
-logging.basicConfig(level=logging.INFO)
+from comms import Comms
+from notebook import Notebook
+
+logging.basicConfig(
+    level="INFO", format="%(message)s", datefmt="[%X]", handlers=[RichHandler()]
+)
 logger = logging.getLogger(__name__)
 
 # Define the directories for serving files
@@ -21,15 +31,35 @@ MONACO_DIR = (
 )  # Path to the Monaco editor's files
 
 
+# Y PY
+
+# -- yapp server
+websocket_server = WebsocketServer()
+yapp = ASGIServer(websocket_server)
+ydoc = Y.YDoc()
+
+
+# -- yapp server task
+async def ypy_ws_server_start():
+    async with (
+        WebsocketServer(log=logger) as websocket_server,
+        serve(websocket_server.serve, "localhost", 1234, close_timeout=1),
+    ):
+        await asyncio.Future()  # run forever
+
+
 # COMMS
 
 comms = Comms()
 
+# NOTEBOOK
+
+notebook = None
 
 # ROUTES
 
 
-# -- Function to serve files based on the request URL
+# -- serve files based on the request URL
 async def serve_file(request):
     try:
         # Extract the relative path from the request URL
@@ -61,8 +91,21 @@ async def serve_file(request):
         return PlainTextResponse(f"Internal server error: {str(e)}", status_code=500)
 
 
-# -- Function to serve the homepage
+# -- serve the homepage
 async def homepage(request):
+
+    # starting YPY websocket server
+    loop = asyncio.get_event_loop()
+    _task = loop.create_task(ypy_ws_server_start())
+    await asyncio.sleep(0.5)  # wait for server to start
+    websocket = await connect("ws://localhost:1234/g-y-room")
+    websocket_provider = WebsocketProvider(ydoc, websocket, log=logger)
+    task = asyncio.create_task(websocket_provider.start())
+    await websocket_provider.started.wait()
+
+    global notebook
+    notebook = Notebook(comms=comms, ydoc=ydoc)
+
     try:
         # Attempt to serve the index.html file as the homepage
         return FileResponse(FRONTEND_DIR / "index.html")
@@ -73,9 +116,63 @@ async def homepage(request):
         return PlainTextResponse(f"Internal server error: {str(e)}", status_code=500)
 
 
+# -- serve the file browser
+async def file_browser(request):
+    """
+    request comes with a query for a path
+    return a list of visible files/folders in the path, including their names and types
+    """
+    path = request.query_params.get("path", "")
+    if path == "":
+        path = Path.home()
+    else:
+        path = Path(str(Path.home()) + "/" + path)
+
+    print(f"Path: {path}")
+
+    if path.exists():
+        print(f"Path exists")
+        if path.is_dir():
+            print(f"Path is dir")
+            # List visible files and folders with their types
+            contents = [
+                {"name": f.name, "type": "folder" if f.is_dir() else "file"}
+                for f in path.iterdir()
+                if not f.name.startswith(".")
+            ]
+            print(contents)
+            return JSONResponse({"contents": contents})
+        else:
+            print(f"Path is file")
+            # If it's a visible file, return its name and type
+            if not path.name.startswith("."):
+                return JSONResponse({"contents": [{"name": path.name, "type": "file"}]})
+            else:
+                return JSONResponse({"contents": []})
+    else:
+        return JSONResponse({"contents": []})
+
+
+# -- open a notebook
+async def open_notebook(request):
+    """
+    request comes with a query for a path
+    return the content of the file
+    """
+    path = request.query_params.get("path", "")
+    if path == "":
+        return JSONResponse({"error": "No path provided"})
+    else:
+        notebook.open(path)
+
+    return JSONResponse({"status": "ok"})
+
+
 # -- Define the routes for the web p
 routes = [
     Route("/", endpoint=homepage),  # Route for the homepage
+    Route("/file_browser", endpoint=file_browser),
+    Route("/open_notebook", endpoint=open_notebook),
     Route("/{path:path}", endpoint=serve_file),  # Route for serving files
     WebSocketRoute("/", comms.endpoint),  # Route for the WebSocket
 ]
@@ -94,6 +191,5 @@ if __name__ == "__main__":
         app="main:app",
         host="0.0.0.0",
         port=8000,
-        log_level="debug",
         reload=True,
     )

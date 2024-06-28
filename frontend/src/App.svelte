@@ -20,12 +20,17 @@
     // open websocket connection
     open_socket();
   });
+
+  // notebook
+  import { is_cell_ids_empty } from "./stores/notebook";
 </script>
 
 <div class="app">
   <div class="sidebar-and-nb">
     <SideBar />
-    <Notebook />
+    {#if !$is_cell_ids_empty}
+      <Notebook />
+    {/if}
   </div>
   <NavBar />
   <StatusBar />

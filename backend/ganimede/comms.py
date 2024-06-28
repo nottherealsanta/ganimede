@@ -31,7 +31,7 @@ class Comms:
             while self.websocket_running:
                 try:
                     data = await self.out_queue.get()
-                    log.debug(f"send: {data}")
+                    # log.debug(f"send: {data}")
                     await self.websocket.send_json(data)
 
                 except Exception as e:
@@ -42,7 +42,7 @@ class Comms:
             while self.websocket_running:
                 try:
                     data = await self.websocket.receive_json()
-                    log.debug(f"received: {data}")
+                    # log.debug(f"received: {data}")
                     self.channel_queues[data["channel"]].put_nowait(data)
 
                 except Exception as e:

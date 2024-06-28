@@ -40,6 +40,8 @@ typing-extensions==4.12.2
     #   uvicorn
 uvicorn==0.30.1
     # via -r requirements.in
+websockets==12.0
+    # via -r requirements.in
 y-py==0.6.2
     # via
     #   -r requirements.in

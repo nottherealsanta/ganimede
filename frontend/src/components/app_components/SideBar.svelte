@@ -7,6 +7,7 @@
     Sparkles,
     Settings,
   } from "lucide-svelte";
+  import NotebookSection from "./sidebar_components/NotebookSection.svelte";
   let show: boolean = false;
   let activeSection: string | null = null;
 
@@ -43,7 +44,21 @@ display: {show ? 'block' : 'none'}" -->
     ? 'visible'
     : 'hidden'};"
 >
-  {activeSection}
+  {#if activeSection === "notebooks"}
+    <NotebookSection />
+  {/if}
+  {#if activeSection === "live-share"}
+    <div class="section">Live Share</div>
+  {/if}
+  {#if activeSection === "kernel"}
+    <div class="section">Kernel</div>
+  {/if}
+  {#if activeSection === "ai-copilot"}
+    <div class="section">AI Copilot</div>
+  {/if}
+  {#if activeSection === "settings"}
+    <div class="section">Settings</div>
+  {/if}
 </div>
 
 <style>

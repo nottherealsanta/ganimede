@@ -27,10 +27,26 @@ export async function open_socket() {
 
 export async function send_message({ channel, method, message }) {
   console.log("send : ", { channel, method, message });
+
+  // Function to wait for the socket to be ready
+  const waitForSocketReady = () => new Promise((resolve) => {
+    const checkSocket = () => {
+      if (socket.readyState === WebSocket.OPEN) {
+        resolve();
+      } else {
+        setTimeout(checkSocket, 100); // Check every 100ms
+      }
+    };
+    checkSocket();
+  });
+
+  // Initialize the socket if it's not already
   if (socket === null) {
     open_socket();
-    throw new Error("Socket is not initialized.");
+    await waitForSocketReady(); // Wait for the socket to be ready
   }
+
+  // Send the message
   socket.send(JSON.stringify({
     "channel": channel,
     "method": method,
