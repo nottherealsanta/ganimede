@@ -79,23 +79,9 @@
     bg-transparent
     items-center
     text-gray-900
-    rounded-md
-    overflow-y-auto;
+    rounded-md;
   }
 
-  .textarea {
-    @apply w-full h-full
-    px-2 py-2
-    bg-gray-50
-    border-none
-    resize-none
-    outline-none
-    z-20;
-    font-family: "Inter", sans-serif;
-  }
-  .textarea::selection {
-    @apply bg-sky-200;
-  }
   .marked {
     @apply w-full h-fit
     px-2
@@ -104,7 +90,7 @@
     resize-none
     outline-none
     z-20;
-    font-family: "Inter", sans-serif;
+    font-family: "IBM Plex Sans", sans-serif;
   }
   :global(.markdown p) {
     font-size: 16px;
@@ -169,5 +155,8 @@
   }
   :global(.markdown img) {
     max-width: 100%;
+  }
+  :global(.markdown em) {
+    font-style: italic;
   }
 </style>

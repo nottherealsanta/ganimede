@@ -20,7 +20,7 @@ export const keydown_function = (event) => {
       event.preventDefault();
       let x = get(active_cell_loc);
       if (x > 0) {
-        active_cell_id.set(get(cell_ids)[x - 1]);
+        active_cell_id.set(cell_ids[x - 1]);
       }
     }
     // Check if the ArrowDown key is pressed to move to the next cell
@@ -29,8 +29,8 @@ export const keydown_function = (event) => {
 
       event.preventDefault();
       let x = get(active_cell_loc);
-      if (x < get(cell_ids).length - 1) {
-        active_cell_id.set(get(cell_ids)[x + 1]);
+      if (x < cell_ids.length - 1) {
+        active_cell_id.set(cell_ids[x + 1]);
       }
     }
     // Check if the Enter key is pressed to enter edit mode

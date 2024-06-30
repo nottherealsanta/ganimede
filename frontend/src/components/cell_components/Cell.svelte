@@ -95,13 +95,13 @@
   }
 
   // heading level
+  // @ts-ignore
   cell.ycell
     .get("source")
     .observe((yevent: { target: { toJSON: () => any } }) => {
-      const source = yevent.target.toJSON();
+      const source = yevent.target.toJSON() as string; // If you know it's a string
       const heading_level = source.match(/^#+/)?.[0]?.length || 0;
       cell.heading_level = heading_level;
-      // console.log("heading level", heading_level);
     });
 
   // markdown
@@ -160,6 +160,7 @@
     bg-white
     rounded-md
     border-2;
+    scroll-margin: 20px;
   }
   .cell::before {
     /* for hover effect to work on grab */

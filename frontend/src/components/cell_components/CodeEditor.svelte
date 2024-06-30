@@ -49,7 +49,7 @@
     renderLineHighlight: "none",
     lineNumbers: cell.type === "code" ? "on" : "off",
     fontSize: 14,
-    fontFamily: "IBM Plex Mono",
+    fontFamily: cell.type === "code" ? "IBM Plex Mono" : "Inter",
     fontLigatures: true,
     fontWeight: "400",
     glyphMargin: false,
