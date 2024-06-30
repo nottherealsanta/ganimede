@@ -3,8 +3,6 @@
   import { marked } from "marked";
 </script>
 
-<div
-  class="flex w-fit h-fit hover:bg-gray-100 dark:hover:bg-neutral-700 rounded"
->
+<div class="w-fit h-fit p-1 hover:bg-gray-100 rounded">
   {@html marked(output["data"]["text/markdown"].join(""))}
 </div>

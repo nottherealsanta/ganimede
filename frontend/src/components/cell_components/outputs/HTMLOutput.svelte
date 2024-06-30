@@ -16,7 +16,9 @@
 </script>
 
 <div
-  class=" {html_type} {html_type == 'dataframe' ? 'dataframe' : ''} "
+  class=" html-output {html_type} {html_type == 'dataframe'
+    ? 'dataframe'
+    : ''} "
   bind:this={output_div}
 >
   {@html html_string}
@@ -24,11 +26,13 @@
 
 <style>
   .html-output {
-    @apply flex flex-col
-    w-full h-fit
-    p-2 my-1
+    @apply w-fit h-fit
+    p-1
     bg-transparent 
     rounded;
+  }
+  .html-output:hover {
+    @apply bg-gray-100;
   }
   .dataframe {
     @apply w-full
