@@ -3,9 +3,9 @@
   import { cell_maps } from "../../scripts/test_nb";
   import Output from "./outputs/Output.svelte";
 
-  export let cell_id: string;
+  export let cell: any;
   export let is_hover: boolean = false;
-  let cell: any = cell_maps[cell_id];
+  // let cell: any = cell_maps[cell_id];
 
   import { active_cell_id, is_command_mode } from "../../stores/notebook.js";
 </script>
@@ -13,7 +13,7 @@
 <div
   class="code-cell"
   on:click={(e) => {
-    active_cell_id.set(cell_id);
+    active_cell_id.set(cell.id);
     $is_command_mode = false;
   }}
   role="presentation"

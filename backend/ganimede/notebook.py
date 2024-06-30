@@ -51,7 +51,7 @@ class Notebook:
             log.error(f"Error reading file: {e}")
             return
 
-        file_name = path.name
+        file_name = path.split("/")[-1]
 
         # remove suffix
         file_name = file_name.split(".")[0]
@@ -64,13 +64,8 @@ class Notebook:
             self.ydoc.get_text("nb_path").insert(t, 0, file_name)
 
         # set notebook file
-        # self.notebook_file = json.loads(content)
         self.notebook_id = _generate_random_id()
         self.init_cells_from_content(content)
-
-        # save to db
-        await self.db_insert_notebook(file_name, content)
-        # await self.db_init_cells()
 
         await self.empty_run_queue()
 

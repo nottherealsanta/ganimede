@@ -32,7 +32,7 @@
   .new-cell-toolbar {
     @apply flex relative
     w-full h-2 mb-1
-    z-10
+    z-30
     items-center justify-center 
     bg-transparent 
     rounded-full;
@@ -44,7 +44,7 @@
     @apply bg-gray-50;
   }
   .line {
-    @apply absolute h-[1px] w-[98%] bg-gray-300;
+    @apply absolute h-[1px] w-[98%] bg-gray-200;
   }
   .toolbar-button {
     @apply flex 
@@ -55,18 +55,16 @@
     border border-gray-200
     text-sm
     text-gray-500
-    z-10
-    shadow;
+    z-10;
     font-family: "IBM Plex Sans", sans-serif;
     font-weight: 500;
     user-select: none;
   }
   .toolbar-button:hover {
-    @apply bg-gray-100 border-gray-300 text-gray-600;
+    @apply bg-gray-50 border-gray-300 text-gray-600;
   }
   .toolbar-button:active {
-    @apply bg-gray-200 
-    text-gray-700
-    shadow-sm;
+    @apply bg-gray-100 
+    text-gray-700;
   }
 </style>

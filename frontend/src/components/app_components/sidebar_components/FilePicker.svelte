@@ -55,10 +55,6 @@
       });
   }
 
-  onMount(() => {
-    fetch_contents();
-  });
-
   current_path.subscribe((path) => {
     fetch_contents(path);
   });
@@ -68,6 +64,7 @@
   class="flex flex-col items-center justify-center w-fit h-fit"
   on:click={() => {
     is_open = true;
+    fetch_contents();
   }}
 >
   Open a notebook
@@ -75,7 +72,7 @@
 
 {#if is_open}
   <div
-    class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-25"
+    class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-25 z-50"
     on:click={() => {
       is_open = false;
     }}

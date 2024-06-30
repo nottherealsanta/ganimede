@@ -11,7 +11,7 @@
   .left-controls {
     @apply absolute flex 
   w-8 h-8 p-[7px]
-  top-0 -left-7
+  top-0 -left-[1.9rem]
   items-center justify-center
   bg-transparent
   rounded-none

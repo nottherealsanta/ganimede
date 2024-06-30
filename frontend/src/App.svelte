@@ -23,6 +23,7 @@
 
   // notebook
   import { is_cell_ids_empty } from "./stores/notebook";
+  $: console.log("is_cell_ids_empty", $is_cell_ids_empty);
 </script>
 
 <div class="app">

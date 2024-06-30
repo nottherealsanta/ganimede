@@ -1,8 +1,6 @@
 <script lang="ts">
-  export let cell_id: string;
-  import { cell_maps } from "../../scripts/test_nb";
-  let cell: any = cell_maps[cell_id];
-  let source = cell.source.join("\n");
+  export let cell: any;
+  let source = cell.ycell.get("source").toString();
 
   // marked for markdown
   import { marked } from "marked";
@@ -12,7 +10,8 @@
 
   // active cell
   import { active_cell_id, is_command_mode } from "../../stores/notebook";
-  $: is_active = $active_cell_id === cell_id;
+  import CodeEditor from "./CodeEditor.svelte";
+  $: is_active = $active_cell_id === cell.id;
 
   // -- when active focus the textarea
   let textarea: HTMLTextAreaElement;
@@ -42,23 +41,30 @@
 <div
   class="markdown"
   on:click={(e) => {
-    active_cell_id.set(cell_id);
+    active_cell_id.set(cell.id);
     $is_command_mode = false;
   }}
   role="presentation"
 >
-  <div class="flex flex-col w-full h-full">
-    <textarea
+  <div class="flex flex-col w-full h-full p-0">
+    <!-- <textarea
       class="textarea {show_textarea ? 'block' : 'hidden'}"
       bind:value={source}
       bind:this={textarea}
       on:input={() => {
-        cell.source = source.split("\n");
+        // cell.source = source.split("\n"); TODO
         adjustHeight(); // Add this line
       }}
-    ></textarea>
+    ></textarea> -->
+    <div
+      class="{show_textarea
+        ? 'h-auto opacity-100'
+        : 'h-0 opacity-0'} w-full h-fit"
+    >
+      <CodeEditor {cell} />
+    </div>
     <div class="{show_textarea ? 'hidden' : ''} marked w-full h-fit">
-      {@html marked(source)}
+      {@html marked(cell.ycell.get("source").toString())}
     </div>
   </div>
 </div>
@@ -66,8 +72,9 @@
 <style>
   .markdown {
     @apply flex flex-row
-    w-full min-h-10
+    w-full min-h-8
     h-full 
+    p-0
     z-10
     bg-transparent
     items-center

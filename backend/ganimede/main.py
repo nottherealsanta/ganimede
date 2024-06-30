@@ -45,6 +45,7 @@ async def ypy_ws_server_start():
         WebsocketServer(log=logger) as websocket_server,
         serve(websocket_server.serve, "localhost", 1234, close_timeout=1),
     ):
+        logger.info("Y PY websocket server started")
         await asyncio.Future()  # run forever
 
 
@@ -94,17 +95,17 @@ async def serve_file(request):
 # -- serve the homepage
 async def homepage(request):
 
-    # starting YPY websocket server
-    loop = asyncio.get_event_loop()
-    _task = loop.create_task(ypy_ws_server_start())
-    await asyncio.sleep(0.5)  # wait for server to start
-    websocket = await connect("ws://localhost:1234/g-y-room")
-    websocket_provider = WebsocketProvider(ydoc, websocket, log=logger)
-    task = asyncio.create_task(websocket_provider.start())
-    await websocket_provider.started.wait()
+    # if y server is not started, start it
+    # print(yapp._websocket_server.__dict__)
+    # if not yapp._websocket_server.rooms_ready:
+    #     loop = asyncio.get_event_loop()
+    #     _task = loop.create_task(ypy_ws_server_start())
+    #     await asyncio.sleep(0.5)
 
     global notebook
     notebook = Notebook(comms=comms, ydoc=ydoc)
+
+    await open_notebook("")  # TODO: remove this to open notebooks from the frontend
 
     try:
         # Attempt to serve the index.html file as the homepage
@@ -159,13 +160,26 @@ async def open_notebook(request):
     request comes with a query for a path
     return the content of the file
     """
-    path = request.query_params.get("path", "")
+    # TODO
+    path = "/Users/srajan/repos/ganimede/tests/test_notebook.ipynb"  # request.query_params.get("path", "")
     if path == "":
         return JSONResponse({"error": "No path provided"})
     else:
-        notebook.open(path)
+        await notebook.open(path)
 
     return JSONResponse({"status": "ok"})
+
+
+async def startup():
+    logger.info("Starting up")
+    # starting YPY websocket server
+    loop = asyncio.get_event_loop()
+    _task = loop.create_task(ypy_ws_server_start())
+    await asyncio.sleep(0.5)  # wait for server to start
+    websocket = await connect("ws://localhost:1234/g-y-room")
+    websocket_provider = WebsocketProvider(ydoc, websocket, log=logger)
+    task = asyncio.create_task(websocket_provider.start())
+    await websocket_provider.started.wait()
 
 
 # -- Define the routes for the web p
@@ -178,7 +192,7 @@ routes = [
 ]
 
 # -- Create the Starlette application with debugging enabled and the defined routes
-app = Starlette(debug=True, routes=routes)
+app = Starlette(debug=True, routes=routes, on_startup=[startup])
 
 
 # Main entry point for running the application with Uvicorn

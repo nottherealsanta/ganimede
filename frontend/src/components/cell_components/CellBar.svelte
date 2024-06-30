@@ -12,15 +12,13 @@
   import { cell_maps } from "../../scripts/test_nb";
   import { active_cell_id, is_command_mode } from "../../stores/notebook";
 
-  export let cell_id: string;
-  let cell: any = cell_maps[cell_id];
+  export let cell: any;
+  // let cell: any = cell_maps[cell_id];
   export let is_hover: boolean = false;
-  $: is_active = $active_cell_id === cell_id;
+  $: is_active = $active_cell_id === cell.id;
 
   $: is_markdown = cell.type === "markdown";
-  $: is_heading =
-    is_markdown &&
-    cell.source.some((line: string) => line.trim().startsWith("#"));
+  $: is_heading = is_markdown && cell.source.toJSON().startsWith("#");
 
   // ai bar
   let is_ai_bar_open: boolean = false;
@@ -35,13 +33,14 @@
 <div
   class="cell-bar {is_markdown ? 'bg-white' : 'bg-gray-50'}"
   on:click={(e) => {
-    active_cell_id.set(cell_id);
+    active_cell_id.set(cell.id);
+    $is_command_mode = true;
   }}
 >
   {#if !is_markdown}
     <RunButton {cell} />
   {/if}
-  {#if is_markdown && is_heading}
+  {#if is_markdown && is_heading && (is_hover || is_active)}
     <HeadingCollapsible {is_heading} />
     <HeadingRunAll {is_heading} />
   {/if}

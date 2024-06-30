@@ -1,7 +1,7 @@
 <script lang="ts">
   export let cell: any;
   export let is_hover: boolean = false;
-  let outputs: never[] = cell.outputs;
+  let outputs: never[] = cell.outputs.toJSON();
 
   let height = 0;
   let width = 0;

@@ -4,9 +4,12 @@
 
 <script lang="ts">
   import { onMount } from "svelte";
+  import { MonacoBinding } from "y-monaco";
   import Collapsible from "../utility_components/Collapsible.svelte";
 
   export let cell;
+  // let source = "";
+
   export let is_hover: boolean = false;
 
   let code_collapsed: boolean = false;
@@ -35,8 +38,8 @@
   let resizeObserver: ResizeObserver;
 
   let monaco_config: any = {
-    value: cell.source.join(""),
-    language: cell.type,
+    value: "",
+    language: cell.type === "code" ? "python" : "markdown",
     theme: "vs-light",
     minimap: {
       enabled: false,
@@ -44,13 +47,13 @@
     overviewRulerBorder: false,
     overviewRulerLanes: 0,
     renderLineHighlight: "none",
-    lineNumbers: "on",
+    lineNumbers: cell.type === "code" ? "on" : "off",
     fontSize: 14,
     fontFamily: "IBM Plex Mono",
     fontLigatures: true,
     fontWeight: "400",
     glyphMargin: false,
-    lineNumbersMinChars: 2,
+    lineNumbersMinChars: cell.type === "code" ? 2 : 0,
     lineDecorationsWidth: 0,
     folding: true,
     automaticLayout: true, // updates height when `value` changes
@@ -68,6 +71,13 @@
   onMount(async () => {
     const monaco = await import("monaco-editor");
     editor = monaco.editor.create(container, monaco_config);
+
+    // binding
+    const monacoBinding = new MonacoBinding(
+      cell.source,
+      editor.getModel(),
+      new Set([editor])
+    ); // TODO: add awareness
 
     // themes
     // import("../../assets/monaco_themes/light.json").then(data => {

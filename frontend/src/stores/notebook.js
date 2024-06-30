@@ -22,6 +22,63 @@ websocket_provider.on("status", event => {
 
 });
 
+// Ycells
+
+export const ycells = ydoc.getArray('cells');
+export let cell_ids = ycells.toJSON();
+export const is_cell_ids_empty = writable(cell_ids.length === 0);
+// export const cells = writable(ycells.toJSON());
+
+ycells.observe((event) => {
+    console.log("Ycells event triggered ");
+    cell_ids = ycells.toJSON();
+    is_cell_ids_empty.set(cell_ids.length === 0);
+    update_pc_graph();
+});
+
+// PC Graph
+export const pc_graph = writable({});
+export function update_pc_graph() {
+    const graph = {};
+    const parentStack = []; // Stack to keep track of current parents based on heading levels
+
+    ycells.forEach(cell => {
+        const cellData = ydoc.getMap(cell).toJSON(); // Assuming cell is a Y.Map and has a toJSON method
+        if (cellData.heading_level) {
+            // Adjust the stack based on the current heading level
+            // Pop from the stack until finding a parent with a lower heading level
+            while (parentStack.length > 0 && parentStack[parentStack.length - 1].level >= cellData.heading_level) {
+                parentStack.pop();
+            }
+
+            // Initialize the children list for the current heading if it doesn't exist
+            if (!graph[cellData.id]) {
+                graph[cellData.id] = [];
+            }
+
+            // If there is a parent, add the current cell as a child to the last parent in the stack
+            if (parentStack.length > 0) {
+                const currentParentId = parentStack[parentStack.length - 1].id;
+                graph[currentParentId].push(cellData.id);
+            }
+
+            // Add the current cell as a potential parent for future cells
+            parentStack.push({ id: cellData.id, level: cellData.heading_level });
+        } else {
+            // If it's not a heading, add it to the last heading's children list
+            if (parentStack.length > 0) {
+                const currentParentId = parentStack[parentStack.length - 1].id;
+                if (!graph[currentParentId]) {
+                    graph[currentParentId] = [];
+                }
+                graph[currentParentId].push(cellData.id);
+            }
+        }
+    });
+    pc_graph.set(graph);
+    console.log("pc_graph updated: ", graph);
+}
+
 // Command mode
 export const is_command_mode = writable(true);
 
@@ -33,76 +90,42 @@ export const active_cell_loc = derived(active_cell_id, ($active_cell_id, set) =>
 }
 );
 
+// Move Cells
+export function drag_move_cells(event) {
+    const { oldIndicies, newIndicies, oldIndex, newIndex } = event;
+    console.log("drag_move_cells: ", oldIndicies, newIndicies, oldIndex, newIndex);
+    // if single cell drag
+    if (newIndicies == undefined || newIndicies.length == 0 || newIndicies.length == 1) {
+        ycells.doc.transact(() => {
+            let currentCells = ycells.toArray();
+            const [movedItem] = currentCells.splice(oldIndex, 1);
+            currentCells.splice(newIndex, 0, movedItem);
+            ycells.delete(0, ycells.length);
+            currentCells.forEach((cell) => ycells.push([cell]));
+        });
+    }
+    // multi cells drag 
+    else {
+        ycells.doc.transact(() => {
+            let currentCells = ycells.toArray();
+            // Create a copy of oldIndicies and sort it in descending order
+            let sortedOldIndicies = [...oldIndicies].sort((a, b) => b.index - a.index);
+            let movedItems = [];
+            // Remove items from the old positions
+            sortedOldIndicies.forEach(oldIndex => {
+                const [movedItem] = currentCells.splice(oldIndex.index, 1);
+                movedItems.push(movedItem);
+            });
+            // Reverse the movedItems array
+            movedItems.reverse();
+            // Insert items at the new positions
+            newIndicies.forEach((newIndex, i) => {
+                currentCells.splice(newIndex.index, 0, movedItems[i]);
+            });
+            ycells.delete(0, ycells.length);
+            currentCells.forEach((cell) => ycells.push([cell]));
+        });
+        undoManager.stopCapturing();
+    }
+}
 
-
-export const cell_ids = writable([]);
-export const is_cell_ids_empty = derived(cell_ids, ($cell_ids) => $cell_ids.length === 0);
-
-
-// class CellStore {
-//     constructor(cellData) {
-//         this.id = cellData.id;
-//         this.type = cellData.type;
-//         this.source = cellData.source;
-//         this.execution_count = cellData.execution_count;
-//         this.outputs = cellData.outputs;
-//         this.collapsed = cellData.collapsed;
-//         this.parent_collapsed = cellData.parent_collapsed;
-//         this.state = cellData.state;
-//         this.execution_time = cellData.execution_time;
-
-//         this.is_hover = writable(false);
-//         this.is_active = writable(false);
-//         this.is_focus = writable(false);
-
-//         this.heading_level = derived(
-//             [this],
-//             ([$cell]) => {
-//                 if ($cell.type === 'markdown') {
-//                     const headingMatch = $cell.source[0].match(/^(#+)\s/);
-//                     return headingMatch ? headingMatch[1].length : null;
-//                 }
-//                 return null;
-//             }
-//         );
-
-//         this.is_markdown = derived(
-//             [this],
-//             ([$cell]) => $cell.type === 'markdown'
-//         );
-//     }
-
-//     subscribe(run) {
-//         return derived(
-//             [
-//                 this.is_hover,
-//                 this.is_active,
-//                 this.is_focus,
-//                 this.heading_level,
-//                 this.is_markdown
-//             ],
-//             () => this
-//         ).subscribe(run);
-//     }
-
-//     setHover(value) {
-//         this.is_hover.set(value);
-//     }
-
-//     setActive(value) {
-//         this.is_active.set(value);
-//     }
-
-//     setFocus(value) {
-//         this.is_focus.set(value);
-//     }
-// }
-
-// // function createCellStore(cellData) {
-//     return new CellStore(cellData);
-// }
-
-// export let cell_stores = {};
-// cell_ids.forEach((cell_id) => {
-//     cell_stores[cell_id] = createCellStore(cell_maps[cell_id]);
-// });

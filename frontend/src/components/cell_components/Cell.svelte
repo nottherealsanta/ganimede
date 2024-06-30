@@ -6,28 +6,103 @@
 
   export let cell_id: string;
 
-  import { cell_maps } from "../../scripts/test_nb";
   import {
     active_cell_id,
     is_command_mode,
-    cell_stores,
+    ydoc,
   } from "../../stores/notebook.js";
   import MarkdownCell from "./MarkdownCell.svelte";
-  let cell: any = (cell_stores as any)[cell_id];
-  let cell_div: HTMLDivElement;
 
+  // cell
+  let cell = {
+    ycell: ydoc.getMap(cell_id),
+
+    get id() {
+      return this.ycell.get("id");
+    },
+    get type() {
+      return this.ycell.get("type");
+    },
+    get source() {
+      return this.ycell.get("source");
+    },
+    get execution_count() {
+      return this.ycell.get("execution_count");
+    },
+    get outputs() {
+      return this.ycell.get("outputs");
+    },
+    get heading_level() {
+      return this.ycell.get("heading_level");
+    },
+    get collapsed() {
+      return this.ycell.get("collapsed");
+    },
+    get parent_collapsed() {
+      return this.ycell.get("parent_collapsed");
+    },
+    get state() {
+      return this.ycell.get("state");
+    },
+
+    set id(value) {
+      console.error("ID is read-only");
+    },
+    set type(value) {
+      this.ycell.set("type", value);
+    },
+    set source(value) {
+      this.ycell.set("source", value);
+    },
+    set execution_count(value) {
+      console.error("Execution count is read-only");
+    },
+    set outputs(value) {
+      console.error("Outputs is read-only");
+    },
+    set heading_level(value) {
+      this.ycell.set("heading_level", value);
+    },
+    set collapsed(value) {
+      this.ycell.set("collapsed", value);
+    },
+    set parent_collapsed(value) {
+      this.ycell.set("parent_collapsed", value);
+    },
+    set state(value) {
+      console.error("State is read-only");
+    },
+  };
+
+  // reactivity
+  cell.ycell.observe((yevent) => {
+    cell = cell; // force reactivity
+  });
+
+  // hover
   let is_hover: boolean = false;
 
   // active cell
   $: is_active = $active_cell_id === cell_id;
 
   // scroll to active cell
+  let cell_div: HTMLDivElement;
   $: if (is_active && cell_div) {
     cell_div.scrollIntoView({
       behavior: "instant",
       block: "nearest",
     });
   }
+
+  // heading level
+  cell.ycell
+    .get("source")
+    .observe((yevent: { target: { toJSON: () => any } }) => {
+      const source = yevent.target.toJSON();
+      const heading_level = source.match(/^#+/)?.[0]?.length || 0;
+      cell.heading_level = heading_level;
+      // console.log("heading level", heading_level);
+    });
 
   // markdown
   $: is_markdown = cell.type === "markdown";
@@ -48,6 +123,26 @@
   }}
   bind:this={cell_div}
 >
+  <!-- Cell Controls -->
+  <Grab {is_hover} />
+  <DeleteCell {cell_id} {is_hover} />
+  <CellBar {cell} {is_hover} />
+
+  <!-- Code / Markdown -->
+  {#if !is_markdown}
+    <CodeCell {cell} {is_hover} />
+  {:else}
+    <MarkdownCell {cell} />
+  {/if}
+
+  <!-- debug -->
+  <div class="debug">
+    <p>{cell_id}</p>
+    <p>{cell.type}</p>
+    <p>{cell.heading_level}</p>
+  </div>
+  <!----------->
+
   <!-- Active -->
   {#if is_active}
     <div class="active-cell-indicator"></div>
@@ -56,25 +151,6 @@
   {#if is_active && !$is_command_mode}
     <div class="active-editable-cell-indicator"></div>
   {/if}
-
-  <!-- Cell Controls -->
-  <Grab {is_hover} />
-  <DeleteCell {cell_id} {is_hover} />
-  <CellBar {cell_id} {is_hover} />
-
-  <!-- Code / Markdown -->
-  {#if cell.type === "python" || cell.type === "sql"}
-    <CodeCell {cell_id} {is_hover} />
-  {:else if cell.type === "markdown"}
-    <MarkdownCell {cell_id} />
-  {/if}
-
-  <!-- debug -->
-  <!-- <div class="debug">
-    <p>{cell_id}</p>
-    <p>{cell.type}</p>
-  </div> -->
-  <!----------->
 </div>
 
 <style>
@@ -121,16 +197,17 @@
     @apply absolute
     bg-transparent
     ring-2 ring-blue-500
-    rounded-md
-    z-20;
+    rounded-md;
     pointer-events: none;
   }
-  /* .debug {
+  .debug {
     @apply absolute bottom-0 right-0
     bg-gray-200/20
     rounded-md
-    text-xs
     text-gray-400
-    p-2;
-  } */
+    z-50
+    p-1;
+    font-family: monospace;
+    font-size: 0.6rem;
+  }
 </style>
