@@ -11,10 +11,10 @@
     active_cell_id,
     is_command_mode,
     ydoc,
+    update_pc_graph,
   } from "../../stores/notebook.js";
   import MarkdownCell from "./MarkdownCell.svelte";
   import NewCellToolbar from "./NewCellToolbar.svelte";
-  import { slide } from "svelte/transition";
 
   // cell
   let cell = {
@@ -104,8 +104,11 @@
       .get("source")
       .observe((yevent: { target: { toJSON: () => any } }) => {
         const source = yevent.target.toJSON() as string; // If you know it's a string
-        const heading_level = source.match(/^#+/)?.[0]?.length || 0;
-        cell.heading_level = heading_level;
+        const heading_level = source.match(/^#+/)?.[0]?.length || null;
+        if (heading_level !== cell.heading_level) {
+          cell.heading_level = heading_level;
+          update_pc_graph();
+        }
       });
   }
 
@@ -129,10 +132,6 @@
   }}
   on:mouseleave={() => {
     is_hover = false;
-  }}
-  transition:slide|global={{
-    delay: 0,
-    duration: 1000,
   }}
   bind:this={cell_div}
 >

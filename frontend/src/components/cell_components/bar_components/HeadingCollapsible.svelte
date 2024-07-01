@@ -1,24 +1,17 @@
 <script>
   import { ChevronDown } from "lucide-svelte";
 
-  import { ydoc, pc_graph } from "../../../stores/notebook";
+  import {
+    ydoc,
+    pc_graph,
+    propagateCollapse,
+    n_descendants,
+  } from "../../../stores/notebook";
 
   export let cell;
   export let show;
 
   $: is_collapsed = cell.collapsed == "h";
-
-  function propagateCollapse(cell_id, state) {
-    // If the cell has children, propagate the state to them
-    if ($pc_graph[cell_id]) {
-      if (ydoc.getMap(cell_id).collapsed != "h") {
-        for (let child_id of $pc_graph[cell_id]) {
-          ydoc.getMap(child_id).set("parent_collapsed", state);
-          propagateCollapse(child_id, state);
-        }
-      }
-    }
-  }
 
   function get_number_of_descendants(cell_id) {
     let count = 0;
@@ -31,20 +24,14 @@
     return count;
   }
 
-  let descendants = get_number_of_descendants(cell.id);
-
-  $: if (is_collapsed) {
-    descendants = get_number_of_descendants(cell.id);
-  }
-
   function toggleCollapse() {
     is_collapsed = !is_collapsed;
     propagateCollapse(cell.id, is_collapsed);
-    cell.collapsed = is_collapsed ? "h" : "v";
+    cell.collapsed = is_collapsed ? "h" : "";
   }
 </script>
 
-{#if show || is_collapsed}
+{#if (show || is_collapsed) && $n_descendants[cell.id] > 0}
   <button
     class="toolbar-button"
     on:click|stopPropagation={() => {
@@ -56,7 +43,9 @@
     </div>
     <!-- show number of descendants -->
     {#if is_collapsed}
-      <span class="text-xs text-blue-500">{descendants} Cells Hidden</span>
+      <span class="text-xs text-blue-500"
+        >{$n_descendants[cell.id]} Cells Hidden</span
+      >
     {/if}
   </button>
 {/if}

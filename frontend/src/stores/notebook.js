@@ -76,7 +76,54 @@ export function update_pc_graph() {
         }
     });
     pc_graph.set(graph);
-    console.log("pc_graph updated: ", graph);
+}
+
+export const cp_graph = derived(pc_graph, $pc_graph => {
+    // reverse pc_graph, which is map of list
+    const cp_graph = {};
+    for (const parent in $pc_graph) {
+        for (const child of $pc_graph[parent]) {
+            cp_graph[child] = parent;
+        }
+    }
+    return cp_graph;
+});
+cp_graph.set = (value) => pc_graph.update(n => {
+    console.error("cp_graph is read-only");
+});
+
+export const n_descendants = derived(pc_graph, $pc_graph => {
+    const n_descendants = {};
+    const visited = new Set();
+
+    function get_number_of_descendants(cell_id) {
+        let count = 0;
+        if ($pc_graph[cell_id]) {
+            count += $pc_graph[cell_id].length;
+            for (let child_id of $pc_graph[cell_id]) {
+                count += get_number_of_descendants(child_id);
+            }
+        }
+        return count;
+    }
+
+    for (const parent in $pc_graph) {
+        visited.clear(); // Clear visited set for each parent
+        n_descendants[parent] = get_number_of_descendants(parent);
+    }
+    return n_descendants;
+});
+
+export function propagateCollapse(cell_id, state) {
+    // If the cell has children, propagate the state to them
+    if (get(pc_graph)[cell_id]) {
+        if (ydoc.getMap(cell_id).collapsed != "h") {
+            for (let child_id of get(pc_graph)[cell_id]) {
+                ydoc.getMap(child_id).set("parent_collapsed", state);
+                propagateCollapse(child_id, state);
+            }
+        }
+    }
 }
 
 // Command mode
@@ -126,6 +173,25 @@ export function drag_move_cells(event) {
             currentCells.forEach((cell) => ycells.push([cell]));
         });
         undoManager.stopCapturing();
+    }
+    update_pc_graph();
+
+    // if parent is collapsed, expand it
+    expand_parent(cell_ids[newIndex]);
+}
+
+function expand_parent(cell_id) {
+    const parent_id = get(cp_graph)[cell_id];
+    if (parent_id) {
+        const parent_cell = ydoc.getMap(parent_id).toJSON();
+        if (parent_cell.collapsed === "h") {
+            ydoc.getMap(parent_id).set("collapsed", "");
+            console.log("parent is collapsed, expand it");
+            propagateCollapse(parent_id, false);
+        }
+        if (parent_cell.parent_collapsed) {
+            expand_parent(parent_id);
+        }
     }
 }
 

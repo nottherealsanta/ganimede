@@ -161,7 +161,7 @@ async def open_notebook(request):
     return the content of the file
     """
     # TODO
-    path = "/Users/srajan/repos/ganimede/tests/test_notebook.ipynb"  # request.query_params.get("path", "")
+    path = "/Users/srajan/repos/ganimede-inc/api/tests/netflix-visualizations-recommendation-eda.ipynb"  # request.query_params.get("path", "")
     if path == "":
         return JSONResponse({"error": "No path provided"})
     else:

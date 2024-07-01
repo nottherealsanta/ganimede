@@ -204,9 +204,7 @@ class Notebook:
 
     async def run(self, cell_id: str):
         msg_queue = asyncio.Queue()
-
         loop = asyncio.get_event_loop()
-
         code = self.ydoc.get_map(cell_id).get("source").__str__()
         execute_task = loop.create_task(
             self.kernel.execute(code=code, msg_queue=msg_queue)
@@ -214,6 +212,17 @@ class Notebook:
 
         execution_count_already_set = False
         is_kernel_idle = False
+        output_buffer = []
+        last_update_time = loop.time()
+
+        async def process_buffer():
+            nonlocal output_buffer, last_update_time
+            if output_buffer:
+                with self.ydoc.begin_transaction() as t:
+                    for msg in output_buffer:
+                        self.ydoc.get_map(cell_id).get("outputs").append(t, msg)
+                output_buffer.clear()
+                last_update_time = loop.time()
 
         while True:
             msg = await msg_queue.get()
@@ -224,27 +233,24 @@ class Notebook:
             if "msg_type" in msg and msg["msg_type"] == "execute_reply":
                 self._set_execution_count(cell_id, msg["execution_count"])
                 execution_count_already_set = True
-
-            if (
+            elif (
                 "msg_type" in msg
                 and msg["msg_type"] == "status"
-                and "execution_state" in msg
                 and msg["execution_state"] == "idle"
-            ):  # last message
+            ):
                 is_kernel_idle = True
-
-            if execution_count_already_set and is_kernel_idle:  # last message
-                break
-
-            # TODO: move this to output setter
-            if "msg_type" not in msg:  # if message is an output, send it
-                # if the message is an error, clear the run queue
+            elif "msg_type" not in msg:  # if message is an output
                 if msg["output_type"] == "error":
                     await self.empty_run_queue()
+                output_buffer.append(msg)
 
-                with self.ydoc.begin_transaction() as t:
-                    log.info(f"appending msg: {msg}")
-                    self.ydoc.get_map(cell_id).get("outputs").append(t, msg)
+                # Process buffer if it's been more than 100ms since last update or buffer is large
+                if loop.time() - last_update_time > 0.1 or len(output_buffer) > 10:
+                    await process_buffer()
+
+            if execution_count_already_set and is_kernel_idle:
+                await process_buffer()  # Process any remaining outputs
+                break
 
         self._change_cell_state(cell_id, "idle")
 

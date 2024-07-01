@@ -16,7 +16,7 @@ export const keydown_function = (event) => {
     // Check if the ArrowUp key is pressed to move to the previous cell
     if (event.key === 'ArrowUp') {
       // move active cell to the previous cell
-
+      // TODO: account for collapsed cells
       event.preventDefault();
       let x = get(active_cell_loc);
       if (x > 0) {
