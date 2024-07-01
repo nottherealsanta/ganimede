@@ -5,6 +5,7 @@
   import CellBar from "./CellBar.svelte";
 
   export let cell_id: string;
+  export let index: number;
 
   import {
     active_cell_id,
@@ -12,6 +13,8 @@
     ydoc,
   } from "../../stores/notebook.js";
   import MarkdownCell from "./MarkdownCell.svelte";
+  import NewCellToolbar from "./NewCellToolbar.svelte";
+  import { slide } from "svelte/transition";
 
   // cell
   let cell = {
@@ -95,24 +98,30 @@
   }
 
   // heading level
-  // @ts-ignore
-  cell.ycell
-    .get("source")
-    .observe((yevent: { target: { toJSON: () => any } }) => {
-      const source = yevent.target.toJSON() as string; // If you know it's a string
-      const heading_level = source.match(/^#+/)?.[0]?.length || 0;
-      cell.heading_level = heading_level;
-    });
+  $: if (cell.type === "markdown") {
+    // @ts-ignore
+    cell.ycell
+      .get("source")
+      .observe((yevent: { target: { toJSON: () => any } }) => {
+        const source = yevent.target.toJSON() as string; // If you know it's a string
+        const heading_level = source.match(/^#+/)?.[0]?.length || 0;
+        cell.heading_level = heading_level;
+      });
+  }
 
   // markdown
   $: is_markdown = cell.type === "markdown";
 </script>
 
+<div class={cell.parent_collapsed ? "cell-parent-collapse" : ""}>
+  <NewCellToolbar {index} />
+</div>
 <div
   class="cell
   {is_markdown ? 'border-transparent' : 'border-gray-100'}
   {is_hover ? 'ring-1 ring-gray-200' : ''}
   {is_active ? 'ring-2 ring-gray-100 ' : ''}
+  {cell.parent_collapsed ? 'cell-parent-collapse' : ''}
   "
   role="presentation"
   on:mouseenter={() => {
@@ -120,6 +129,10 @@
   }}
   on:mouseleave={() => {
     is_hover = false;
+  }}
+  transition:slide|global={{
+    delay: 0,
+    duration: 1000,
   }}
   bind:this={cell_div}
 >
@@ -140,6 +153,7 @@
     <p>{cell_id}</p>
     <p>{cell.type}</p>
     <p>{cell.heading_level}</p>
+    <p>{cell.parent_collapsed}</p>
   </div>
   <!----------->
 
@@ -201,6 +215,11 @@
     rounded-md;
     pointer-events: none;
   }
+
+  .cell-parent-collapse {
+    display: none;
+  }
+
   .debug {
     @apply absolute bottom-0 right-0
     bg-gray-200/20

@@ -40,8 +40,10 @@
   {#if !is_markdown}
     <RunButton {cell} />
   {/if}
+  {#if is_markdown && is_heading}
+    <HeadingCollapsible {cell} show={is_hover || is_active} />
+  {/if}
   {#if is_markdown && is_heading && (is_hover || is_active)}
-    <HeadingCollapsible {is_heading} />
     <HeadingRunAll {is_heading} />
   {/if}
 

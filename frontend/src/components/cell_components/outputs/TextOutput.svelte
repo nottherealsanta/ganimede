@@ -23,7 +23,7 @@
 
 <style>
   .text-output {
-    @apply w-fit min-w-32
+    @apply w-fit min-w-20
     h-auto bg-transparent  
     my-1 p-1 rounded
      whitespace-pre-line 

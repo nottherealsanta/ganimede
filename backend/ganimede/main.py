@@ -170,8 +170,19 @@ async def open_notebook(request):
     return JSONResponse({"status": "ok"})
 
 
+async def queue_cell(request):
+    cell_id = request.query_params.get("cell_id", "")
+    if cell_id == "":
+        return JSONResponse({"error": "No cell_id provided"})
+    else:
+        await notebook.queue_cell(cell_id)
+        return JSONResponse({"status": "ok"})
+
+
 async def startup():
+
     logger.info("Starting up")
+
     # starting YPY websocket server
     loop = asyncio.get_event_loop()
     _task = loop.create_task(ypy_ws_server_start())
@@ -187,6 +198,7 @@ routes = [
     Route("/", endpoint=homepage),  # Route for the homepage
     Route("/file_browser", endpoint=file_browser),
     Route("/open_notebook", endpoint=open_notebook),
+    Route("/queue_cell", endpoint=queue_cell),
     Route("/{path:path}", endpoint=serve_file),  # Route for serving files
     WebSocketRoute("/", comms.endpoint),  # Route for the WebSocket
 ]

@@ -9,7 +9,7 @@
 <div class="error select-text py-1 hover:bg-gray-100">
   {#if output["traceback"]}
     {#each output["traceback"] as line}
-      <div class="text-pink-700 text-sm whitespace-pre pl-1 pb-0.5">
+      <div class="text-red-700 text-sm whitespace-pre pl-1 pb-0.5">
         {@html ansi_up.ansi_to_html(line)}
       </div>
     {/each}

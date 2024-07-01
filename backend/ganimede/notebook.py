@@ -90,18 +90,41 @@ class Notebook:
         # delete all cells
         with self.ydoc.begin_transaction() as t:
             self.ycells.delete_range(t, 0, len(self.ycells))
+
+        # heading level function
+        def calculate_heading_level(cell):
+            if cell["cell_type"] == "markdown":
+                content = "".join(cell["source"])
+                lines = content.split("\n")
+
+                for line in lines:
+                    stripped_line = line.strip()
+                    if stripped_line.startswith("#"):
+                        # Count the number of consecutive '#' at the start
+                        heading_level = len(stripped_line) - len(
+                            stripped_line.lstrip("#")
+                        )
+                        if heading_level > 0 and stripped_line[heading_level] in [
+                            " ",
+                            "\t",
+                        ]:
+                            return heading_level
+
+            return None
+
         ### set from juptyer notebook
         for cell in content["cells"]:
             id = cell["id"] if "id" in cell else _generate_random_id()
             source = Y.YText(("".join(cell["source"])))
             outputs = Y.YArray(cell["outputs"] if "outputs" in cell else [])
-            if cell["cell_type"] == "markdown":
-                heading_level = (
-                    1 if "".join(cell["source"]).split("\n")[0].startswith("#") else 0
-                )
-                heading_level = None if heading_level == 0 else heading_level
-            else:
-                heading_level = None
+            # if cell["cell_type"] == "markdown":
+            #     heading_level = (
+            #         1 if "".join(cell["source"]).split("\n")[0].startswith("#") else 0
+            #     )
+            #     heading_level = None if heading_level == 0 else heading_level
+            # else:
+            #     heading_level = None
+            heading_level = calculate_heading_level(cell)
             ycell = self.ydoc.get_map(id)
             with self.ydoc.begin_transaction() as t:
                 ycell.set(t, "id", id)

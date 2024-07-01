@@ -129,3 +129,11 @@ export function drag_move_cells(event) {
     }
 }
 
+// Queue Cell 
+export function queue_cell(cell_id) {
+    fetch(`/queue_cell?cell_id=${cell_id}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log("queue_cell response: ", data);
+        });
+}

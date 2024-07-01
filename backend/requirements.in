@@ -6,3 +6,4 @@ rich==13.7.1
 sqlalchemy==2.0.31
 websockets==12.0
 jupyter_client==8.6.2
+ipykernel==6.29.4

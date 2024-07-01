@@ -37,8 +37,7 @@
   >
     {#each cell_ids as cell_id, index (cell_id)}
       <div>
-        <NewCellToolbar {index} />
-        <Cell {cell_id} />
+        <Cell {cell_id} {index} />
       </div>
     {/each}
     <!-- final new cell toolbar at the end -->
