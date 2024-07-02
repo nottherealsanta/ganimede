@@ -9,6 +9,7 @@ from os import urandom
 from base64 import urlsafe_b64encode
 import sqlite3
 from os import path
+import datetime
 
 from kernel import Kernel
 from comms import Comms
@@ -117,13 +118,6 @@ class Notebook:
             id = cell["id"] if "id" in cell else _generate_random_id()
             source = Y.YText(("".join(cell["source"])))
             outputs = Y.YArray(cell["outputs"] if "outputs" in cell else [])
-            # if cell["cell_type"] == "markdown":
-            #     heading_level = (
-            #         1 if "".join(cell["source"]).split("\n")[0].startswith("#") else 0
-            #     )
-            #     heading_level = None if heading_level == 0 else heading_level
-            # else:
-            #     heading_level = None
             heading_level = calculate_heading_level(cell)
             ycell = self.ydoc.get_map(id)
             with self.ydoc.begin_transaction() as t:
@@ -202,6 +196,16 @@ class Notebook:
         with self.ydoc.begin_transaction() as t:
             self.ydoc.get_map(cell_id).set(t, "execution_count", execution_count)
 
+    def _set_execution_time(
+        self, cell_id: str, start_time: datetime, end_time: datetime
+    ):
+        start_time = start_time.timestamp()
+        end_time = end_time.timestamp()
+        with self.ydoc.begin_transaction() as t:
+            self.ydoc.get_map(cell_id).set(
+                t, "execution_time", {"start": start_time, "end": end_time}
+            )
+
     async def run(self, cell_id: str):
         msg_queue = asyncio.Queue()
         loop = asyncio.get_event_loop()
@@ -232,6 +236,11 @@ class Notebook:
 
             if "msg_type" in msg and msg["msg_type"] == "execute_reply":
                 self._set_execution_count(cell_id, msg["execution_count"])
+                self._set_execution_time(
+                    cell_id,
+                    start_time=msg["start_time"],
+                    end_time=msg["end_time"],
+                )
                 execution_count_already_set = True
             elif (
                 "msg_type" in msg

@@ -167,8 +167,7 @@
   bg-gray-50
   text-gray-600
     text-sm
-    items-center 
-    z-10;
+    items-center;
     font-family: "IBM Plex Mono";
   }
   .collapsed-editor:hover {

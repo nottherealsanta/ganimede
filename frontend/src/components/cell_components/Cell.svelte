@@ -15,6 +15,7 @@
   } from "../../stores/notebook.js";
   import MarkdownCell from "./MarkdownCell.svelte";
   import NewCellToolbar from "./NewCellToolbar.svelte";
+  import LeftControls from "./LeftControls.svelte";
 
   // cell
   let cell = {
@@ -31,6 +32,9 @@
     },
     get execution_count() {
       return this.ycell.get("execution_count");
+    },
+    get execution_time() {
+      return this.ycell.get("execution_time");
     },
     get outputs() {
       return this.ycell.get("outputs");
@@ -59,6 +63,9 @@
     },
     set execution_count(value) {
       console.error("Execution count is read-only");
+    },
+    set execution_time(value) {
+      console.error("Execution time is read-only");
     },
     set outputs(value) {
       console.error("Outputs is read-only");
@@ -138,22 +145,22 @@
   <!-- Cell Controls -->
   <Grab {is_hover} />
   <DeleteCell {cell_id} {is_hover} />
-  <CellBar {cell} {is_hover} />
+  <LeftControls {cell} {is_hover} />
 
   <!-- Code / Markdown -->
   {#if !is_markdown}
     <CodeCell {cell} {is_hover} />
   {:else}
-    <MarkdownCell {cell} />
+    <MarkdownCell {cell} {is_hover} />
   {/if}
 
   <!-- debug -->
-  <div class="debug">
+  <!-- <div class="debug">
     <p>{cell_id}</p>
     <p>{cell.type}</p>
     <p>{cell.heading_level}</p>
     <p>{cell.parent_collapsed}</p>
-  </div>
+  </div> -->
   <!----------->
 
   <!-- Active -->
@@ -195,7 +202,7 @@
     width: calc(100% + 35px);
     height: calc(100%);
     top: 0px;
-    left: -30px;
+    left: -32px;
     @apply absolute
     w-1 h-full
     rounded-sm
@@ -218,15 +225,15 @@
   .cell-parent-collapse {
     display: none;
   }
-
+  /* 
   .debug {
     @apply absolute bottom-0 right-0
     bg-gray-200/20
     rounded-md
     text-gray-400
-    z-50
+
     p-1;
     font-family: monospace;
     font-size: 0.6rem;
-  }
+  } */
 </style>

@@ -96,8 +96,7 @@
   bg-white
   text-gray-600
     text-sm
-    items-center 
-    z-10;
+    items-center;
     font-family: "IBM Plex Sans", sans-serif;
     font-weight: 600;
   }

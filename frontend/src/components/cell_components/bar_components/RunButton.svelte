@@ -2,8 +2,6 @@
   import { LoaderCircle, Play, Square } from "lucide-svelte";
 
   export let cell: any;
-  $: exe_count_test =
-    cell.execution_count === undefined ? " " : cell.execution_count.toString();
 
   // idle -> queued -> running -> idle
 

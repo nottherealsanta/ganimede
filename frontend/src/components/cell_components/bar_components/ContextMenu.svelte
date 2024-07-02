@@ -105,8 +105,7 @@
     rounded bg-white 
     text-gray-600
     shadow
-    ring-1 ring-gray-200
-    z-20;
+    ring-1 ring-gray-200 z-10;
     font-family: "IBM Plex Sans", sans-serif;
     font-weight: 400;
   }

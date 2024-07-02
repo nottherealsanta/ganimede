@@ -2,6 +2,7 @@
   import CodeEditor from "./CodeEditor.svelte";
   import { cell_maps } from "../../scripts/test_nb";
   import Output from "./outputs/Output.svelte";
+  import CellBar from "./CellBar.svelte";
 
   export let cell: any;
   export let is_hover: boolean = false;
@@ -9,6 +10,8 @@
 
   import { active_cell_id, is_command_mode } from "../../stores/notebook.js";
 </script>
+
+<CellBar {cell} {is_hover} />
 
 <div
   class="code-cell"
@@ -29,7 +32,7 @@
   .code-cell {
     @apply flex flex-col
     w-full h-auto
-    m-0 z-10
+    m-0 
     bg-transparent
     rounded-b-md;
   }

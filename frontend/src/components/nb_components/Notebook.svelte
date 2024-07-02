@@ -22,7 +22,15 @@
   });
 </script>
 
-<div class="nb">
+<div
+  class="nb"
+  on:click={(event) => {
+    // if click on nb only
+    if (event.target === event.currentTarget) {
+      active_cell_id.set("");
+    }
+  }}
+>
   <SortableList
     class="sortable-list flex flex-col w-[85%] min-w-[20rem]"
     group="nested"

@@ -132,6 +132,8 @@ class Kernel:
                     "execution_count": client_execute_reply["content"][
                         "execution_count"
                     ],
+                    "end_time": client_execute_reply["header"]["date"],
+                    "start_time": client_execute_reply["parent_header"]["date"],
                 }
             )
             if "error" in client_execute_reply["content"]:

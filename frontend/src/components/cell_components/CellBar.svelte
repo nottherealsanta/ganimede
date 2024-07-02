@@ -25,8 +25,6 @@
   $: if (!is_active) {
     is_ai_bar_open = false;
   }
-
-  $: execution_count = cell.execution_count;
 </script>
 
 <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
@@ -40,20 +38,20 @@
   {#if !is_markdown}
     <RunButton {cell} />
   {/if}
-  {#if is_markdown && is_heading}
+  <!-- {#if is_markdown && is_heading}
     <HeadingCollapsible {cell} show={is_hover || is_active} />
   {/if}
   {#if is_markdown && is_heading && (is_hover || is_active)}
     <HeadingRunAll {is_heading} />
-  {/if}
+  {/if} -->
 
   {#if is_hover || is_active}
-    {#if !is_markdown}
-      <ExecutionTime {is_markdown} />
-    {/if}
     <div class="flex-grow"></div>
     {#if !is_markdown}
-      <ExecutionCount {execution_count} {is_markdown} />
+      <ExecutionTime {cell} />
+    {/if}
+    {#if !is_markdown}
+      <ExecutionCount {cell} />
     {/if}
     <LanguageIndicator cell_type={cell.type} />
     <AIButton bind:is_ai_bar_open />

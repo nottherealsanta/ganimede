@@ -1,14 +1,19 @@
 <script lang="ts">
-  export let execution_count;
-  export let is_markdown: boolean;
+  export let cell: any;
 
-  $: exe_count_test =
-    execution_count === undefined ? "[ ]" : execution_count.toString();
+  $: execution_count =
+    cell.execution_count === undefined
+      ? "[ ]"
+      : cell.execution_count.toString();
 </script>
 
-{#if !is_markdown}
-  <div class="execution-count">{exe_count_test}</div>
-{/if}
+<div
+  class="execution-count {cell.state === 'running'
+    ? 'text-gray-200'
+    : 'text-gray-500'}"
+>
+  {execution_count}
+</div>
 
 <style>
   .execution-count {
@@ -18,7 +23,7 @@
     items-center justify-center
     cursor-default
     bg-transparent
-    text-xs text-gray-500;
+    text-xs;
     font-family: "IBM Plex Sans", sans-serif;
     font-weight: 500;
     font-style: normal;
