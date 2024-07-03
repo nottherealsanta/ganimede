@@ -38,7 +38,7 @@
 </script>
 
 <div
-  class="markdown"
+  class="markdown {show_textarea ? 'bg-gray-50' : 'bg-transparent'}"
   on:click={(e) => {
     active_cell_id.set(cell.id);
     $is_command_mode = false;
@@ -49,7 +49,7 @@
     <div
       class="{show_textarea
         ? 'h-auto opacity-100 pt-2'
-        : 'h-0 opacity-0'} w-full h-fit bg-gray-50"
+        : 'h-0 opacity-0'} w-full"
     >
       <CodeEditor {cell} />
     </div>
@@ -57,7 +57,7 @@
       {@html marked(source)}
     </div>
   </div>
-  <div class="flex w-1/4 h-fit">
+  <div class="flex w-1/4 h-fit self-start">
     <CellBar {cell} {is_hover} />
   </div>
 </div>
@@ -68,7 +68,6 @@
     w-full min-h-8
     h-full 
     p-0
-    bg-transparent
     items-center
     text-gray-900
     rounded-md;

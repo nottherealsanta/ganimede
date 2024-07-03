@@ -58,7 +58,7 @@
     <div>
       <button
         class="menu-button"
-        on:click={toggleOpen}
+        on:click|stopPropagation={toggleOpen}
         bind:this={menuButtonElement}
       >
         <EllipsisVertical size="16" />

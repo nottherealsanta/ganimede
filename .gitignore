@@ -2,3 +2,4 @@
 # python
 __pycache__/
 *.pyc
+frontend/.partykit/state/party/-PartyKitDurable/*
