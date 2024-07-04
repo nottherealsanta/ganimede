@@ -11,8 +11,8 @@ import sqlite3
 from os import path
 import datetime
 
-from kernel import Kernel
-from comms import Comms
+from .kernel import Kernel
+from .comms import Comms
 
 log = logging.getLogger(__name__)
 

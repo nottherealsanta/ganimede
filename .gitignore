@@ -7,6 +7,6 @@ frontend/.partykit/state/party/-PartyKitDurable/*
 .env
 .DS_Store
 
-/backend/build
-/backend/dist
+backend/build/*
+backend/dist/*
 

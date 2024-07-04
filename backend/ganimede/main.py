@@ -14,8 +14,8 @@ import y_py as Y
 from websockets import serve, connect
 from ypy_websocket import ASGIServer, WebsocketServer, WebsocketProvider
 
-from comms import Comms
-from notebook import Notebook
+from .comms import Comms
+from .notebook import Notebook
 
 logging.basicConfig(
     level="INFO", format="%(message)s", datefmt="[%X]", handlers=[RichHandler()]

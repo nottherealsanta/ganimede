@@ -8,7 +8,7 @@ from os import urandom
 from base64 import urlsafe_b64encode
 import logging
 
-from comms import Comms
+from .comms import Comms
 
 log = logging.getLogger(__name__)
 
