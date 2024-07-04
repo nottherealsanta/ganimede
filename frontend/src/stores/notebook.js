@@ -2,25 +2,58 @@ import { writable, derived } from 'svelte/store';
 import { get } from 'svelte/store'
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
-// import { cell_ids as nb_cell_ids, cell_maps } from '../scripts/test_nb';
+import YPartyKitProvider from "y-partykit/provider";
+
+
+function detectBrowser() {
+    var userAgent = navigator.userAgent;
+    if (userAgent.indexOf("Edg") > -1) {
+        return "Microsoft Edge";
+    } else if (userAgent.indexOf("Chrome") > -1) {
+        return "Chrome";
+    } else if (userAgent.indexOf("Firefox") > -1) {
+        return "Firefox";
+    } else if (userAgent.indexOf("Safari") > -1) {
+        return "Safari";
+    } else if (userAgent.indexOf("Opera") > -1) {
+        return "Opera";
+    } else if (userAgent.indexOf("Trident") > -1 || userAgent.indexOf("MSIE") > -1) {
+        return "Internet Explorer";
+    }
+
+    return "Unknown";
+}
+
+
 
 // Init Yjs
-
 export const ydoc = new Y.Doc();
+
 const websocket_provider = new WebsocketProvider(
     "ws://localhost:1234",
     "g-y-room",
     ydoc
 );
 websocket_provider.on("status", event => {
-    console.log("yjs status: ", event.status); // logs "connected" or "disconnected"
-    if (event.status === "disconnected") {
+    console.log("yjs status: ", event.status);
+    if (event.status === "disconnected" || event.status === "connecting") {
         ydoc.destroy();
         console.log("ydoc destroyed");
         websocket_provider.destroy();
     }
-
 });
+
+// if (detectBrowser() === "Safari") {
+//     console.log("Safari detected, disconnecting websocket provider");
+//     websocket_provider.disconnect();
+// }
+
+
+const provider = new YPartyKitProvider(
+    "localhost:1999",
+    "g-y-room-party",
+    ydoc
+);
 
 // Ycells
 

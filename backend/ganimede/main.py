@@ -95,17 +95,11 @@ async def serve_file(request):
 # -- serve the homepage
 async def homepage(request):
 
-    # if y server is not started, start it
-    # print(yapp._websocket_server.__dict__)
-    # if not yapp._websocket_server.rooms_ready:
-    #     loop = asyncio.get_event_loop()
-    #     _task = loop.create_task(ypy_ws_server_start())
-    #     await asyncio.sleep(0.5)
-
     global notebook
-    notebook = Notebook(comms=comms, ydoc=ydoc)
 
-    await open_notebook("")  # TODO: remove this to open notebooks from the frontend
+    if notebook is None:
+        notebook = Notebook(comms=comms, ydoc=ydoc)
+        await open_notebook("")  # TODO: remove this to open notebooks from the frontend
 
     try:
         # Attempt to serve the index.html file as the homepage

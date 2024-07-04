@@ -26,6 +26,8 @@
   $: console.log("is_cell_ids_empty", $is_cell_ids_empty);
 </script>
 
+<!-- a button to test the supabase connection -->
+
 <div class="app">
   <div class="sidebar-and-nb">
     <SideBar />

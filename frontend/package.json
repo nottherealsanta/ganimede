@@ -13,6 +13,7 @@
     "@sveltejs/vite-plugin-svelte": "^3.0.2",
     "@tsconfig/svelte": "^5.0.2",
     "autoprefixer": "^10.4.19",
+    "partykit": "0.0.107",
     "postcss": "^8.4.38",
     "svelte": "^4.2.17",
     "svelte-check": "^3.6.7",
@@ -22,12 +23,15 @@
     "vite": "^5.2.0"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.44.2",
     "ansi_up": "^6.0.2",
     "lucide-svelte": "^0.383.0",
     "marked": "^12.0.2",
     "monaco-editor": "^0.49.0",
+    "partysocket": "1.0.1",
     "sortablejs": "^1.15.2",
     "y-monaco": "^0.1.5",
+    "y-partykit": "^0.0.29",
     "y-protocols": "^1.0.6",
     "y-websocket": "^2.0.3",
     "yjs": "^13.6.15"
