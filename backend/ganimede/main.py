@@ -14,8 +14,8 @@ import y_py as Y
 from websockets import serve, connect
 from ypy_websocket import ASGIServer, WebsocketServer, WebsocketProvider
 
-from .comms import Comms
-from .notebook import Notebook
+from ganimede.comms import Comms
+from ganimede.notebook import Notebook
 
 logging.basicConfig(
     level="INFO", format="%(message)s", datefmt="[%X]", handlers=[RichHandler()]
@@ -201,8 +201,7 @@ routes = [
 app = Starlette(debug=True, routes=routes, on_startup=[startup])
 
 
-# Main entry point for running the application with Uvicorn
-if __name__ == "__main__":
+def main():
     # Log the paths being served
     logger.info(f"Frontend directory: {FRONTEND_DIR}")
     logger.info(f"Monaco directory: {MONACO_DIR}")
@@ -213,3 +212,8 @@ if __name__ == "__main__":
         port=8000,
         reload=True,
     )
+
+
+# # Main entry point for running the application with Uvicorn
+# if __name__ == "__main__":
+#     main()
