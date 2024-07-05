@@ -82,10 +82,11 @@
     outline-none;
     font-family: "IBM Plex Sans", sans-serif;
   }
-  :global(.markdown p) {
+  :global(.markdown p, .markdown ul, .markdown ol) {
     font-size: 16px;
     font-weight: 400;
     line-height: 1.5;
+    margin-bottom: 0.25rem;
   }
   :global(.markdown ul) {
     list-style-type: circle;
@@ -100,12 +101,12 @@
   }
   :global(.markdown h2) {
     font-weight: 500;
-    font-size: 20px;
+    font-size: 24px;
     line-height: 1.5;
   }
   :global(.markdown h3) {
     font-weight: 500;
-    font-size: 18px;
+    font-size: 20px;
     line-height: 1.5;
   }
   :global(.markdown h4) {

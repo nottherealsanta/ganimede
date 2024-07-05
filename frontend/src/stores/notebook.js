@@ -43,17 +43,12 @@ websocket_provider.on("status", event => {
     }
 });
 
-// if (detectBrowser() === "Safari") {
-//     console.log("Safari detected, disconnecting websocket provider");
-//     websocket_provider.disconnect();
-// }
 
-
-const provider = new YPartyKitProvider(
-    "localhost:1999",
-    "g-y-room-party",
-    ydoc
-);
+// const provider = new YPartyKitProvider(
+//     "localhost:1999",
+//     "g-y-room-party",
+//     ydoc
+// );
 
 // Ycells
 

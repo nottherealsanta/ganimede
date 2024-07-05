@@ -2,7 +2,7 @@
   export let cell: any;
 
   $: execution_count =
-    cell.execution_count === undefined
+    cell.execution_count === undefined || cell.execution_count === null
       ? "[ ]"
       : cell.execution_count.toString();
 </script>

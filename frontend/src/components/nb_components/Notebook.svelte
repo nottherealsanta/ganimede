@@ -20,6 +20,7 @@
     active_cell_id.set(cell_ids[0]);
     console.log("cell_ids", cell_ids);
   });
+  $: cell_ids;
 </script>
 
 <div

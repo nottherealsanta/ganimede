@@ -56,7 +56,7 @@
     lineNumbersMinChars: cell.type === "code" ? 2 : 0,
     lineDecorationsWidth: 0,
     folding: true,
-    automaticLayout: true, // updates height when `value` changes
+    automaticLayout: false, // performance issue if true
     wordWrap: "on",
     wrappingStrategy: "advanced",
     wrappingColumn: 80,
@@ -67,6 +67,7 @@
       handleMouseWheel: false,
     },
     scrollBeyondLastLine: false,
+    useWorker: true,
   };
   onMount(async () => {
     const monaco = await import("monaco-editor");
@@ -80,15 +81,12 @@
     ); // TODO: add awareness
 
     // themes
-    // import("../../assets/monaco_themes/light.json").then(data => {
-    //   monaco.editor.defineTheme('light', data);
-    // })
     monaco.editor.defineTheme("light", light_theme);
     monaco.editor.setTheme("light");
 
     // dynamic height
     let ignoreEvent = false;
-    let width = container.clientWidth;
+    let width = 300; // it was container.clientWidth;
 
     const updateHeightWidth = debounce(() => {
       const contentHeight = Math.max(
@@ -105,7 +103,7 @@
       } finally {
         ignoreEvent = false;
       }
-    });
+    }, 10);
     editor.onDidContentSizeChange(updateHeightWidth);
     updateHeightWidth();
 
