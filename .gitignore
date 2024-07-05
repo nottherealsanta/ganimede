@@ -5,10 +5,10 @@ __pycache__/
 frontend/.partykit/state/party/-PartyKitDurable/*
 
 .env
-.DS_Store
+*.DS_Store
 
 backend/build/*
 backend/dist/*
 
-.spec
+*.spec
 

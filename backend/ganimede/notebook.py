@@ -48,6 +48,7 @@ class Notebook:
         try:
             with open(path, "r") as f:
                 content = f.read()
+                log.info(f"File read: {path}, \n{content}")
         except Exception as e:
             log.error(f"Error reading file: {e}")
             return
@@ -86,6 +87,9 @@ class Notebook:
 
     def init_cells_from_content(self, content: str):
         content = json.loads(content)
+
+        log.info(f"content.cells: {content['cells']}")
+
         ## y
         self.ycells = self.ydoc.get_array("cells")
         # delete all cells
@@ -147,6 +151,7 @@ class Notebook:
                 ycell.set(t, "execution_time", None)
                 # ycells
                 self.ycells.append(t, id)
+        log.info(f"ydoc.cells: {self.ycells}")
 
     async def queue_cell(self, cell_id: str):
         log.debug(f"queue_cell: {cell_id}")

@@ -23,12 +23,11 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Define the directories for serving files
+DEV = False
 FRONTEND_DIR = Path(
-    "../../frontend"
+    "../frontend"
 ).resolve()  # Resolve the absolute path for the frontend directory
-MONACO_DIR = (
-    FRONTEND_DIR / "node_modules" / "monaco-editor" / "esm" / "vs"
-)  # Path to the Monaco editor's files
+MONACO_DIR = FRONTEND_DIR / "node_modules" / "monaco-editor" / "esm" / "vs"
 
 
 # Y PY
@@ -62,6 +61,7 @@ notebook = None
 
 # -- serve files based on the request URL
 async def serve_file(request):
+    print(f"Request URL: {request.url}")
     try:
         # Extract the relative path from the request URL
         relative_path = request.url.path.lstrip("/")
@@ -73,11 +73,14 @@ async def serve_file(request):
             / Path(relative_path).relative_to(
                 "node_modules/monaco-editor/esm/vs"
             ),  # Path for Monaco editor files
+            # MONACO_DIR
+            # / relative_path,
         ]
 
         # Attempt to find and serve the requested file from the possible paths
         for file_path in possible_paths:
-            logger.debug(f"Attempting to serve file: {file_path}")
+
+            logger.info(f"Attempting to serve file: {file_path}")
             if file_path.exists() and file_path.is_file():
                 logger.info(f"Serving file: {file_path}")
                 return FileResponse(file_path)
@@ -99,11 +102,14 @@ async def homepage(request):
 
     if notebook is None:
         notebook = Notebook(comms=comms, ydoc=ydoc)
-        await open_notebook("")  # TODO: remove this to open notebooks from the frontend
+        # await open_notebook("")  # TODO: remove this to open notebooks from the frontend
 
     try:
         # Attempt to serve the index.html file as the homepage
-        return FileResponse(FRONTEND_DIR / "index.html")
+        # if DEV:
+        logger.info(f"Serving dev homepage: {FRONTEND_DIR / 'dev_index.html'}")
+        return FileResponse(FRONTEND_DIR / "dev_index.html")
+        # return FileResponse(FRONTEND_DIR / "index.html")
     except Exception as e:
         # Log any exceptions that occur and return a 500 response
         logger.error(f"Error serving homepage: {str(e)}")
@@ -123,22 +129,16 @@ async def file_browser(request):
     else:
         path = Path(str(Path.home()) + "/" + path)
 
-    print(f"Path: {path}")
-
     if path.exists():
-        print(f"Path exists")
         if path.is_dir():
-            print(f"Path is dir")
             # List visible files and folders with their types
             contents = [
                 {"name": f.name, "type": "folder" if f.is_dir() else "file"}
                 for f in path.iterdir()
                 if not f.name.startswith(".")
             ]
-            print(contents)
             return JSONResponse({"contents": contents})
         else:
-            print(f"Path is file")
             # If it's a visible file, return its name and type
             if not path.name.startswith("."):
                 return JSONResponse({"contents": [{"name": path.name, "type": "file"}]})
@@ -155,11 +155,14 @@ async def open_notebook(request):
     return the content of the file
     """
     # TODO
-    path = "/Users/srajan/repos/ganimede/tests/test_notebook.ipynb"  # request.query_params.get("path", "")
+    # path = "/Users/srajan/repos/ganimede/tests/test_notebook.ipynb"  #
+    path = request.query_params.get("path", "")
+    logger.info(f"Opening notebook: {path}")
     if path == "":
         return JSONResponse({"error": "No path provided"})
     else:
-        await notebook.open(path)
+        home_dir_path = str(Path.home())
+        await notebook.open(home_dir_path + "/" + path)
 
     return JSONResponse({"status": "ok"})
 
@@ -201,19 +204,40 @@ routes = [
 app = Starlette(debug=True, routes=routes, on_startup=[startup])
 
 
-def main():
+def dev_main():
+    global DEV
+    DEV = True
+    logger.info("Starting up in dev mode")
+
     # Log the paths being served
+    global FRONTEND_DIR, MONACO_DIR
+    FRONTEND_DIR = Path(
+        "../../frontend"
+    ).resolve()  # Resolve the absolute path for the frontend directory
+    MONACO_DIR = FRONTEND_DIR / "node_modules" / "monaco-editor" / "esm" / "vs"
     logger.info(f"Frontend directory: {FRONTEND_DIR}")
     logger.info(f"Monaco directory: {MONACO_DIR}")
+
     # Run the application with Uvicorn, listening on all interfaces at port 8000, with debug logging and auto-reload enabled
     uvicorn.run(
-        app="main:app",
+        app="ganimede.main:app",
         host="0.0.0.0",
         port=8000,
         reload=True,
     )
 
 
-# # Main entry point for running the application with Uvicorn
-# if __name__ == "__main__":
-#     main()
+def main():
+    global FRONTEND_DIR, MONACO_DIR
+    FRONTEND_DIR = Path(
+        "../frontend/dist"
+    ).resolve()  # Resolve the absolute path for the frontend directory
+    MONACO_DIR = FRONTEND_DIR  # Path to the Monaco editor's files
+
+    # Run the application with Uvicorn
+    uvicorn.run(app="main:app", host="0.0.0.0", port=8000)
+
+
+# Main entry point for running the application with Uvicorn
+if __name__ == "__main__":
+    dev_main()

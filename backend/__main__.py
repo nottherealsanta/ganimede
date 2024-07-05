@@ -1,4 +1,9 @@
-from ganimede.main import main
+from ganimede.main import main, dev_main
 
 if __name__ == "__main__":
-    main()
+    dev_main()
+
+# import webview
+
+# webview.create_window("Hello world", "https://pywebview.flowrl.com/")
+# webview.start()
