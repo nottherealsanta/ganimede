@@ -86,7 +86,7 @@
 
     // dynamic height
     let ignoreEvent = false;
-    let width = 300; // it was container.clientWidth;
+    let width = 900; // it was container.clientWidth;
     let currentHeight = 25; // Initialize with minimum height
 
     const updateWidth = debounce(() => {
