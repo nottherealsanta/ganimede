@@ -3,7 +3,7 @@ import { get } from 'svelte/store'
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 import YPartyKitProvider from "y-partykit/provider";
-
+import { send_message } from './comms';
 
 function detectBrowser() {
     var userAgent = navigator.userAgent;
@@ -228,9 +228,5 @@ function expand_parent(cell_id) {
 
 // Queue Cell 
 export function queue_cell(cell_id) {
-    fetch(`/queue_cell?cell_id=${cell_id}`)
-        .then(response => response.json())
-        .then(data => {
-            console.log("queue_cell response: ", data);
-        });
+    ydoc.getArray('run_queue').push([cell_id]);
 }

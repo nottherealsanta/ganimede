@@ -23,7 +23,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Define the directories for serving files
-DEV = False
+DEV = True
 FRONTEND_DIR = Path(
     "../frontend"
 ).resolve()  # Resolve the absolute path for the frontend directory
@@ -102,7 +102,11 @@ async def homepage(request):
 
     if notebook is None:
         notebook = Notebook(comms=comms, ydoc=ydoc)
-        # await open_notebook("")  # TODO: remove this to open notebooks from the frontend
+        if DEV:
+            logger.info("Opening test notebook")
+            await open_notebook(
+                ""
+            )  # TODO: remove this to open notebooks from the frontend
 
     try:
         # Attempt to serve the index.html file as the homepage
@@ -155,8 +159,10 @@ async def open_notebook(request):
     return the content of the file
     """
     # TODO
-    # path = "/Users/srajan/repos/ganimede/tests/test_notebook.ipynb"  #
-    path = request.query_params.get("path", "")
+    if DEV:
+        path = "repos/ganimede/tests/test_notebook.ipynb"  #
+    else:
+        path = request.query_params.get("path", "")
     logger.info(f"Opening notebook: {path}")
     if path == "":
         return JSONResponse({"error": "No path provided"})
@@ -165,15 +171,6 @@ async def open_notebook(request):
         await notebook.open(home_dir_path + "/" + path)
 
     return JSONResponse({"status": "ok"})
-
-
-async def queue_cell(request):
-    cell_id = request.query_params.get("cell_id", "")
-    if cell_id == "":
-        return JSONResponse({"error": "No cell_id provided"})
-    else:
-        await notebook.queue_cell(cell_id)
-        return JSONResponse({"status": "ok"})
 
 
 async def startup():
@@ -195,7 +192,6 @@ routes = [
     Route("/", endpoint=homepage),  # Route for the homepage
     Route("/file_browser", endpoint=file_browser),
     Route("/open_notebook", endpoint=open_notebook),
-    Route("/queue_cell", endpoint=queue_cell),
     Route("/{path:path}", endpoint=serve_file),  # Route for serving files
     WebSocketRoute("/", comms.endpoint),  # Route for the WebSocket
 ]

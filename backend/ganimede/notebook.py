@@ -68,6 +68,13 @@ class Notebook:
         self.notebook_id = _generate_random_id()
         self.init_cells_from_content(content)
 
+        # run queue
+        with self.ydoc.begin_transaction() as t:
+            self.ydoc.get_array("run_queue").delete_range(
+                t, 0, len(self.ydoc.get_array("run_queue"))
+            )
+        self.ydoc.get_array("run_queue").observe(self.y_run_queue_observer)
+
         await self.empty_run_queue()
 
     async def listen_comms(self):
@@ -150,12 +157,20 @@ class Notebook:
                 self.ycells.append(t, id)
         log.info(f"ydoc.cells: {self.ycells}")
 
+    def y_run_queue_observer(self, event):
+        # This is still a synchronous function
+        log.info(f"run_queue target: {event.target[-1]}")
+        asyncio.create_task(self.handle_run_queue_change(event))
+
+    async def handle_run_queue_change(self, event):
+        # This is where you put your asynchronous logic
+        if event.target[-1]:
+            await self.queue_cell(event.target[-1])
+
     async def queue_cell(self, cell_id: str):
         log.debug(f"queue_cell: {cell_id}")
         self.run_queue.put_nowait((cell_id))
         self._change_cell_state(cell_id, "queued")
-        with self.ydoc.begin_transaction() as t:
-            self.ydoc.get_array("run_queue").append(t, cell_id)
 
     async def interrupt_kernel(self):
         await self.empty_run_queue()
