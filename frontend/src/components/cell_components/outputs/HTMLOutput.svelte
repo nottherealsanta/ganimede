@@ -29,10 +29,11 @@
     @apply w-fit h-fit
     p-1
     bg-transparent 
+    border border-transparent
     rounded;
   }
   .html-output:hover {
-    @apply bg-gray-100;
+    @apply border-gray-200;
   }
   .dataframe {
     @apply w-full
@@ -42,7 +43,7 @@
   :global(.dataframe table) {
     @apply text-sm;
     border-spacing: 0;
-    width: 100%;
+    width: fit-content;
     font-family: "Inter", sans-serif;
     font-weight: 400;
   }
