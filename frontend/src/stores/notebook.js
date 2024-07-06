@@ -53,14 +53,15 @@ websocket_provider.on("status", event => {
 // Ycells
 
 export const ycells = ydoc.getArray('cells');
-export let cell_ids = ycells.toJSON();
+export let cell_ids = writable(ycells.toJSON());
 export const is_cell_ids_empty = writable(cell_ids.length === 0);
 // export const cells = writable(ycells.toJSON());
 
 ycells.observe((event) => {
     console.log("Ycells event triggered ");
-    cell_ids = ycells.toJSON();
-    is_cell_ids_empty.set(cell_ids.length === 0);
+    // cell_ids = ycells.toJSON();
+    cell_ids.set(ycells.toJSON());
+    is_cell_ids_empty.set(get(cell_ids).length === 0);
     update_pc_graph();
 });
 
@@ -160,7 +161,7 @@ export const is_command_mode = writable(true);
 // Active cell
 export const active_cell_id = writable("");
 export const active_cell_loc = derived(active_cell_id, ($active_cell_id, set) => {
-    const cellLoc = cell_ids.indexOf($active_cell_id);
+    const cellLoc = get(cell_ids).indexOf($active_cell_id);
     set(cellLoc);
 }
 );
@@ -205,7 +206,7 @@ export function drag_move_cells(event) {
     update_pc_graph();
 
     // if parent is collapsed, expand it
-    expand_parent(cell_ids[newIndex]);
+    expand_parent(get(cell_ids)[newIndex]);
 }
 
 function expand_parent(cell_id) {

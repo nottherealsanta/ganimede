@@ -2,7 +2,6 @@
   import CodeCell from "./CodeCell.svelte";
   import Grab from "./Grab.svelte";
   import DeleteCell from "./DeleteCell.svelte";
-  import CellBar from "./CellBar.svelte";
 
   export let cell_id: string;
   export let index: number;

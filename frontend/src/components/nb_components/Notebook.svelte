@@ -16,11 +16,10 @@
   // onMount set active cell to the first cell
   import { active_cell_id, cell_ids } from "../../stores/notebook";
   onMount(() => {
-    console.log("active cell id set to", cell_ids[0]);
-    active_cell_id.set(cell_ids[0]);
-    console.log("cell_ids", cell_ids);
+    console.log("active cell id set to", $cell_ids[0]);
+    active_cell_id.set($cell_ids[0]);
+    console.log("$cell_ids", $cell_ids);
   });
-  $: cell_ids;
 </script>
 
 <div
@@ -44,13 +43,13 @@
     handle=".grab-handle"
     filter=".new-cell-toolbar"
   >
-    {#each cell_ids as cell_id, index (cell_id)}
+    {#each $cell_ids as cell_id, index (cell_id)}
       <div>
         <Cell {cell_id} {index} />
       </div>
     {/each}
     <!-- final new cell toolbar at the end -->
-    <NewCellToolbar index={cell_ids.length} />
+    <NewCellToolbar index={$cell_ids.length} />
   </SortableList>
 </div>
 
