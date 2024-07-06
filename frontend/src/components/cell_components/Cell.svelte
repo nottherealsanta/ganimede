@@ -99,7 +99,7 @@
   let cell_div: HTMLDivElement;
   $: if (is_active && cell_div) {
     cell_div.scrollIntoView({
-      behavior: "instant",
+      behavior: "smooth",
       block: "nearest",
     });
   }
@@ -157,12 +157,12 @@
   <!-- <div class="h-20 w-full bg-gray-100">{cell.source}</div> -->
 
   <!-- debug -->
-  <div class="debug">
+  <!-- <div class="debug">
     <p>{cell_id}</p>
     <p>{cell.type}</p>
     <p>{cell.heading_level}</p>
     <p>{cell.parent_collapsed}</p>
-  </div>
+  </div> -->
   <!----------->
 
   <!-- Active -->
@@ -231,7 +231,7 @@
     pointer-events: none;
   }
 
-  .debug {
+  /* .debug {
     @apply absolute bottom-0 right-0
     bg-gray-200/70
     rounded-md
@@ -240,5 +240,5 @@
     p-1;
     font-family: monospace;
     font-size: 0.5rem;
-  }
+  } */
 </style>

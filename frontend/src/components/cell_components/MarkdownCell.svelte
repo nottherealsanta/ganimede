@@ -87,6 +87,7 @@
     font-size: 16px;
     font-weight: 400;
     line-height: 1.5;
+    margin-top: 0.25rem;
     margin-bottom: 0.25rem;
     list-style: auto;
   }
