@@ -103,7 +103,7 @@
       } finally {
         ignoreEvent = false;
       }
-    }, 10);
+    }, 1000);
     editor.onDidContentSizeChange(updateHeightWidth);
     updateHeightWidth();
 
