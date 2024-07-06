@@ -45,7 +45,7 @@
   }}
   role="presentation"
 >
-  <div class="flex flex-col w-3/4 h-full p-0">
+  <div class="flex flex-col w-full h-full p-0">
     <div
       class="{show_textarea
         ? 'h-auto opacity-100 pt-2'
@@ -57,7 +57,7 @@
       {@html marked(source)}
     </div>
   </div>
-  <div class="flex w-1/4 h-fit self-start">
+  <div class="flex absolute top-0 right-0 w-fit h-fit self-start">
     <CellBar {cell} {is_hover} />
   </div>
 </div>
@@ -65,6 +65,7 @@
 <style>
   .markdown {
     @apply flex flex-row
+    relative
     w-full min-h-8
     h-full 
     p-0
@@ -80,7 +81,7 @@
     border-none
     resize-none
     outline-none;
-    font-family: "IBM Plex Sans", sans-serif;
+    font-family: "Inter", sans-serif;
   }
   :global(.markdown p, .markdown ul, .markdown ol) {
     font-size: 16px;

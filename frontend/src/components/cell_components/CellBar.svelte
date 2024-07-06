@@ -29,7 +29,11 @@
 
 <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 <div
-  class="cell-bar {is_markdown ? 'bg-transparent' : 'bg-gray-50'}"
+  class="cell-bar {!is_markdown
+    ? 'bg-gray-50'
+    : is_hover || is_active
+      ? 'bg-white/50'
+      : 'bg-transparent'}"
   on:click={(e) => {
     active_cell_id.set(cell.id);
     $is_command_mode = true;

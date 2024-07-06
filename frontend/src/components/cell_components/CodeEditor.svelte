@@ -49,7 +49,7 @@
     renderLineHighlight: "none",
     lineNumbers: cell.type === "code" ? "on" : "off",
     fontSize: 14,
-    fontFamily: cell.type === "code" ? "IBM Plex Mono" : "Inter",
+    fontFamily: cell.type === "code" ? "IBM Plex Mono" : "Inter", // "IBM Plex Sans" doesn't work with italics
     fontLigatures: true,
     fontWeight: "400",
     glyphMargin: false,
@@ -87,30 +87,52 @@
     // dynamic height
     let ignoreEvent = false;
     let width = 300; // it was container.clientWidth;
+    let currentHeight = 25; // Initialize with minimum height
 
-    const updateHeightWidth = debounce(() => {
+    const updateWidth = debounce(() => {
+      if (container) {
+        container.style.width = `${width}px`;
+      }
+      try {
+        ignoreEvent = true;
+        editor.layout({ width, height: currentHeight });
+      } finally {
+        ignoreEvent = false;
+      }
+    }, 500);
+
+    const updateHeight = () => {
       const contentHeight = Math.max(
         25,
         Math.min(2000, editor.getContentHeight())
       );
-      if (container) {
-        container.style.width = `${width}px`;
-        container.style.height = `${contentHeight + 4}px`;
+
+      if (contentHeight !== currentHeight) {
+        currentHeight = contentHeight;
+        if (container) {
+          container.style.height = `${currentHeight + 4}px`;
+        }
+        try {
+          ignoreEvent = true;
+          editor.layout({ width, height: currentHeight });
+        } finally {
+          ignoreEvent = false;
+        }
       }
-      try {
-        ignoreEvent = true;
-        editor.layout({ width, height: contentHeight });
-      } finally {
-        ignoreEvent = false;
-      }
-    }, 1000);
-    editor.onDidContentSizeChange(updateHeightWidth);
-    updateHeightWidth();
+    };
+
+    editor.onDidContentSizeChange(updateHeight);
+    updateHeight(); // Initial height update
 
     // dynamic width
     new ResizeObserver(() => {
-      width = code_editor_container ? code_editor_container.clientWidth - 6 : 0;
-      updateHeightWidth();
+      const newWidth = code_editor_container
+        ? code_editor_container.clientWidth - 6
+        : 0;
+      if (newWidth !== width) {
+        width = newWidth;
+        updateWidth();
+      }
     }).observe(code_editor_container);
   });
 
