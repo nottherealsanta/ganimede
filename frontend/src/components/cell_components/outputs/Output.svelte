@@ -31,7 +31,7 @@
     aria-hidden={true}
   >
     <div
-      class="w-full h-auto px-4 py-2
+      class="w-full h-auto px-2 py-2
           rounded-br float-bottom
           cursor-default
           pointer-events-auto select-text"
@@ -80,7 +80,6 @@
     @apply flex flex-col 
     relative
     w-full h-fit
-    
     bg-white
     rounded-b-md
     overflow-y-auto;
@@ -91,8 +90,6 @@
     @apply flex
     w-full h-10
     px-4
-    mx-0.5
-    my-0.5
   bg-white
   text-gray-600
     text-sm

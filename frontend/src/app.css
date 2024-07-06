@@ -49,14 +49,23 @@ body {
   /* outline: 2px solid #3b82f6; */
   @apply border-2 border-blue-500;
   opacity: 0.5;
+  display: none;  
 }
 .sortable-ghost {
-  /* outline: 5px solid #3b82f6; */
-  /* border: 2px solid #0CA5E9; */
   @apply border-2 border-blue-500;
   opacity: 1;
   height: 0px;
   overflow: hidden;
+}
+.sortable-ghost>.cell {
+  display: none;
+}
+.sortable-drag {
+  @apply border-2 border-blue-500;
+  opacity: 0.5;
+}
+.sortable-drag>.cell {
+  display: none;
 }
 /* .multi-drag {
   outline: 2px solid rgb(43, 134, 199);

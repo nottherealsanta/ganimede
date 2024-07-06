@@ -88,6 +88,7 @@
     font-weight: 400;
     line-height: 1.5;
     margin-bottom: 0.25rem;
+    list-style: auto;
   }
   :global(.markdown ul) {
     list-style-type: circle;
@@ -99,31 +100,43 @@
     font-weight: 600;
     font-size: 30px;
     line-height: 1.5;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
   }
   :global(.markdown h2) {
     font-weight: 500;
     font-size: 24px;
     line-height: 1.5;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
   }
   :global(.markdown h3) {
     font-weight: 500;
     font-size: 20px;
     line-height: 1.5;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
   }
   :global(.markdown h4) {
     font-weight: 600;
     font-size: 16px;
     line-height: 1.5;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
   }
   :global(.markdown h5) {
     font-weight: 600;
     font-size: 14px;
     line-height: 1.5;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
   }
   :global(.markdown h6) {
     font-weight: 600;
     font-size: 12px;
     line-height: 1.5;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
   }
   :global(.markdown code) {
     padding: 5px;

@@ -11,6 +11,7 @@
     is_command_mode,
     ydoc,
     update_pc_graph,
+    is_dragging,
   } from "../../stores/notebook.js";
   import MarkdownCell from "./MarkdownCell.svelte";
   import NewCellToolbar from "./NewCellToolbar.svelte";
@@ -131,6 +132,7 @@
   {is_hover ? 'ring-1 ring-gray-200' : ''}
   {is_active ? 'ring-2 ring-gray-100 ' : ''}
   {cell.parent_collapsed ? 'cell-parent-collapse' : ''}
+  {$is_dragging ? 'pointer-events-none' : ''}
   "
   role="presentation"
   on:mouseenter={() => {
@@ -152,14 +154,15 @@
   {:else}
     <MarkdownCell {cell} {is_hover} />
   {/if}
+  <!-- <div class="h-20 w-full bg-gray-100">{cell.source}</div> -->
 
   <!-- debug -->
-  <!-- <div class="debug">
+  <div class="debug">
     <p>{cell_id}</p>
     <p>{cell.type}</p>
     <p>{cell.heading_level}</p>
     <p>{cell.parent_collapsed}</p>
-  </div> -->
+  </div>
   <!----------->
 
   <!-- Active -->
@@ -222,17 +225,20 @@
   }
 
   .cell-parent-collapse {
-    display: none;
+    height: 0px;
+    opacity: 0;
+    user-select: none;
+    pointer-events: none;
   }
-  /* 
+
   .debug {
     @apply absolute bottom-0 right-0
-    bg-gray-200/20
+    bg-gray-200/70
     rounded-md
-    text-gray-400
+    text-gray-800
 
     p-1;
     font-family: monospace;
-    font-size: 0.6rem;
-  } */
+    font-size: 0.5rem;
+  }
 </style>

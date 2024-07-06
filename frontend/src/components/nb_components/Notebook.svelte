@@ -2,15 +2,19 @@
   import SortableList from "./SortableList.svelte";
   import Cell from "../cell_components/Cell.svelte";
   import NewCellToolbar from "../cell_components/NewCellToolbar.svelte";
-  import { drag_move_cells } from "../../stores/notebook";
+  import { drag_move_cells, is_dragging } from "../../stores/notebook";
   import { onMount } from "svelte";
 
   // @ts-ignore
-  function onDragStart(event) {}
+  function onDragStart(event) {
+    is_dragging.set(true);
+    console.log("drag start");
+  }
 
   // @ts-ignore
   function onDragEnd(event) {
     drag_move_cells(event);
+    is_dragging.set(false);
   }
 
   // onMount set active cell to the first cell
@@ -34,7 +38,7 @@
   <SortableList
     class="sortable-list flex flex-col w-[85%] min-w-[20rem]"
     group="nested"
-    animation={100}
+    animation={0}
     swapThreshold={0.5}
     onStart={onDragStart}
     onEnd={onDragEnd}

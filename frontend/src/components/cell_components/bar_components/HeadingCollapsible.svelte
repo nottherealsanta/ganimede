@@ -26,8 +26,9 @@
 
   function toggleCollapse() {
     is_collapsed = !is_collapsed;
+    // cell.collapsed = is_collapsed ? "h" : "";
     propagateCollapse(cell.id, is_collapsed);
-    cell.collapsed = is_collapsed ? "h" : "";
+    cell.ycell.set("collapsed", is_collapsed ? "h" : "");
   }
 </script>
 

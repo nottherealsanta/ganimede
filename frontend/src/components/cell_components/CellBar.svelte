@@ -72,7 +72,6 @@
 <style>
   .cell-bar {
     @apply flex 
-    -top-2
     w-full h-8
     px-0.5 py-1
     items-center

@@ -158,7 +158,7 @@
   {#if code_collapsed}
     <button class="collapsed-editor" on:click={() => (code_collapsed = false)}>
       <span>Code Hidden</span>&nbsp;
-      {cell.source[0]}...
+      {cell.source}...
     </button>
   {/if}
   {#if is_hover}
@@ -182,7 +182,6 @@
   .collapsed-editor {
     @apply flex
     w-full h-10
-    m-0.5
     px-4
   bg-gray-50
   text-gray-600

@@ -146,9 +146,9 @@ export const n_descendants = derived(pc_graph, $pc_graph => {
 export function propagateCollapse(cell_id, state) {
     // If the cell has children, propagate the state to them
     if (get(pc_graph)[cell_id]) {
-        if (ydoc.getMap(cell_id).collapsed != "h") {
-            for (let child_id of get(pc_graph)[cell_id]) {
-                ydoc.getMap(child_id).set("parent_collapsed", state);
+        for (let child_id of get(pc_graph)[cell_id]) {
+            ydoc.getMap(child_id).set("parent_collapsed", state);
+            if (ydoc.getMap(child_id).get('collapsed') != "h") {
                 propagateCollapse(child_id, state);
             }
         }
@@ -167,6 +167,8 @@ export const active_cell_loc = derived(active_cell_id, ($active_cell_id, set) =>
 );
 
 // Move Cells
+export const is_dragging = writable(false);
+
 export function drag_move_cells(event) {
     const { oldIndicies, newIndicies, oldIndex, newIndex } = event;
     console.log("drag_move_cells: ", oldIndicies, newIndicies, oldIndex, newIndex);
