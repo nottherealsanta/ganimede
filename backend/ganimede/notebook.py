@@ -280,9 +280,9 @@ class Notebook:
                 # if loop.time() - last_update_time > 0.1 or len(output_buffer) > 10:
             #     await process_buffer()
 
-            # if execution_count_already_set and is_kernel_idle:
-            #     await process_buffer()  # Process any remaining outputs
-            #     break
+            if execution_count_already_set and is_kernel_idle:
+                # await process_buffer()  # Process any remaining outputs
+                break
 
         self._change_cell_state(cell_id, "idle")
 
