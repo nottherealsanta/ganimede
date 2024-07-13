@@ -69,10 +69,6 @@ class Notebook:
         self.init_cells_from_content(content)
 
         # run queue
-        with self.ydoc.begin_transaction() as t:
-            self.ydoc.get_array("run_queue").delete_range(
-                t, 0, len(self.ydoc.get_array("run_queue"))
-            )
         self.ydoc.get_array("run_queue").observe(self.y_run_queue_observer)
 
         await self.empty_run_queue()
@@ -196,10 +192,10 @@ class Notebook:
         while self.run_queue.qsize() > 0:
             cell_id = self.run_queue.get_nowait()
             self._change_cell_state(cell_id, "idle")
-            with self.ydoc.begin_transaction() as t:
-                self.ydoc.get_array("run_queue").delete_range(
-                    t, 0, len(self.ydoc.get_array("run_queue"))
-                )
+        with self.ydoc.begin_transaction() as t:
+            self.ydoc.get_array("run_queue").delete_range(
+                t, 0, len(self.ydoc.get_array("run_queue"))
+            )
 
     def _clear_outputs(self, cell_id: str):
         with self.ydoc.begin_transaction() as t:
