@@ -10,7 +10,8 @@
     "editor.tabSize": 2,
     "javascript.validate.enable": false,
     "svelte.plugin.svelte.compilerWarnings": {
-  "a11y-click-events-have-key-events": "ignore",
-  "a11y-no-static-element-interactions": "ignore"
-}
+    "a11y-click-events-have-key-events": "ignore",
+    "a11y-no-static-element-interactions": "ignore",
+    },
+    "terminal.integrated.scrollback":100000,
 }

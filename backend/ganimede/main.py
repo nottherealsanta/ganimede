@@ -34,7 +34,7 @@ MONACO_DIR = FRONTEND_DIR / "node_modules" / "monaco-editor" / "esm" / "vs"
 
 # -- yapp server
 websocket_server = WebsocketServer()
-yapp = ASGIServer(websocket_server)
+# yapp = ASGIServer(websocket_server)
 ydoc = Y.YDoc()
 
 
@@ -42,7 +42,9 @@ ydoc = Y.YDoc()
 async def ypy_ws_server_start():
     async with (
         WebsocketServer(log=logger) as websocket_server,
-        serve(websocket_server.serve, "localhost", 1234, close_timeout=1),
+        serve(
+            websocket_server.serve, "localhost", 1234, close_timeout=1, max_size=2**24
+        ),
     ):
         logger.info("Y PY websocket server started")
         await asyncio.Future()  # run forever
@@ -80,9 +82,9 @@ async def serve_file(request):
         # Attempt to find and serve the requested file from the possible paths
         for file_path in possible_paths:
 
-            logger.info(f"Attempting to serve file: {file_path}")
+            logger.debug(f"Attempting to serve file: {file_path}")
             if file_path.exists() and file_path.is_file():
-                logger.info(f"Serving file: {file_path}")
+                logger.debug(f"Serving file: {file_path}")
                 return FileResponse(file_path)
 
         # If the file is not found, log a warning and return a 404 response
@@ -181,7 +183,7 @@ async def startup():
     loop = asyncio.get_event_loop()
     _task = loop.create_task(ypy_ws_server_start())
     await asyncio.sleep(0.5)  # wait for server to start
-    websocket = await connect("ws://localhost:1234/g-y-room")
+    websocket = await connect("ws://localhost:1234/g-y-room", max_size=2**24)
     websocket_provider = WebsocketProvider(ydoc, websocket, log=logger)
     task = asyncio.create_task(websocket_provider.start())
     await websocket_provider.started.wait()

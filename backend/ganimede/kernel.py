@@ -2,11 +2,15 @@ import queue
 import asyncio
 import y_py as Y
 from jupyter_client.manager import AsyncKernelManager
+from jupyter_client.kernelspec import KernelSpec, install_kernel_spec, KernelSpecManager
 from starlette.responses import JSONResponse
 from rich import print
 from os import urandom
 from base64 import urlsafe_b64encode
+from pathlib import Path
 import logging
+import os
+import json
 
 from .comms import Comms
 
@@ -15,8 +19,19 @@ log = logging.getLogger(__name__)
 
 class Kernel:
     def __init__(self, comms: Comms, ydoc: Y.YDoc) -> None:
+
+        # log os PATH variable
+        log.info(f"PATH: {os.environ['PATH']}")
+
+        # add this in front of the PATH
+        os.environ["PATH"] = "/Users/srajan/envs/base/bin:" + os.environ["PATH"]
+        # TODO: change this to config
+
         log.debug("Initializing Kernel")
         self.kernel_manager = AsyncKernelManager()
+        # self.kernel_manager.kernel_spec_manager = ksm
+        # log.info(self.kernel_manager.kernel_spec_manager.get_all_specs())
+
         self.kernel_client = None
         self.run_queue = asyncio.Queue()
         self.id = _generate_random_kernel_id()
@@ -109,8 +124,7 @@ class Kernel:
         # TODO: handle this at reading file
         if "data" in output:
             for key, value in output["data"].items():
-                output["data"][key] = value.split("\n")
-
+                output["data"][key] = value
         return output
 
     async def execute(self, code: str, msg_queue: asyncio.Queue):
@@ -125,7 +139,7 @@ class Kernel:
             log.info(f"executing: {code}")
             self.kernel_client.execute(code)
             client_execute_reply = await self.kernel_client.get_shell_msg()
-            log.info(f"client_execute_reply: {client_execute_reply}")
+            log.debug(f"client_execute_reply: {client_execute_reply}")
             msg_queue.put_nowait(
                 {
                     "msg_type": "execute_reply",
@@ -151,6 +165,8 @@ class Kernel:
             while self.busy:
                 try:
                     msg = await self.kernel_client.get_iopub_msg(timeout=1)
+                    # show first 100 characters of the message
+                    log.info(f"kernel msg: {str(msg)[:1000]}")
                     #
                     # msg_type is only available non-outputs
                     #

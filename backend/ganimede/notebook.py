@@ -239,8 +239,8 @@ class Notebook:
         async def process_buffer():
             nonlocal output_buffer, last_update_time
             if output_buffer:
-                with self.ydoc.begin_transaction() as t:
-                    for msg in output_buffer:
+                for msg in output_buffer:
+                    with self.ydoc.begin_transaction() as t:
                         self.ydoc.get_map(cell_id).get("outputs").append(t, msg)
                 output_buffer.clear()
                 last_update_time = loop.time()
@@ -248,7 +248,7 @@ class Notebook:
         while True:
             msg = await msg_queue.get()
 
-            log.info(f"msg: {msg}")
+            log.info(f"notebook msg: {str(msg)[:1000]}...")
             log.info(f"-msg_queue size: {msg_queue.qsize()}")
 
             if "msg_type" in msg and msg["msg_type"] == "execute_reply":
@@ -259,24 +259,30 @@ class Notebook:
                     end_time=msg["end_time"],
                 )
                 execution_count_already_set = True
+                log.info(f"execution_count: {msg['execution_count']}")
+                # is_kernel_idle = True
             elif (
                 "msg_type" in msg
                 and msg["msg_type"] == "status"
                 and msg["execution_state"] == "idle"
             ):
                 is_kernel_idle = True
+                log.info(f"kernel is idle")
             elif "msg_type" not in msg:  # if message is an output
                 if msg["output_type"] == "error":
                     await self.empty_run_queue()
-                output_buffer.append(msg)
+                # output_buffer.append(msg)
+                with self.ydoc.begin_transaction() as t:
+                    log.info(f"send output to ydoc")
+                    self.ydoc.get_map(cell_id).get("outputs").append(t, msg)
 
                 # Process buffer if it's been more than 100ms since last update or buffer is large
-                if loop.time() - last_update_time > 0.1 or len(output_buffer) > 10:
-                    await process_buffer()
+                # if loop.time() - last_update_time > 0.1 or len(output_buffer) > 10:
+            #     await process_buffer()
 
-            if execution_count_already_set and is_kernel_idle:
-                await process_buffer()  # Process any remaining outputs
-                break
+            # if execution_count_already_set and is_kernel_idle:
+            #     await process_buffer()  # Process any remaining outputs
+            #     break
 
         self._change_cell_state(cell_id, "idle")
 
