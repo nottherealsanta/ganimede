@@ -48,7 +48,7 @@
   <div class="flex flex-col w-full h-full p-0">
     <div
       class="{show_textarea
-        ? 'h-auto opacity-100 pt-2'
+        ? 'h-auto opacity-100 pt-1'
         : 'h-0 opacity-0'} w-full"
     >
       <CodeEditor {cell} />
