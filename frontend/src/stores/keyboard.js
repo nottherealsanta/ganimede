@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import { is_command_mode, active_cell_id, active_cell_loc, cell_ids } from './notebook';
+import { is_command_mode, active_cell_id, active_cell_loc, ycells, undoManager } from './notebook';
 
 export const keydown_function = (event) => {
   // if (["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(event.code) > -1) {
@@ -20,7 +20,7 @@ export const keydown_function = (event) => {
       event.preventDefault();
       let x = get(active_cell_loc);
       if (x > 0) {
-        active_cell_id.set(cell_ids[x - 1]);
+        active_cell_id.set(ycells.get(x - 1));
       }
     }
     // Check if the ArrowDown key is pressed to move to the next cell
@@ -29,8 +29,8 @@ export const keydown_function = (event) => {
 
       event.preventDefault();
       let x = get(active_cell_loc);
-      if (x < cell_ids.length - 1) {
-        active_cell_id.set(cell_ids[x + 1]);
+      if (x < ycells.length - 1) {
+        active_cell_id.set(ycells.get(x + 1));
       }
     }
     // Check if the Enter key is pressed to enter edit mode
@@ -69,6 +69,7 @@ export const keydown_function = (event) => {
     else if (event.key === 'z') {
       // Logic to undo cell deletion
       // TODO: Implement the logic to undo cell deletion
+      undoManager.undo();
     }
     else if (event.key === 'y') {
       // Logic to change the cell type to Code

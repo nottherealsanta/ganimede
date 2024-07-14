@@ -2,6 +2,8 @@
   import { Trash2 } from "lucide-svelte";
   export let cell_id: string;
   export let is_hover: boolean;
+
+  import { delete_cell } from "../../stores/notebook";
 </script>
 
 <button
@@ -9,6 +11,7 @@
   style="opacity: {is_hover ? 1 : 0};"
   on:click|stopPropagation={() => {
     console.log("delete cell");
+    delete_cell(cell_id);
   }}
 >
   <Trash2 size="24" />

@@ -99,7 +99,7 @@
   let cell_div: HTMLDivElement;
   $: if (is_active && cell_div) {
     cell_div.scrollIntoView({
-      behavior: "smooth",
+      behavior: "instant",
       block: "nearest",
     });
   }

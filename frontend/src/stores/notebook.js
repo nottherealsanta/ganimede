@@ -44,6 +44,7 @@ websocket_provider.on("status", event => {
 });
 
 
+// partykit
 // const provider = new YPartyKitProvider(
 //     "localhost:1999",
 //     "g-y-room-party",
@@ -51,11 +52,9 @@ websocket_provider.on("status", event => {
 // );
 
 // Ycells
-
 export const ycells = ydoc.getArray('cells');
 export let cell_ids = writable(ycells.toJSON());
 export const is_cell_ids_empty = writable(cell_ids.length === 0);
-// export const cells = writable(ycells.toJSON());
 
 ycells.observe((event) => {
     console.log("Ycells event triggered ");
@@ -64,6 +63,9 @@ ycells.observe((event) => {
     is_cell_ids_empty.set(get(cell_ids).length === 0);
     update_pc_graph();
 });
+
+// undo
+export const undoManager = new Y.UndoManager(ycells);
 
 // PC Graph
 export const pc_graph = writable({});
@@ -229,4 +231,55 @@ function expand_parent(cell_id) {
 // Queue Cell 
 export function queue_cell(cell_id) {
     ydoc.getArray('run_queue').push([cell_id]);
+}
+
+
+
+
+// Create Cell
+export function create_cell(index, cell_type) {
+    console.log("create_cell: ", index, cell_type);
+    const cell_id = generateRandomId(8);
+
+    let ycell = ydoc.getMap(cell_id);
+
+    // create cell in ydoc
+    ycell.set('id', cell_id);
+    ycell.set('type', cell_type);
+    ycell.set('source', new Y.Text());
+    ycell.set('outputs', new Y.Array());
+    ycell.set('execution_count', null);
+    ycell.set('heading_level', null);
+    ycell.set('collapsed', null);
+    ycell.set('parent_collapsed', false);
+    ycell.set('state', 'idle');
+    ycell.set('execution_time', null);
+
+    ycells.insert(index - 1, [cell_id]);
+
+    active_cell_id.set(cell_id);
+    is_command_mode.set(false);
+
+    undoManager.stopCapturing();
+}
+
+function generateRandomId(id_length = 8) {
+    const n_bytes = Math.max(Math.floor(id_length * 3 / 4), 1);
+    const randomBytes = crypto.getRandomValues(new Uint8Array(n_bytes));
+    const base64 = btoa(String.fromCharCode.apply(null, randomBytes));
+    return base64.slice(0, id_length);
+}
+
+// Delete Cell
+export function delete_cell(cell_id) {
+    console.log("delete_cell: ", cell_id);
+    const cell_index = get(cell_ids).indexOf(cell_id);
+    ycells.delete(cell_index);
+    update_pc_graph();
+    undoManager.stopCapturing();
+
+    // active cell
+    active_cell_id.set(ycells.get(cell_index));
+
+    is_command_mode.set(true);
 }
