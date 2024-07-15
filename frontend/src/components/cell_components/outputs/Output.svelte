@@ -1,7 +1,16 @@
-<script lang="ts">
-  export let cell: any;
-  export let is_hover: boolean = false;
-  let outputs: never[] = cell.outputs.toJSON();
+<script>
+  export let cell;
+  export let is_hover = false;
+  import * as Y from "yjs";
+
+  import { ydoc } from "../../../stores/notebook";
+
+  $: outputs = cell.outputs.toJSON();
+
+  const youtputs = ydoc.getMap(cell.id).get("outputs");
+  youtputs.observe((event) => {
+    outputs = youtputs.toJSON();
+  });
 
   let height = 0;
   let width = 0;
@@ -15,65 +24,67 @@
 
   // collapsible chevron
   import Collapsible from "../../utility_components/Collapsible.svelte";
-  let output_collapsed: boolean = false;
+  let output_collapsed = false;
 </script>
 
-<div class="relative">
-  <div
-    class="outputs"
-    style=" max-height: 600px; 
+{#if outputs.length > 0}
+  <div class="relative">
+    <div
+      class="outputs"
+      style=" max-height: 600px; 
         {cell.state == 'queued' ? 'opacity: 0.5' : ''}
         max-width: 100%;
         "
-    bind:clientHeight={height}
-    bind:clientWidth={width}
-    on:mousedown|stopPropagation={() => {}}
-    aria-hidden={true}
-  >
-    <div
-      class="w-full h-auto px-2 py-2
+      bind:clientHeight={height}
+      bind:clientWidth={width}
+      on:mousedown|stopPropagation={() => {}}
+      aria-hidden={true}
+    >
+      <div
+        class="w-full h-auto px-2 py-2
           rounded-br float-bottom
           cursor-default
           pointer-events-auto select-text"
-      style="display: {output_collapsed ? 'none' : 'block'}"
-    >
-      {#if outputs}
-        {#each outputs as output}
-          <!-- {JSON.stringify(output)} -->
-          {#if output["text"]}
-            <TextOutput {output} />
-          {/if}
-          {#if output["output_type"] == "error"}
-            <ErrorOutput {output} />
-          {/if}
-          {#if output["data"]}
-            {#if "text/html" in output["data"]}
-              <HtmlOutput {output} />
-            {:else if "text/markdown" in output["data"]}
-              <MarkdownOutput {output} />
-            {:else if "image/png" in output["data"]}
-              <ImageOutput {output} />
-            {:else if "text/plain" in output["data"]}
+        style="display: {output_collapsed ? 'none' : 'block'}"
+      >
+        {#if outputs}
+          {#each outputs as output}
+            <!-- {JSON.stringify(output)} -->
+            {#if output["text"]}
               <TextOutput {output} />
             {/if}
-          {/if}
-        {/each}
-      {/if}
+            {#if output["output_type"] == "error"}
+              <ErrorOutput {output} />
+            {/if}
+            {#if output["data"]}
+              {#if "text/html" in output["data"]}
+                <HtmlOutput {output} />
+              {:else if "text/markdown" in output["data"]}
+                <MarkdownOutput {output} />
+              {:else if "image/png" in output["data"]}
+                <ImageOutput {output} />
+              {:else if "text/plain" in output["data"]}
+                <TextOutput {output} />
+              {/if}
+            {/if}
+          {/each}
+        {/if}
+      </div>
     </div>
+    <!-- if collapsed -->
+    {#if output_collapsed}
+      <button
+        class="collapsed-outputs"
+        on:click={() => (output_collapsed = false)}
+      >
+        Outputs hidden
+      </button>
+    {/if}
+    {#if is_hover}
+      <Collapsible bind:is_collapsed={output_collapsed} />
+    {/if}
   </div>
-  <!-- if collapsed -->
-  {#if output_collapsed}
-    <button
-      class="collapsed-outputs"
-      on:click={() => (output_collapsed = false)}
-    >
-      Outputs hidden
-    </button>
-  {/if}
-  {#if is_hover}
-    <Collapsible bind:is_collapsed={output_collapsed} />
-  {/if}
-</div>
+{/if}
 
 <style>
   .outputs {

@@ -202,7 +202,10 @@ class Notebook:
 
     def _clear_outputs(self, cell_id: str):
         with self.ydoc.begin_transaction() as t:
-            self.ydoc.get_map(cell_id).set(t, "outputs", Y.YArray([]))
+            # self.ydoc.get_map(cell_id).set(t, "outputs", Y.YArray([]))
+            self.ydoc.get_map(cell_id).get("outputs").delete_range(
+                t, 0, len(self.ydoc.get_map(cell_id).get("outputs"))
+            )
 
     def _change_cell_state(self, cell_id: str, state: str):
         with self.ydoc.begin_transaction() as t:

@@ -23,9 +23,7 @@
 >
   <CodeEditor {cell} {is_hover} />
 
-  {#if cell.outputs && cell.outputs.length > 0}
-    <Output {cell} {is_hover} />
-  {/if}
+  <Output {cell} {is_hover} />
 </div>
 
 <style>
