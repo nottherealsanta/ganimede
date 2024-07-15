@@ -7,6 +7,7 @@
 
   $: outputs = cell.outputs.toJSON();
 
+  // for incremental updates
   const youtputs = ydoc.getMap(cell.id).get("outputs");
   youtputs.observe((event) => {
     outputs = youtputs.toJSON();
