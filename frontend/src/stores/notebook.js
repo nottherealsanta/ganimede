@@ -233,7 +233,10 @@ export function queue_cell(cell_id) {
     ydoc.getArray('run_queue').push([cell_id]);
 }
 
-
+// Interrupt Cell
+export function interrupt(cell_id) {
+    ydoc.getArray('run_queue').push(["interrupt"]);
+}
 
 
 // Create Cell

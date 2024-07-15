@@ -5,11 +5,14 @@
 
   // idle -> queued -> running -> idle
 
-  import { queue_cell } from "../../../stores/notebook";
+  import { queue_cell, interrupt } from "../../../stores/notebook";
 
   async function run_cell() {
     if (cell.state === "idle") {
       queue_cell(cell.id);
+    } else {
+      console.log("interrupting cell");
+      interrupt();
     }
   }
 
@@ -26,36 +29,34 @@
     is_local_hover = false;
   }}
 >
-  <button
-    class="flex flex-row items-center justify-center"
-    on:click={run_cell}
-    disabled={cell.state !== "idle"}
-  >
+  <button class="flex flex-row items-center justify-center" on:click={run_cell}>
     {#if cell.state === "idle"}
       <Play
         size="14"
         strokeWidth="2"
         class="fill-none group-hover:fill-current mx-0.5"
       />
-    {:else if cell.state === "queued"}
-      <div class="queue">
-        <LoaderCircle size="14" strokeWidth="2" />
-      </div>
-    {:else if cell.state === "running"}
-      <div class="running">
-        <LoaderCircle size="14" strokeWidth="2" />
-      </div>
+    {:else if cell.state !== "idle" && is_local_hover}
+      <Square size="14" strokeWidth="2" class="text-gray-600 mx-0.5" />
     {/if}
-    {#if is_local_hover && cell.state !== "idle"}
-      <span class="ml-1">
-        {#if cell.state === "queued"}
-          Queued
-        {:else if cell.state === "running"}
-          Running
-        {/if}
-      </span>
+    {#if cell.state === "queued" && !is_local_hover}
+      <div class="queue">
+        <LoaderCircle size="14" strokeWidth="2" class="mx-0.5" />
+      </div>
+    {:else if cell.state === "running" && !is_local_hover}
+      <div class="running">
+        <LoaderCircle size="14" strokeWidth="2" class="mx-0.5" />
+      </div>
     {/if}
   </button>
+</div>
+
+<div class="status">
+  {#if cell.state === "queued"}
+    <span class="ml-1"> Queued </span>
+  {:else if cell.state === "running"}
+    <span class="ml-1"> Running </span>
+  {/if}
 </div>
 
 <style>
@@ -71,6 +72,7 @@
     text-xs
     text-gray-500;
     font-family: "IBM Plex Sans", sans-serif;
+    transition: all 0.2s;
   }
 
   .run-button:hover {
@@ -78,6 +80,11 @@
   }
   .run-button:active {
     @apply bg-gray-200 text-gray-600;
+  }
+
+  .status {
+    @apply text-xs text-gray-500;
+    font-family: "IBM Plex Sans", sans-serif;
   }
 
   .queue {

@@ -165,6 +165,9 @@ class Notebook:
 
     async def queue_cell(self, cell_id: str):
         log.debug(f"queue_cell: {cell_id}")
+        if cell_id == "interrupt":
+            await self.interrupt_kernel()
+            return
         self.run_queue.put_nowait((cell_id))
         self._change_cell_state(cell_id, "queued")
 
