@@ -8,6 +8,7 @@
   import { queue_cell, interrupt } from "../../../stores/notebook";
 
   async function run_cell() {
+    console.log("run button clicked");
     if (cell.state === "idle") {
       queue_cell(cell.id);
     } else {

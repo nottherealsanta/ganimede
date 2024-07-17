@@ -1,5 +1,18 @@
 import { get } from 'svelte/store';
-import { is_command_mode, active_cell_id, active_cell_loc, ycells, undoManager } from './notebook';
+import { is_command_mode, active_cell_id, active_cell_loc, ycells, undoManager, queue_cell } from './notebook';
+
+function move_to_prev_cell() {
+  let x = get(active_cell_loc);
+  if (x > 0) {
+    active_cell_id.set(ycells.get(x - 1));
+  }
+}
+function move_to_next_cell() {
+  let x = get(active_cell_loc);
+  if (x < ycells.length - 1) {
+    active_cell_id.set(ycells.get(x + 1));
+  }
+}
 
 export const keydown_function = (event) => {
   // if (["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(event.code) > -1) {
@@ -13,33 +26,38 @@ export const keydown_function = (event) => {
     }
     is_command_mode.set(true);
   } else if (get(is_command_mode)) {
-    // Check if the ArrowUp key is pressed to move to the previous cell
     if (event.key === 'ArrowUp') {
       // move active cell to the previous cell
       // TODO: account for collapsed cells
       event.preventDefault();
-      let x = get(active_cell_loc);
-      if (x > 0) {
-        active_cell_id.set(ycells.get(x - 1));
-      }
+
+      move_to_prev_cell();
+
     }
-    // Check if the ArrowDown key is pressed to move to the next cell
     else if (event.key === 'ArrowDown') {
       // move active cell to the next cell
 
       event.preventDefault();
-      let x = get(active_cell_loc);
-      if (x < ycells.length - 1) {
-        active_cell_id.set(ycells.get(x + 1));
+
+      move_to_next_cell();
+    }
+    else if (event.key === 'Enter') {
+      event.preventDefault();
+
+      // if shift is pressed, queue cell and move to next cell
+      if (event.shiftKey) {
+        queue_cell(get(active_cell_id));
+        move_to_next_cell();
+      }
+      // if ctrl is pressed, queue cell
+      else if (event.ctrlKey) {
+        queue_cell(get(active_cell_id));
+      }
+      // if neither shift nor ctrl is pressed, edit cell
+      else {
+        is_command_mode.set(false);
       }
     }
-    // Check if the Enter key is pressed to enter edit mode
-    else if (event.key === 'Enter') {
-
-      event.preventDefault();
-      is_command_mode.set(false);
-    }
-    // Additional shortcuts for command mode
     else if (event.key === 'a') {
       // Logic to insert a cell above
 

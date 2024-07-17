@@ -230,6 +230,7 @@ function expand_parent(cell_id) {
 
 // Queue Cell 
 export function queue_cell(cell_id) {
+    console.log("queue_cell: ", cell_id);
     ydoc.getArray('run_queue').push([cell_id]);
 }
 
