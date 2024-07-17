@@ -1,24 +1,46 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { X, SendHorizonal, Ellipsis } from "lucide-svelte";
+  import { is_command_mode } from "../../stores/notebook";
 
-  // on Mount focus the textarea
   let textarea: HTMLDivElement;
   onMount(() => {
-    // textarea.focus();
     setTimeout(() => {
       if (textarea) {
         textarea.focus();
+        is_command_mode.set(true);
       }
     }, 55);
   });
 
   export let is_ai_bar_open: boolean;
+
+  function handleKeydown(e: KeyboardEvent) {
+    if (e.key === "Enter") {
+      if (e.shiftKey) {
+        // Shift + Enter: Insert a line break
+        // e.preventDefault();
+        e.stopPropagation();
+        // document.execCommand("insertLineBreak");
+      } else {
+        // Enter without Shift: Send AI
+        e.preventDefault();
+        e.stopPropagation();
+        console.log("Sending AI");
+        // Implement your send logic here
+      }
+    }
+  }
 </script>
 
 <div class="ai-bar">
   <div class="ai-bar-inside">
-    <div class="textarea" contentEditable bind:this={textarea}></div>
+    <div
+      class="textarea"
+      contentEditable
+      bind:this={textarea}
+      on:keydown={handleKeydown}
+    ></div>
     <button class="aibar-button" aria-label="Send AI">
       <SendHorizonal size="14" />
     </button>
@@ -30,7 +52,6 @@
       aria-label="Close AI Bar"
       on:click={() => {
         is_ai_bar_open = false;
-        console.log(is_ai_bar_open);
       }}
     >
       <X size="14" />
@@ -54,7 +75,7 @@
     bg-white
     items-center justify-center 
     rounded-md 
-    border-2 border-gray-300;
+    ring-2 ring-blue-500/75;
   }
   .textarea {
     @apply w-full p-1 text-sm bg-transparent;

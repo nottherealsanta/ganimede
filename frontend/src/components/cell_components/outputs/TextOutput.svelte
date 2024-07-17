@@ -5,9 +5,9 @@
 
   $: if (output["data"]) {
     if (output["data"]["text/plain"]) {
-      display_text = output["data"]["text/plain"]
-        .join("")
-        .replace(/ /g, "&nbsp;");
+      display_text = output["data"]["text/plain"];
+      // .join("")
+      // .replace(/ /g, "&nbsp;");
     }
   } else {
     display_text = output["text"].join("").replace(/ /g, "&nbsp;");
@@ -16,7 +16,7 @@
 
 <div
   class="text-output"
-  style="font-family: 'IBM Plex Mono', monospace; font-weight: 400;"
+  style="font-family: 'IBM Plex Mono', monospace; font-weight:400;"
 >
   {@html display_text}
 </div>

@@ -50,7 +50,6 @@
       >
         {#if outputs}
           {#each outputs as output}
-            <!-- {JSON.stringify(output)} -->
             {#if output["text"]}
               <TextOutput {output} />
             {/if}

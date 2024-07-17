@@ -181,6 +181,10 @@ class Kernel:
                         msg = {
                             "msg_type": "execute_input",
                         }
+                    elif msg["msg_type"] == "clear_output":
+                        msg = {
+                            "msg_type": "clear_output",
+                        }
                     else:
                         msg = self._msg_to_output(msg)
 

@@ -270,6 +270,8 @@ class Notebook:
             ):
                 is_kernel_idle = True
                 log.info(f"kernel is idle")
+            elif "msg_type" in msg and msg["msg_type"] == "clear_output":
+                self._clear_outputs(cell_id)
             elif "msg_type" not in msg:  # if message is an output
                 if msg["output_type"] == "error":
                     await self.empty_run_queue()
