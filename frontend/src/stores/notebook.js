@@ -259,7 +259,7 @@ export function create_cell(index, cell_type) {
     ycell.set('state', 'idle');
     ycell.set('execution_time', null);
 
-    ycells.insert(index - 1, [cell_id]);
+    ycells.insert(index, [cell_id]);
 
     active_cell_id.set(cell_id);
     is_command_mode.set(false);

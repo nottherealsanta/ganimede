@@ -8,7 +8,7 @@
   import { create_cell } from "../../stores/notebook";
 
   function create_new_cell(cell_type: string) {
-    create_cell(index + 1, cell_type);
+    create_cell(index, cell_type);
   }
 </script>
 

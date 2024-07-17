@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import { is_command_mode, active_cell_id, active_cell_loc, ycells, undoManager, queue_cell } from './notebook';
+import { is_command_mode, active_cell_id, active_cell_loc, ycells, undoManager, queue_cell, create_cell, ydoc } from './notebook';
 
 function move_to_prev_cell() {
   let x = get(active_cell_loc);
@@ -12,6 +12,15 @@ function move_to_next_cell() {
   if (x < ycells.length - 1) {
     active_cell_id.set(ycells.get(x + 1));
   }
+}
+
+function create_cell_below() {
+  let active_cell_type = ydoc.getMap(get(active_cell_id)).get('cell_type');
+  create_cell(get(active_cell_loc) + 1, active_cell_type);
+}
+function create_cell_above() {
+  let active_cell_type = ydoc.getMap(get(active_cell_id)).get('cell_type');
+  create_cell(get(active_cell_loc), active_cell_type);
 }
 
 export const keydown_function = (event) => {
@@ -47,7 +56,14 @@ export const keydown_function = (event) => {
       // if shift is pressed, queue cell and move to next cell
       if (event.shiftKey) {
         queue_cell(get(active_cell_id));
-        move_to_next_cell();
+
+        // if last cell, create cell below
+        if (get(active_cell_loc) === ycells.length - 1) {
+          create_cell_below();
+        }
+        else {
+          move_to_next_cell();
+        }
       }
       // if ctrl is pressed, queue cell
       else if (event.ctrlKey) {
@@ -59,13 +75,10 @@ export const keydown_function = (event) => {
       }
     }
     else if (event.key === 'a') {
-      // Logic to insert a cell above
-
-      // TODO: Implement the logic to insert a cell above
+      create_cell_above();
     }
     else if (event.key === 'b') {
-      // Logic to insert a cell below
-      // TODO: Implement the logic to insert a cell below
+      create_cell_below();
     }
     else if (event.key === 'x') {
       // Logic to cut the selected cell
