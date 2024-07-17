@@ -24,9 +24,6 @@ function create_cell_above() {
 }
 
 export const keydown_function = (event) => {
-  // if (["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(event.code) > -1) {
-  //   event.preventDefault();
-  // }
   // Check if the Escape key is pressed to enter command mode
   if (event.key === 'Escape') {
 
@@ -82,33 +79,26 @@ export const keydown_function = (event) => {
     }
     else if (event.key === 'x') {
       // Logic to cut the selected cell
-      // TODO: Implement the logic to cut the selected cell
     }
     else if (event.key === 'c') {
       // Logic to copy the selected cell
-      // TODO: Implement the logic to copy the selected cell
     }
     else if (event.key === 'v') {
       // Logic to paste the cell below
-      // TODO: Implement the logic to paste the cell below
     }
     else if (event.key === 'd' && event.repeat) {
       // Logic to delete the selected cell (press D twice)
-      // TODO: Implement the logic to delete the selected cell
 
     }
     else if (event.key === 'z') {
       // Logic to undo cell deletion
-      // TODO: Implement the logic to undo cell deletion
       undoManager.undo();
     }
     else if (event.key === 'y') {
       // Logic to change the cell type to Code
-      // TODO: Implement the logic to change the cell type to Code
     }
     else if (event.key === 'm') {
       // Logic to change the cell type to Markdown
-      // TODO: Implement the logic to change the cell type to Markdown
     }
 
   }

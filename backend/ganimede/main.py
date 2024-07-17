@@ -43,7 +43,11 @@ async def ypy_ws_server_start():
     async with (
         WebsocketServer(log=logger) as websocket_server,
         serve(
-            websocket_server.serve, "localhost", 1234, close_timeout=1, max_size=2**24
+            websocket_server.serve,
+            "localhost",
+            1234,
+            close_timeout=1,
+            max_size=2**24,  # TODO: change this back 1MB to support partykit
         ),
     ):
         logger.info("Y PY websocket server started")
@@ -183,7 +187,9 @@ async def startup():
     loop = asyncio.get_event_loop()
     _task = loop.create_task(ypy_ws_server_start())
     await asyncio.sleep(0.5)  # wait for server to start
-    websocket = await connect("ws://localhost:1234/g-y-room", max_size=2**24)
+    websocket = await connect(
+        "ws://localhost:1234/g-y-room", max_size=2**24
+    )  # TODO: change this back 1MB to support partykit
     websocket_provider = WebsocketProvider(ydoc, websocket, log=logger)
     task = asyncio.create_task(websocket_provider.start())
     await websocket_provider.started.wait()
