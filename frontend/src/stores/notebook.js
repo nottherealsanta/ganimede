@@ -276,6 +276,10 @@ function generateRandomId(id_length = 8) {
 
 // Delete Cell
 export function delete_cell(cell_id) {
+
+    // TODO: need to handle collapsed parent
+
+
     console.log("delete_cell: ", cell_id);
     const cell_index = get(cell_ids).indexOf(cell_id);
     ycells.delete(cell_index);

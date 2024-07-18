@@ -1,10 +1,16 @@
 <script lang="ts">
+  import { active_cell_id } from "../../stores/notebook";
+
+  export let cell_id: string;
   export let is_hover: boolean;
 </script>
 
 <div
   class="left-controls grab-handle"
   style="opacity: {is_hover ? 1 : 0};"
+  on:click={(e) => {
+    active_cell_id.set(cell_id);
+  }}
 ></div>
 
 <style>

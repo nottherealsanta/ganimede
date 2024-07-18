@@ -44,29 +44,40 @@ body {
 }
 
 /* sortablejs */
+
+.sortable-ghost {
+  @apply ring-1 ring-blue-500 rounded-lg;
+  opacity: 1;
+  /* height: 0; */
+  margin-top: 4px;
+}
+.sortable-drag {
+  opacity: 0.5;
+}
+
+/* 
 .sortable-chosen>.cell {
   box-shadow: rgba(44, 42, 44, 0.2) 0px 8px 24px;
-  /* outline: 2px solid #3b82f6; */
   @apply border-2 border-blue-500;
   opacity: 0.5;
   display: none;  
-}
+} */
+
+/* 
 .sortable-ghost {
   @apply border-2 border-blue-500;
   opacity: 1;
   height: 0px;
   overflow: hidden;
 }
-.sortable-ghost>.cell {
-  display: none;
-}
+
 .sortable-drag {
   @apply border-2 border-blue-500;
   opacity: 0.5;
 }
 .sortable-drag>.cell {
   display: none;
-}
+} */
 /* .multi-drag {
   outline: 2px solid rgb(43, 134, 199);
 } */

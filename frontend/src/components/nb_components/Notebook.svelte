@@ -36,16 +36,17 @@
   }}
 >
   <SortableList
-    class="sortable-list flex flex-col w-[85%] min-w-[20rem]"
+    class="sortable-list flex flex-col w-[100%] min-w-[20rem]"
     group="nested"
-    animation={0}
+    animation={100}
     swapThreshold={0.5}
     onStart={onDragStart}
     onEnd={onDragEnd}
-    invertSwap={true}
-    touchStartThreshold={100}
+    invertSwap={false}
+    touchStartThreshold={0}
     handle=".grab-handle"
     filter=".new-cell-toolbar"
+    multiDragClass="multi-drag"
   >
     {#each $cell_ids as cell_id, index (cell_id)}
       <div>
@@ -60,7 +61,7 @@
 <style>
   .nb {
     @apply flex flex-col
-    w-full h-full pt-8 pb-96
+    w-full h-full pt-8 pb-96 px-16
     items-center
     bg-transparent;
     overflow-y: overlay;

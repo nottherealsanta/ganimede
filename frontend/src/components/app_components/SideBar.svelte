@@ -74,7 +74,8 @@
     class="sidebar"
     style="width: {show ? sidebarWidth + 'px' : '0px'}; visibility: {show
       ? 'visible'
-      : 'hidden'};"
+      : 'hidden'};
+      display: {show ? 'block' : 'none'}"
   >
     {#if activeSection === "notebooks"}
       <NotebookSection />

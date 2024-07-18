@@ -158,7 +158,7 @@
   {#if code_collapsed}
     <button class="collapsed-editor" on:click={() => (code_collapsed = false)}>
       <span>Code Hidden</span>&nbsp;
-      {cell.source}...
+      {cell.source.toString().split("\n")[0]} ...
     </button>
   {/if}
   {#if is_hover}

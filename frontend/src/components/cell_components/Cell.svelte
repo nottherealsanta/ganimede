@@ -132,7 +132,7 @@
   {is_hover ? 'ring-1 ring-gray-200' : ''}
   {is_active ? 'ring-2 ring-gray-100 ' : ''}
   {cell.parent_collapsed ? 'cell-parent-collapse' : ''}
-  {$is_dragging ? 'pointer-events-none' : ''}
+  {$is_dragging ? 'pointer-events-none disabled' : ''}
   "
   role="presentation"
   on:mouseenter={() => {
@@ -144,7 +144,7 @@
   bind:this={cell_div}
 >
   <!-- Cell Controls -->
-  <Grab {is_hover} />
+  <Grab {cell_id} {is_hover} />
   <DeleteCell {cell_id} {is_hover} />
   <LeftControls {cell} {is_hover} />
 
@@ -178,7 +178,7 @@
 <style>
   .cell {
     @apply flex flex-col relative
-    w-auto h-auto mb-1
+    w-auto h-auto mb-1 mx-4
     bg-white
     rounded-md
     border-2;
