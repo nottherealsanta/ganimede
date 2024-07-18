@@ -83,10 +83,10 @@
     @apply bg-gray-200 text-gray-600;
   }
 
-  .status {
+  /* .status {
     @apply text-xs text-gray-500;
     font-family: "IBM Plex Sans", sans-serif;
-  }
+  } */
 
   .queue {
     @apply w-fit h-fit;
