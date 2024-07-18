@@ -50,10 +50,10 @@
   {/if} -->
 
   {#if is_hover || is_active}
-    <div class="flex-grow"></div>
     {#if !is_markdown}
       <ExecutionTime {cell} />
     {/if}
+    <div class="flex-grow"></div>
     {#if !is_markdown}
       <ExecutionCount {cell} />
     {/if}

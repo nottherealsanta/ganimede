@@ -15,11 +15,12 @@ function move_to_next_cell() {
 }
 
 function create_cell_below() {
-  let active_cell_type = ydoc.getMap(get(active_cell_id)).get('cell_type');
+  let active_cell_type = ydoc.getMap(get(active_cell_id)).get('type');
+  console.log(active_cell_type);
   create_cell(get(active_cell_loc) + 1, active_cell_type);
 }
 function create_cell_above() {
-  let active_cell_type = ydoc.getMap(get(active_cell_id)).get('cell_type');
+  let active_cell_type = ydoc.getMap(get(active_cell_id)).get('type');
   create_cell(get(active_cell_loc), active_cell_type);
 }
 

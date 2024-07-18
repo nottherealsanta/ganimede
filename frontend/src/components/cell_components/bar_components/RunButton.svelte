@@ -52,13 +52,13 @@
   </button>
 </div>
 
-<div class="status">
+<!-- <div class="status">
   {#if cell.state === "queued"}
     <span class="ml-1"> Queued </span>
   {:else if cell.state === "running"}
     <span class="ml-1"> Running </span>
   {/if}
-</div>
+</div> -->
 
 <style>
   .run-button {

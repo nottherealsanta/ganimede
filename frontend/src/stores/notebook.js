@@ -242,6 +242,11 @@ export function interrupt(cell_id) {
 
 // Create Cell
 export function create_cell(index, cell_type) {
+
+    if (!cell_type) {
+        cell_type = "code";
+    }
+
     console.log("create_cell: ", index, cell_type);
     const cell_id = generateRandomId(8);
 
