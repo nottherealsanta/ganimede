@@ -226,6 +226,8 @@
 
   .cell-parent-collapse {
     height: 0px;
+    border: none;
+    margin: 0px;
     opacity: 0;
     user-select: none;
     pointer-events: none;

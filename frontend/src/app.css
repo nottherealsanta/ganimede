@@ -48,11 +48,17 @@ body {
 .sortable-ghost {
   @apply ring-1 ring-blue-500 rounded-lg;
   opacity: 1;
-  /* height: 0; */
+  height: 0;
+  overflow: hidden;
   margin-top: 4px;
 }
-.sortable-drag {
-  opacity: 0.5;
+
+.multi-drag > .cell {
+  @apply ring-1 ring-blue-500;
+
+}
+.sortable-drag >.cell{
+  @apply ring-2 ring-blue-500;
 }
 
 /* 

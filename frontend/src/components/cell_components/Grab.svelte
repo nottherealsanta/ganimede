@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { active_cell_id } from "../../stores/notebook";
+  import { active_cell_id, is_command_mode } from "../../stores/notebook";
 
   export let cell_id: string;
   export let is_hover: boolean;
@@ -10,6 +10,7 @@
   style="opacity: {is_hover ? 1 : 0};"
   on:click={(e) => {
     active_cell_id.set(cell_id);
+    is_command_mode.set(true);
   }}
 ></div>
 
